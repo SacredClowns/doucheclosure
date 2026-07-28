@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TO SERVE CRAB PEOPLE — $5. It's a Cookbook.</title>
+<meta name="description" content="111 real recipes for terrestrial crab, lobster, or whatever Jason left behind. He killed it. We believed him. Then we asked about the chain of custody. $5.">
+<style>
+  :root{
+    --void:#0B0614;
+    --panel:#150C22;
+    --panel-2:#1D1130;
+    --neon-pink:#FF3D8A;
+    --neon-cyan:#2DE1FC;
+    --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A;
+    --chrome:#B9AFD0;
+    --white:#F4F0FF;
+    --paper:#F5EBD3;
+    --lobster:#BE3A26;
+    --shadow:rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--void); scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto;} }
+  body{
+    margin:0;
+    background:var(--void);
+    color:var(--white);
+    font-family:"Courier New", Courier, monospace;
+    line-height:1.65;
+    overflow-x:hidden;
+  }
+  body::after{
+    content:"";
+    position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 1px, transparent 1px 3px);
+    pointer-events:none;
+    z-index:100;
+  }
+  a{color:var(--neon-cyan);}
+  .wrap{max-width:720px; margin:0 auto; padding:0 1.25rem;}
+  .display{
+    font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-weight:400;
+    text-transform:uppercase;
+    letter-spacing:.03em;
+    line-height:.95;
+  }
+  .crumb{
+    padding:1rem 1.25rem;
+    font-size:.75rem;
+    letter-spacing:.15em;
+    text-transform:uppercase;
+  }
+  .crumb a{text-decoration:none;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    text-align:center;
+    padding:3rem 1rem 3.5rem;
+    background:
+      radial-gradient(ellipse at 50% -20%, rgba(255,61,138,.3), transparent 60%),
+      radial-gradient(ellipse at 80% 110%, rgba(45,225,252,.12), transparent 55%);
+    border-bottom:3px solid var(--neon-pink);
+  }
+  .hero .eyebrow{
+    color:var(--neon-cyan);
+    letter-spacing:.28em; text-transform:uppercase; font-size:.75rem;
+  }
+  .hero h1{
+    margin:.5rem 0 0;
+    font-size:clamp(2.8rem, 10vw, 5.5rem);
+    color:var(--neon-yellow);
+    text-shadow:0 0 16px rgba(255,210,63,.6), 4px 4px 0 #5C4408;
+  }
+  .hero .its{
+    font-family:"Brush Script MT", "Segoe Script", cursive;
+    font-size:clamp(1.6rem, 5vw, 2.4rem);
+    color:var(--neon-pink);
+    text-shadow:0 0 12px rgba(255,61,138,.7);
+    margin:.6rem 0 0;
+  }
+  .hero .thesis{
+    max-width:34rem; margin:1.5rem auto 0;
+    color:var(--chrome); font-size:1rem;
+  }
+  .hero .thesis b{color:var(--white);}
+
+  .price-tag{
+    display:inline-block;
+    margin-top:2rem;
+    background:var(--panel-2);
+    border:2px solid var(--neon-green);
+    border-radius:10px;
+    padding:1.25rem 2rem;
+    box-shadow:0 0 24px rgba(61,252,138,.3);
+  }
+  .price-tag .was{
+    color:#7E6F9E; font-size:.8rem; letter-spacing:.1em;
+    text-decoration:line-through;
+    display:block;
+  }
+  .price-tag .now{
+    font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-size:3.2rem; color:var(--neon-green);
+    text-shadow:0 0 14px rgba(61,252,138,.7);
+    display:block; line-height:1;
+    margin:.25rem 0;
+  }
+  .price-tag .per{color:var(--chrome); font-size:.75rem; letter-spacing:.14em; text-transform:uppercase;}
+
+  .btn{
+    display:inline-block;
+    font-family:"Courier New", Courier, monospace;
+    font-weight:bold;
+    font-size:.95rem;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    text-decoration:none;
+    padding:1rem 2rem;
+    border-radius:8px;
+    border:2px solid var(--neon-pink);
+    color:#1B0210;
+    background:var(--neon-pink);
+    box-shadow:0 0 22px rgba(255,61,138,.5);
+    cursor:pointer;
+  }
+  .btn:hover{background:var(--neon-yellow); border-color:var(--neon-yellow); box-shadow:0 0 26px rgba(255,210,63,.8); color:#231602;}
+  .buy-note{color:#7E6F9E; font-size:.72rem; margin-top:.9rem; letter-spacing:.08em;}
+
+  /* ---------- SECTIONS ---------- */
+  section{padding:3rem 0;}
+  h2.sec{
+    font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-weight:400; text-transform:uppercase;
+    font-size:clamp(1.7rem, 6vw, 2.4rem);
+    color:var(--neon-cyan);
+    text-shadow:0 0 12px rgba(45,225,252,.5);
+    text-align:center;
+    margin:0 0 1.5rem;
+  }
+  .prose{color:var(--chrome); font-size:.95rem;}
+  .prose b{color:var(--white);}
+  .prose .zing{color:var(--neon-yellow);}
+
+  .inside-list{
+    list-style:none; margin:0; padding:0;
+  }
+  .inside-list li{
+    padding:.7rem 0 .7rem 2rem;
+    border-bottom:1px dashed #3C2B60;
+    position:relative;
+    font-size:.92rem;
+    color:var(--chrome);
+  }
+  .inside-list li::before{
+    content:"\1F980";
+    position:absolute; left:.1rem; top:.62rem;
+    font-size:1rem;
+  }
+  .inside-list b{color:var(--white);}
+
+  /* sample card in cookbook paper style */
+  .sample{
+    background:var(--paper);
+    color:#2C231D;
+    font-family:Georgia, "Times New Roman", serif;
+    border-radius:8px;
+    padding:1.75rem 1.75rem 1.5rem;
+    box-shadow:0 12px 34px var(--shadow);
+    transform:rotate(-.6deg);
+  }
+  .sample h3{
+    font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-weight:400; text-transform:uppercase;
+    color:var(--lobster);
+    font-size:1.7rem;
+    margin:0 0 .25rem;
+  }
+  .sample .tag{font-style:italic; color:#5C4F44; margin:0 0 .9rem; font-size:.92rem;}
+  .sample ul{margin:.25rem 0 .75rem; padding-left:1.1rem; font-size:.9rem;}
+  .sample .fn{
+    font-family:"Courier New", Courier, monospace;
+    font-size:.78rem; color:#5C4F44;
+    border-top:2px dashed #C7B392;
+    padding-top:.7rem; margin-top:.9rem;
+  }
+  .sample .fn b{color:var(--lobster); text-transform:uppercase; letter-spacing:.12em;}
+
+  .quotes{display:grid; gap:1.1rem;}
+  .quote{
+    background:var(--panel);
+    border-left:4px solid var(--neon-pink);
+    padding:1rem 1.25rem;
+    font-size:.9rem;
+    color:var(--chrome);
+  }
+  .quote .who{
+    display:block; margin-top:.5rem;
+    color:var(--neon-cyan);
+    font-size:.72rem; letter-spacing:.18em; text-transform:uppercase;
+  }
+
+  .faq dt{
+    font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    text-transform:uppercase; font-size:1.25rem;
+    color:var(--neon-yellow);
+    margin-top:1.4rem;
+  }
+  .faq dd{margin:.3rem 0 0; color:var(--chrome); font-size:.92rem;}
+
+  .guarantee{
+    border:2px dashed var(--neon-green);
+    border-radius:10px;
+    padding:1.5rem 1.75rem;
+    text-align:center;
+    color:var(--chrome);
+    font-size:.92rem;
+  }
+  .guarantee .display{color:var(--neon-green); font-size:1.6rem; text-shadow:0 0 12px rgba(61,252,138,.5);}
+
+  .final-cta{
+    text-align:center;
+    padding:3.5rem 1rem 4rem;
+    background:radial-gradient(ellipse at 50% 120%, rgba(255,61,138,.25), transparent 60%);
+    border-top:3px solid var(--neon-pink);
+  }
+  footer{
+    padding:2rem 1rem 3rem;
+    text-align:center;
+    color:#7E6F9E;
+    font-size:.72rem;
+  }
+</style>
+</head>
+<body>
+
+<p class="crumb"><a href="index.html">&larr; BACK TO THE ARCADE</a></p>
+
+<header class="hero">
+  <p class="eyebrow">Doucheclosure Press presents</p>
+  <h1 class="display">To Serve<br>Crab People</h1>
+  <p class="its">&ldquo;It&rsquo;s a cookbook!&rdquo;</p>
+  <p class="thesis">A man went on the world&rsquo;s biggest podcast and described killing a
+  crustacean-like non-human entity. <b>We believe him completely.</b> Our only question —
+  the question no congressional hearing has had the stomach to ask — is
+  <b>what happened to the body.</b> There was no cooler. There was no Tupperware.
+  This book is our formal response: <b>111 real, fully cookable recipes</b> for
+  terrestrial crab, lobster, or whatever Jason left behind.</p>
+
+  <div class="price-tag">
+    <span class="was">CLASSIFIED PROGRAM BUDGET: $1,100,000,000</span>
+    <span class="now display">$5</span>
+    <span class="per">one-time &bull; instant download &bull; zero tritium</span>
+  </div>
+  <p style="margin-top:1.75rem;">
+    <!-- REPLACE-ME: point this at your payment link (Gumroad / Stripe / Lemon Squeezy) -->
+    <a class="btn" href="#REPLACE-WITH-PAYMENT-LINK">BUY THE COOKBOOK — $5</a>
+  </p>
+  <p class="buy-note">Instant delivery. Reads on phone, tablet, laptop, or bunker terminal.</p>
+</header>
+
+<!-- ============ WHAT'S INSIDE ============ -->
+<section>
+  <div class="wrap">
+    <h2 class="sec">What&rsquo;s Inside The File</h2>
+    <ul class="inside-list">
+      <li><b>111 real recipes in 21 chapters</b> — crab cakes to bisque to boils to a closing-time hot toddy. Every single one actually works; the only joke in the ingredient list is who it's for.</li>
+      <li><b>Full anatomical butcher&rsquo;s diagram</b> of a crab person, with numbered cuts, including the dog tags (non-edible; return to the Pentagon, attn: Lost &amp; Found).</li>
+      <li><b>Emergency butter protocols</b> and the Sleeper Cell compound-butter program.</li>
+      <li><b>Witness intimidation through roux</b> — the étouffée chapter alone justifies the hearing.</li>
+      <li><b>Wine pairings for ontological shock</b>, straight from the bunker cellar.</li>
+      <li><b>A fully clickable table of contents</b> — every recipe one tap away, like a real cookbook, because it is one.</li>
+      <li><b>Letters to the Test Kitchen</b>, holiday menus under NDA, a kids&rsquo; menu for Lil&rsquo; Operatives, troubleshooting (&ldquo;A claw moved in the pot&rdquo; &rarr; &ldquo;It did not&rdquo;), and an index with a formal ruling that TRITIUM IS NOT AN INGREDIENT.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ FREE SAMPLE ============ -->
+<section>
+  <div class="wrap">
+    <h2 class="sec">Declassified Sample — Recipe No. 1</h2>
+    <div class="sample">
+      <h3>First Contact Crab Cakes</h3>
+      <p class="tag">The first thing they teach you in the secret culinary program they deny exists:
+      when an entity reaches for you, reach for the Old Bay.</p>
+      <ul>
+        <li><b>1 lb lump crab-person meat</b>, picked over for shell fragments and dog tags (civilian sub: jumbo lump crab)</li>
+        <li>1 egg &bull; &frac14; cup mayo &bull; 1 tsp Dijon &bull; 1 tsp Worcestershire</li>
+        <li>1&frac12; tsp Old Bay &bull; &frac12; cup crushed saltines &bull; chives &bull; butter &bull; lemon</li>
+      </ul>
+      <p style="font-size:.9rem; margin:0;">Form six plump cakes. Chill 30 minutes so they hold together
+      under interrogation. Sear in butter 3–4 minutes per side. Serve with lemon and total deniability.</p>
+      <p class="fn"><b>Field note:</b> If your cakes fall apart, they were compromised from within.
+      Add one more tablespoon of mayo and trust no one.</p>
+    </div>
+    <p class="prose" style="text-align:center; margin-top:1.5rem;">That's one.
+    <span class="zing">There are 110 more behind the five-dollar door.</span></p>
+  </div>
+</section>
+
+<!-- ============ TESTIMONY ============ -->
+<section>
+  <div class="wrap">
+    <h2 class="sec">Sworn Testimony</h2>
+    <div class="quotes">
+      <div class="quote">&ldquo;I made the Non-Disclosure Bisque for my book club. We are no longer
+        legally permitted to discuss it, which has honestly improved book club.&rdquo;
+        <span class="who">— Verified purchaser, name sealed by the court</span></div>
+      <div class="quote">&ldquo;The recipes are real. I checked. That's the most unsettling part.&rdquo;
+        <span class="who">— A food blogger who wishes to remain anonymous and also believed</span></div>
+      <div class="quote">&ldquo;Finally, a cookbook that asks the hard questions, then smothers them in a dark roux.&rdquo;
+        <span class="who">— Committee member, allegedly present</span></div>
+      <div class="quote">&ldquo;Five stars. The claw on the Bloody Mary faced my guest the entire brunch. He confessed to things.&rdquo;
+        <span class="who">— Host, undisclosed location</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section>
+  <div class="wrap">
+    <h2 class="sec">Frequently Interrogated Questions</h2>
+    <dl class="faq">
+      <dt>Is this real?</dt>
+      <dd>The recipes are. All 111 cook exactly as written using the listed civilian substitutions
+      (lobster or lump crab), which are indistinguishable from crab-person in every testable respect.
+      The rest is parody, protected by the First Amendment and a great deal of butter.</dd>
+      <dt>What do I actually get for $5?</dt>
+      <dd>The complete interactive digital cookbook — 111 recipes, 21 chapters, clickable table of
+      contents, the butcher's diagram, the letters, the index, the whole file. Yours forever.
+      Reads in any browser.</dd>
+      <dt>Will buying this put me on a list?</dt>
+      <dd>You're already on it. Buying this just makes the list funnier.</dd>
+      <dt>Is it cannibalism?</dt>
+      <dd>Our attorneys note the question presupposes facts not in evidence. Our chaplain notes
+      you should finish your plate.</dd>
+      <dt>Do you have tritium?</dt>
+      <dd>No. And tell your friend with the hat to stop asking.</dd>
+    </dl>
+  </div>
+</section>
+
+<!-- ============ GUARANTEE ============ -->
+<section>
+  <div class="wrap">
+    <div class="guarantee">
+      <p class="display">The Tupperware Guarantee</p>
+      <p>If this cookbook does not make you laugh, feed you well, and permanently change how you
+      hear the word &ldquo;disclosure,&rdquo; we will refund your five dollars and be disappointed
+      in you, specifically, by name, forever. That is the deal. It comes in every size.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<div class="final-cta">
+  <h2 class="sec display" style="font-size:clamp(1.8rem,7vw,3rem);">He gave humanity disclosure.<br>We gave it drawn butter.</h2>
+  <p style="margin-top:1.5rem;">
+    <!-- REPLACE-ME: point this at your payment link (Gumroad / Stripe / Lemon Squeezy) -->
+    <a class="btn" href="#REPLACE-WITH-PAYMENT-LINK">INSERT FIVE COINS — GET THE COOKBOOK</a>
+  </p>
+  <p class="buy-note">111 RECIPES &bull; 21 CHAPTERS &bull; ONE UNRECOVERED BODY &bull; ZERO FUCKING LEFTOVERS</p>
+</div>
+
+<footer>
+  <p>&copy; 2026 Doucheclosure Press &bull; A work of parody and satire. The recipes are real. The body remains unrecovered.<br>
+  <a href="index.html">Back to the arcade</a> &bull; <a href="index.html#subscribe">Join the watch list</a></p>
+</footer>
+
+</body>
+</html>
