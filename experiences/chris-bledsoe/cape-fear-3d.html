@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>EPISODE 2: THE CAPE FEAR VIGIL — 3D — Doucheclosure</title>
+<meta name="description" content="Full 3D. The orbs are due. Your lens is filthy. Fix one of those things. A Doucheclosure Experiences production.">
+<style>
+  :root{
+    --void:#050805; --parch:#EDE6D6; --toxic:#7CFC3A; --brass:#C9A24B;
+    --blood:#C0453B; --cyan:#2DE1FC; --pink:#FF3D8A;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;user-select:none;}
+  html,body{height:100%;overflow:hidden;background:var(--void);color:var(--parch);
+    font-family:"Courier New",Courier,monospace;}
+  #frame{position:fixed;inset:0;overflow:hidden;}
+  #gl{position:absolute;inset:0;}
+  #gl canvas{display:block;}
+  #fx{position:absolute;inset:0;pointer-events:none;z-index:6;}
+
+  #nightvision{position:absolute;inset:0;pointer-events:none;z-index:4;display:none;
+    background:radial-gradient(circle, rgba(124,252,58,0.15) 0%, rgba(5,20,5,0.85) 80%);
+    box-shadow:inset 0 0 100px rgba(0,255,0,0.4);border:2px solid var(--toxic);}
+  #nightvision::after{content:"";position:absolute;inset:0;
+    background:repeating-linear-gradient(0deg,rgba(0,0,0,0.15),rgba(0,0,0,0.15) 2px,transparent 2px,transparent 4px);}
+
+  #hud{position:absolute;top:12px;left:14px;width:230px;z-index:9;}
+  .lab{font-size:10px;color:#A89F8C;font-weight:800;letter-spacing:.18em;}
+  #credbar{height:13px;background:#00000088;border-radius:7px;overflow:hidden;margin-top:3px;border:1px solid #000C;}
+  #credfill{height:100%;width:100%;background:linear-gradient(90deg,var(--blood),var(--toxic));transition:width .25s;}
+  #wipes{margin-top:8px;font-size:10px;color:var(--cyan);letter-spacing:.14em;}
+
+  .pop{position:absolute;font-weight:800;color:var(--parch);text-shadow:0 3px 0 #000;pointer-events:none;
+    font-size:22px;animation:poprise 1s forwards;transform:translate(-50%,-50%);white-space:nowrap;
+    font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;letter-spacing:.04em;text-transform:uppercase;}
+  .pop.toxic{color:var(--toxic);} .pop.gold{color:var(--brass);} .pop.red{color:#FFB0A6;}
+  @keyframes poprise{0%{opacity:0;transform:translate(-50%,-20%) scale(.5)}20%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}100%{opacity:0;transform:translate(-50%,-100%) scale(1)}}
+
+  #lensWipeCanvas{position:absolute;inset:0;z-index:15;display:none;cursor:crosshair;}
+
+  #dlg{position:absolute;left:50%;bottom:4%;transform:translateX(-50%);width:min(680px,92vw);z-index:20;display:none;}
+  #dlgbox{background:#0A120AD9;border:2px solid var(--toxic);border-radius:12px;padding:12px 16px;}
+  #dlgname{font-size:11px;font-weight:800;letter-spacing:.2em;color:var(--toxic);}
+  #dlgtext{font-size:17px;font-weight:700;margin-top:4px;}
+
+  #endcard{position:absolute;inset:0;z-index:30;display:none;align-items:center;justify-content:center;
+    background:rgba(3,6,3,.85);text-align:center;flex-direction:column;padding:1rem;}
+  #endcard h1{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;font-weight:400;
+    text-transform:uppercase;font-size:clamp(2rem,7vw,3.4rem);color:var(--toxic);
+    text-shadow:0 0 18px rgba(124,252,58,.6);}
+  #endcard p{max-width:34rem;margin:1rem auto;color:var(--parch);font-size:.95rem;line-height:1.6;}
+  #endcard a, #endcard button{display:inline-block;margin:.4rem;padding:.9rem 1.6rem;border-radius:8px;
+    font-family:inherit;font-weight:bold;font-size:.85rem;letter-spacing:.14em;text-transform:uppercase;
+    text-decoration:none;cursor:pointer;border:2px solid var(--toxic);background:var(--toxic);color:#052012;}
+  #endcard a.ghost, #endcard button.ghost{background:transparent;color:var(--cyan);border-color:var(--cyan);}
+
+  #kbhint{position:absolute;bottom:10px;left:0;right:0;text-align:center;color:#A8A08C;font-size:12px;z-index:8;}
+  #crumb{position:absolute;top:12px;right:14px;z-index:9;font-size:11px;letter-spacing:.14em;}
+  #crumb a{color:var(--cyan);text-decoration:none;text-transform:uppercase;}
+</style>
+</head>
+<body>
+<div id="frame">
+  <div id="gl"></div>
+  <div id="nightvision"></div>
+  <div id="fx"></div>
+
+  <div id="hud">
+    <div class="lab">CREDIBILITY</div>
+    <div id="credbar"><div id="credfill"></div></div>
+    <div id="wipes">DUST MOTES WIPED: 0 / 5</div>
+  </div>
+  <p id="crumb"><a href="index.html">&larr; THE BLEDSOE WING</a></p>
+
+  <canvas id="lensWipeCanvas"></canvas>
+
+  <div id="dlg">
+    <div id="dlgbox">
+      <div id="dlgname">REVIEW BOARD</div>
+      <div id="dlgtext"></div>
+    </div>
+  </div>
+
+  <div id="endcard">
+    <h1 id="endTitle">LENS CLEAN. ORBS PERSIST.</h1>
+    <p id="endText"></p>
+    <div>
+      <button onclick="location.reload()">RE-FLY THE VIGIL</button>
+      <a class="ghost" href="index.html#prize">CLAIM THE ORB SCHEDULER — $5</a>
+    </div>
+  </div>
+
+  <div id="kbhint">WASD / ARROWS = MOVE &bull; SPACE = MICROFIBER LENS WIPE &bull; SURVIVE THE AWE</div>
+</div>
+
+<script type="importmap">
+{ "imports": { "three": "../../assets/three.module.min.js" } }
+</script>
+<script type="module">
+'use strict';
+import * as THREE from 'three';
+
+/* ============================================================
+   DOUCHECLOSURE — Episode 2: The Cape Fear Vigil
+   Doctrine: we do not debunk. We clean the lens, and the
+   orbs are STILL THERE. Faith and Windex, both vindicated.
+   ============================================================ */
+
+const $ = id => document.getElementById(id);
+const rand = (a,b) => a + Math.random()*(b-a);
+
+const State = { cred: 100, orbsWiped: 0, grease: 0, phase: 1, active: true };
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x050A05);
+scene.fog = new THREE.FogExp2(0x050A05, 0.03);
+
+const camera = new THREE.PerspectiveCamera(50, innerWidth/innerHeight, 0.1, 1000);
+camera.position.set(0, 3, 10);
+
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+$('gl').appendChild(renderer.domElement);
+addEventListener('resize', () => {
+  camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+// --- lights ---
+scene.add(new THREE.AmbientLight(0x1A2E1A, 2.2));
+const porch = new THREE.PointLight(0xFFB055, 60, 40); porch.position.set(-6, 4, -2); scene.add(porch);
+const glow = new THREE.PointLight(0x7CFC3A, 70, 30); glow.position.set(3, 3, -4); scene.add(glow);
+
+// --- backyard on the river ---
+const ground = new THREE.Mesh(
+  new THREE.PlaneGeometry(60, 60),
+  new THREE.MeshStandardMaterial({color:0x121C0E, roughness:0.9})
+);
+ground.rotation.x = -Math.PI/2;
+scene.add(ground);
+
+// the river (it has seen everything; it says nothing)
+const river = new THREE.Mesh(
+  new THREE.PlaneGeometry(60, 8),
+  new THREE.MeshStandardMaterial({color:0x0D2233, roughness:0.15, metalness:0.6})
+);
+river.rotation.x = -Math.PI/2; river.position.set(0, 0.02, -16);
+scene.add(river);
+
+function pine(x, z){
+  const g = new THREE.Group();
+  const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.3, 4, 8),
+    new THREE.MeshStandardMaterial({color:0x2B1A0E}));
+  trunk.position.y = 2; g.add(trunk);
+  const fol = new THREE.Mesh(new THREE.ConeGeometry(2, 6, 8),
+    new THREE.MeshStandardMaterial({color:0x0A220A, roughness:0.8}));
+  fol.position.y = 5; g.add(fol);
+  g.position.set(x, 0, z); scene.add(g);
+}
+for (let i=0;i<22;i++) pine(rand(-25,25), rand(-14,-4));
+
+// --- cast ---
+const player = new THREE.Mesh(new THREE.CapsuleGeometry(0.5, 1, 4, 8),
+  new THREE.MeshStandardMaterial({color:0x33405E}));
+player.position.set(0, 1, 4); scene.add(player);
+
+// the host (we do not put words in his mouth; he simply glows with certainty)
+const host = new THREE.Mesh(new THREE.CapsuleGeometry(0.55, 1.1, 4, 8),
+  new THREE.MeshStandardMaterial({color:0x4A5A3A, emissive:0x1A2E1A}));
+host.position.set(3, 1.1, -4); scene.add(host);
+
+// a visibly moved federal observer, in a lawn chair
+const observer = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.8, 0.8),
+  new THREE.MeshStandardMaterial({color:0x2B4A7A}));
+observer.position.set(-3, 0.4, -1); scene.add(observer);
+
+// --- orbs ---
+const activeOrbs = [];
+function spawnOrb(){
+  const colors = [0x7CFC3A, 0xFFD88A, 0xFF5555, 0x9FD8FF];
+  const mesh = new THREE.Mesh(
+    new THREE.SphereGeometry(0.35, 16, 16),
+    new THREE.MeshBasicMaterial({color:colors[Math.floor(Math.random()*4)], transparent:true, opacity:0.85})
+  );
+  mesh.position.set(host.position.x + rand(-1,1), 2.5, host.position.z);
+  const dir = new THREE.Vector3().subVectors(player.position, mesh.position).normalize();
+  scene.add(mesh);
+  activeOrbs.push({mesh, vel: dir.multiplyScalar(rand(3,6)), alive:true});
+}
+
+// --- input ---
+const keys = {};
+addEventListener('keydown', e => {
+  keys[e.code] = true;
+  if (e.code === 'Space'){ e.preventDefault(); lensWipe(); }
+});
+addEventListener('keyup', e => keys[e.code] = false);
+
+function lensWipe(){
+  if (!State.active || State.phase !== 1) return;
+  let hit = false;
+  for (const orb of activeOrbs){
+    if (orb.alive && orb.mesh.position.distanceTo(player.position) < 3.0){
+      orb.alive = false; scene.remove(orb.mesh); hit = true;
+      State.orbsWiped++;
+      pop('DUST MOTE NEUTRALIZED', orb.mesh.position, 'toxic');
+    }
+  }
+  if (!hit) pop('LENS: SPOTLESS. SKY: UNCHANGED.', player.position, 'gold');
+  $('wipes').textContent = 'DUST MOTES WIPED: ' + Math.min(State.orbsWiped,5) + ' / 5';
+  if (State.orbsWiped >= 5 && State.phase === 1) phase2();
+}
+
+function phase2(){
+  State.phase = 2;
+  $('nightvision').style.display = 'block';
+  say('Night vision engaged. Everything is green now. This helps nothing. It never has.');
+  pop('NIGHT VISION: ACTIVE', player.position, 'toxic');
+  setTimeout(phase3, 4000);
+}
+
+function phase3(){
+  State.phase = 3;
+  $('nightvision').style.display = 'none';
+  $('lensWipeCanvas').style.display = 'block';
+  say('Hold. There is something ON the lens itself. It is not a goddess. It is lunch. Deploy the Windex.');
+  greaseMinigame();
+}
+
+function greaseMinigame(){
+  const canvas = $('lensWipeCanvas');
+  canvas.width = innerWidth; canvas.height = innerHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = 'rgba(180,130,40,0.85)';
+  ctx.beginPath(); ctx.arc(canvas.width/2, canvas.height/2, Math.min(160, canvas.width*0.2), 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = '#FFF';
+  ctx.font = 'bold 18px Courier New';
+  ctx.textAlign = 'center';
+  ctx.fillText('RUB THE SCREEN. SPRAY THE WINDEX. CLEAN THE LUNCH.', canvas.width/2, canvas.height/2 - 190);
+  let cleaning = false;
+  canvas.addEventListener('pointerdown', () => cleaning = true);
+  canvas.addEventListener('pointerup', () => cleaning = false);
+  canvas.addEventListener('pointermove', e => {
+    if (!cleaning) return;
+    ctx.clearRect(e.clientX - 30, e.clientY - 30, 60, 60);
+    if (++State.grease > 40){ canvas.style.display = 'none'; win(); }
+  });
+}
+
+function win(){
+  State.active = false;
+  say('Lens is clean. And the orbs are— the orbs are still there. Of course they are. They were always there.');
+  pop('FAITH AND WINDEX: BOTH VINDICATED', player.position, 'gold');
+  setTimeout(() => {
+    $('endText').textContent = 'You wiped the motes. You cleaned the lunch. And above the river the orbs remain — ' +
+      'real, patient, professionally punctual, and still, somehow, out of focus. The phenomenon was never the smudge. ' +
+      'The smudge was just in the way. A visibly moved federal observer whispers: "Forty billion in satellites, ' +
+      'and the answer was Windex." Now claim the field kit and come back with a tripod.';
+    $('endcard').style.display = 'flex';
+  }, 2600);
+}
+
+function lose(){
+  State.active = false;
+  $('endTitle').textContent = 'AWESTRUCK';
+  $('endText').textContent = 'Your credibility reached zero. You are now fully at the retreat. You have bought the ' +
+    'commemorative hoodie. You describe lens flare to strangers at gas stations. The review board does not judge you — ' +
+    'the orbs are, we must stress, completely real — but you are no longer usable as a witness.';
+  $('endcard').style.display = 'flex';
+}
+
+function pop(text, pos3D, type='gold'){
+  const el = document.createElement('div');
+  el.className = 'pop ' + type;
+  el.textContent = text;
+  const v = pos3D.clone().project(camera);
+  el.style.left = ((v.x*.5+.5)*innerWidth) + 'px';
+  el.style.top = ((-(v.y*.5)+.5)*innerHeight) + 'px';
+  $('fx').appendChild(el);
+  setTimeout(() => el.remove(), 1000);
+}
+
+function say(text){
+  $('dlgtext').textContent = '"' + text + '"';
+  $('dlg').style.display = 'block';
+}
+
+// --- loop ---
+const clock = new THREE.Clock();
+let spawnTimer = 0;
+function tick(){
+  requestAnimationFrame(tick);
+  const dt = Math.min(clock.getDelta(), 0.05);
+  if (State.active){
+    const speed = 5 * dt;
+    if (keys['KeyW']||keys['ArrowUp'])    player.position.z -= speed;
+    if (keys['KeyS']||keys['ArrowDown'])  player.position.z += speed;
+    if (keys['KeyA']||keys['ArrowLeft'])  player.position.x -= speed;
+    if (keys['KeyD']||keys['ArrowRight']) player.position.x += speed;
+    player.position.x = Math.max(-20, Math.min(20, player.position.x));
+    player.position.z = Math.max(-10, Math.min(8, player.position.z));
+    camera.position.x = player.position.x;
+    camera.position.z = player.position.z + 6;
+    camera.lookAt(player.position.x, 2, player.position.z - 6);
+
+    if (State.phase === 1){
+      spawnTimer += dt;
+      if (spawnTimer > 1.2){ spawnOrb(); spawnTimer = 0; }
+    }
+    for (let i = activeOrbs.length - 1; i >= 0; i--){
+      const orb = activeOrbs[i];
+      if (!orb.alive) continue;
+      orb.mesh.position.addScaledVector(orb.vel, dt);
+      if (orb.mesh.position.distanceTo(player.position) < 0.8){
+        orb.alive = false; scene.remove(orb.mesh);
+        State.cred -= 10;
+        $('credfill').style.width = Math.max(0, State.cred) + '%';
+        pop('AWESTRUCK BY LENS FLARE! (−10)', player.position, 'red');
+        if (State.cred <= 0) lose();
+      }
+    }
+    // the host sways with certainty
+    host.rotation.z = Math.sin(clock.elapsedTime * 0.8) * 0.06;
+  }
+  renderer.render(scene, camera);
+}
+
+say('The orbs are due. They are always due. Your lens is filthy. Fix one of those things.');
+tick();
+</script>
+</body>
+</html>
