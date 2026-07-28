@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE CHRIS BLEDSOE EXPERIENCE — Orb Photographer — Doucheclosure</title>
+<meta name="description" content="The orbs come to the river. They have come for years. And every photo looks like a porch light in a hurricane. We believe completely. We demand focus. Playable.">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --orb:#FFB84D; --shadow:rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--void);}
+  body{margin:0; background:var(--void); color:var(--white);
+    font-family:"Courier New", Courier, monospace; line-height:1.65; overflow-x:hidden;}
+  body::after{content:""; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 1px, transparent 1px 3px);
+    pointer-events:none; z-index:100;}
+  a{color:var(--neon-cyan);}
+  .wrap{max-width:760px; margin:0 auto; padding:0 1.25rem;}
+  .display{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-weight:400; text-transform:uppercase; letter-spacing:.03em; line-height:.95;}
+  .crumb{padding:1rem 1.25rem; font-size:.72rem; letter-spacing:.15em; text-transform:uppercase;}
+  .crumb a{text-decoration:none;}
+
+  header.wing{
+    text-align:center; padding:3rem 1rem 2.5rem;
+    background:radial-gradient(ellipse at 50% -20%, rgba(255,184,77,.24), transparent 60%),
+      radial-gradient(ellipse at 85% 110%, rgba(45,225,252,.1), transparent 55%);
+    border-bottom:3px solid var(--orb);
+  }
+  .wing .eyebrow{color:var(--neon-cyan); letter-spacing:.28em; text-transform:uppercase; font-size:.72rem;}
+  .wing h1{margin:.5rem 0 0; font-size:clamp(2.4rem, 8.5vw, 4.4rem); color:var(--orb);
+    text-shadow:0 0 16px rgba(255,184,77,.6), 4px 4px 0 #5C3A08;}
+  .wing .sub{color:var(--chrome); max-width:36rem; margin:1.25rem auto 0; font-size:.95rem;}
+  .wing .sub b{color:var(--white);}
+
+  section{padding:2.5rem 0;}
+  h2.sec{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif; font-weight:400;
+    text-transform:uppercase; font-size:clamp(1.6rem, 5.5vw, 2.3rem);
+    color:var(--neon-cyan); text-shadow:0 0 12px rgba(45,225,252,.5);
+    text-align:center; margin:0 0 1.25rem;}
+  .prose{color:var(--chrome); font-size:.93rem;}
+  .prose b{color:var(--white);}
+  .pull{border-left:4px solid var(--orb); background:var(--panel);
+    padding:1rem 1.25rem; color:var(--white); font-size:1rem; margin:1.4rem 0;}
+
+  .exhibits{display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:1rem;}
+  .exhibit{margin:0;}
+  .exhibit .photo{
+    position:relative; aspect-ratio:4/3; border-radius:6px; overflow:hidden;
+    background:linear-gradient(180deg, #10182B 55%, #1E1830 75%, #0C0A16);
+    border:2px solid #35205C;
+  }
+  .exhibit .photo.dark{background:#070A12;}
+  .exhibit .blob{
+    position:absolute; left:var(--bx); top:var(--by);
+    width:var(--bs); height:var(--bs); border-radius:50%;
+    background:radial-gradient(circle, rgba(255,236,190,.95), rgba(255,184,77,.5) 55%, transparent 75%);
+    filter:blur(9px);
+    transform:translate(-50%,-50%);
+  }
+  .exhibit .photo.redacted{
+    display:flex; align-items:center; justify-content:center;
+    background:repeating-linear-gradient(45deg, #150C22 0 12px, #1D1130 12px 24px);
+    color:var(--neon-pink); font-size:1.4rem;
+  }
+  .exhibit figcaption{
+    font-size:.7rem; color:#7E6F9E; letter-spacing:.06em; margin-top:.45rem; line-height:1.5;
+  }
+  .exhibit figcaption b{color:var(--neon-cyan); letter-spacing:.18em;}
+
+  .game-shell{
+    background:linear-gradient(180deg, var(--panel-2), var(--panel));
+    border:2px solid var(--orb); border-radius:12px;
+    padding:1rem; box-shadow:0 0 26px rgba(255,184,77,.25);
+  }
+  #game{width:100%; display:block; border-radius:8px; background:#050A14; cursor:none; touch-action:none;}
+  .hud{display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap;
+    padding:.6rem .25rem 0; font-size:.75rem; letter-spacing:.12em; text-transform:uppercase;}
+  .hud .film{color:var(--neon-yellow);}
+  #verdict{min-height:1.4rem; text-align:center; color:var(--orb);
+    font-size:.8rem; letter-spacing:.08em; padding:.4rem 0 0;}
+  .controls-note{text-align:center; color:#7E6F9E; font-size:.72rem; letter-spacing:.1em; margin-top:.6rem;}
+
+  .prize{
+    border:2px dashed var(--neon-green); border-radius:12px;
+    text-align:center; padding:2rem 1.5rem;
+    background:radial-gradient(ellipse at 50% 120%, rgba(61,252,138,.12), transparent 70%);
+  }
+  .prize .display{color:var(--neon-green); font-size:clamp(1.6rem,6vw,2.4rem);
+    text-shadow:0 0 14px rgba(61,252,138,.5);}
+  .prize p{color:var(--chrome); font-size:.92rem; max-width:34rem; margin:.9rem auto;}
+  .prize p b{color:var(--white);}
+  .btn{display:inline-block; font-weight:bold; font-size:.9rem; letter-spacing:.16em;
+    text-transform:uppercase; text-decoration:none; padding:.95rem 1.8rem; border-radius:8px;
+    border:2px solid var(--neon-green); color:#052012; background:var(--neon-green);
+    box-shadow:0 0 22px rgba(61,252,138,.5); cursor:pointer;}
+  .btn:hover{background:var(--neon-yellow); border-color:var(--neon-yellow); color:#231602;}
+  .buy-note{color:#7E6F9E; font-size:.72rem; margin-top:.8rem;}
+  footer{padding:2rem 1rem 3rem; text-align:center; color:#7E6F9E; font-size:.72rem;}
+</style>
+</head>
+<body>
+
+<p class="crumb"><a href="../../index.html">&larr; THE ARCADE</a> &nbsp;/&nbsp; EXPERIENCES &nbsp;/&nbsp; CHRIS BLEDSOE</p>
+
+<header class="wing">
+  <p class="eyebrow">Doucheclosure Experiences &bull; Wing No. 3</p>
+  <h1 class="display">The Chris Bledsoe<br>Experience</h1>
+  <p class="sub">For nearly two decades, glowing orbs have visited one family's stretch of a
+  North Carolina river. They come when he says they'll come. Film crews have watched it happen.
+  <b>We believe all of it, without reservation.</b> Which leaves this organization with a single,
+  volcanic grievance: <b>eighteen years of visitations and not one photograph is in focus.</b></p>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <p>Do the math with us. Thousands of orb appearances. Hundreds of witnesses. An era in which
+      every human being carries a camera that can shoot 4K video of a moth at midnight.
+      And the visual record of the most cooperative phenomenon in history remains, respectfully,
+      <b>a porch light in a hurricane.</b></p>
+      <p class="pull">We are not saying the orbs aren't real. We are saying the orbs deserve
+      better. Somewhere out there is a luminous intelligence that has posed, patiently,
+      for eighteen years, waiting for humanity to discover the focus ring.</p>
+      <p>Let the record further show: these are the most reliable coworkers in America. An
+      intelligence that has kept <b>every appointment for eighteen years.</b> Rain. Holidays.
+      Documentary crews with lunch budgets. Show us one human contractor with that attendance
+      record. You cannot. The orbs have never once no-showed — they simply arrive, glow with
+      what we can only describe as <b>professional patience</b>, and wait for a species that
+      landed on the Moon to locate the focus ring. Then they go home, presumably to a place
+      with better cameras.</p>
+      <p>The review board has therefore built a training environment on a simulated river at dusk.
+      The orbs will come — they always come. Your job is the one job the field has never
+      completed: <b>take one (1) photograph of an orb that is actually in focus.</b>
+      Do this, and you will have contributed more to the evidentiary record than the entire
+      preceding century.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE EXHIBITS ============ -->
+<section>
+  <div class="wrap">
+    <h2 class="sec">The Historical Record</h2>
+    <div class="exhibits">
+      <figure class="exhibit">
+        <div class="photo"><span class="blob" style="--bx:46%; --by:38%; --bs:26px;"></span></div>
+        <figcaption><b>EXHIBIT A</b><br>"The orb." (Venus.)</figcaption>
+      </figure>
+      <figure class="exhibit">
+        <div class="photo"><span class="blob" style="--bx:60%; --by:55%; --bs:44px;"></span></div>
+        <figcaption><b>EXHIBIT B</b><br>"The orb, closer." (Venus, zoomed.)</figcaption>
+      </figure>
+      <figure class="exhibit">
+        <div class="photo dark"><span class="blob" style="--bx:30%; --by:64%; --bs:70px;"></span></div>
+        <figcaption><b>EXHIBIT C</b><br>"The orb in motion." (A thumb. The thumb is in motion.)</figcaption>
+      </figure>
+      <figure class="exhibit">
+        <div class="photo redacted"><span class="display">[SEALED]</span></div>
+        <figcaption><b>EXHIBIT D</b><br>Withheld for being too blurry <em>even for us.</em></figcaption>
+      </figure>
+    </div>
+    <p class="prose" style="text-align:center; margin-top:1.25rem;">Eighteen years.
+    <b>This is the archive.</b> A civilization-altering phenomenon, documented exclusively
+    in the visual language of a dropped phone.</p>
+  </div>
+</section>
+
+<!-- ============ THE GAME ============ -->
+<section>
+  <div class="wrap">
+    <h2 class="sec">Orb Photographer</h2>
+    <div class="game-shell">
+      <canvas id="game" width="960" height="540"></canvas>
+      <div class="hud">
+        <span>MISSION: ONE (1) TACK-SHARP ORB</span>
+        <span class="film" id="filmHud">EXPOSURES LEFT: 12</span>
+        <span id="bestHud">BEST SHOT: NONE</span>
+      </div>
+      <p id="verdict">&nbsp;</p>
+      <p class="controls-note">MOVE: MOUSE / TOUCH &bull; SHOOT: CLICK or SPACE — TIME THE FOCUS RING &bull; SHARP AT THE CENTER</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE PRIZE ============ -->
+<section id="prize">
+  <div class="wrap">
+    <div class="prize">
+      <p class="display">The Prize: The Orb Scheduler</p>
+      <p><b>THE ORB SCHEDULER — A Sky Watcher's Field Kit.</b> A genuinely useful tool from
+      Doucheclosure Labs: enter your location and it computes tonight's <b>golden hour, blue hour,
+      and the true dark-sky window</b> (civil, nautical, and astronomical twilight), plus the
+      current moon phase — so you know exactly when to be at your river.</p>
+      <p>It also includes the field guide the phenomenon has been waiting for:
+      <b>how to photograph a light in the sky so it is not blurry.</b> Tripod discipline. Manual
+      focus to infinity. The exposure settings, written down, forever. If the orbs come for you,
+      you will be the first person in history who was ready.</p>
+      <!-- REPLACE-ME: point at your payment link (Gumroad / Stripe / Lemon Squeezy) -->
+      <a class="btn" href="#REPLACE-WITH-PAYMENT-LINK">GET THE ORB SCHEDULER — $5</a>
+      <p class="buy-note">Instant download &bull; works offline at any river &bull; focus sold separately, included</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>DOUCHECLOSURE&trade; EXPERIENCES &bull; A work of parody commenting on public statements of public figures.<br>
+  <a href="../../index.html">Back to the arcade</a> &bull; <a href="../the-egg/index.html">Previous wing: The Egg</a></p>
+</footer>
+
+<script>
+(() => {
+  const cv = document.getElementById('game');
+  const cx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  const filmHud = document.getElementById('filmHud');
+  const bestHud = document.getElementById('bestHud');
+  const verdictEl = document.getElementById('verdict');
+
+  const BLURRY = [
+    "THAT'S VENUS.",
+    "THAT'S A STREETLIGHT.",
+    "THAT'S YOUR THUMB.",
+    "BEAUTIFUL SHOT OF ABSOLUTELY NOTHING.",
+    "THE ORB IS IN FRAME. SO IS A HURRICANE, APPARENTLY.",
+    "CONGRATULATIONS. A NEW DESKTOP WALLPAPER OF FOG.",
+    "480p. IN THIS ECONOMY.",
+    "THE ORB HAS SEEN THE PHOTO. THE ORB IS DISAPPOINTED TOO.",
+    "SOMEHOW WORSE THAN THE 1950s ONES.",
+    "A SMUDGE. YOU PHOTOGRAPHED A SMUDGE."
+  ];
+  const DECENT = [
+    "ALMOST. THE ORB HELD STILL AND EVERYTHING.",
+    "SO CLOSE. THE REVIEW BOARD WEPT.",
+    "ACCEPTABLE FOR CABLE TELEVISION. NOT FOR US."
+  ];
+
+  let orbs, film, best, state, t, aim = {x: W/2, y: H/2}, focusPhase, flash, lastVerdict;
+  function reset(){
+    orbs = [];
+    for (let i=0;i<3;i++) spawnOrb();
+    film = 12; best = 0; state = 'play'; t = 0; focusPhase = Math.random()*7; flash = 0;
+    verdictEl.textContent = ' ';
+    updateHud();
+  }
+  function spawnOrb(){
+    orbs.push({
+      x: 100+Math.random()*(W-200), y: 60+Math.random()*(H-260),
+      r: 14+Math.random()*10,
+      a: Math.random()*7, sp: .3+Math.random()*.7, wob: 20+Math.random()*40,
+      shy: Math.random()*.5
+    });
+  }
+  function updateHud(){
+    filmHud.textContent = 'EXPOSURES LEFT: ' + film;
+    bestHud.textContent = best <= 0 ? 'BEST SHOT: NONE'
+      : best >= 97 ? 'BEST SHOT: TACK SHARP'
+      : best >= 75 ? 'BEST SHOT: ALMOST' : 'BEST SHOT: SMUDGE (' + best + '%)';
+  }
+
+  // input
+  function setAim(e){
+    const r = cv.getBoundingClientRect();
+    const px = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
+    const py = (e.touches ? e.touches[0].clientY : e.clientY) - r.top;
+    aim.x = px * (W / r.width); aim.y = py * (H / r.height);
+  }
+  cv.addEventListener('pointermove', setAim);
+  cv.addEventListener('pointerdown', e => { setAim(e); shoot(); });
+  addEventListener('keydown', e => {
+    if (e.key === ' '){ e.preventDefault(); state === 'play' ? shoot() : reset(); }
+  });
+
+  function focusSharpness(){
+    // focus ring oscillates; sharp when sin crosses peak
+    return Math.pow(Math.abs(Math.sin(focusPhase)), 3); // 0..1, peaky
+  }
+
+  function shoot(){
+    if (state !== 'play') return;
+    if (film <= 0) return;
+    film--; flash = 8;
+    // nearest orb to reticle
+    let nd = 1e9, near = null;
+    for (const o of orbs){ const d = Math.hypot(o.x-aim.x, o.y-aim.y); if (d < nd){ nd = d; near = o; } }
+    const aimScore = Math.max(0, 1 - nd / 90);
+    const sharp = focusSharpness();
+    const score = Math.round(aimScore * sharp * 100);
+    best = Math.max(best, score);
+    if (score >= 97){
+      state = 'win';
+      verdictEl.textContent = 'TACK. SHARP. HISTORY HAS A PHOTOGRAPH.';
+    } else if (score >= 75){
+      verdictEl.textContent = DECENT[Math.floor(Math.random()*DECENT.length)] + ' (' + score + '%)';
+      // orbs dart when nearly caught
+      orbs.forEach(o => { o.a += Math.PI * (Math.random() - .5); o.sp *= 1.15; });
+    } else {
+      verdictEl.textContent = BLURRY[Math.floor(Math.random()*BLURRY.length)] + ' (' + score + '%)';
+    }
+    if (film <= 0 && state === 'play'){ state = 'lose'; }
+    updateHud();
+  }
+
+  function step(){
+    t++;
+    focusPhase += 0.045;
+    for (const o of orbs){
+      o.a += (Math.random()-.5) * .1;
+      o.x += Math.cos(o.a) * o.sp;
+      o.y += Math.sin(o.a) * o.sp * .6 + Math.sin(t*.02 + o.wob) * .3;
+      // shy: drift away from reticle a bit
+      const d = Math.hypot(o.x-aim.x, o.y-aim.y);
+      if (d < 120){ o.x += (o.x-aim.x)/d * o.shy; o.y += (o.y-aim.y)/d * o.shy; }
+      if (o.x < 60) o.a = 0; if (o.x > W-60) o.a = Math.PI;
+      if (o.y < 50) o.a = Math.PI/2; if (o.y > H-200) o.a = -Math.PI/2;
+    }
+    if (flash > 0) flash--;
+  }
+
+  function draw(){
+    // dusk river scene
+    const g = cx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#0A1026'); g.addColorStop(.62,'#1A1430'); g.addColorStop(.75,'#3A1E3A'); g.addColorStop(1,'#0A0A18');
+    cx.fillStyle = g; cx.fillRect(0,0,W,H);
+    // stars
+    cx.fillStyle = 'rgba(191,217,255,.5)';
+    for (let i=0;i<30;i++){ cx.fillRect((i*211)%W, (i*67)%(H*0.5), 2, 2); }
+    // river
+    cx.fillStyle = '#0D1B2E'; cx.fillRect(0, H-140, W, 140);
+    cx.strokeStyle = 'rgba(45,225,252,.25)';
+    for (let i=0;i<6;i++){ cx.beginPath(); cx.moveTo(0, H-130+i*20); cx.bezierCurveTo(W/3, H-126+i*20, 2*W/3, H-134+i*20, W, H-130+i*20); cx.stroke(); }
+    // treeline
+    cx.fillStyle = '#0A0F1A';
+    cx.beginPath(); cx.moveTo(0,H-140);
+    for (let x=0;x<=W;x+=40){ cx.lineTo(x, H-150-((x*7919)%53)); }
+    cx.lineTo(W,H-140); cx.closePath(); cx.fill();
+    // orbs with reflection
+    for (const o of orbs){
+      const pulse = 1 + Math.sin(t*.08 + o.wob)*.15;
+      const rg = cx.createRadialGradient(o.x,o.y,2,o.x,o.y,o.r*2.4*pulse);
+      rg.addColorStop(0,'rgba(255,236,190,.95)');
+      rg.addColorStop(.35,'rgba(255,184,77,.55)');
+      rg.addColorStop(1,'rgba(255,184,77,0)');
+      cx.fillStyle = rg;
+      cx.beginPath(); cx.arc(o.x,o.y,o.r*2.4*pulse,0,7); cx.fill();
+      cx.fillStyle = 'rgba(255,246,220,.95)';
+      cx.beginPath(); cx.arc(o.x,o.y,o.r*.5,0,7); cx.fill();
+      // reflection
+      cx.fillStyle = 'rgba(255,184,77,.12)';
+      cx.beginPath(); cx.ellipse(o.x, H-70, o.r*1.4, 6, 0, 0, 7); cx.fill();
+    }
+    // camera flash
+    if (flash > 0){ cx.fillStyle = 'rgba(244,240,255,' + (flash/8*.5) + ')'; cx.fillRect(0,0,W,H); }
+    // reticle + focus ring
+    const s = focusSharpness();
+    cx.strokeStyle = s > .9 ? '#3DFC8A' : s > .5 ? '#FFD23F' : '#FF3D8A';
+    cx.lineWidth = 2;
+    cx.beginPath(); cx.arc(aim.x, aim.y, 34, 0, 7); cx.stroke();
+    cx.beginPath(); cx.arc(aim.x, aim.y, 34 + (1-s)*26, 0, 7); cx.setLineDash([6,6]); cx.stroke(); cx.setLineDash([]);
+    cx.beginPath();
+    cx.moveTo(aim.x-46, aim.y); cx.lineTo(aim.x-26, aim.y);
+    cx.moveTo(aim.x+26, aim.y); cx.lineTo(aim.x+46, aim.y);
+    cx.moveTo(aim.x, aim.y-46); cx.lineTo(aim.x, aim.y-26);
+    cx.moveTo(aim.x, aim.y+26); cx.lineTo(aim.x, aim.y+46);
+    cx.stroke();
+    cx.font = '11px Courier New';
+    cx.fillStyle = cx.strokeStyle;
+    cx.fillText(s > .9 ? 'FOCUS: LOCKED' : s > .5 ? 'FOCUS: HUNTING' : 'FOCUS: HURRICANE', aim.x + 42, aim.y - 40);
+    // end states
+    if (state !== 'play'){
+      cx.fillStyle = 'rgba(5,8,16,.75)'; cx.fillRect(0,0,W,H);
+      cx.textAlign = 'center';
+      cx.font = 'bold 44px Haettenschweiler, Impact, sans-serif';
+      if (state === 'win'){
+        cx.fillStyle = '#3DFC8A';
+        cx.fillText('THE FIRST FOCUSED ORB IN HISTORY', W/2, H/2 - 44);
+        cx.font = '15px Courier New'; cx.fillStyle = '#F4F0FF';
+        cx.fillText('EIGHTEEN YEARS. THOUSANDS OF WITNESSES. YOU. A TRIPOD OF THE SOUL.', W/2, H/2 - 6);
+        cx.fillStyle = '#FFD23F';
+        cx.fillText('THE EVIDENTIARY RECORD THANKS YOU. CLAIM THE PRIZE BELOW.', W/2, H/2 + 26);
+      } else {
+        cx.fillStyle = '#FF3D8A';
+        cx.fillText('OUT OF FILM', W/2, H/2 - 44);
+        cx.font = '15px Courier New'; cx.fillStyle = '#F4F0FF';
+        cx.fillText('TWELVE EXPOSURES. TWELVE SMUDGES. THE TRADITION CONTINUES.', W/2, H/2 - 6);
+        cx.fillStyle = '#B9AFD0';
+        cx.fillText('THE ORBS WILL RETURN. THEY ALWAYS DO. THAT WAS NEVER THE PROBLEM.', W/2, H/2 + 26);
+      }
+      cx.font = '13px Courier New'; cx.fillStyle = '#B9AFD0';
+      cx.fillText('PRESS SPACE OR TAP TO RELOAD FILM', W/2, H/2 + 66);
+      cx.textAlign = 'left';
+    }
+  }
+
+  cv.addEventListener('pointerdown', () => { if (state !== 'play') reset(); });
+
+  reset();
+  (function loop(){ if (state === 'play') step(); draw(); requestAnimationFrame(loop); })();
+})();
+</script>
+
+</body>
+</html>

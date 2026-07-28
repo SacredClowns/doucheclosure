@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE EGG EXPERIENCE — Sling Load Simulator — Doucheclosure</title>
+<meta name="description" content="A craft shaped like an egg was recovered by helicopter sling load. We believe every word. Now YOU fly the mission: don't crack it. Playable. The prize is an actual egg timer.">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --egg:#F2E9D8; --shadow:rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--void);}
+  body{margin:0; background:var(--void); color:var(--white);
+    font-family:"Courier New", Courier, monospace; line-height:1.65; overflow-x:hidden;}
+  body::after{content:""; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 1px, transparent 1px 3px);
+    pointer-events:none; z-index:100;}
+  a{color:var(--neon-cyan);}
+  .wrap{max-width:760px; margin:0 auto; padding:0 1.25rem;}
+  .display{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-weight:400; text-transform:uppercase; letter-spacing:.03em; line-height:.95;}
+  .crumb{padding:1rem 1.25rem; font-size:.72rem; letter-spacing:.15em; text-transform:uppercase;}
+  .crumb a{text-decoration:none;}
+
+  header.wing{
+    text-align:center; padding:3rem 1rem 2.5rem;
+    background:radial-gradient(ellipse at 50% -20%, rgba(255,210,63,.22), transparent 60%),
+      radial-gradient(ellipse at 15% 110%, rgba(45,225,252,.1), transparent 55%);
+    border-bottom:3px solid var(--neon-yellow);
+  }
+  .wing .eyebrow{color:var(--neon-cyan); letter-spacing:.28em; text-transform:uppercase; font-size:.72rem;}
+  .wing h1{margin:.5rem 0 0; font-size:clamp(2.6rem, 9vw, 4.8rem); color:var(--neon-yellow);
+    text-shadow:0 0 16px rgba(255,210,63,.55), 4px 4px 0 #5C4408;}
+  .wing .sub{color:var(--chrome); max-width:36rem; margin:1.25rem auto 0; font-size:.95rem;}
+  .wing .sub b{color:var(--white);}
+
+  section{padding:2.5rem 0;}
+  h2.sec{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif; font-weight:400;
+    text-transform:uppercase; font-size:clamp(1.6rem, 5.5vw, 2.3rem);
+    color:var(--neon-cyan); text-shadow:0 0 12px rgba(45,225,252,.5);
+    text-align:center; margin:0 0 1.25rem;}
+  .prose{color:var(--chrome); font-size:.93rem;}
+  .prose b{color:var(--white);}
+  .pull{border-left:4px solid var(--neon-yellow); background:var(--panel);
+    padding:1rem 1.25rem; color:var(--white); font-size:1rem; margin:1.4rem 0;}
+
+  /* ---------- GAME ---------- */
+  .game-shell{
+    background:linear-gradient(180deg, var(--panel-2), var(--panel));
+    border:2px solid var(--neon-yellow); border-radius:12px;
+    padding:1rem; box-shadow:0 0 26px rgba(255,210,63,.25);
+  }
+  #game{width:100%; display:block; border-radius:8px; background:#07101E; touch-action:none;}
+  .hud{display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap;
+    padding:.6rem .25rem 0; font-size:.75rem; letter-spacing:.12em; text-transform:uppercase;}
+  .hud .integrity{color:var(--neon-green);}
+  .hud .integrity.bad{color:var(--neon-pink);}
+  .hud .windo{color:var(--neon-cyan);}
+  #announcer{min-height:1.4rem; text-align:center; color:var(--neon-yellow);
+    font-size:.8rem; letter-spacing:.08em; padding:.4rem 0 0;}
+  .controls-note{text-align:center; color:#7E6F9E; font-size:.72rem; letter-spacing:.1em; margin-top:.6rem;}
+  .touchpad{display:none; justify-content:center; gap:.75rem; margin-top:.8rem;}
+  .touchpad button{
+    font-family:inherit; font-size:1.3rem; font-weight:bold;
+    width:64px; height:64px; border-radius:12px;
+    background:var(--panel-2); color:var(--neon-cyan);
+    border:2px solid var(--neon-cyan); cursor:pointer;
+  }
+  .touchpad button:active{background:var(--neon-cyan); color:#031A20;}
+  @media (pointer: coarse){ .touchpad{display:flex;} }
+
+  /* ---------- PRIZE ---------- */
+  .prize{
+    border:2px dashed var(--neon-green); border-radius:12px;
+    text-align:center; padding:2rem 1.5rem;
+    background:radial-gradient(ellipse at 50% 120%, rgba(61,252,138,.12), transparent 70%);
+  }
+  .prize .display{color:var(--neon-green); font-size:clamp(1.6rem,6vw,2.4rem);
+    text-shadow:0 0 14px rgba(61,252,138,.5);}
+  .prize p{color:var(--chrome); font-size:.92rem; max-width:34rem; margin:.9rem auto;}
+  .prize p b{color:var(--white);}
+  .btn{display:inline-block; font-weight:bold; font-size:.9rem; letter-spacing:.16em;
+    text-transform:uppercase; text-decoration:none; padding:.95rem 1.8rem; border-radius:8px;
+    border:2px solid var(--neon-green); color:#052012; background:var(--neon-green);
+    box-shadow:0 0 22px rgba(61,252,138,.5); cursor:pointer;}
+  .btn:hover{background:var(--neon-yellow); border-color:var(--neon-yellow); color:#231602;}
+  .buy-note{color:#7E6F9E; font-size:.72rem; margin-top:.8rem;}
+  footer{padding:2rem 1rem 3rem; text-align:center; color:#7E6F9E; font-size:.72rem;}
+</style>
+</head>
+<body>
+
+<p class="crumb"><a href="../../index.html">&larr; THE ARCADE</a> &nbsp;/&nbsp; EXPERIENCES &nbsp;/&nbsp; THE EGG</p>
+
+<header class="wing">
+  <p class="eyebrow">Doucheclosure Experiences &bull; Wing No. 2</p>
+  <h1 class="display">The Egg<br>Experience</h1>
+  <p class="sub">Public testimony describes a craft <b>shaped like an egg</b>, recovered at night,
+  carried out on a cable beneath a helicopter. We believe every single word of this.
+  Which is why our review board has one concern, and it is the correct concern:
+  <b>that is not how you carry an egg.</b></p>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <p>Consider what was asked of that crew. The most significant object in human history —
+      smooth, warm, reportedly humming — and the plan was to <b>dangle it from a wire in the
+      wind</b>, like a piano in a cartoon, like an IKEA wardrobe over a canyon, like something
+      you had <em>no emotional relationship with whatsoever.</em></p>
+      <p class="pull">An egg is a promise. You do not swing a promise from a helicopter.
+      You cradle it. You label it. You keep it at a stable temperature — a lesson this
+      organization has been screaming about, in a different wing, for some time now.</p>
+      <p>The review board has therefore constructed a full-fidelity training environment.
+      Fly the mission yourself. Feel the wind. Feel the swing. Feel the weight of a hum you
+      don't understand on the end of forty feet of cable. And understand, finally, in your hands,
+      what the review board has always known: <b>this should have been a Yeti cooler and a
+      forklift.</b></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE GAME ============ -->
+<section>
+  <div class="wrap">
+    <h2 class="sec">Sling Load Simulator</h2>
+    <div class="game-shell">
+      <canvas id="game" width="960" height="540"></canvas>
+      <div class="hud">
+        <span>MISSION: DELIVER THE EGG &rarr; FLATBED</span>
+        <span class="windo" id="windHud">WIND: CALM</span>
+        <span class="integrity" id="shellHud">SHELL INTEGRITY: 100%</span>
+      </div>
+      <p id="announcer">&nbsp;</p>
+      <p class="controls-note">ARROWS / WASD TO FLY &bull; GENTLE IS A LIFESTYLE &bull; SPACE TO RESTART</p>
+      <div class="touchpad" aria-label="touch controls">
+        <button id="tL" aria-label="left">&#9664;</button>
+        <button id="tU" aria-label="up">&#9650;</button>
+        <button id="tD" aria-label="down">&#9660;</button>
+        <button id="tR" aria-label="right">&#9654;</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE PRIZE ============ -->
+<section id="prize">
+  <div class="wrap">
+    <div class="prize">
+      <p class="display">The Prize: An Actual Egg Timer</p>
+      <p><b>THE EGG TIMER — Recovered Kitchen Technology.</b> A genuinely excellent boiled-egg
+      timer from Doucheclosure Labs: soft, jammy, custard, or hard, corrected for egg size and
+      fridge-cold starts, with a proper alarm and mandatory ice-bath protocol at the end —
+      because unlike certain recovery programs, <b>we use the cooler.</b></p>
+      <p>It is a real tool. It will boil your eggs perfectly for the rest of your life.
+      It also contains a NON-HUMAN setting. We are legally unable to tell you what it does.</p>
+      <!-- REPLACE-ME: point at your payment link (Gumroad / Stripe / Lemon Squeezy) -->
+      <a class="btn" href="#REPLACE-WITH-PAYMENT-LINK">RECOVER THE EGG TIMER — $5</a>
+      <p class="buy-note">Instant download &bull; works offline &bull; hums slightly</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>DOUCHECLOSURE&trade; EXPERIENCES &bull; A work of parody commenting on public statements of public figures.<br>
+  <a href="../../index.html">Back to the arcade</a> &bull; <a href="../jason-sands/index.html">Previous wing: Jason Sands</a></p>
+</footer>
+
+<script>
+(() => {
+  const cv = document.getElementById('game');
+  const cx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  const shellHud = document.getElementById('shellHud');
+  const windHud = document.getElementById('windHud');
+  const annEl = document.getElementById('announcer');
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // --- announcer lines ---
+  const LINES = {
+    start: ["Recovery site is hot. The egg is warm. Neither is explained.",
+            "Remember your training. You have no training."],
+    swing: ["The egg is swinging. The egg dislikes this. We can tell.",
+            "Pendulum detected. So help me, if you scramble national security…",
+            "Easy. EASY. It's not luggage. It's a maybe-someone."],
+    bump:  ["CONTACT. The hum changed pitch. Nobody liked the new pitch.",
+            "That's coming out of your clearance.",
+            "The egg has filed a grievance. It was received."],
+    win:   ["SLING LOAD COMPLETE. The egg forgives you. Probably."],
+    lose:  ["THE EGG HAS BEEN COMPROMISED. Somewhere, a scramble.",
+            "Mission failed. The omelet is classified now."]
+  };
+  let annT = 0;
+  function say(k){ const a = LINES[k]; annEl.textContent = a[Math.floor(Math.random()*a.length)]; annT = 240; }
+
+  // --- world ---
+  const GROUND = H - 60;
+  const PAD = { x: W - 150, w: 120, y: GROUND - 38 }; // flatbed
+  const TOWERS = [ {x: 380, w: 14, h: 210}, {x: 620, w: 14, h: 150} ];
+
+  // --- state ---
+  let heli, egg, wind, gustT, shell, state, t, keys = {};
+  function reset(){
+    heli = { x: 110, y: 150, vx: 0, vy: 0 };
+    egg  = { x: 110, y: 150 + 90, vx: 0, vy: 0, r: 16 };
+    wind = 0; gustT = 0; shell = 100; state = 'fly'; t = 0;
+    say('start');
+  }
+  reset();
+
+  // --- input ---
+  addEventListener('keydown', e => {
+    const k = e.key.toLowerCase();
+    if ([' ','arrowup','arrowdown','arrowleft','arrowright'].includes(e.key.toLowerCase())) e.preventDefault();
+    if (k === ' ' && state !== 'fly') { reset(); return; }
+    keys[k] = true;
+  });
+  addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
+  const bindTouch = (id, k) => {
+    const b = document.getElementById(id);
+    const on = e => { e.preventDefault(); if (state !== 'fly') { reset(); return; } keys[k] = true; };
+    const off = e => { e.preventDefault(); keys[k] = false; };
+    b.addEventListener('pointerdown', on); b.addEventListener('pointerup', off);
+    b.addEventListener('pointerleave', off); b.addEventListener('pointercancel', off);
+  };
+  bindTouch('tL','arrowleft'); bindTouch('tR','arrowright');
+  bindTouch('tU','arrowup');   bindTouch('tD','arrowdown');
+  cv.addEventListener('pointerdown', () => { if (state !== 'fly') reset(); });
+
+  // --- physics ---
+  const CABLE = 90;
+  function step(){
+    t++;
+    // wind: drifting sine + occasional gusts
+    gustT--;
+    if (gustT < 0 && Math.random() < 0.004) { gustT = 120 + Math.random()*120; }
+    const gust = gustT > 0 ? Math.sin(t*0.05) * 0.045 : 0;
+    wind = Math.sin(t * 0.008) * 0.02 + gust;
+    windHud.textContent = 'WIND: ' + (Math.abs(wind) > 0.04 ? 'GUSTING' : Math.abs(wind) > 0.015 ? 'CROSSWIND' : 'CALM');
+
+    // heli control
+    const A = 0.11;
+    if (keys['arrowleft']||keys['a'])  heli.vx -= A;
+    if (keys['arrowright']||keys['d']) heli.vx += A;
+    if (keys['arrowup']||keys['w'])    heli.vy -= A;
+    if (keys['arrowdown']||keys['s'])  heli.vy += A;
+    heli.vx *= 0.985; heli.vy *= 0.985;
+    heli.vx += wind * 0.3;
+    heli.x += heli.vx; heli.y += heli.vy;
+    heli.x = Math.max(40, Math.min(W-40, heli.x));
+    heli.y = Math.max(50, Math.min(GROUND-140, heli.y));
+
+    // egg: gravity + cable constraint (position-based)
+    egg.vy += 0.16;               // gravity
+    egg.vx += wind;               // wind hits the egg hardest
+    egg.vx *= 0.995; egg.vy *= 0.995;
+    egg.x += egg.vx; egg.y += egg.vy;
+    const dx = egg.x - heli.x, dy = egg.y - heli.y;
+    const d = Math.hypot(dx, dy);
+    if (d > CABLE) {
+      const nx = dx/d, ny = dy/d;
+      const px = heli.x + nx*CABLE, py = heli.y + ny*CABLE;
+      // velocity correction along cable
+      const vAlong = egg.vx*nx + egg.vy*ny;
+      egg.vx -= vAlong*nx*1.02; egg.vy -= vAlong*ny*1.02;
+      egg.x = px; egg.y = py;
+    }
+
+    // swing chatter
+    if (Math.abs(egg.vx) > 3 && annT <= 0) say('swing');
+
+    // collisions
+    const hit = (impact) => {
+      if (impact > 1.4) {
+        shell -= Math.round(impact * 9);
+        say('bump');
+        if (shell <= 0) { shell = 0; state = 'lose'; say('lose'); }
+      }
+    };
+    // ground
+    if (egg.y + egg.r > GROUND) {
+      hit(Math.abs(egg.vy));
+      egg.y = GROUND - egg.r; egg.vy *= -0.35; egg.vx *= 0.8;
+    }
+    // towers
+    for (const tw of TOWERS) {
+      const top = GROUND - tw.h;
+      if (egg.x + egg.r > tw.x && egg.x - egg.r < tw.x + tw.w && egg.y + egg.r > top) {
+        hit(Math.hypot(egg.vx, egg.vy));
+        egg.vx *= -0.5; egg.x += egg.vx * 4;
+      }
+    }
+    shellHud.textContent = 'SHELL INTEGRITY: ' + shell + '%';
+    shellHud.classList.toggle('bad', shell < 50);
+
+    // win: egg gently on the flatbed
+    const onPad = egg.x > PAD.x && egg.x < PAD.x + PAD.w && Math.abs(egg.y + egg.r - PAD.y) < 6;
+    if (onPad && Math.hypot(egg.vx, egg.vy) < 0.9) {
+      state = 'win'; say('win');
+    }
+  }
+
+  // --- render ---
+  function draw(){
+    cx.clearRect(0,0,W,H);
+    // night sky
+    const g = cx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#07101E'); g.addColorStop(1,'#0E1B2E');
+    cx.fillStyle = g; cx.fillRect(0,0,W,H);
+    // stars
+    cx.fillStyle = 'rgba(191,217,255,.7)';
+    for (let i=0;i<40;i++){ const sx=(i*173)%W, sy=(i*97)%(GROUND-100); cx.fillRect(sx, sy, 2, 2); }
+    // ground
+    cx.fillStyle = '#132A1C'; cx.fillRect(0, GROUND, W, H-GROUND);
+    cx.strokeStyle = '#3DFC8A'; cx.lineWidth = 2;
+    cx.beginPath(); cx.moveTo(0, GROUND); cx.lineTo(W, GROUND); cx.stroke();
+    // towers
+    cx.fillStyle = '#5A4A7A';
+    for (const tw of TOWERS){ cx.fillRect(tw.x, GROUND-tw.h, tw.w, tw.h);
+      cx.fillStyle = '#FF3D8A'; cx.fillRect(tw.x+3, GROUND-tw.h-6, 8, 6); cx.fillStyle = '#5A4A7A'; }
+    // flatbed truck
+    cx.fillStyle = '#2A3C5C'; cx.fillRect(PAD.x-30, PAD.y, 30, 38);           // cab
+    cx.fillStyle = '#20304A'; cx.fillRect(PAD.x, PAD.y+20, PAD.w, 18);        // bed
+    cx.fillStyle = '#FFD23F'; cx.fillRect(PAD.x, PAD.y+16, PAD.w, 4);         // deck line
+    cx.fillStyle = '#101826';
+    cx.beginPath(); cx.arc(PAD.x+20, GROUND, 10, 0, 7); cx.arc(PAD.x+PAD.w-20, GROUND, 10, 0, 7); cx.fill();
+    cx.fillStyle = '#2DE1FC'; cx.font = '10px Courier New';
+    cx.fillText('DEFINITELY A NORMAL TRUCK', PAD.x-14, PAD.y+52);
+    // cable
+    cx.strokeStyle = '#B9AFD0'; cx.lineWidth = 1.5;
+    cx.beginPath(); cx.moveTo(heli.x, heli.y+12); cx.lineTo(egg.x, egg.y); cx.stroke();
+    // egg (glowing)
+    cx.save();
+    cx.translate(egg.x, egg.y);
+    cx.shadowColor = 'rgba(255,210,63,.8)'; cx.shadowBlur = 18;
+    cx.fillStyle = '#F2E9D8';
+    cx.beginPath(); cx.ellipse(0, 0, egg.r*0.8, egg.r, 0, 0, 7); cx.fill();
+    cx.restore();
+    // cracks
+    if (shell < 100){
+      cx.strokeStyle = '#5C4F44'; cx.lineWidth = 1.2; cx.beginPath();
+      cx.moveTo(egg.x-6, egg.y-8); cx.lineTo(egg.x-1, egg.y-2); cx.lineTo(egg.x-7, egg.y+3);
+      if (shell < 60){ cx.moveTo(egg.x+5, egg.y-6); cx.lineTo(egg.x+2, egg.y); cx.lineTo(egg.x+8, egg.y+6); }
+      cx.stroke();
+    }
+    // helicopter
+    cx.save(); cx.translate(heli.x, heli.y);
+    cx.fillStyle = '#1D2B44';
+    cx.beginPath(); cx.ellipse(0, 0, 34, 14, 0, 0, 7); cx.fill();        // body
+    cx.fillRect(-52, -4, 24, 6);                                          // tail
+    cx.fillStyle = '#2DE1FC'; cx.beginPath(); cx.ellipse(12, -3, 10, 7, 0, 0, 7); cx.fill(); // canopy
+    cx.strokeStyle = '#B9AFD0'; cx.lineWidth = 3;
+    const spin = reduceMotion ? 24 : 34 * Math.abs(Math.sin(t*0.9)) + 6;
+    cx.beginPath(); cx.moveTo(-spin, -18); cx.lineTo(spin, -18); cx.stroke();  // rotor
+    cx.beginPath(); cx.moveTo(0,-14); cx.lineTo(0,-18); cx.stroke();
+    cx.restore();
+    // end states
+    if (state !== 'fly'){
+      cx.fillStyle = 'rgba(5,8,16,.72)'; cx.fillRect(0,0,W,H);
+      cx.textAlign = 'center';
+      cx.font = 'bold 46px Haettenschweiler, Impact, sans-serif';
+      if (state === 'win'){
+        cx.fillStyle = '#3DFC8A';
+        cx.fillText('SLING LOAD COMPLETE', W/2, H/2 - 40);
+        cx.font = '16px Courier New';
+        cx.fillStyle = '#F4F0FF';
+        cx.fillText('SHELL INTEGRITY: ' + shell + '% — PSIONIC HANDLING CERTIFIED', W/2, H/2);
+        cx.fillStyle = '#FFD23F';
+        cx.fillText('YOU CAN BE TRUSTED WITH AN EGG. CLAIM THE PRIZE BELOW.', W/2, H/2 + 30);
+      } else {
+        cx.fillStyle = '#FF3D8A';
+        cx.fillText('THE EGG IS COMPROMISED', W/2, H/2 - 40);
+        cx.font = '16px Courier New';
+        cx.fillStyle = '#F4F0FF';
+        cx.fillText('SOMEWHERE, A SCRAMBLE. THE OMELET IS CLASSIFIED NOW.', W/2, H/2);
+      }
+      cx.font = '13px Courier New';
+      cx.fillStyle = '#B9AFD0';
+      cx.fillText('PRESS SPACE OR TAP TO RE-FLY THE MISSION', W/2, H/2 + 64);
+      cx.textAlign = 'left';
+    }
+    if (annT > 0) annT--; else if (annEl.textContent !== ' ' && state === 'fly') annEl.textContent = ' ';
+  }
+
+  function loop(){
+    if (state === 'fly') step();
+    draw();
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+})();
+</script>
+
+</body>
+</html>
