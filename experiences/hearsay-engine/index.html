@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE HEARSAY ENGINE — Doucheclosure</title>
+<meta name="description" content="A game of telephone played at the highest levels of government. Literally. It's telephone. Carry one true sentence through six cleared officials to Congress. Playable.">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --wire:#D0524A; --bakelite:#2B2320;
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--void);}
+  body{margin:0; background:var(--void); color:var(--white);
+    font-family:"Courier New", Courier, monospace; line-height:1.65; overflow-x:hidden;}
+  body::after{content:""; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 1px, transparent 1px 3px);
+    pointer-events:none; z-index:100;}
+  a{color:var(--neon-cyan);}
+  .wrap{max-width:720px; margin:0 auto; padding:0 1.25rem;}
+  .display{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-weight:400; text-transform:uppercase; letter-spacing:.03em; line-height:.95;}
+  .crumb{padding:1rem 1.25rem; font-size:.72rem; letter-spacing:.15em; text-transform:uppercase;}
+  .crumb a{text-decoration:none;}
+
+  header.wing{
+    text-align:center; padding:3rem 1rem 2.5rem;
+    background:radial-gradient(ellipse at 50% -20%, rgba(208,82,74,.22), transparent 60%),
+      radial-gradient(ellipse at 15% 110%, rgba(45,225,252,.1), transparent 55%);
+    border-bottom:3px solid var(--wire);
+  }
+  .wing .eyebrow{color:var(--neon-cyan); letter-spacing:.28em; text-transform:uppercase; font-size:.72rem;}
+  .wing h1{margin:.5rem 0 0; font-size:clamp(2.4rem, 8.5vw, 4.6rem); color:var(--wire);
+    text-shadow:0 0 16px rgba(208,82,74,.55), 4px 4px 0 #401512;}
+  .wing .sub{color:var(--chrome); max-width:37rem; margin:1.25rem auto 0; font-size:.95rem;}
+  .wing .sub b{color:var(--white);}
+
+  section{padding:2.5rem 0;}
+  h2.sec{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif; font-weight:400;
+    text-transform:uppercase; font-size:clamp(1.6rem, 5.5vw, 2.3rem);
+    color:var(--neon-cyan); text-shadow:0 0 12px rgba(45,225,252,.5);
+    text-align:center; margin:0 0 1.25rem;}
+  .prose{color:var(--chrome); font-size:.93rem;}
+  .prose b{color:var(--white);}
+  .pull{border-left:4px solid var(--wire); background:var(--panel);
+    padding:1rem 1.25rem; color:var(--white); font-size:1rem; margin:1.4rem 0;}
+
+  /* ---------- ENGINE ---------- */
+  .engine{
+    background:linear-gradient(180deg, var(--panel-2), var(--panel));
+    border:2px solid var(--wire); border-radius:14px;
+    box-shadow:0 0 26px rgba(208,82,74,.22); overflow:hidden;
+  }
+  .engine-head{
+    display:flex; justify-content:space-between; align-items:center; gap:1rem;
+    padding:.8rem 1.2rem; border-bottom:2px dashed #35205C;
+    font-size:.66rem; letter-spacing:.16em; text-transform:uppercase; color:var(--chrome);
+  }
+  #chain{display:flex; gap:.35rem; align-items:center;}
+  #chain .hopdot{width:12px; height:12px; border-radius:50%; background:#35205C; border:2px solid #35205C;}
+  #chain .hopdot.good{background:var(--neon-green); border-color:var(--neon-green);}
+  #chain .hopdot.bad{background:var(--neon-pink); border-color:var(--neon-pink);}
+  #chain .hopdot.now{border-color:var(--neon-yellow);}
+
+  #stage{padding:1.5rem 1.4rem 1.75rem; min-height:280px;}
+  .official{
+    text-align:center; margin-bottom:1rem; animation:fadein .5s;
+  }
+  .official .title{font-size:.66rem; letter-spacing:.2em; text-transform:uppercase; color:var(--neon-yellow);}
+  .official .name{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-size:1.5rem; text-transform:uppercase; color:var(--white); margin-top:.15rem;}
+  @keyframes fadein{from{opacity:0; transform:translateY(6px)}to{opacity:1;}}
+
+  #message{
+    text-align:center; font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-size:clamp(1.3rem, 4.5vw, 2rem); text-transform:uppercase; letter-spacing:.04em;
+    color:var(--neon-cyan); text-shadow:0 0 12px rgba(45,225,252,.5);
+    border:2px dashed #35205C; border-radius:10px; padding:1.2rem 1rem; margin:.75rem 0 1rem;
+    min-height:4.6rem; display:flex; align-items:center; justify-content:center;
+  }
+  #message.redacted{color:var(--neon-pink); text-shadow:0 0 12px rgba(255,61,138,.5);}
+  #countdown{text-align:center; font-size:.7rem; letter-spacing:.22em; color:var(--chrome);
+    text-transform:uppercase; min-height:1.2rem;}
+  #choices{display:grid; gap:.6rem; margin-top:1rem;}
+  #choices button{
+    text-align:center; font-family:"Courier New", Courier, monospace; font-size:.95rem;
+    background:var(--void); color:var(--white); line-height:1.5;
+    border:2px solid #35205C; border-radius:10px; padding:.85rem 1rem; cursor:pointer;
+    text-transform:uppercase; letter-spacing:.03em;
+  }
+  #choices button:hover{border-color:var(--neon-yellow); color:var(--neon-yellow);}
+  .flavor{text-align:center; color:var(--chrome); font-size:.85rem; font-style:italic;
+    min-height:1.4rem; margin-top:.9rem;}
+  .startrow{display:grid; gap:.6rem;}
+
+  .prize{
+    border:2px dashed var(--neon-green); border-radius:12px;
+    text-align:center; padding:2rem 1.5rem;
+    background:radial-gradient(ellipse at 50% 120%, rgba(61,252,138,.12), transparent 70%);
+  }
+  .prize .display{color:var(--neon-green); font-size:clamp(1.5rem,6vw,2.3rem);
+    text-shadow:0 0 14px rgba(61,252,138,.5);}
+  .prize p{color:var(--chrome); font-size:.92rem; max-width:34rem; margin:.9rem auto;}
+  .prize p b{color:var(--white);}
+  .btn{display:inline-block; font-weight:bold; font-size:.9rem; letter-spacing:.16em;
+    text-transform:uppercase; text-decoration:none; padding:.95rem 1.8rem; border-radius:8px;
+    border:2px solid var(--neon-green); color:#052012; background:var(--neon-green);
+    box-shadow:0 0 22px rgba(61,252,138,.5); cursor:pointer;}
+  .btn:hover{background:var(--neon-yellow); border-color:var(--neon-yellow); color:#231602;}
+  .buy-note{color:#7E6F9E; font-size:.72rem; margin-top:.8rem;}
+  footer{padding:2rem 1rem 3rem; text-align:center; color:#7E6F9E; font-size:.72rem;}
+</style>
+</head>
+<body>
+
+<p class="crumb"><a href="../../index.html">&larr; THE ARCADE</a> &nbsp;/&nbsp; EXPERIENCES &nbsp;/&nbsp; THE HEARSAY ENGINE</p>
+
+<header class="wing">
+  <p class="eyebrow">Doucheclosure Experiences &bull; Wing No. 6</p>
+  <h1 class="display">The Hearsay<br>Engine</h1>
+  <p class="sub">A decorated intelligence officer told Congress, under oath, about crash retrieval
+  programs — described to him by people with the clearances to have heard about them from people
+  with the clearances to have seen them. <b>We believe every hop of it.</b> Which is precisely
+  our finding: the most important information in human history is architected as
+  <b>a game of telephone.</b> So the review board built the telephone.</p>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <p>Consider the engineering. This is a government that triple-encrypts lunch orders. That
+      requires two-person control to change a lightbulb in certain hallways. And its deepest
+      secret travels <b>mouth to ear, ear to mouth,</b> through SCIFs and barbecues and golf
+      foursomes, degrading a few percent per hop like a cassette tape of a cassette tape of the
+      truth.</p>
+      <p class="pull">Forty official denials could not kill the story. One (1) guy named Kevin
+      forwarding it slightly wrong could. That is the actual threat model, and nobody
+      is staffing it.</p>
+      <p>Below: the review board's full-fidelity simulation. One true sentence enters the chain.
+      Six cleared officials stand between it and Congress. You are the LIAISON — the only person
+      at every meeting — and your one job is the one job the field has never completed:
+      <b>keep the sentence intact.</b></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE ENGINE ============ -->
+<section>
+  <div class="wrap">
+    <h2 class="sec">Run The Chain</h2>
+    <div class="engine">
+      <div class="engine-head">
+        <span>CLASSIFICATION: WHISPER//NOFORN</span>
+        <div id="chain"></div>
+        <span id="fidHud">FIDELITY: 100%</span>
+      </div>
+      <div id="stage"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE PRIZE ============ -->
+<section id="prize">
+  <div class="wrap">
+    <div class="prize">
+      <p class="display">The Prize: The Provenance Ledger</p>
+      <p><b>THE PROVENANCE LEDGER — who told you? Write it down. Revolutionary.</b>
+      A genuinely useful notebook from Doucheclosure Labs for claims and their sources: log any
+      claim, record who told you, when, how confident they were, and — the killer feature the
+      intelligence community apparently never shipped — <b>how many hops it is from firsthand:</b>
+      I SAW IT &rarr; THEY SAW IT &rarr; THEY HEARD IT &rarr; FOLKLORE.</p>
+      <p>Filter by hop distance. Watch your own beliefs sort themselves by how far they've
+      traveled. Export everything. Useful for researchers, journalists, students, and anyone who
+      has ever said "I read somewhere" and felt the ledger's cold gaze.</p>
+      <!-- REPLACE-ME: point at your payment link (Gumroad / Stripe / Lemon Squeezy) -->
+      <a class="btn" href="#REPLACE-WITH-PAYMENT-LINK">OPEN THE LEDGER — $5</a>
+      <p class="buy-note">Instant download &bull; works offline &bull; hop distance: zero. you got this directly from us.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>DOUCHECLOSURE&trade; EXPERIENCES &bull; A work of parody commenting on public statements of public figures.<br>
+  <a href="../../index.html">Back to the arcade</a> &bull; <a href="../element-115/index.html">Previous wing: Element 115</a></p>
+</footer>
+
+<script>
+(() => {
+  const stage = document.getElementById('stage');
+  const chainEl = document.getElementById('chain');
+  const fidHud = document.getElementById('fidHud');
+
+  const STARTS = [
+    "WE HAVE AN INTACT CRAFT",
+    "THERE ARE NON-HUMAN BIOLOGICS",
+    "THE PROGRAM WAS HIDDEN FROM CONGRESS"
+  ];
+
+  const OFFICIALS = [
+    ['HOP 1 OF 6', 'THE ORIGINATOR', '"I saw it. Or I stood extremely near a man who did. Same clearance either way."'],
+    ['HOP 2 OF 6', 'DEPUTY UNDERSECRETARY FOR ADJACENT MATTERS', '"I\'m not read into the program. I\'m read into the hallway OUTSIDE the program."'],
+    ['HOP 3 OF 6', 'A COLONEL AT A BARBECUE (CLEARED)', '"He told me over potato salad. You don\'t lie over potato salad. It\'s a covenant."'],
+    ['HOP 4 OF 6', 'THE SCIF JANITOR', '"Two doors. I heard it through two doors. The mop remembers what I heard."'],
+    ['HOP 5 OF 6', "AN AEROSPACE EXECUTIVE'S GOLF PARTNER", '"He said it on the back nine. Men only say true things on the back nine. It\'s the pond — it keeps them honest."'],
+    ['HOP 6 OF 6', "THE INSPECTOR GENERAL'S VOICEMAIL", '"Your credible and urgent message is important to us. It has been slightly compressed for storage."']
+  ];
+
+  // word -> funny corruptions
+  const DICT = {
+    'WE': ['DAVE','THREE'],
+    'HAVE': ['HALF','HEAR'],
+    'AN': ['A'],
+    'INTACT': ['IN A TUX','ON TAP'],
+    'CRAFT': ['RAFT','KRAFT SINGLE','GOLF CART','DRAFT'],
+    'THERE': ['THEY'],
+    'ARE': ['ATE'],
+    'NON-HUMAN': ['NUN-HUMAN','NON-HUMID','NO KNOWN HUMAN'],
+    'BIOLOGICS': ['BAGELS','BIOPICS','BIG LOGISTICS'],
+    'THE': ['A'],
+    'PROGRAM': ['PROM','PROGRAM GUIDE','PODCAST'],
+    'WAS': ['IS'],
+    'HIDDEN': ['HYDRATED','HUMMING'],
+    'FROM': ['FOR'],
+    'CONGRESS': ['COSTCO','THE CONGA LINE'],
+    'DAVE': ['STEVE'],
+    'RAFT': ['RAT','CRAFT FAIR'],
+    'BAGELS': ['BAGPIPES','SEAGULLS'],
+    'COSTCO': ['CUSTODY'],
+    'PROM': ['POND'],
+    'GOLF': ['GULF'],
+    'HALF': ['CALF']
+  };
+  const GENERIC = [
+    w => w.concat(['(ALLEGEDLY)']),
+    w => ['PER MY LAST EMAIL:'].concat(w),
+    w => { const c = w.slice(); c[Math.floor(Math.random()*c.length)] = '[REDACTED]'; return c; },
+    w => { const c = w.slice(); if (c.length > 2){ const i = Math.floor(Math.random()*(c.length-1)); [c[i],c[i+1]] = [c[i+1],c[i]]; } return c; }
+  ];
+
+  function mutate(words){
+    // prefer dictionary hits
+    const hits = words.map((w,i)=>[w,i]).filter(([w]) => DICT[w]);
+    if (hits.length && Math.random() < 0.75){
+      const [w,i] = hits[Math.floor(Math.random()*hits.length)];
+      const c = words.slice();
+      const subs = DICT[w];
+      c[i] = subs[Math.floor(Math.random()*subs.length)];
+      return c;
+    }
+    return GENERIC[Math.floor(Math.random()*GENERIC.length)](words);
+  }
+  function distinctMutations(words, n){
+    const out = []; const seen = new Set([words.join(' ')]);
+    let guard = 0;
+    while (out.length < n && guard++ < 60){
+      const m = mutate(words);
+      const k = m.join(' ');
+      if (!seen.has(k)){ seen.add(k); out.push(m); }
+    }
+    while (out.length < n) out.push(words.concat(['(ALLEGEDLY)']));
+    return out;
+  }
+
+  let truth, current, hop, correct, dots = [];
+  function drawChain(){
+    chainEl.innerHTML = '';
+    dots = [];
+    for (let i = 0; i < 6; i++){
+      const d = document.createElement('span');
+      d.className = 'hopdot' + (i === hop ? ' now' : '');
+      if (results[i] === true) d.classList.add('good');
+      if (results[i] === false) d.classList.add('bad');
+      chainEl.appendChild(d); dots.push(d);
+    }
+  }
+  let results = [];
+
+  function intro(){
+    hop = 0; correct = 0; results = [];
+    drawChain();
+    fidHud.textContent = 'FIDELITY: 100%';
+    stage.innerHTML = '<div class="official"><div class="title">SELECT THE TRUTH THAT ENTERS THE CHAIN</div>' +
+      '<div class="name">It Will Never Be This Clear Again</div></div>' +
+      '<div class="startrow" id="startrow"></div>';
+    const row = document.getElementById('startrow');
+    STARTS.forEach(s => {
+      const b = document.createElement('button');
+      b.style.cssText = 'font-family:inherit;font-size:.95rem;text-transform:uppercase;background:var(--void);color:var(--neon-cyan);border:2px solid #35205C;border-radius:10px;padding:.85rem 1rem;cursor:pointer;';
+      b.textContent = s;
+      b.addEventListener('mouseenter', () => b.style.borderColor = 'var(--neon-yellow)');
+      b.addEventListener('mouseleave', () => b.style.borderColor = '#35205C');
+      b.addEventListener('click', () => { truth = s; current = s.split(' '); nextHop(); });
+      row.appendChild(b);
+    });
+  }
+
+  function nextHop(){
+    drawChain();
+    const [tag, name, flavor] = OFFICIALS[hop];
+    stage.innerHTML = '<div class="official"><div class="title">' + tag + '</div><div class="name">' + name + '</div></div>' +
+      '<div id="message">' + current.join(' ') + '</div>' +
+      '<div id="countdown">MEMORIZE — THE LINE IS DEGRADING</div>' +
+      '<div id="choices"></div><p class="flavor">' + flavor + '</p>';
+    let secs = 3;
+    const cd = document.getElementById('countdown');
+    const iv = setInterval(() => {
+      secs--;
+      if (secs > 0){ cd.textContent = 'MEMORIZE — ' + secs; return; }
+      clearInterval(iv);
+      askChoices();
+    }, 900);
+  }
+
+  function askChoices(){
+    const msg = document.getElementById('message');
+    msg.textContent = '███ TRANSMISSION IN PROGRESS ███';
+    msg.classList.add('redacted');
+    document.getElementById('countdown').textContent = 'WHAT DID THEY SAY? CHOOSE WHAT YOU PASS ALONG.';
+    const decoys = distinctMutations(current, 2);
+    const options = [current.slice(), ...decoys].sort(() => Math.random() - .5);
+    const ch = document.getElementById('choices');
+    options.forEach(o => {
+      const b = document.createElement('button');
+      b.textContent = o.join(' ');
+      b.addEventListener('click', () => {
+        const right = o.join(' ') === current.join(' ');
+        results[hop] = right;
+        if (right){ correct++; }
+        else { current = o; }
+        fidHud.textContent = 'FIDELITY: ' + Math.round((correct/(hop+1))*100) + '%';
+        hop++;
+        if (hop >= 6) finale(); else nextHop();
+      });
+      ch.appendChild(b);
+    });
+  }
+
+  function finale(){
+    drawChain();
+    const fid = Math.round((correct/6)*100);
+    const finalMsg = current.join(' ');
+    const intact = finalMsg === truth;
+    let verdict, react;
+    if (intact){
+      verdict = 'FIDELITY: 100% — UNPRECEDENTED IN THE HISTORICAL RECORD';
+      react = 'Congress receives the sentence EXACTLY as it entered the chain. Six hops. Zero drift. ' +
+        'The stenographer asks you to repeat it, not because she missed it, but because nothing this clean ' +
+        'has ever entered the record and she wants to feel it again. A hearing is scheduled with terrifying speed. ' +
+        'You have broken the engine. The engine needed breaking.';
+    } else if (fid >= 66){
+      verdict = 'FIDELITY: ' + fid + '% — REMARKABLE, BY THE STANDARDS OF THE FIELD';
+      react = 'Congress receives: "' + finalMsg + '" — recognizably descended from the truth, the way a ' +
+        'photocopy of a photocopy is recognizably your grandfather. Follow-up questions are submitted in writing. ' +
+        'The written questions will now enter their own chain. Godspeed to them.';
+    } else {
+      verdict = 'FIDELITY: ' + fid + '% — STANDARD OPERATING PROCEDURE';
+      react = 'Congress solemnly receives: "' + finalMsg + '" — and schedules a classified briefing about it. ' +
+        'Two senators are visibly moved. One demands the raft. This is, the review board notes, ' +
+        'EXACTLY how it actually works, and now you have felt it in your hands.';
+    }
+    stage.innerHTML = '<div class="official"><div class="title">FINAL DELIVERY</div>' +
+      '<div class="name">The Floor Of The United States Congress</div></div>' +
+      '<div id="message">' + finalMsg + '</div>' +
+      '<div style="text-align:center; margin-top:1rem;">' +
+      '<div class="display" style="color:var(--neon-yellow); font-size:1.4rem;">' + verdict + '</div>' +
+      '<p style="color:var(--chrome); font-size:.9rem; max-width:34rem; margin:.8rem auto;">' + react + '</p>' +
+      '<p style="color:#7E6F9E; font-size:.78rem;">The sentence entered as: "' + truth + '"</p>' +
+      '<a class="btn" href="#prize" style="font-size:.8rem; padding:.75rem 1.3rem;">NEVER AGAIN — THE PROVENANCE LEDGER, $5</a> ' +
+      '<button class="btn" style="font-size:.8rem; padding:.75rem 1.3rem; background:transparent; color:var(--neon-cyan); border-color:var(--neon-cyan); box-shadow:none;" id="again">RUN THE CHAIN AGAIN</button>' +
+      '</div>';
+    document.getElementById('again').addEventListener('click', intro);
+  }
+
+  intro();
+})();
+</script>
+
+</body>
+</html>
