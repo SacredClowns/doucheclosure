@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MANTIS BEING COUPLES COUNSELING — Session One — Doucheclosure</title>
+<meta name="description" content="He's 9 feet tall. He's telepathic. He says you never listen. Take Session One free, live from an undisclosed marriage retreat. Interactive.">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --mantis:#8FD48A; --sage:#5B8C57; --couch:#7A5A8C;
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--void);}
+  body{margin:0; background:var(--void); color:var(--white);
+    font-family:"Courier New", Courier, monospace; line-height:1.65; overflow-x:hidden;}
+  body::after{content:""; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 1px, transparent 1px 3px);
+    pointer-events:none; z-index:100;}
+  a{color:var(--neon-cyan);}
+  .wrap{max-width:720px; margin:0 auto; padding:0 1.25rem;}
+  .display{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-weight:400; text-transform:uppercase; letter-spacing:.03em; line-height:.95;}
+  .crumb{padding:1rem 1.25rem; font-size:.72rem; letter-spacing:.15em; text-transform:uppercase;}
+  .crumb a{text-decoration:none;}
+
+  header.wing{
+    text-align:center; padding:3rem 1rem 2.5rem;
+    background:radial-gradient(ellipse at 50% -20%, rgba(143,212,138,.2), transparent 60%),
+      radial-gradient(ellipse at 15% 110%, rgba(122,90,140,.15), transparent 55%);
+    border-bottom:3px solid var(--mantis);
+  }
+  .wing .eyebrow{color:var(--neon-cyan); letter-spacing:.28em; text-transform:uppercase; font-size:.72rem;}
+  .wing h1{margin:.5rem 0 0; font-size:clamp(2.1rem, 7.5vw, 4rem); color:var(--mantis);
+    text-shadow:0 0 16px rgba(143,212,138,.5), 4px 4px 0 #24401F;}
+  .wing .sub{color:var(--chrome); max-width:36rem; margin:1.25rem auto 0; font-size:.95rem;}
+  .wing .sub b{color:var(--white);}
+
+  section{padding:2.5rem 0;}
+  h2.sec{font-family:Haettenswchweiler, "Arial Narrow", Impact, sans-serif; font-weight:400;}
+  h2.sec{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    text-transform:uppercase; font-size:clamp(1.6rem, 5.5vw, 2.3rem);
+    color:var(--neon-cyan); text-shadow:0 0 12px rgba(45,225,252,.5);
+    text-align:center; margin:0 0 1.25rem;}
+  .prose{color:var(--chrome); font-size:.93rem;}
+  .prose b{color:var(--white);}
+
+  /* ---------- SESSION UI ---------- */
+  .office{
+    background:linear-gradient(180deg, var(--panel-2), var(--panel));
+    border:2px solid var(--mantis); border-radius:14px;
+    box-shadow:0 0 26px rgba(143,212,138,.2);
+    overflow:hidden;
+  }
+  .office-head{
+    display:flex; justify-content:space-between; align-items:center; gap:1rem;
+    padding:.8rem 1.2rem; border-bottom:2px dashed #35205C;
+    font-size:.68rem; letter-spacing:.16em; text-transform:uppercase; color:var(--chrome);
+  }
+  #reswrap{flex:1; max-width:220px; height:12px; background:#00000088;
+    border:1px solid #35205C; border-radius:6px; overflow:hidden;}
+  #resfill{height:100%; width:50%;
+    background:linear-gradient(90deg, var(--neon-pink), var(--mantis)); transition:width .5s;}
+
+  .stagepic{display:flex; justify-content:center; gap:2.5rem; align-items:flex-end;
+    padding:1.4rem 1rem .6rem;}
+  .stagepic figure{margin:0; text-align:center;}
+  .stagepic figcaption{font-size:.62rem; letter-spacing:.14em; text-transform:uppercase;
+    color:#7E6F9E; margin-top:.4rem;}
+  #thraxSvg .antenna{transform-origin:50% 100%;}
+  @media (prefers-reduced-motion: no-preference){
+    #thraxSvg .antenna{animation:sway 5s ease-in-out infinite alternate;}
+    @keyframes sway{from{transform:rotate(-4deg)}to{transform:rotate(5deg)}}
+  }
+
+  #script{padding:.8rem 1.4rem 1.4rem; min-height:180px;}
+  .line{margin:0 0 .9rem; animation:fadein .5s;}
+  @keyframes fadein{from{opacity:0; transform:translateY(6px)}to{opacity:1;}}
+  .line .who{display:block; font-size:.64rem; letter-spacing:.22em; text-transform:uppercase; margin-bottom:.15rem;}
+  .line.doc .who{color:var(--neon-cyan);} .line.doc{color:var(--white); font-size:.95rem;}
+  .line.thrax .who{color:var(--mantis);}
+  .line.thrax{color:var(--mantis); font-style:italic; font-size:.95rem;
+    text-shadow:0 0 8px rgba(143,212,138,.35);}
+  .line.wave .who{color:var(--couch);}
+  .line.wave{color:#C9B8D8; font-size:.85rem; letter-spacing:.06em; text-transform:uppercase;}
+  .line.you .who{color:var(--neon-yellow);} .line.you{color:var(--neon-yellow); font-size:.95rem;}
+
+  #choices{padding:0 1.4rem 1.5rem; display:grid; gap:.6rem;}
+  #choices button{
+    text-align:left; font-family:inherit; font-size:.9rem; line-height:1.5;
+    background:var(--void); color:var(--white);
+    border:2px solid #35205C; border-radius:10px; padding:.8rem 1rem; cursor:pointer;
+  }
+  #choices button:hover{border-color:var(--neon-yellow); color:var(--neon-yellow);}
+  #choices button:focus-visible{outline:2px solid var(--neon-cyan); outline-offset:2px;}
+
+  /* ---------- CURRICULUM ---------- */
+  .curriculum{list-style:none; margin:0; padding:0;}
+  .curriculum li{
+    display:flex; gap:1rem; align-items:baseline;
+    padding:.7rem .25rem; border-bottom:1px dashed #3C2B60;
+    font-size:.9rem; color:var(--chrome);
+  }
+  .curriculum .n{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-size:1.3rem; color:var(--mantis); min-width:2.2rem;}
+  .curriculum b{color:var(--white);}
+  .curriculum .free{color:var(--neon-green); font-size:.68rem; letter-spacing:.18em; margin-left:auto; white-space:nowrap;}
+  .curriculum .lock{color:#7E6F9E; font-size:.68rem; letter-spacing:.18em; margin-left:auto; white-space:nowrap;}
+
+  .prize{
+    border:2px dashed var(--neon-green); border-radius:12px;
+    text-align:center; padding:2rem 1.5rem;
+    background:radial-gradient(ellipse at 50% 120%, rgba(61,252,138,.12), transparent 70%);
+  }
+  .prize .display{color:var(--neon-green); font-size:clamp(1.6rem,6vw,2.3rem);
+    text-shadow:0 0 14px rgba(61,252,138,.5);}
+  .prize p{color:var(--chrome); font-size:.92rem; max-width:34rem; margin:.9rem auto;}
+  .prize p b{color:var(--white);}
+  .btn{display:inline-block; font-weight:bold; font-size:.9rem; letter-spacing:.16em;
+    text-transform:uppercase; text-decoration:none; padding:.95rem 1.8rem; border-radius:8px;
+    border:2px solid var(--neon-green); color:#052012; background:var(--neon-green);
+    box-shadow:0 0 22px rgba(61,252,138,.5); cursor:pointer;}
+  .btn:hover{background:var(--neon-yellow); border-color:var(--neon-yellow); color:#231602;}
+  .buy-note{color:#7E6F9E; font-size:.72rem; margin-top:.8rem;}
+  footer{padding:2rem 1rem 3rem; text-align:center; color:#7E6F9E; font-size:.72rem;}
+</style>
+</head>
+<body>
+
+<p class="crumb"><a href="../../index.html">&larr; THE ARCADE</a> &nbsp;/&nbsp; SLOT A2 &nbsp;/&nbsp; MANTIS BEING COUPLES COUNSELING</p>
+
+<header class="wing">
+  <p class="eyebrow">Doucheclosure Wellness Division &bull; Recorded live at an undisclosed marriage retreat</p>
+  <h1 class="display">Mantis Being<br>Couples Counseling</h1>
+  <p class="sub">Six years together. He is nine feet tall, telepathic, and patient in a way that
+  frightens the neighbors. You are a person who "needs words." Every couple hits this wall —
+  yours simply has raptorial forelimbs and arrived <b>during</b> the wall.
+  Dr. Haldessa Vyne, LMFT (licensed in three dimensions), will see you now.
+  <b>Session One is free.</b> Bring nothing. He already knows.</p>
+</header>
+
+<!-- ============ SESSION ONE ============ -->
+<section>
+  <div class="wrap">
+    <h2 class="sec">Session One: "He Says You Never Listen"</h2>
+    <div class="office">
+      <div class="office-head">
+        <span>DR. VYNE'S OFFICE &bull; HOUR 1 OF 1</span>
+        <div id="reswrap" title="relationship resonance"><div id="resfill"></div></div>
+        <span id="reslabel">RESONANCE: 50%</span>
+      </div>
+
+      <div class="stagepic" aria-hidden="true">
+        <figure>
+          <svg width="70" height="90" viewBox="0 0 70 90">
+            <rect x="20" y="38" width="30" height="42" rx="6" fill="#5C4F6E"/>
+            <circle cx="35" cy="24" r="14" fill="#D8A987"/>
+            <rect x="22" y="16" width="26" height="8" rx="4" fill="#8C7A5A"/>
+            <rect x="24" y="20" width="9" height="7" rx="2" fill="none" stroke="#F4F0FF" stroke-width="2"/>
+            <rect x="37" y="20" width="9" height="7" rx="2" fill="none" stroke="#F4F0FF" stroke-width="2"/>
+            <line x1="33" y1="23" x2="37" y2="23" stroke="#F4F0FF" stroke-width="2"/>
+            <rect x="14" y="52" width="14" height="18" rx="2" fill="#EDE6D6"/>
+          </svg>
+          <figcaption>Dr. Vyne, LMFT</figcaption>
+        </figure>
+        <figure>
+          <svg width="70" height="90" viewBox="0 0 70 90">
+            <rect x="22" y="42" width="26" height="38" rx="6" fill="#4A5A7A"/>
+            <circle cx="35" cy="28" r="13" fill="#E8C9A8"/>
+            <path d="M26 22 Q35 14 44 22" fill="none" stroke="#4A3A2A" stroke-width="4"/>
+            <circle cx="30" cy="27" r="2" fill="#14110E"/>
+            <circle cx="40" cy="27" r="2" fill="#14110E"/>
+            <path d="M30 34 Q35 36 40 34" fill="none" stroke="#14110E" stroke-width="2"/>
+          </svg>
+          <figcaption>You</figcaption>
+        </figure>
+        <figure>
+          <svg id="thraxSvg" width="90" height="130" viewBox="0 0 90 130">
+            <g class="antenna"><line x1="38" y1="26" x2="26" y2="4" stroke="#8FD48A" stroke-width="3" stroke-linecap="round"/></g>
+            <g class="antenna" style="animation-delay:-2.5s"><line x1="52" y1="26" x2="66" y2="6" stroke="#8FD48A" stroke-width="3" stroke-linecap="round"/></g>
+            <path d="M30 34 Q45 16 60 34 Q58 46 45 46 Q32 46 30 34 Z" fill="#6FB56A"/>
+            <ellipse cx="36" cy="32" rx="6" ry="8" fill="#2A4A26"/>
+            <ellipse cx="54" cy="32" rx="6" ry="8" fill="#2A4A26"/>
+            <circle cx="37" cy="30" r="1.5" fill="#C9F2C4"/>
+            <circle cx="55" cy="30" r="1.5" fill="#C9F2C4"/>
+            <rect x="40" y="46" width="10" height="34" rx="4" fill="#5B8C57"/>
+            <path d="M40 58 Q18 48 14 66 Q22 62 28 68 Z" fill="#6FB56A"/>
+            <path d="M50 58 Q72 48 76 66 Q68 62 62 68 Z" fill="#6FB56A"/>
+            <rect x="36" y="80" width="6" height="40" rx="3" fill="#5B8C57"/>
+            <rect x="48" y="80" width="6" height="40" rx="3" fill="#5B8C57"/>
+          </svg>
+          <figcaption>Thraximander (9'2")</figcaption>
+        </figure>
+      </div>
+
+      <div id="script" aria-live="polite"></div>
+      <div id="choices"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CURRICULUM ============ -->
+<section>
+  <div class="wrap">
+    <h2 class="sec">The Full Eight-Session Program</h2>
+    <ol class="curriculum">
+      <li><span class="n">01</span><span><b>"He Says You Never Listen"</b> — intake, resonance baseline, the wave that smells like ozone.</span><span class="free">FREE — ABOVE</span></li>
+      <li><span class="n">02</span><span><b>His Family: They Are Legion</b> — and they are coming for the holidays. All of them. The sky will be wrong for days.</span><span class="lock">FULL PROGRAM</span></li>
+      <li><span class="n">03</span><span><b>The Thermostat Accords</b> — he requires 58&deg;F. You require "not a meat locker." A summit, with blankets.</span><span class="lock">FULL PROGRAM</span></li>
+      <li><span class="n">04</span><span><b>Money</b> — he has never paid for anything and, structurally, cannot. And yet the garage is organized. Discuss.</span><span class="lock">FULL PROGRAM</span></li>
+      <li><span class="n">05</span><span><b>The Silent Treatment vs. Telepathic Static</b> — learning to tell the difference before Thanksgiving does it for you.</span><span class="lock">FULL PROGRAM</span></li>
+      <li><span class="n">06</span><span><b>Co-Managing the Egg Sac</b> — it is not "a phase," it is 400 nieces, and boundaries are love.</span><span class="lock">FULL PROGRAM</span></li>
+      <li><span class="n">07</span><span><b>His Ex</b> — we don't say her name. He still tracks her light patterns. This is the hard one.</span><span class="lock">FULL PROGRAM</span></li>
+      <li><span class="n">08</span><span><b>Renewal of Vows at the Original Abduction Site</b> — where it all began: the beam, the light, and you, unafraid, asking if he was cold.</span><span class="lock">FULL PROGRAM</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ THE PRIZE ============ -->
+<section id="prize">
+  <div class="wrap">
+    <div class="prize">
+      <p class="display">The Prize: The Joint Session</p>
+      <p><b>THE JOINT SESSION — a weekly check-in for any two beings.</b> A genuinely useful
+      relationship tool from the Doucheclosure Wellness Division: draw three check-in cards a week
+      from a deck of 64 real questions, take turns with a <b>two-minute uninterrupted speaking
+      timer</b> (a chime, not a claw, ends your turn), then reflect back what you heard.
+      Streak tracking included, because consistency is a love language.</p>
+      <p>Built on the actual bones of good couples practice — appreciation, friction, repair,
+      dreams — and <b>species-neutral by design.</b> It will work on your spouse. It will work on
+      your business partner. It will work on nine feet of telepathic patience who just wants to
+      know you'd ask, again, if he was cold.</p>
+      <!-- REPLACE-ME: point at your payment link (Gumroad / Stripe / Lemon Squeezy) -->
+      <a class="btn" href="#REPLACE-WITH-PAYMENT-LINK">BEGIN THE PROGRAM — $5</a>
+      <p class="buy-note">Instant download &bull; works offline &bull; he already has his copy. he's been waiting for you.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>DOUCHECLOSURE&trade; WELLNESS DIVISION &bull; A work of parody. Not actual therapy. Actual therapists are wonderful; find one with fewer forelimbs.<br>
+  <a href="../../index.html">Back to the arcade</a> &bull; <a href="../christopher-mellon/index.html">Previous wing: Christopher Mellon</a></p>
+</footer>
+
+<script>
+(() => {
+  const scriptEl = document.getElementById('script');
+  const choicesEl = document.getElementById('choices');
+  const resfill = document.getElementById('resfill');
+  const reslabel = document.getElementById('reslabel');
+  let res = 50;
+
+  function bump(d){
+    res = Math.max(0, Math.min(100, res + d));
+    resfill.style.width = res + '%';
+    reslabel.textContent = 'RESONANCE: ' + res + '%';
+  }
+  function line(who, cls, text){
+    const p = document.createElement('p');
+    p.className = 'line ' + cls;
+    p.innerHTML = '<span class="who">' + who + '</span>' + text;
+    scriptEl.appendChild(p);
+    p.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+  function clearChoices(){ choicesEl.innerHTML = ''; }
+  function offer(opts){
+    clearChoices();
+    opts.forEach(o => {
+      const b = document.createElement('button');
+      b.textContent = o.label;
+      b.addEventListener('click', () => {
+        line('YOU', 'you', o.label);
+        bump(o.d);
+        clearChoices();
+        setTimeout(o.next, 350);
+      });
+      choicesEl.appendChild(b);
+    });
+  }
+
+  // ---------- SESSION SCRIPT ----------
+  function beat1(){
+    line('DR. VYNE', 'doc', "Welcome, both of you. Thraximander, thank you for folding. Let's begin simply: why are you here?");
+    offer([
+      {label: "He says I never listen.", d:+2, next: beat1b},
+      {label: "Communication issues. The usual. Nothing species-specific.", d:+1, next: beat1b},
+      {label: "He reorganized the garage again, Doctor. At 3 A.M. By echolocation. I have a system.", d:0, next: beat1b}
+    ]);
+  }
+  function beat1b(){
+    line('THRAXIMANDER', 'thrax', "(A stillness. The temperature drops two degrees, politely.)");
+    line('WAVE', 'wave', "A wave of disappointment arrives. It smells like ozone and your mother's kitchen.");
+    line('DR. VYNE', 'doc', "Interesting. He's transmitted something. I'd like you to practice active listening: reflect back what your partner just shared.");
+    beat2();
+  }
+  function beat2(){
+    offer([
+      {label: "I can't QUOTE a feeling, Doctor. That's the entire fight. He transmits, I receive vibes, and then I'm somehow the one who wasn't listening.", d:+2, next: beat2b},
+      {label: "You feel... beige? Thrax, do you feel beige right now?", d:0, next: beat2b},
+      {label: "He knows I can't do telepathy. He does this at parties.", d:+1, next: beat2b}
+    ]);
+  }
+  function beat2b(){
+    line('THRAXIMANDER', 'thrax', "(His head rotates 40 degrees. In mantis, this is a paragraph.)");
+    line('DR. VYNE', 'doc', "What I'm hearing from him — and I am licensed to hear it — is that when you say 'vibes,' he hears his entire inner life described as weather. Let's talk about how you each give love. Thraximander's love languages, per his intake form, are: Hovering Menacingly, Quality Stillness, Acts of Service, and Gifts — he notes he 'brings you components.'");
+    line('WAVE', 'wave', "A small pride-wave crosses the room. The components have been good components.");
+    line('DR. VYNE', 'doc', "And yours?");
+    beat3();
+  }
+  function beat3(){
+    offer([
+      {label: "Words of affirmation. Spoken. Out loud. With sound. From the mouth. I know he has one, Doctor, I've seen it and I love him anyway.", d:+2, next: beat3b},
+      {label: "I just want the thermostat above 58. That's it. That's my love language. Fahrenheit.", d:+1, next: beat3b},
+      {label: "Honestly? The hovering works on me. We don't have a hovering problem.", d:+2, next: beat3b}
+    ]);
+  }
+  function beat3b(){
+    line('THRAXIMANDER', 'thrax', "(He extends one forelimb, slowly, and places a small, perfect gear on the coffee table.)");
+    line('WAVE', 'wave', "It is a component. It is, somehow, an apology. It is a very good gear.");
+    line('DR. VYNE', 'doc', "Beautiful. Now — the homework from last time was sharing chores. I understand there was an incident with the dishes.");
+    beat4();
+  }
+  function beat4(){
+    offer([
+      {label: "His forelimbs are scythes, Doctor. I ACCEPTED the dishes are mine years ago. It's the COMMENTARY while I wash them.", d:+2, next: beat4b},
+      {label: "He dried one plate once. One. It's on the mantle now. He nods at it when he passes. It's a treaty, apparently.", d:+1, next: beat4b},
+      {label: "He watches me from the doorway. All five eyes. The big two and the three little ones. You can feel the little ones judging.", d:+1, next: beat4b}
+    ]);
+  }
+  function beat4b(){
+    line('THRAXIMANDER', 'thrax', "(He has been perfectly motionless for what is now forty minutes.)");
+    line('DR. VYNE', 'doc', "I want to check in — he hasn't moved since the gear. How do you read this?");
+    beat5();
+  }
+  function beat5(){
+    offer([
+      {label: "This is him at his most talkative, Doctor. This is a filibuster.", d:+1, next: beat6},
+      {label: "Six years in, I know this means he's either deeply content or about to molt. The stakes of guessing wrong are enormous.", d:+2, next: beat6},
+      {label: "(Wave a hand slowly in front of the big eyes.)", d:0, next: beat6}
+    ]);
+  }
+  function beat6(){
+    line('THRAXIMANDER', 'thrax', "(Then — all at once — he transmits. Not a wave. The whole ocean.)");
+    line('WAVE', 'wave', "The night you met. The beam. The light. Everyone else ran. You looked up — annoyed, unafraid, holding a sandwich — and asked him if he was cold.");
+    line('DR. VYNE', 'doc', "...I felt that from here. Sir, I have been doing this for thirty years and two dimensions and I have never— he has been trying to say THAT. Every day. The garage, the components, the hovering. It's all the same sentence.");
+    line('DR. VYNE', 'doc', "He is saying: you are the only one who asked.");
+    offer([
+      {label: "(Take the forelimb. Carefully. Between the serrations. Like always.)", d:+3, next: verdict},
+      {label: "Thrax... buddy... you could have just SAID that. — no. No, I hear it. You did. You've been saying it.", d:+2, next: verdict},
+      {label: "I'm not crying. The ozone is very strong in here.", d:+2, next: verdict}
+    ]);
+  }
+  function verdict(){
+    clearChoices();
+    line('THRAXIMANDER', 'thrax', "(The temperature rises two degrees. On purpose. For you.)");
+    let title, text;
+    if (res >= 85){
+      title = 'RESONANCE ACHIEVED — ' + res + '%';
+      text = "Dr. Vyne quietly closes her notebook. 'Same time next week. Bring the gear.' The session ends the way all the best ones do: nobody won, the thermostat stays at 61 as a compromise, and nine feet of telepathic patience walks you to the car, hovering — menacingly, lovingly — the whole way.";
+    } else if (res >= 65){
+      title = 'SEPARATE FREQUENCIES, SAME SONG — ' + res + '%';
+      text = "Progress. Real progress. Dr. Vyne prescribes the weekly check-in and one (1) sincere compliment about the garage system, which — you will admit under oath — is objectively better now.";
+    } else {
+      title = 'REFERRED TO SESSION TWO — ' + res + '%';
+      text = "Dr. Vyne looks at you both for a long moment. 'His family arrives in three weeks. They are legion. We have work to do.' Somewhere above the office, the sky goes briefly, lovingly wrong.";
+    }
+    const p = document.createElement('div');
+    p.style.cssText = 'margin-top:1rem; border:2px dashed var(--mantis); border-radius:10px; padding:1rem 1.2rem; text-align:center;';
+    p.innerHTML = '<div class="display" style="color:var(--mantis); font-size:1.5rem;">' + title + '</div>' +
+      '<p style="color:var(--chrome); font-size:.9rem; margin:.6rem 0 1rem;">' + text + '</p>' +
+      '<a class="btn" href="#prize" style="font-size:.8rem; padding:.75rem 1.3rem;">CONTINUE THE WORK — THE JOINT SESSION, $5</a> ' +
+      '<button class="btn" style="font-size:.8rem; padding:.75rem 1.3rem; background:transparent; color:var(--neon-cyan); border-color:var(--neon-cyan); box-shadow:none;" onclick="location.reload()">RETAKE SESSION ONE</button>';
+    scriptEl.appendChild(p);
+    p.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+
+  beat1();
+})();
+</script>
+
+</body>
+</html>
