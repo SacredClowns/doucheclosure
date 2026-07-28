@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE ELEMENT 115 EXPERIENCE — Reactor Room, Sector 4 — Doucheclosure</title>
+<meta name="description" content="Science made Element 115. It lasted 80 milliseconds. So where are the 500 stable pounds, and why is the shelf unlabeled? Run the reactor yourself. Playable.">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --omicron:#7FB8FF; --wedge:#FF9E4D; --shadow:rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--void);}
+  body{margin:0; background:var(--void); color:var(--white);
+    font-family:"Courier New", Courier, monospace; line-height:1.65; overflow-x:hidden;}
+  body::after{content:""; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 1px, transparent 1px 3px);
+    pointer-events:none; z-index:100;}
+  a{color:var(--neon-cyan);}
+  .wrap{max-width:760px; margin:0 auto; padding:0 1.25rem;}
+  .display{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-weight:400; text-transform:uppercase; letter-spacing:.03em; line-height:.95;}
+  .crumb{padding:1rem 1.25rem; font-size:.72rem; letter-spacing:.15em; text-transform:uppercase;}
+  .crumb a{text-decoration:none;}
+
+  header.wing{
+    text-align:center; padding:3rem 1rem 2.5rem;
+    background:radial-gradient(ellipse at 50% -20%, rgba(127,184,255,.22), transparent 60%),
+      radial-gradient(ellipse at 85% 110%, rgba(255,158,77,.12), transparent 55%);
+    border-bottom:3px solid var(--omicron);
+  }
+  .wing .eyebrow{color:var(--neon-cyan); letter-spacing:.28em; text-transform:uppercase; font-size:.72rem;}
+  .wing h1{margin:.5rem 0 0; font-size:clamp(2.4rem, 8.5vw, 4.6rem); color:var(--omicron);
+    text-shadow:0 0 16px rgba(127,184,255,.6), 4px 4px 0 #1A3050;}
+  .wing .sub{color:var(--chrome); max-width:37rem; margin:1.25rem auto 0; font-size:.95rem;}
+  .wing .sub b{color:var(--white);}
+  .stamp{
+    display:inline-block; margin-top:1.4rem; transform:rotate(-2.5deg);
+    border:3px solid var(--wedge); color:var(--wedge);
+    padding:.3rem 1rem; font-size:.75rem; letter-spacing:.22em; text-transform:uppercase;
+  }
+
+  section{padding:2.5rem 0;}
+  h2.sec{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif; font-weight:400;
+    text-transform:uppercase; font-size:clamp(1.6rem, 5.5vw, 2.3rem);
+    color:var(--neon-cyan); text-shadow:0 0 12px rgba(45,225,252,.5);
+    text-align:center; margin:0 0 1.25rem;}
+  .prose{color:var(--chrome); font-size:.93rem;}
+  .prose b{color:var(--white);}
+  .pull{border-left:4px solid var(--omicron); background:var(--panel);
+    padding:1rem 1.25rem; color:var(--white); font-size:1rem; margin:1.4rem 0;}
+
+  .evidence{width:100%; border-collapse:collapse; font-size:.85rem; background:var(--panel);
+    border:2px solid #35205C;}
+  .evidence th{background:var(--omicron); color:#0A1626; text-align:left; padding:.5rem .8rem;
+    font-size:.68rem; letter-spacing:.18em; text-transform:uppercase;}
+  .evidence td{padding:.6rem .8rem; border-bottom:1px dashed #3C2B60; color:var(--chrome); vertical-align:top;}
+  .evidence td:first-child{color:var(--neon-yellow); white-space:nowrap; font-weight:bold;}
+  .evidence tr:last-child td{border-bottom:none;}
+
+  .game-shell{
+    background:linear-gradient(180deg, var(--panel-2), var(--panel));
+    border:2px solid var(--omicron); border-radius:12px;
+    padding:1rem; box-shadow:0 0 26px rgba(127,184,255,.22);
+  }
+  #game{width:100%; display:block; border-radius:8px; background:#060A12; touch-action:none;}
+  .hud{display:flex; justify-content:space-between; gap:.75rem; flex-wrap:wrap;
+    padding:.6rem .25rem 0; font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;}
+  .hud #wedgeHud{color:var(--wedge);}
+  .hud #chargeHud{color:var(--neon-green);}
+  #annc{min-height:1.4rem; text-align:center; color:var(--omicron);
+    font-size:.8rem; letter-spacing:.08em; padding:.45rem 0 0;}
+  .controls-note{text-align:center; color:#7E6F9E; font-size:.7rem; letter-spacing:.08em; margin-top:.55rem;}
+  .touchpad{display:none; justify-content:center; gap:.7rem; margin-top:.8rem; flex-wrap:wrap;}
+  .touchpad button{
+    font-family:inherit; font-size:.75rem; font-weight:bold; letter-spacing:.08em;
+    min-width:64px; height:56px; border-radius:12px; padding:0 .8rem;
+    background:var(--panel-2); color:var(--neon-cyan);
+    border:2px solid var(--neon-cyan); cursor:pointer;
+  }
+  .touchpad button:active{background:var(--neon-cyan); color:#031A20;}
+  @media (pointer: coarse){ .touchpad{display:flex;} }
+
+  .prize{
+    border:2px dashed var(--neon-green); border-radius:12px;
+    text-align:center; padding:2rem 1.5rem;
+    background:radial-gradient(ellipse at 50% 120%, rgba(61,252,138,.12), transparent 70%);
+  }
+  .prize .display{color:var(--neon-green); font-size:clamp(1.5rem,6vw,2.3rem);
+    text-shadow:0 0 14px rgba(61,252,138,.5);}
+  .prize p{color:var(--chrome); font-size:.92rem; max-width:34rem; margin:.9rem auto;}
+  .prize p b{color:var(--white);}
+  .btn{display:inline-block; font-weight:bold; font-size:.9rem; letter-spacing:.16em;
+    text-transform:uppercase; text-decoration:none; padding:.95rem 1.8rem; border-radius:8px;
+    border:2px solid var(--neon-green); color:#052012; background:var(--neon-green);
+    box-shadow:0 0 22px rgba(61,252,138,.5); cursor:pointer;}
+  .btn:hover{background:var(--neon-yellow); border-color:var(--neon-yellow); color:#231602;}
+  .buy-note{color:#7E6F9E; font-size:.72rem; margin-top:.8rem;}
+  footer{padding:2rem 1rem 3rem; text-align:center; color:#7E6F9E; font-size:.72rem;}
+</style>
+</head>
+<body>
+
+<p class="crumb"><a href="../../index.html">&larr; THE ARCADE</a> &nbsp;/&nbsp; EXPERIENCES &nbsp;/&nbsp; ELEMENT 115</p>
+
+<header class="wing">
+  <p class="eyebrow">Doucheclosure Experiences &bull; Wing No. 5</p>
+  <h1 class="display">The Element 115<br>Experience</h1>
+  <p class="sub">In 1989, a man described the fuel of interstellar craft: Element 115, stable,
+  machined into wedges, five hundred pounds of it in government hands. In 2003, science finally
+  synthesized Element 115 — and it fell apart in <b>less time than a sneeze.</b>
+  <b>We believe the man completely.</b> Which leaves only one conclusion, and it is a
+  logistics conclusion: the stable batch exists, and <b>somebody lost the shelf.</b></p>
+  <span class="stamp">500 LBS &bull; ZERO LABELS &bull; NOBODY SIGNED</span>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <p>Understand what the review board is saying. This is not a physics dispute. Physics did
+      its part: it built the atom, watched it exist for eighty milliseconds — the lifespan of a
+      regret — and wrote it down. No. This is a <b>warehouse story.</b> Somewhere under the
+      Nevada desert there is a shelf, and on that shelf sits the power source of civilizations,
+      and next to it — we know this in our hearts — is a box labeled
+      <b>"XMAS (MISC)"</b> and a fax machine nobody is allowed to throw away.</p>
+      <p class="pull">Five hundred pounds of the most important substance in the universe,
+      and the intake paperwork was never filed. The same government that issues a receipt for a
+      $4.50 parking session. We checked. It does. <b>We have the receipt.</b></p>
+      <p>And the hand scanner. THE PRONGS. A door that opens only when metal fingers press into
+      your palm like a fortune teller with a security clearance. The review board has no joke
+      here. The review board simply wants to know what the prongs knew, and why every
+      subsequent government door went with <em>badges</em>, the coward's option.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE EVIDENCE ============ -->
+<section>
+  <div class="wrap">
+    <h2 class="sec">Inventory Discrepancies</h2>
+    <table class="evidence">
+      <tr><th>Item</th><th>Review board notes</th></tr>
+      <tr><td>THE WEDGE</td><td>Machined to a point. Fits in a hand. Fuels a civilization.
+        Currently listed in the ledger as "MISC HARDWARE (ORANGE?)." The question mark is doing
+        national-security-grade work.</td></tr>
+      <tr><td>THE LEDGER</td><td>One entry: "500 LBS — RECEIVED." No date. No signature. No shelf
+        number. The greatest acquisition in human history, documented with the diligence of a
+        gym locker.</td></tr>
+      <tr><td>THE CANDLE</td><td>Placed under the craft during the demonstration. The flame did
+        not flicker. The most convincing birthday party ever thrown in the state of Nevada, and
+        nobody brought cake.</td></tr>
+      <tr><td>DUBNA, RUSSIA</td><td>Synthesized Element 115 fair and square, decades later, four
+        atoms at a time, each one gone in milliseconds. Science keeps ALMOST remembering. It's on
+        the tip of science's tongue. The review board sends encouragement annually.</td></tr>
+      <tr><td>THE SPORT MODEL</td><td>Described with the affection of a man who has sat in
+        something he was not supposed to sit in. We've all been there, Bob. Ours was a forklift.</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ============ THE GAME ============ -->
+<section>
+  <div class="wrap">
+    <h2 class="sec">Reactor Room, Sector 4</h2>
+    <div class="game-shell">
+      <canvas id="game" width="960" height="540"></canvas>
+      <div class="hud">
+        <span id="chargeHud">FLIGHT CHARGE: 0%</span>
+        <span id="wedgeHud">WEDGES REMAINING: 7 (DEMO ALLOTMENT)</span>
+        <span id="fuelHud">REACTOR: HUNGRY</span>
+      </div>
+      <p id="annc">&nbsp;</p>
+      <p class="controls-note">&larr; / &rarr; (A/D): TUNE THE GRAVITY WAVE &bull; E: INSERT WEDGE &bull; SPACE: BELIEVE HARDER &bull; H: PRESENT PALM</p>
+      <div class="touchpad" aria-label="touch controls">
+        <button id="tL" aria-label="tune left">&#9664;</button>
+        <button id="tR" aria-label="tune right">&#9654;</button>
+        <button id="tE">WEDGE</button>
+        <button id="tB">BELIEVE</button>
+        <button id="tH">PALM</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE PRIZE ============ -->
+<section id="prize">
+  <div class="wrap">
+    <div class="prize">
+      <p class="display">The Prize: The Periodic Table<br>That Admits What It Doesn't Know</p>
+      <p><b>All 118 elements. Real masses, real categories, real chemistry</b> — a genuinely
+      useful interactive periodic table for students, trivia people, and anyone who has ever
+      pointed at a spreadsheet cell and said "what ARE you." Search it, click any element,
+      filter by family.</p>
+      <p>The difference: <b>ours is honest.</b> The superheavy elements come with their actual
+      life expectancies ("half-life: milliseconds; feelings: complicated"), and Element 115 —
+      moscovium — carries both its official record AND its S-4 intake form, side by side,
+      so your household can hold the tension like adults.</p>
+      <!-- REPLACE-ME: point at your payment link (Gumroad / Stripe / Lemon Squeezy) -->
+      <a class="btn" href="#REPLACE-WITH-PAYMENT-LINK">ACQUIRE THE TABLE — $5</a>
+      <p class="buy-note">Instant download &bull; works offline &bull; 117 elements fully accounted for. one is complicated.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>DOUCHECLOSURE&trade; EXPERIENCES &bull; A work of parody commenting on public statements of public figures.<br>
+  <a href="../../index.html">Back to the arcade</a> &bull; <a href="../mantis-counseling/index.html">Previous: Mantis Counseling</a></p>
+</footer>
+
+<script>
+(() => {
+  const cv = document.getElementById('game');
+  const cx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  const chargeHud = document.getElementById('chargeHud');
+  const wedgeHud = document.getElementById('wedgeHud');
+  const fuelHud = document.getElementById('fuelHud');
+  const annc = document.getElementById('annc');
+
+  const LINES = {
+    start: ["Shift begins. The reactor is hungry. The shelf remains unlabeled.",
+            "Tune the wave. Feed the wedge. Sign NOTHING."],
+    tune:  ["The wave sings. The candle downstairs is perfectly still.",
+            "In tune. Somewhere, a physicist wakes up almost remembering."],
+    drift: ["The wave is drifting. The saucer is becoming a regular saucer.",
+            "Decoherence rising. Believe in a more organized direction."],
+    wedge: ["Wedge inserted. It was warm. Nobody asks why it's warm.",
+            "Fuel accepted. The ledger continues to say 'MISC HARDWARE (ORANGE?)'."],
+    dubna: ["ALERT: A DISTANT LABORATORY IS SYNTHESIZING 115. IT IS DECAYING. BELIEVE HARDER."],
+    dubnaWin: ["The atom held for a full second. A record. The lab weeps. We do not explain why.",
+               "Belief sustained. Science got SO close that time. Send the annual card."],
+    dubnaLose: ["The atom decayed. Eighty milliseconds. The charge dips in sympathy."],
+    palm:  ["SECURITY SWEEP: PRESENT YOUR PALM TO THE PRONGS. HOLD."],
+    palmWin: ["The prongs remember you. The prongs remember everyone.",
+              "Identity confirmed via prong. The badge people could never."],
+    palmLose:["Palm withdrawn early. The prongs are disappointed, which is worse."],
+    win:   ["LIFT. THE CANDLE FLAME DOES NOT FLICKER."],
+    lose:  ["The reactor sleeps. The saucer sits there like patio furniture."]
+  };
+  let anncT = 0;
+  function say(k){ const a = LINES[k]; annc.textContent = a[Math.floor(Math.random()*a.length)]; anncT = 240; }
+
+  // state
+  let needle, band, charge, wedges, fuel, t, state, event_, keys = {};
+  function reset(){
+    needle = 0; band = { c: 0, w: 0.35 };
+    charge = 0; wedges = 7; fuel = 100; t = 0; state = 'play'; event_ = null;
+    updateHud(); say('start');
+  }
+
+  function updateHud(){
+    chargeHud.textContent = 'FLIGHT CHARGE: ' + Math.floor(charge) + '%';
+    wedgeHud.textContent = 'WEDGES REMAINING: ' + wedges + (wedges === 7 ? ' (DEMO ALLOTMENT)' : '');
+    fuelHud.textContent = fuel > 55 ? 'REACTOR: FED' : fuel > 25 ? 'REACTOR: PECKISH' : fuel > 0 ? 'REACTOR: HUNGRY' : 'REACTOR: ASLEEP';
+  }
+
+  addEventListener('keydown', e => {
+    const k = e.key.toLowerCase();
+    if ([' ','arrowleft','arrowright','arrowup','arrowdown'].includes(e.key.toLowerCase())) e.preventDefault();
+    if (k === ' '){ if (state === 'play' && event_ && event_.type === 'dubna') believe(); else if (state === 'win' || state === 'lose') reset(); return; }
+    if (k === 'e'){ insertWedge(); return; }
+    keys[k] = true;
+  });
+  addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
+  const bindHold = (id, k) => {
+    const b = document.getElementById(id);
+    const on = e => { e.preventDefault(); keys[k] = true; };
+    const off = e => { e.preventDefault(); keys[k] = false; };
+    b.addEventListener('pointerdown', on); b.addEventListener('pointerup', off); b.addEventListener('pointerleave', off);
+  };
+  bindHold('tL','arrowleft'); bindHold('tR','arrowright'); bindHold('tH','h');
+  document.getElementById('tE').addEventListener('pointerdown', e => { e.preventDefault(); insertWedge(); });
+  document.getElementById('tB').addEventListener('pointerdown', e => { e.preventDefault(); if (event_ && event_.type === 'dubna') believe(); else if (state !== 'play') reset(); });
+  cv.addEventListener('pointerdown', () => { if (state === 'win' || state === 'lose') reset(); });
+
+  function insertWedge(){
+    if (state !== 'play' || wedges <= 0) return;
+    wedges--; fuel = Math.min(100, fuel + 55);
+    say('wedge'); updateHud();
+  }
+  function believe(){
+    if (event_ && event_.type === 'dubna'){ event_.mash++; }
+  }
+
+  function startEvent(){
+    if (Math.random() < 0.5){
+      event_ = { type:'dubna', mash: 0, need: 14, timer: 260 };
+      say('dubna');
+    } else {
+      event_ = { type:'palm', held: 0, need: 150, timer: 420 };
+      say('palm');
+    }
+  }
+
+  function step(){
+    t++;
+    // band drifts
+    band.c = Math.sin(t * 0.004) * 0.8 + Math.sin(t * 0.0013) * 0.4;
+    // needle physics: noise + player input
+    needle += (Math.random() - 0.5) * 0.035 + Math.sin(t*0.02) * 0.006;
+    if (keys['arrowleft']||keys['a'])  needle -= 0.028;
+    if (keys['arrowright']||keys['d']) needle += 0.028;
+    needle = Math.max(-1.6, Math.min(1.6, needle));
+
+    const inBand = Math.abs(needle - band.c) < band.w/2;
+
+    // fuel drain
+    fuel -= 0.055;
+    if (fuel <= 0){ fuel = 0; }
+
+    // charge
+    if (inBand && fuel > 0){
+      charge += 0.065;
+      if (anncT <= 0 && Math.random() < 0.005) say('tune');
+    } else {
+      charge -= fuel > 0 ? 0.02 : 0.09;
+      if (anncT <= 0 && Math.random() < 0.008) say('drift');
+    }
+    charge = Math.max(0, Math.min(100, charge));
+
+    // events
+    if (!event_ && t > 400 && Math.random() < 0.0035) startEvent();
+    if (event_){
+      event_.timer--;
+      if (event_.type === 'dubna'){
+        if (event_.mash >= event_.need){ say('dubnaWin'); charge = Math.min(100, charge + 6); event_ = null; }
+        else if (event_.timer <= 0){ say('dubnaLose'); charge = Math.max(0, charge - 18); event_ = null; }
+      } else {
+        if (keys['h']) event_.held++;
+        else if (event_.held > 0 && event_.held < event_.need && event_.timer > 0){ say('palmLose'); charge = Math.max(0, charge - 10); event_ = null; }
+        if (event_ && event_.held >= event_.need){ say('palmWin'); charge = Math.min(100, charge + 4); event_ = null; }
+        else if (event_ && event_.timer <= 0){ say('palmLose'); charge = Math.max(0, charge - 10); event_ = null; }
+      }
+    }
+
+    if (charge >= 100){ state = 'win'; say('win'); }
+    if (wedges <= 0 && fuel <= 0 && charge <= 0){ state = 'lose'; say('lose'); }
+
+    if (t % 10 === 0) updateHud();
+    if (anncT > 0) anncT--;
+  }
+
+  function draw(){
+    cx.clearRect(0,0,W,H);
+    const g = cx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#060A12'); g.addColorStop(1,'#0B1220');
+    cx.fillStyle = g; cx.fillRect(0,0,W,H);
+
+    // the sport model, hovering more as charge grows
+    const hover = 20 + (charge/100) * 90 + Math.sin(t*0.03) * 4 * (charge/100);
+    const sy = 200 - hover;
+    cx.save(); cx.translate(W/2, sy);
+    // glow
+    const glow = cx.createRadialGradient(0, 20, 5, 0, 20, 120);
+    glow.addColorStop(0, 'rgba(127,184,255,' + (0.25 + charge/100*0.4) + ')');
+    glow.addColorStop(1, 'rgba(127,184,255,0)');
+    cx.fillStyle = glow; cx.beginPath(); cx.arc(0, 20, 120, 0, 7); cx.fill();
+    // hull
+    cx.fillStyle = '#8C93A6';
+    cx.beginPath(); cx.ellipse(0, 0, 120, 26, 0, 0, 7); cx.fill();
+    cx.fillStyle = '#B9C2D4';
+    cx.beginPath(); cx.ellipse(0, -14, 55, 20, 0, Math.PI, 0); cx.fill();
+    cx.fillStyle = '#5A6478';
+    cx.beginPath(); cx.ellipse(0, 6, 120, 12, 0, 0, Math.PI); cx.fill();
+    cx.restore();
+
+    // candle under the craft (the flame does not flicker)
+    cx.fillStyle = '#EDE6D6'; cx.fillRect(W/2 - 4, 236, 8, 22);
+    const flick = state === 'win' || charge > 30 ? 0 : Math.sin(t*0.4) * 1.5;
+    cx.fillStyle = '#FFD23F';
+    cx.beginPath(); cx.ellipse(W/2 + flick, 228, 4, 9, 0, 0, 7); cx.fill();
+    cx.fillStyle = '#7E6F9E'; cx.font = '10px Courier New'; cx.textAlign = 'center';
+    cx.fillText(charge > 30 ? 'THE FLAME DOES NOT FLICKER' : 'THE FLAME FLICKERS (EMBARRASSING)', W/2, 275);
+    cx.textAlign = 'left';
+
+    // gravity tuner console
+    const cyC = 400, cxC = W/2, R = 130;
+    cx.strokeStyle = '#35205C'; cx.lineWidth = 14;
+    cx.beginPath(); cx.arc(cxC, cyC, R, Math.PI + 0.3, -0.3); cx.stroke();
+    // band
+    const a0 = Math.PI + 0.3, a1 = -0.3;
+    const toAng = v => a0 + ((v + 1.6) / 3.2) * (a1 + Math.PI*2 - a0 - Math.PI*0) ; // map -1.6..1.6
+    // simpler mapping across the visible arc:
+    const arcSpan = (Math.PI - 0.6);
+    const mapA = v => (Math.PI + 0.3) + ((v + 1.6) / 3.2) * arcSpan;
+    cx.strokeStyle = 'rgba(61,252,138,.7)'; cx.lineWidth = 14;
+    cx.beginPath(); cx.arc(cxC, cyC, R, mapA(band.c - band.w/2), mapA(band.c + band.w/2)); cx.stroke();
+    // needle
+    const na = mapA(needle);
+    cx.strokeStyle = '#FFD23F'; cx.lineWidth = 4;
+    cx.beginPath(); cx.moveTo(cxC, cyC);
+    cx.lineTo(cxC + Math.cos(na) * (R-8), cyC + Math.sin(na) * (R-8)); cx.stroke();
+    cx.fillStyle = '#1D1130'; cx.beginPath(); cx.arc(cxC, cyC, 16, 0, 7); cx.fill();
+    cx.strokeStyle = '#7FB8FF'; cx.lineWidth = 2; cx.beginPath(); cx.arc(cxC, cyC, 16, 0, 7); cx.stroke();
+    cx.fillStyle = '#B9AFD0'; cx.font = '11px Courier New'; cx.textAlign = 'center';
+    cx.fillText('GRAVITY-A WAVE TUNER (KEEP IT IN THE GREEN)', cxC, cyC + 44);
+    cx.textAlign = 'left';
+
+    // charge bar
+    cx.fillStyle = '#00000088'; cx.fillRect(40, 60, 26, 400);
+    cx.fillStyle = '#3DFC8A'; const ch = 400 * charge/100;
+    cx.fillRect(40, 60 + 400 - ch, 26, ch);
+    cx.strokeStyle = '#35205C'; cx.strokeRect(40, 60, 26, 400);
+    cx.save(); cx.translate(30, 260); cx.rotate(-Math.PI/2);
+    cx.fillStyle = '#B9AFD0'; cx.font = '10px Courier New'; cx.textAlign = 'center';
+    cx.fillText('FLIGHT CHARGE', 0, 0); cx.restore();
+
+    // fuel gauge
+    cx.fillStyle = '#00000088'; cx.fillRect(W-66, 60, 26, 400);
+    cx.fillStyle = fuel > 25 ? '#FF9E4D' : '#FF3D8A'; const fh = 400 * fuel/100;
+    cx.fillRect(W-66, 60 + 400 - fh, 26, fh);
+    cx.strokeStyle = '#35205C'; cx.strokeRect(W-66, 60, 26, 400);
+    cx.save(); cx.translate(W-76, 260); cx.rotate(-Math.PI/2);
+    cx.fillStyle = '#B9AFD0'; cx.font = '10px Courier New'; cx.textAlign = 'center';
+    cx.fillText('115 IN REACTOR', 0, 0); cx.restore();
+
+    // wedges rack
+    for (let i = 0; i < wedges; i++){
+      cx.fillStyle = '#FF9E4D';
+      cx.beginPath();
+      cx.moveTo(110 + i*34, 500); cx.lineTo(130 + i*34, 500); cx.lineTo(120 + i*34, 478);
+      cx.closePath(); cx.fill();
+    }
+    if (wedges > 0){ cx.fillStyle = '#7E6F9E'; cx.font = '10px Courier New'; cx.fillText('WEDGE RACK — PRESS E', 110, 520); }
+
+    // event overlays
+    if (event_ && state === 'play'){
+      cx.fillStyle = 'rgba(5,8,16,.6)'; cx.fillRect(0,0,W,60);
+      cx.textAlign = 'center'; cx.font = 'bold 16px Courier New';
+      if (event_.type === 'dubna'){
+        cx.fillStyle = '#FF3D8A';
+        cx.fillText('DUBNA EVENT — MASH SPACE / BELIEVE (' + event_.mash + '/' + event_.need + ')', W/2, 26);
+        cx.fillStyle = '#B9AFD0'; cx.font = '11px Courier New';
+        cx.fillText('an atom of 115 exists RIGHT NOW and it is not feeling well', W/2, 46);
+      } else {
+        cx.fillStyle = '#FFD23F';
+        cx.fillText('SECURITY SWEEP — HOLD H / PALM (' + Math.floor(event_.held/event_.need*100) + '%)', W/2, 26);
+        cx.fillStyle = '#B9AFD0'; cx.font = '11px Courier New';
+        cx.fillText('press into the prongs. the prongs remember.', W/2, 46);
+      }
+      cx.textAlign = 'left';
+    }
+
+    // end states
+    if (state !== 'play'){
+      cx.fillStyle = 'rgba(5,8,16,.78)'; cx.fillRect(0,0,W,H);
+      cx.textAlign = 'center';
+      cx.font = 'bold 46px Haettenschweiler, Impact, sans-serif';
+      if (state === 'win'){
+        cx.fillStyle = '#7FB8FF';
+        cx.fillText('LIFT.', W/2, H/2 - 60);
+        cx.font = '15px Courier New'; cx.fillStyle = '#F4F0FF';
+        cx.fillText('THE SPORT MODEL HOVERS. THE CANDLE FLAME DOES NOT FLICKER.', W/2, H/2 - 18);
+        cx.fillText('SOMEWHERE, A LEDGER ENTRY UPDATES ITSELF TO "MISC HARDWARE (AIRBORNE?)"', W/2, H/2 + 8);
+        cx.fillStyle = '#FFD23F';
+        cx.fillText('SHIFT COMPLETE. CLAIM THE PERIODIC TABLE BELOW.', W/2, H/2 + 40);
+      } else {
+        cx.fillStyle = '#FF3D8A';
+        cx.fillText('THE REACTOR SLEEPS', W/2, H/2 - 60);
+        cx.font = '15px Courier New'; cx.fillStyle = '#F4F0FF';
+        cx.fillText('OUT OF WEDGES. OUT OF CHARGE. THE SAUCER SITS THERE LIKE PATIO FURNITURE.', W/2, H/2 - 18);
+        cx.fillText('REQUISITION MORE 115 FROM THE SHELF. FIRST, FIND THE SHELF.', W/2, H/2 + 8);
+      }
+      cx.font = '13px Courier New'; cx.fillStyle = '#B9AFD0';
+      cx.fillText('PRESS SPACE OR TAP TO START A NEW SHIFT', W/2, H/2 + 78);
+      cx.textAlign = 'left';
+    }
+  }
+
+  reset();
+  (function loop(){ if (state === 'play') step(); draw(); requestAnimationFrame(loop); })();
+})();
+</script>
+
+</body>
+</html>
