@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EPISODE 03: MELLON'S 18TH HOLE — Doucheclosure</title>
+<meta name="description" content="Golf cart bullet-hell on a black-budget fairway. Parry titanium tic-tac golf balls, hack the GPS, and steer the Aristocratic Black-Budget Tsar into the water hazard.">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --manila:#E8D9A8; --brass:#C9A24B; --fairway:#1E4429;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;background:var(--void);color:var(--white);
+    font-family:"Courier New",Courier,monospace;overflow:hidden;}
+  body::after{content:"";position:fixed;inset:0;
+    background:repeating-linear-gradient(0deg,rgba(0,0,0,.15) 0 1px,transparent 1px 3px);
+    pointer-events:none;z-index:100;}
+  .display{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-weight:400;text-transform:uppercase;letter-spacing:.03em;line-height:.95;}
+  #frame{position:fixed;inset:0;display:flex;flex-direction:column;}
+  #topbar{display:flex;justify-content:space-between;align-items:center;padding:.6rem 1rem;
+    font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;z-index:9;}
+  #topbar a{color:var(--neon-cyan);text-decoration:none;}
+  #topbar .title{color:var(--brass);}
+  #gamewrap{flex:1;position:relative;}
+  #game{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;}
+
+  #hud{position:absolute;top:10px;left:12px;right:12px;z-index:9;display:flex;gap:1.5rem;
+    font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;pointer-events:none;}
+  .bar{flex:1;max-width:260px;}
+  .bar .lab{color:var(--chrome);margin-bottom:3px;}
+  .bar .track{height:12px;background:#00000099;border:1px solid #000;border-radius:6px;overflow:hidden;}
+  #bossfill{height:100%;width:100%;background:linear-gradient(90deg,var(--brass),var(--neon-yellow));transition:width .2s;}
+  #audfill{height:100%;width:100%;background:linear-gradient(90deg,var(--neon-pink),var(--neon-green));transition:width .2s;}
+
+  #dlg{position:absolute;left:50%;bottom:4%;transform:translateX(-50%);width:min(660px,92vw);z-index:20;}
+  #dlgbox{background:#0A120AD9;border:2px solid var(--brass);border-radius:12px;padding:10px 16px;}
+  #dlgname{font-size:10px;font-weight:800;letter-spacing:.2em;color:var(--brass);}
+  #dlgtext{font-size:15px;font-weight:700;margin-top:3px;}
+
+  .pop{position:absolute;font-weight:800;pointer-events:none;z-index:15;
+    font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;font-size:20px;
+    text-transform:uppercase;letter-spacing:.05em;text-shadow:0 3px 0 #000;
+    animation:poprise 1.1s forwards;transform:translate(-50%,-50%);white-space:nowrap;}
+  .pop.gold{color:var(--neon-yellow);} .pop.green{color:var(--neon-green);} .pop.red{color:#FFB0A6;}
+  @keyframes poprise{0%{opacity:0;transform:translate(-50%,-20%) scale(.5)}20%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}100%{opacity:0;transform:translate(-50%,-110%) scale(1)}}
+
+  .toast{position:absolute;top:64px;left:50%;transform:translateX(-50%);z-index:30;
+    background:var(--panel);border:2px solid var(--neon-yellow);border-radius:10px;
+    padding:.7rem 1.2rem;text-align:center;animation:toastin .4s;}
+  .toast .t1{color:var(--neon-yellow);font-size:.7rem;letter-spacing:.24em;}
+  .toast .t2{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;font-size:1.3rem;
+    text-transform:uppercase;color:var(--white);}
+  @keyframes toastin{from{opacity:0;transform:translateX(-50%) translateY(-12px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+  #endcard{position:absolute;inset:0;z-index:40;display:none;align-items:center;justify-content:center;
+    flex-direction:column;background:rgba(3,6,3,.86);text-align:center;padding:1rem;}
+  #endcard h1{font-size:clamp(1.8rem,6.5vw,3.2rem);color:var(--neon-green);
+    text-shadow:0 0 18px rgba(61,252,138,.6);}
+  #endcard.bad h1{color:var(--neon-pink);text-shadow:0 0 18px rgba(255,61,138,.6);}
+  #endcard p{max-width:36rem;margin:1rem auto;color:var(--chrome);font-size:.92rem;line-height:1.6;}
+  #endcard p b{color:var(--white);}
+  #endcard a,#endcard button{display:inline-block;margin:.35rem;padding:.85rem 1.5rem;border-radius:8px;
+    font-family:inherit;font-weight:bold;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;
+    text-decoration:none;cursor:pointer;border:2px solid var(--neon-green);background:var(--neon-green);color:#052012;}
+  #endcard a.ghost{background:transparent;color:var(--neon-cyan);border-color:var(--neon-cyan);}
+  #kbhint{position:absolute;bottom:8px;left:0;right:0;text-align:center;color:#7E6F9E;
+    font-size:11px;z-index:8;letter-spacing:.08em;}
+</style>
+</head>
+<body>
+<div id="frame">
+  <div id="topbar">
+    <a href="index.html">&larr; THE MELLON WING</a>
+    <span class="title display" style="font-size:1.1rem;">EPISODE 03: THE COUNTRY CLUB CLEARANCE</span>
+    <span style="color:#7E6F9E;">GREEN FEES: $30,000 &bull; ACCOUNTABILITY: $0</span>
+  </div>
+  <div id="gamewrap">
+    <canvas id="game"></canvas>
+    <div id="hud">
+      <div class="bar"><div class="lab">CART INTEGRITY (GOLD-PLATED)</div><div class="track"><div id="bossfill"></div></div></div>
+      <div class="bar"><div class="lab">AUDIT INTEGRITY (YOURS)</div><div class="track"><div id="audfill"></div></div></div>
+    </div>
+    <div id="dlg"><div id="dlgbox">
+      <div id="dlgname">NARRATOR</div>
+      <div id="dlgtext">"The Congressional Country Club. Green fees: thirty thousand dollars. Black-budget accountability: zero."</div>
+    </div></div>
+    <div id="endcard">
+      <h1 class="display" id="endTitle">THE 18TH HOLE AUDIT</h1>
+      <p id="endText"></p>
+      <div>
+        <button onclick="location.reload()">PLAY THE BACK NINE (RESTART)</button>
+        <a class="ghost" href="index.html#prize">CLAIM THE DEAD DROP METER — $5</a>
+      </div>
+    </div>
+    <p id="kbhint">WASD/ARROWS: SPRINT &bull; SPACE: SWING RETRIEVER POLE (PARRY) &bull; E: HACK BEACON / TAP BUMPER &bull; TAP = MOVE+SWING ON MOBILE</p>
+  </div>
+</div>
+
+<script>
+(() => {
+  const cv = document.getElementById('game');
+  const cx = cv.getContext('2d');
+  let W = 960, H = 540;
+  function fit(){
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = W; cv.height = H;
+  }
+  addEventListener('resize', fit);
+
+  const $ = id => document.getElementById(id);
+  const rand = (a,b) => a + Math.random()*(b-a);
+
+  // ---- dialogue bank (rotates) ----
+  const BANK = [
+    ['GENE',  "That golf cart was purchased with un-audited navy research funds."],
+    ['GENE',  "I've seen tighter security on a public park bench, Christopher."],
+    ['GENE',  "Hand me the hook. His handicap is an institutional lie."],
+    ['GENE',  "Dry-cleaned trousers don't hold up well in pond water."],
+    ['ERIC',  "The battery on that cart is pulling forty kilowatts from the clubhouse."],
+    ['ERIC',  "That's not a radar anomaly, Chris. That's your own golf ball bouncing off a tree."],
+    ['ERIC',  "I've fixed radar arrays. This is just a bad backswing."],
+    ['MOOKS', "The fairway has a heavy corporate frequency, brother."],
+    ['MOOKS', "Five dollars for the sand trap rock, man. Pure alignment."],
+    ['MOOKS', "Let the cart sink, man. The water is free."],
+    ['MELLON',"Gadzooks! My backswing is protected under National Security!"],
+    ['MELLON',"Do you know how much this polo shirt cost the taxpayers?!"],
+    ['MELLON',"My caddy carries twenty years of unreleased radar clips!"],
+    ['CADDY ARTHUR',"I've been carrying these briefcases since the fourth hole!"],
+    ['CADDY ARTHUR',"My spine is running on an active extension clause!"],
+    ['CADDY ARTHUR',"Please don't hit the cart... the insurance is classified!"]
+  ];
+  let bankIdx = 0, dlgTimer = 0;
+  function rotateDialogue(){
+    const [n, t] = BANK[bankIdx % BANK.length]; bankIdx++;
+    $('dlgname').textContent = n;
+    $('dlgtext').textContent = '"' + t + '"';
+  }
+  function sayNow(n, t){
+    $('dlgname').textContent = n; $('dlgtext').textContent = '"' + t + '"';
+    dlgTimer = 0;
+  }
+
+  function pop(text, x, y, cls='gold'){
+    const el = document.createElement('div');
+    el.className = 'pop ' + cls; el.textContent = text;
+    const r = cv.getBoundingClientRect();
+    el.style.left = (r.left + x) + 'px'; el.style.top = (r.top + y) + 'px';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1100);
+  }
+  function toast(t1, t2){
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.innerHTML = '<div class="t1">' + t1 + '</div><div class="t2">' + t2 + '</div>';
+    $('gamewrap').appendChild(el);
+    setTimeout(() => el.remove(), 3200);
+  }
+
+  // ---- state ----
+  let p, cart, balls, beacons, divots, phase, bossHP, audit, t, keys = {},
+      swing, parries, over, hacked, smokeAlpha;
+  function reset(){
+    fit();
+    p = { x: W/2, y: H*0.72, r: 16, face: 0 };
+    cart = { x: W*0.2, y: H*0.16, dir: 1, spd: 2.2, w: 96, h: 54, sunkT: 0 };
+    balls = []; beacons = []; divots = [];
+    phase = 1; bossHP = 100; audit = 100; t = 0; swing = 0; parries = 0;
+    over = false; hacked = 0; smokeAlpha = 0;
+    $('endcard').style.display = 'none';
+    sayNow('NARRATOR', "The Congressional Country Club. Green fees: thirty thousand dollars. Black-budget accountability: zero.");
+  }
+
+  addEventListener('keydown', e => {
+    const k = e.key.toLowerCase();
+    if ([' ','arrowup','arrowdown','arrowleft','arrowright'].includes(e.key.toLowerCase())) e.preventDefault();
+    if (k === ' '){ over ? location.reload() : doSwing(); return; }
+    if (k === 'e'){ interact(); return; }
+    keys[k] = true;
+  });
+  addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
+  let touchTarget = null;
+  cv.addEventListener('pointerdown', e => {
+    if (over){ location.reload(); return; }
+    const r = cv.getBoundingClientRect();
+    touchTarget = { x: e.clientX - r.left, y: e.clientY - r.top };
+    doSwing(); interact();
+  });
+  cv.addEventListener('pointermove', e => {
+    if (touchTarget){
+      const r = cv.getBoundingClientRect();
+      touchTarget = { x: e.clientX - r.left, y: e.clientY - r.top };
+    }
+  });
+  cv.addEventListener('pointerup', () => touchTarget = null);
+
+  function doSwing(){ if (swing <= 0) swing = 14; }
+
+  function interact(){
+    if (phase === 2){
+      for (const b of beacons){
+        if (!b.hacked && Math.hypot(p.x-b.x, p.y-b.y) < 46){
+          b.hacked = true; hacked++;
+          pop('BEACON HACKED — DESTINATION: POND', b.x, b.y, 'green');
+          sayNow('ERIC', 'The GPS override is ' + Math.round(hacked/3*100) + '% complete. Destination: Pond.');
+          if (hacked >= 3){ enterPhase3(); }
+          return;
+        }
+      }
+    }
+    if (phase === 3 && cart.stalled && Math.hypot(p.x-cart.x, p.y-cart.y) < 80){
+      finishHim();
+    }
+  }
+
+  function enterPhase2(){
+    phase = 2;
+    sayNow('NARRATOR', 'Phase Two: the Assistant Secretary has parked in the sand trap and deployed a high-frequency beige cloud.');
+    cart.spd = 0; cart.x = W*0.5; cart.y = H*0.2;
+    beacons = [
+      {x: W*0.2,  y: H*0.5, hacked:false},
+      {x: W*0.8,  y: H*0.45, hacked:false},
+      {x: W*0.5,  y: H*0.62, hacked:false}
+    ];
+  }
+  function enterPhase3(){
+    phase = 3; smokeAlpha = 0;
+    cart.stalled = true; cart.x = W*0.82; cart.y = H*0.3;
+    sayNow('MELLON', 'YOU CANNOT DOCK MY MEMBERSHIP PRIVILEGES!');
+  }
+  function finishHim(){
+    over = true; bossHP = 0; $('bossfill').style.width = '0%';
+    // the payoff: a simple tap
+    pop('*tap*', cart.x, cart.y - 40, 'gold');
+    toast('ACHIEVEMENT UNLOCKED', '🏆 THE 18TH HOLE AUDIT');
+    setTimeout(() => {
+      $('endTitle').textContent = 'SPLASH. CLEARANCE REVOKED BY POND.';
+      $('endText').innerHTML = 'The gold-plated cart rolls in slowly, with dignity, the way old money does everything. ' +
+        'Mellon emerges draped in algae, holding his dry-cleaned trousers above the waterline like a diplomatic pouch. ' +
+        'His security clearance floats past a mallard, which does not have one either. ' +
+        '<b>COLLECTIBLE ACQUIRED: GOLD-PLATED TITANIUM TEE (+50% ARISTOCRATIC CREDIBILITY).</b> ' +
+        'The pond water, it must be noted, is completely un-compartmented.';
+      $('endcard').style.display = 'flex';
+    }, 1400);
+  }
+  function loseGame(){
+    over = true;
+    $('endcard').classList.add('bad');
+    $('endTitle').textContent = 'AUDITED INTO THE TURF';
+    $('endText').textContent = 'You have been titanium-golf-balled into the fairway. A lobbyist steps over you. ' +
+      'The caddy whispers an apology on behalf of the estate. Your audit is over, but the back nine is eternal.';
+    $('endcard').style.display = 'flex';
+  }
+
+  // ---- loop ----
+  function step(){
+    t++;
+    dlgTimer++;
+    if (dlgTimer > 300){ dlgTimer = 0; rotateDialogue(); }
+
+    // player movement
+    let mvx = 0, mvy = 0;
+    if (keys['arrowleft']||keys['a'])  mvx -= 1;
+    if (keys['arrowright']||keys['d']) mvx += 1;
+    if (keys['arrowup']||keys['w'])    mvy -= 1;
+    if (keys['arrowdown']||keys['s'])  mvy += 1;
+    if (touchTarget){
+      const dx = touchTarget.x - p.x, dy = touchTarget.y - p.y;
+      if (Math.hypot(dx,dy) > 12){ mvx = dx; mvy = dy; }
+    }
+    const mag = Math.hypot(mvx,mvy) || 1;
+    p.x += mvx/mag * 3.4; p.y += mvy/mag * 3.4;
+    p.x = Math.max(24, Math.min(W-24, p.x));
+    p.y = Math.max(H*0.32, Math.min(H-30, p.y));
+
+    // cart movement + attacks
+    if (phase === 1){
+      cart.x += cart.dir * cart.spd;
+      if (cart.x < 80 || cart.x > W-80) cart.dir *= -1;
+      if (t % Math.max(26, 44 - Math.floor((100-bossHP)/4)) === 0){
+        const tic = Math.random() < 0.35;
+        const ang = Math.atan2(p.y - cart.y, p.x - cart.x) + rand(-.25,.25);
+        balls.push({ x: cart.x, y: cart.y+20, vx: Math.cos(ang)*rand(3,4.6), vy: Math.sin(ang)*rand(3,4.6),
+          r: tic ? 10 : 7, tic, parried:false });
+      }
+    } else if (phase === 2){
+      if (t % 60 === 0){
+        const ang = Math.atan2(p.y - cart.y, p.x - cart.x) + rand(-.5,.5);
+        balls.push({ x: cart.x, y: cart.y+20, vx: Math.cos(ang)*2.6, vy: Math.sin(ang)*2.6, r: 8, tic:false, parried:false });
+      }
+      smokeAlpha = Math.min(0.35, smokeAlpha + 0.003);
+    }
+
+    // balls
+    for (let i = balls.length-1; i >= 0; i--){
+      const b = balls[i];
+      b.x += b.vx; b.y += b.vy;
+      if (b.x < -30 || b.x > W+30 || b.y < -30 || b.y > H+30){ balls.splice(i,1); continue; }
+      if (!b.parried){
+        // parry window
+        if (swing > 0 && Math.hypot(b.x-p.x, b.y-p.y) < 58){
+          b.parried = true;
+          const ang = Math.atan2(cart.y - b.y, cart.x - b.x);
+          b.vx = Math.cos(ang)*7; b.vy = Math.sin(ang)*7;
+          parries++;
+          pop(b.tic ? 'TIC-TAC PARRIED · SUBSIDY DE-ELEVATED' : 'DIVOT RETURNED TO SENDER', b.x, b.y, 'green');
+          if (parries === 10) toast('ACHIEVEMENT UNLOCKED', '🏆 UN-AUDITED DIVOT');
+          continue;
+        }
+        if (Math.hypot(b.x-p.x, b.y-p.y) < p.r + b.r){
+          balls.splice(i,1);
+          audit -= 10;
+          $('audfill').style.width = Math.max(0,audit) + '%';
+          pop('STRUCK BY TAXPAYER TITANIUM (−10)', p.x, p.y-24, 'red');
+          if (audit <= 0){ loseGame(); }
+          continue;
+        }
+      } else {
+        // parried ball hits cart antenna
+        if (Math.hypot(b.x-cart.x, b.y-cart.y) < 52){
+          balls.splice(i,1);
+          bossHP -= 6;
+          $('bossfill').style.width = Math.max(0,bossHP) + '%';
+          pop('ANTENNA STRIKE', cart.x, cart.y-34, 'gold');
+          if (phase === 1 && bossHP <= 70) enterPhase2();
+          continue;
+        }
+      }
+    }
+    if (swing > 0) swing--;
+  }
+
+  function draw(){
+    // fairway
+    const g = cx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#12301C'); g.addColorStop(1,'#1E4429');
+    cx.fillStyle = g; cx.fillRect(0,0,W,H);
+    // mow lines
+    cx.fillStyle = 'rgba(255,255,255,.025)';
+    for (let x = 0; x < W; x += 80) cx.fillRect(x, 0, 40, H);
+    // pond (right side)
+    cx.fillStyle = '#12405C';
+    cx.beginPath(); cx.ellipse(W*0.88, H*0.38, 90, 54, -.3, 0, 7); cx.fill();
+    cx.fillStyle = 'rgba(45,225,252,.12)';
+    cx.beginPath(); cx.ellipse(W*0.88, H*0.38, 70, 40, -.3, 0, 7); cx.fill();
+    cx.fillStyle = '#B9AFD0'; cx.font = '10px Courier New';
+    cx.fillText('WATER HAZARD (UN-COMPARTMENTED)', W*0.88-100, H*0.38+70);
+    // sand trap
+    cx.fillStyle = '#C9B88A';
+    cx.beginPath(); cx.ellipse(W*0.5, H*0.2, 120, 46, 0, 0, 7); cx.fill();
+    cx.fillStyle = '#B9AFD0'; cx.fillText('TAX-SUBSIDIZED SAND TRAP', W*0.5-80, H*0.2+62);
+    // 18th flag
+    cx.strokeStyle = '#EDE6D6'; cx.lineWidth = 3;
+    cx.beginPath(); cx.moveTo(W*0.12, H*0.42); cx.lineTo(W*0.12, H*0.3); cx.stroke();
+    cx.fillStyle = '#FF3D8A';
+    cx.beginPath(); cx.moveTo(W*0.12, H*0.3); cx.lineTo(W*0.12+26, H*0.315); cx.lineTo(W*0.12, H*0.33); cx.fill();
+    cx.fillStyle = '#B9AFD0'; cx.fillText('18', W*0.12-6, H*0.44+12);
+    // sports cars on the grass (of course)
+    cx.fillStyle = '#7A2230'; cx.fillRect(W*0.3, H*0.86, 74, 30);
+    cx.fillStyle = '#22557A'; cx.fillRect(W*0.42, H*0.88, 74, 30);
+    cx.fillStyle = '#B9AFD0'; cx.fillText('PARKED ON THE FAIRWAY. NO ONE SAYS ANYTHING.', W*0.3, H*0.86-8);
+    // caddy with briefcases
+    const cadX = W*0.08, cadY = H*0.62;
+    cx.fillStyle = '#17130F'; cx.fillRect(cadX-8, cadY-10, 16, 26);
+    cx.fillStyle = '#D8987C'; cx.beginPath(); cx.arc(cadX, cadY-18, 7, 0, 7); cx.fill();
+    cx.fillStyle = '#5C4326';
+    for (let i=0;i<5;i++) cx.fillRect(cadX+12, cadY+8-i*9, 20, 7);
+    cx.fillStyle = '#B9AFD0'; cx.fillText('FOIA DENIALS x5', cadX-14, cadY+34);
+    // beacons (phase 2)
+    if (phase === 2){
+      for (const b of beacons){
+        cx.fillStyle = b.hacked ? '#3DFC8A' : '#FFD23F';
+        const pulse = b.hacked ? 6 : 6 + Math.sin(t*0.15)*3;
+        cx.beginPath(); cx.arc(b.x, b.y, pulse, 0, 7); cx.fill();
+        cx.strokeStyle = cx.fillStyle;
+        cx.beginPath(); cx.arc(b.x, b.y, 16, 0, 7); cx.stroke();
+        cx.fillStyle = '#B9AFD0';
+        cx.fillText(b.hacked ? 'HACKED' : 'GPS BEACON [E]', b.x-30, b.y+30);
+      }
+    }
+    // cart
+    if (!over || phase < 3){
+      drawCart(cart.x, cart.y);
+    } else {
+      drawCart(cart.x, cart.y);
+    }
+    // balls
+    for (const b of balls){
+      if (b.tic){
+        cx.fillStyle = b.parried ? '#3DFC8A' : '#F4F0FF';
+        cx.beginPath(); cx.ellipse(b.x, b.y, b.r+3, b.r-2, 0, 0, 7); cx.fill();
+      } else {
+        cx.fillStyle = b.parried ? '#3DFC8A' : '#FFD23F';
+        cx.beginPath(); cx.arc(b.x, b.y, b.r, 0, 7); cx.fill();
+        cx.strokeStyle = '#00000055'; cx.stroke();
+      }
+    }
+    // beige smoke (phase 2)
+    if (smokeAlpha > 0){
+      cx.fillStyle = 'rgba(201,184,138,' + smokeAlpha + ')';
+      cx.fillRect(0,0,W,H);
+    }
+    // player + pole
+    cx.save(); cx.translate(p.x, p.y);
+    cx.fillStyle = '#33405E'; cx.fillRect(-8, -6, 16, 22);
+    cx.fillStyle = '#E8D9A8'; cx.beginPath(); cx.arc(0, -13, 7, 0, 7); cx.fill();
+    // retriever pole
+    const ext = swing > 0 ? 54 : 30;
+    cx.strokeStyle = swing > 0 ? '#3DFC8A' : '#B9AFD0'; cx.lineWidth = 3;
+    cx.beginPath(); cx.moveTo(8, 0); cx.lineTo(8+ext, -8); cx.stroke();
+    cx.beginPath(); cx.arc(8+ext, -8, 7, .6, 3.6); cx.stroke();
+    if (swing > 0){
+      cx.strokeStyle = 'rgba(61,252,138,.4)';
+      cx.beginPath(); cx.arc(0, 0, 56, 0, 7); cx.stroke();
+    }
+    cx.restore();
+    // stall prompt
+    if (phase === 3 && cart.stalled && !over){
+      cx.fillStyle = '#FFD23F'; cx.font = 'bold 13px Courier New';
+      cx.fillText('THE CART HAS STALLED AT THE HAZARD. WALK UP. [E] TAP THE BUMPER.', W*0.5-220, H*0.55);
+    }
+  }
+
+  function drawCart(x, y){
+    cx.save(); cx.translate(x, y);
+    // armored gold body
+    cx.fillStyle = '#C9A24B'; cx.fillRect(-48, -20, 96, 40);
+    cx.fillStyle = '#8C6E24'; cx.fillRect(-48, -20, 96, 8);
+    cx.fillStyle = '#EDE6D6'; cx.fillRect(-40, -34, 80, 12); // canopy
+    // wheels
+    cx.fillStyle = '#101418';
+    cx.beginPath(); cx.arc(-30, 24, 9, 0, 7); cx.arc(30, 24, 9, 0, 7); cx.fill();
+    // antenna
+    cx.strokeStyle = '#2DE1FC'; cx.lineWidth = 2;
+    cx.beginPath(); cx.moveTo(38, -34); cx.lineTo(46, -52); cx.stroke();
+    cx.fillStyle = '#2DE1FC'; cx.beginPath(); cx.arc(46, -52, 4, 0, 7); cx.fill();
+    // the man himself: green polo, cream slacks, silver swoop
+    cx.fillStyle = '#2B3E2B'; cx.fillRect(-10, -30, 20, 16);
+    cx.fillStyle = '#EEC49A'; cx.beginPath(); cx.arc(0, -38, 8, 0, 7); cx.fill();
+    cx.fillStyle = '#E8E2D2'; cx.beginPath(); cx.arc(-2, -42, 7, 2.8, 6.1); cx.fill();
+    cx.fillStyle = '#B9AFD0'; cx.font = '9px Courier New';
+    cx.fillText('GOLD-PLATED. ARMORED. UN-AUDITED.', -52, 44);
+    cx.restore();
+  }
+
+  reset();
+  (function loop(){ if (!over) step(); draw(); requestAnimationFrame(loop); })();
+})();
+</script>
+</body>
+</html>

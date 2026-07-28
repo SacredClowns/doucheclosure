@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE CHRISTOPHER MELLON EXPERIENCE — The Parking Lot — Doucheclosure</title>
+<meta name="description" content="A scion of American banking received the nation's UFO footage in a parking lot, in a manila envelope. We believe every word. Our questions concern validation. Playable stealth mission.">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --manila:#E8D9A8; --oldmoney:#7FA88F; --shadow:rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--void);}
+  body{margin:0; background:var(--void); color:var(--white);
+    font-family:"Courier New", Courier, monospace; line-height:1.65; overflow-x:hidden;}
+  body::after{content:""; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 1px, transparent 1px 3px);
+    pointer-events:none; z-index:100;}
+  a{color:var(--neon-cyan);}
+  .wrap{max-width:760px; margin:0 auto; padding:0 1.25rem;}
+  .display{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-weight:400; text-transform:uppercase; letter-spacing:.03em; line-height:.95;}
+  .crumb{padding:1rem 1.25rem; font-size:.72rem; letter-spacing:.15em; text-transform:uppercase;}
+  .crumb a{text-decoration:none;}
+
+  header.wing{
+    text-align:center; padding:3rem 1rem 2.5rem;
+    background:radial-gradient(ellipse at 50% -20%, rgba(232,217,168,.18), transparent 60%),
+      radial-gradient(ellipse at 85% 110%, rgba(127,168,143,.12), transparent 55%);
+    border-bottom:3px solid var(--manila);
+  }
+  .wing .eyebrow{color:var(--neon-cyan); letter-spacing:.28em; text-transform:uppercase; font-size:.72rem;}
+  .wing h1{margin:.5rem 0 0; font-size:clamp(2.2rem, 8vw, 4.2rem); color:var(--manila);
+    text-shadow:0 0 16px rgba(232,217,168,.5), 4px 4px 0 #4A3E1E;}
+  .wing .sub{color:var(--chrome); max-width:37rem; margin:1.25rem auto 0; font-size:.95rem;}
+  .wing .sub b{color:var(--white);}
+  .stamp{
+    display:inline-block; margin-top:1.4rem; transform:rotate(-3deg);
+    border:3px solid var(--neon-pink); color:var(--neon-pink);
+    padding:.3rem 1rem; font-size:.75rem; letter-spacing:.22em; text-transform:uppercase;
+  }
+
+  section{padding:2.5rem 0;}
+  h2.sec{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif; font-weight:400;
+    text-transform:uppercase; font-size:clamp(1.6rem, 5.5vw, 2.3rem);
+    color:var(--neon-cyan); text-shadow:0 0 12px rgba(45,225,252,.5);
+    text-align:center; margin:0 0 1.25rem;}
+  .prose{color:var(--chrome); font-size:.93rem;}
+  .prose b{color:var(--white);}
+  .pull{border-left:4px solid var(--manila); background:var(--panel);
+    padding:1rem 1.25rem; color:var(--white); font-size:1rem; margin:1.4rem 0;}
+
+  /* evidence table */
+  .evidence{width:100%; border-collapse:collapse; font-size:.85rem; background:var(--panel);
+    border:2px solid #35205C;}
+  .evidence th{background:var(--manila); color:#231B02; text-align:left; padding:.5rem .8rem;
+    font-size:.68rem; letter-spacing:.18em; text-transform:uppercase;}
+  .evidence td{padding:.6rem .8rem; border-bottom:1px dashed #3C2B60; color:var(--chrome); vertical-align:top;}
+  .evidence td:first-child{color:var(--neon-yellow); white-space:nowrap; font-weight:bold;}
+  .evidence tr:last-child td{border-bottom:none;}
+
+  .game-shell{
+    background:linear-gradient(180deg, var(--panel-2), var(--panel));
+    border:2px solid var(--manila); border-radius:12px;
+    padding:1rem; box-shadow:0 0 26px rgba(232,217,168,.2);
+  }
+  #game{width:100%; display:block; border-radius:8px; background:#101418; touch-action:none;}
+  .hud{display:flex; justify-content:space-between; gap:.75rem; flex-wrap:wrap;
+    padding:.6rem .25rem 0; font-size:.72rem; letter-spacing:.1em; text-transform:uppercase;}
+  .hud #objective{color:var(--neon-yellow);}
+  .hud #meterHud{color:var(--neon-green);}
+  .hud #meterHud.low{color:var(--neon-pink);}
+  #suswrap{flex-basis:100%; height:10px; background:#00000088; border:1px solid #35205C; border-radius:6px; overflow:hidden;}
+  #susfill{height:100%; width:0%; background:linear-gradient(90deg, var(--oldmoney), var(--neon-pink)); transition:width .2s;}
+  #monologue{min-height:1.4rem; text-align:center; color:var(--manila);
+    font-size:.8rem; letter-spacing:.06em; padding:.45rem 0 0; font-style:italic;}
+  .controls-note{text-align:center; color:#7E6F9E; font-size:.7rem; letter-spacing:.08em; margin-top:.55rem;}
+  .touchpad{display:none; justify-content:center; gap:.7rem; margin-top:.8rem; flex-wrap:wrap;}
+  .touchpad button{
+    font-family:inherit; font-size:1.2rem; font-weight:bold;
+    width:60px; height:60px; border-radius:12px;
+    background:var(--panel-2); color:var(--neon-cyan);
+    border:2px solid var(--neon-cyan); cursor:pointer;
+  }
+  .touchpad button.act{width:auto; padding:0 1rem; font-size:.75rem; letter-spacing:.1em; color:var(--neon-green); border-color:var(--neon-green);}
+  .touchpad button:active{background:var(--neon-cyan); color:#031A20;}
+  @media (pointer: coarse){ .touchpad{display:flex;} }
+
+  .prize{
+    border:2px dashed var(--neon-green); border-radius:12px;
+    text-align:center; padding:2rem 1.5rem;
+    background:radial-gradient(ellipse at 50% 120%, rgba(61,252,138,.12), transparent 70%);
+  }
+  .prize .display{color:var(--neon-green); font-size:clamp(1.6rem,6vw,2.4rem);
+    text-shadow:0 0 14px rgba(61,252,138,.5);}
+  .prize p{color:var(--chrome); font-size:.92rem; max-width:34rem; margin:.9rem auto;}
+  .prize p b{color:var(--white);}
+  .btn{display:inline-block; font-weight:bold; font-size:.9rem; letter-spacing:.16em;
+    text-transform:uppercase; text-decoration:none; padding:.95rem 1.8rem; border-radius:8px;
+    border:2px solid var(--neon-green); color:#052012; background:var(--neon-green);
+    box-shadow:0 0 22px rgba(61,252,138,.5); cursor:pointer;}
+  .btn:hover{background:var(--neon-yellow); border-color:var(--neon-yellow); color:#231602;}
+  .buy-note{color:#7E6F9E; font-size:.72rem; margin-top:.8rem;}
+  footer{padding:2rem 1rem 3rem; text-align:center; color:#7E6F9E; font-size:.72rem;}
+</style>
+</head>
+<body>
+
+<p class="crumb"><a href="../../index.html">&larr; THE ARCADE</a> &nbsp;/&nbsp; EXPERIENCES &nbsp;/&nbsp; CHRISTOPHER MELLON</p>
+
+<header class="wing">
+  <p class="eyebrow">Doucheclosure Experiences &bull; Wing No. 4</p>
+  <h1 class="display">The Christopher Mellon<br>Experience</h1>
+  <p class="sub">His family name is carved into banks, universities, and an entire wing of the
+  National Gallery. He served as Deputy Assistant Secretary of Defense for Intelligence.
+  And by his own public account, the videos that reignited the entire UFO question reached him
+  <b>in a parking lot</b> — handed over like a car stereo, in office supplies.
+  <b>We believe every syllable.</b> Our inquiry concerns a single word, and the word is
+  <b>VALIDATION.</b></p>
+  <span class="stamp">WAS THE PARKING VALIDATED? WAS ANYTHING?</span>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <p>Sit with the scene. A scion of one of the great American fortunes — a man whose
+      ancestors financed railroads, aluminum, and the concept of Pittsburgh — standing on
+      painted asphalt between a Kia and a support column, <b>accepting the biggest story in
+      human history in a manila envelope.</b> Manila. The envelope your landlord uses to
+      return a security deposit, minus deductions. The fate of disclosure traveled in the
+      same paper product as a middle school permission slip.</p>
+      <p class="pull">The intelligence apparatus of the United States maintains satellites
+      that can read a wristwatch from orbit — and its most consequential transfer of the
+      century was conducted at roughly the operational security level of
+      <b>splitting a Costco membership.</b></p>
+      <p>And no one — NO ONE — has answered the operational questions. Did he pay for
+      parking? Did a Mellon feed a meter with pocket change like a mortal? Was there a
+      stub? <b>A stub is a paper trail.</b> Did the source circle the lot first, or did he
+      have the audacity to park in a good spot? Was the envelope at least sealed with one
+      of those little string buttons, which everyone agrees is the luxury model?
+      History records none of it. So the review board built the parking lot,
+      and now you will stand in it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE EVIDENCE ============ -->
+<section>
+  <div class="wrap">
+    <h2 class="sec">Items Recovered From The Scene</h2>
+    <table class="evidence">
+      <tr><th>Item</th><th>Review board notes</th></tr>
+      <tr><td>PARKING STUB</td><td>Duration: 11 minutes. Cost: $4.50. Eleven minutes and four dollars
+        and fifty cents. That is what the turning point of modern disclosure cost, and the machine
+        did not give change.</td></tr>
+      <tr><td>MANILA ENVELOPE</td><td>Standard 9&times;12. NOT the string-button model. For the most
+        important documents in the western hemisphere, somebody chose the economy envelope.
+        The board finds this the most upsetting fact in the entire field.</td></tr>
+      <tr><td>KEY FOB</td><td>To a tasteful sedan. Trim level: dignified. The vehicle of a man who
+        could buy the parking structure but respects the process.</td></tr>
+      <tr><td>ONE (1) PIGEON</td><td>Present for the entire exchange. Wearing what witnesses
+        describe as "a tiny lanyard." Has declined every interview through counsel.</td></tr>
+      <tr><td>LOOSE CHANGE, $1.75</td><td>Recovered near the meter. The board notes, with something
+        approaching awe, that quarters were involved. QUARTERS. The arcade was right about
+        everything.</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ============ THE GAME ============ -->
+<section>
+  <div class="wrap">
+    <h2 class="sec">Dead Drop: Parking Level C</h2>
+    <div class="game-shell">
+      <canvas id="game" width="960" height="540"></canvas>
+      <div class="hud">
+        <span id="objective">OBJECTIVE: FEED THE METER (E)</span>
+        <span id="meterHud">METER: —</span>
+        <div id="suswrap" title="suspicion"><div id="susfill"></div></div>
+      </div>
+      <p id="monologue">&nbsp;</p>
+      <p class="controls-note">ARROWS / WASD: WALK &bull; SHIFT: STRIDE (RAISES SUSPICION — OLD MONEY DOES NOT HURRY) &bull; E: INTERACT &bull; SPACE: NOD POLITELY / RESTART</p>
+      <div class="touchpad" aria-label="touch controls">
+        <button id="tL" aria-label="left">&#9664;</button>
+        <button id="tU" aria-label="up">&#9650;</button>
+        <button id="tD" aria-label="down">&#9660;</button>
+        <button id="tR" aria-label="right">&#9654;</button>
+        <button id="tE" class="act" aria-label="interact">INTERACT</button>
+        <button id="tN" class="act" aria-label="nod">NOD</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EPISODE 03 ============ -->
+<section>
+  <div class="wrap">
+    <div class="game-shell" style="text-align:center; padding:1.75rem;">
+      <h2 class="sec" style="margin-bottom:.5rem;">Episode 03: The Country Club Clearance</h2>
+      <p class="prose" style="max-width:36rem; margin:0 auto 1.25rem;">The 18th hole of an
+      exclusive D.C. course. An armored, gold-plated golf cart. A barrage of titanium tic-tac
+      golf balls, a caddy hauling five briefcases of FOIA DENIALS, and a water hazard that is,
+      at long last, completely un-compartmented. Parry. Hack the GPS. Tap the bumper.</p>
+      <a class="btn" href="eighteenth-hole.html" style="background:var(--manila); border-color:var(--manila); color:#231B02;">PLAY THE 18TH HOLE — FREE</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE PRIZE ============ -->
+<section id="prize">
+  <div class="wrap">
+    <div class="prize">
+      <p class="display">The Prize: The Dead Drop Meter</p>
+      <p><b>THE DEAD DROP METER — Tradecraft for Parking.</b> A genuinely useful tool from
+      Doucheclosure Labs: a <b>parking meter countdown with a real alarm</b> so you are never
+      ticketed mid-handoff, plus <b>MARK THE DROP SITE</b> — one tap saves your car's exact GPS
+      position with a note ("Level C, by the pigeon with the lanyard") and later walks you
+      straight back to it.</p>
+      <p>You will use it at the airport. You will use it at the mall. You will use it, God
+      willing, in the parking structure where somebody hands you a manila envelope that
+      changes everything. <b>Never let street parking compromise national security again.</b></p>
+      <!-- REPLACE-ME: point at your payment link (Gumroad / Stripe / Lemon Squeezy) -->
+      <a class="btn" href="#REPLACE-WITH-PAYMENT-LINK">ACQUIRE THE DEAD DROP METER — $5</a>
+      <p class="buy-note">Instant download &bull; works offline in any structure &bull; string-button envelope energy</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>DOUCHECLOSURE&trade; EXPERIENCES &bull; A work of parody commenting on public statements of public figures.<br>
+  <a href="../../index.html">Back to the arcade</a> &bull; <a href="../chris-bledsoe/index.html">Previous wing: Chris Bledsoe</a></p>
+</footer>
+
+<script>
+(() => {
+  const cv = document.getElementById('game');
+  const cx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  const objEl = document.getElementById('objective');
+  const meterEl = document.getElementById('meterHud');
+  const susEl = document.getElementById('susfill');
+  const monoEl = document.getElementById('monologue');
+
+  const MONO = {
+    start: ["One does not run. One has never run. One was rowed.",
+            "Grandfather financed the concept of Pittsburgh. I can survive Level C."],
+    stride:["Striding. Regrettable. Necessary. Regrettable.",
+            "The blazer is lifting at the vents. I feel like a fugitive."],
+    meter: ["Quarters. QUARTERS. Two centuries of banking and it comes to quarters.",
+            "The machine does not give change. Noted for the memoirs."],
+    colonel:["The colonel wishes to discuss the Commanders. Nod. NOD, MAN, YOUR NATION NEEDS YOU TO NOD.",
+            "Yes, colonel. Remarkable season. Historic, even. Please stop."],
+    pickup:["The envelope. Manila. Not even the string-button model. We proceed anyway.",
+            "It is warmer than expected. I choose not to examine that thought."],
+    cart:  ["Security cart. Assume the posture of a man admiring concrete.",
+            "I am simply a gentleman who enjoys infrastructure."],
+    win:   ["Home. Sedan. Dignity intact. History altered. Validation: still pending."],
+    ticket:["A TICKET. A PAPER TRAIL. THE ONLY DOCUMENT THIS FIELD HAS EVER PRODUCED IN TRIPLICATE."],
+    made:  ["The pigeon is walking toward me with purpose. It is over."]
+  };
+  let monoT = 0;
+  function think(k){ const a = MONO[k]; monoEl.textContent = a[Math.floor(Math.random()*a.length)]; monoT = 260; }
+
+  // layout
+  const LOT = { cols: [140, 300, 460, 620, 780] };
+  const SEDAN = { x: 90, y: H-80 };
+  const METER = { x: 180, y: H-90 };
+  const SOURCE = { x: W-90, y: 90 };
+  const PILLARS = [ {x:250,y:150}, {x:250,y:350}, {x:520,y:150}, {x:520,y:350}, {x:760,y:250} ];
+  const PIGEON = { x: 660, y: 420 };
+
+  let p, carts, colonel, sus, meter, phase, state, t, keys = {}, nodProg, meterFed;
+  function reset(){
+    p = { x: SEDAN.x, y: SEDAN.y - 30, vx:0, vy:0 };
+    carts = [
+      { x: 200, y: 250, dir: 1, axis:'x', min:120, max:W-120, spd:1.1 },
+      { x: 700, y: 460, dir:-1, axis:'x', min:120, max:W-120, spd:0.9 }
+    ];
+    colonel = { active:false, timer: 600 + Math.random()*400, x:0, y:0 };
+    sus = 0; meter = 0; meterFed = false; phase = 0; state = 'play'; t = 0; nodProg = 0;
+    objEl.textContent = 'OBJECTIVE: FEED THE METER (E)';
+    think('start');
+  }
+  reset();
+
+  addEventListener('keydown', e => {
+    const k = e.key.toLowerCase();
+    if ([' ','arrowup','arrowdown','arrowleft','arrowright'].includes(e.key.toLowerCase())) e.preventDefault();
+    if (k === ' '){ if (state === 'talk') nod(); else if (state !== 'play') reset(); return; }
+    if (k === 'e') interact();
+    keys[k] = true;
+  });
+  addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
+  const bind = (id, fn, k) => {
+    const b = document.getElementById(id);
+    if (k){
+      const on = e => { e.preventDefault(); keys[k] = true; };
+      const off = e => { e.preventDefault(); keys[k] = false; };
+      b.addEventListener('pointerdown', on); b.addEventListener('pointerup', off);
+      b.addEventListener('pointerleave', off);
+    } else {
+      b.addEventListener('pointerdown', e => { e.preventDefault(); fn(); });
+    }
+  };
+  bind('tL', null, 'arrowleft'); bind('tR', null, 'arrowright');
+  bind('tU', null, 'arrowup');   bind('tD', null, 'arrowdown');
+  bind('tE', () => { if (state === 'play') interact(); else if (state !== 'talk') reset(); });
+  bind('tN', () => { if (state === 'talk') nod(); else if (state !== 'play') reset(); });
+  cv.addEventListener('pointerdown', () => { if (state === 'win' || state === 'lose') reset(); });
+
+  const near = (a, r) => Math.hypot(p.x-a.x, p.y-a.y) < r;
+
+  function interact(){
+    if (phase === 0 && near(METER, 46)){
+      meterFed = true; meter = 11 * 60; // 11 minutes, in frames-ish seconds below
+      phase = 1;
+      objEl.textContent = 'OBJECTIVE: RECEIVE THE ENVELOPE (E) — DIGNIFIED PACE';
+      think('meter');
+    } else if (phase === 1 && near(SOURCE, 50)){
+      phase = 2;
+      objEl.textContent = 'OBJECTIVE: RETURN TO THE SEDAN (E). DO NOT RUN. DO NOT WEEP.';
+      think('pickup');
+    } else if (phase === 2 && near(SEDAN, 50)){
+      state = 'win'; think('win');
+    }
+  }
+
+  function nod(){
+    nodProg += 9;
+    if (nodProg >= 100){
+      colonel.active = false; state = 'play'; nodProg = 0;
+      colonel.timer = 900 + Math.random()*600;
+      meter -= 45; // the colonel costs you meter time. of course he does.
+    }
+  }
+
+  function step(){
+    t++;
+    // colonel ambush
+    if (state === 'play' && phase >= 1 && !colonel.active){
+      colonel.timer--;
+      if (colonel.timer <= 0){
+        colonel.active = true; state = 'talk'; nodProg = 0;
+        colonel.x = p.x + 30; colonel.y = p.y;
+        think('colonel');
+      }
+    }
+    if (state !== 'play') return;
+
+    // movement
+    const striding = keys['shift'];
+    const spd = striding ? 3.1 : 1.6;
+    let mvx = 0, mvy = 0;
+    if (keys['arrowleft']||keys['a'])  mvx -= 1;
+    if (keys['arrowright']||keys['d']) mvx += 1;
+    if (keys['arrowup']||keys['w'])    mvy -= 1;
+    if (keys['arrowdown']||keys['s'])  mvy += 1;
+    const m = Math.hypot(mvx, mvy) || 1;
+    p.x += mvx/m * spd; p.y += mvy/m * spd;
+    p.x = Math.max(30, Math.min(W-30, p.x));
+    p.y = Math.max(30, Math.min(H-30, p.y));
+    for (const pl of PILLARS){
+      const d = Math.hypot(p.x-pl.x, p.y-pl.y);
+      if (d < 34){ p.x += (p.x-pl.x)/d * (34-d); p.y += (p.y-pl.y)/d * (34-d); }
+    }
+
+    // carts patrol
+    let seen = false;
+    for (const c of carts){
+      c.x += c.dir * c.spd;
+      if (c.x < c.min || c.x > c.max) c.dir *= -1;
+      if (Math.hypot(p.x-c.x, p.y-c.y) < 110) seen = true;
+    }
+
+    // suspicion
+    if (striding && (mvx||mvy)) { sus += seen ? 0.9 : 0.25; if (monoT<=0) think('stride'); }
+    else if (seen) { sus += 0.35; if (monoT<=0) think('cart'); }
+    else sus -= 0.12;
+    sus = Math.max(0, Math.min(100, sus));
+    susEl.style.width = sus + '%';
+    if (sus >= 100){ state = 'lose'; think('made'); loseWhy = 'made'; }
+
+    // meter
+    if (meterFed){
+      meter -= 1;
+      const s = Math.max(0, Math.ceil(meter/60));
+      meterEl.textContent = 'METER: ' + Math.floor(s/60) + ':' + String(s%60).padStart(2,'0');
+      meterEl.classList.toggle('low', meter < 90*1);
+      if (meter <= 0 && phase < 3 && state === 'play'){ state = 'lose'; loseWhy = 'ticket'; think('ticket'); }
+    } else {
+      meterEl.textContent = 'METER: UNPAID (A MELLON DOES NOT SKIP THE METER)';
+    }
+    if (monoT > 0) monoT--;
+  }
+  let loseWhy = 'made';
+
+  function draw(){
+    // asphalt
+    cx.fillStyle = '#191D22'; cx.fillRect(0,0,W,H);
+    cx.strokeStyle = '#3A4048'; cx.lineWidth = 3;
+    for (const col of LOT.cols){
+      for (let y=70; y<H-110; y+=90){
+        cx.strokeRect(col-38, y, 76, 60);
+      }
+    }
+    // parked civilian cars (rectangles of plausible deniability)
+    cx.fillStyle = '#232A33';
+    const cars = [[140,70],[140,250],[300,160],[460,70],[460,340],[620,250],[780,70],[780,340]];
+    for (const [x,y] of cars){ cx.fillRect(x-32, y+4, 64, 52); cx.fillStyle='#1B222B'; cx.fillRect(x-26, y+12, 52, 14); cx.fillStyle='#232A33'; }
+    // pillars
+    for (const pl of PILLARS){
+      cx.fillStyle = '#2E3540'; cx.fillRect(pl.x-16, pl.y-16, 32, 32);
+      cx.fillStyle = '#FFD23F'; cx.fillRect(pl.x-16, pl.y-16, 32, 5);
+    }
+    // sedan (yours, tasteful)
+    cx.fillStyle = '#3E4A5C'; cx.fillRect(SEDAN.x-34, SEDAN.y-24, 68, 48);
+    cx.fillStyle = '#2A3442'; cx.fillRect(SEDAN.x-26, SEDAN.y-14, 52, 20);
+    cx.fillStyle = '#B9AFD0'; cx.font = '9px Courier New';
+    cx.fillText('TASTEFUL SEDAN', SEDAN.x-38, SEDAN.y+38);
+    // meter
+    cx.fillStyle = '#7FA88F'; cx.fillRect(METER.x-4, METER.y-18, 8, 26);
+    cx.fillStyle = '#0F1A14'; cx.fillRect(METER.x-9, METER.y-32, 18, 16);
+    cx.fillStyle = meterFed ? '#3DFC8A' : '#FF3D8A';
+    cx.fillRect(METER.x-6, METER.y-29, 12, 10);
+    cx.fillStyle = '#B9AFD0'; cx.fillText('METER', METER.x-16, METER.y+22);
+    // source (between two vans, blinking)
+    cx.fillStyle = '#28303C'; cx.fillRect(SOURCE.x-70, SOURCE.y-26, 52, 56); cx.fillRect(SOURCE.x+18, SOURCE.y-26, 52, 56);
+    const blink = Math.floor(t/40)%2 === 0;
+    cx.fillStyle = blink ? '#E8D9A8' : '#7E6F9E';
+    cx.beginPath(); cx.arc(SOURCE.x, SOURCE.y, 12, 0, 7); cx.fill();
+    cx.fillStyle = '#B9AFD0'; cx.fillText('THE SOURCE', SOURCE.x-30, SOURCE.y+34);
+    if (phase === 1 && blink){ cx.fillStyle = '#E8D9A8'; cx.fillRect(SOURCE.x-6, SOURCE.y+14, 12, 9); } // envelope shown
+    // pigeon (with lanyard, facing you, always)
+    cx.fillStyle = '#8C93A6';
+    cx.beginPath(); cx.arc(PIGEON.x, PIGEON.y, 7, 0, 7); cx.fill();
+    cx.beginPath(); cx.arc(PIGEON.x+5, PIGEON.y-6, 4, 0, 7); cx.fill();
+    cx.strokeStyle = '#FFD23F'; cx.lineWidth = 1.5;
+    cx.beginPath(); cx.moveTo(PIGEON.x+5, PIGEON.y-3); cx.lineTo(PIGEON.x+5, PIGEON.y+4); cx.stroke(); // lanyard
+    cx.fillStyle = '#FFD23F'; cx.fillRect(PIGEON.x+3, PIGEON.y+4, 5, 4); // badge
+    // pigeon gaze
+    const ga = Math.atan2(p.y-PIGEON.y, p.x-PIGEON.x);
+    cx.fillStyle = '#0B0614';
+    cx.beginPath(); cx.arc(PIGEON.x+5+Math.cos(ga)*2, PIGEON.y-6+Math.sin(ga)*2, 1.4, 0, 7); cx.fill();
+    // carts
+    for (const c of carts){
+      cx.fillStyle = 'rgba(255,210,63,.08)';
+      cx.beginPath(); cx.arc(c.x, c.y, 110, 0, 7); cx.fill();
+      cx.fillStyle = '#EDE6D6'; cx.fillRect(c.x-22, c.y-14, 44, 28);
+      cx.fillStyle = '#C0453B'; cx.fillRect(c.x-22, c.y-14, 44, 7);
+      cx.fillStyle = '#B9AFD0'; cx.fillText('SECURITY', c.x-24, c.y+26);
+    }
+    // player: gentleman in a blazer
+    cx.save(); cx.translate(p.x, p.y);
+    cx.fillStyle = '#1E2B44'; cx.fillRect(-8, -6, 16, 20);          // blazer
+    cx.fillStyle = '#E8D9A8'; cx.beginPath(); cx.arc(0, -12, 7, 0, 7); cx.fill(); // head
+    cx.fillStyle = '#B9AFD0'; cx.fillRect(-8, -6, 16, 3);           // pocket square line
+    cx.fillStyle = '#7E6F9E'; cx.fillRect(-2, -6, 4, 8);            // tie
+    if (phase === 2){ cx.fillStyle = '#E8D9A8'; cx.fillRect(8, 0, 12, 9); } // the envelope
+    cx.restore();
+    // colonel overlay
+    if (state === 'talk'){
+      cx.fillStyle = 'rgba(5,8,16,.7)'; cx.fillRect(0,0,W,H);
+      cx.textAlign = 'center';
+      cx.font = 'bold 34px Haettenschweiler, Impact, sans-serif';
+      cx.fillStyle = '#FFD23F';
+      cx.fillText('A COLONEL HAS ENGAGED YOU ABOUT THE COMMANDERS', W/2, H/2 - 60);
+      cx.font = '14px Courier New'; cx.fillStyle = '#F4F0FF';
+      cx.fillText('MASH SPACE (OR NOD) TO NOD POLITELY. THE METER IS STILL RUNNING.', W/2, H/2 - 24);
+      cx.strokeStyle = '#3DFC8A'; cx.strokeRect(W/2-150, H/2, 300, 22);
+      cx.fillStyle = '#3DFC8A'; cx.fillRect(W/2-150, H/2, nodProg*3, 22);
+      cx.textAlign = 'left';
+    }
+    // end states
+    if (state === 'win' || state === 'lose'){
+      cx.fillStyle = 'rgba(5,8,16,.78)'; cx.fillRect(0,0,W,H);
+      cx.textAlign = 'center';
+      cx.font = 'bold 44px Haettenschweiler, Impact, sans-serif';
+      if (state === 'win'){
+        cx.fillStyle = '#3DFC8A';
+        cx.fillText('HANDOFF COMPLETE. HISTORY ALTERED.', W/2, H/2 - 48);
+        cx.font = '15px Courier New'; cx.fillStyle = '#F4F0FF';
+        cx.fillText('TIME IN LOT: ELEVEN MINUTES. COST: $4.50. CHANGE GIVEN: NONE.', W/2, H/2 - 10);
+        cx.fillStyle = '#FFD23F';
+        cx.fillText('PARKING VALIDATION: STILL PENDING. IT WILL ALWAYS BE PENDING.', W/2, H/2 + 20);
+        cx.fillText('CLAIM THE DEAD DROP METER BELOW, PATRIOT.', W/2, H/2 + 46);
+      } else if (loseWhy === 'ticket'){
+        cx.fillStyle = '#FF3D8A';
+        cx.fillText('TICKETED. A PAPER TRAIL.', W/2, H/2 - 48);
+        cx.font = '15px Courier New'; cx.fillStyle = '#F4F0FF';
+        cx.fillText('DECADES OF PERFECT SECRECY, UNDONE BY PARKING ENFORCEMENT.', W/2, H/2 - 10);
+        cx.fillText('THE ONLY AGENCY THAT DOCUMENTS EVERYTHING. EVERY TIME.', W/2, H/2 + 18);
+      } else {
+        cx.fillStyle = '#FF3D8A';
+        cx.fillText('MADE.', W/2, H/2 - 48);
+        cx.font = '15px Courier New'; cx.fillStyle = '#F4F0FF';
+        cx.fillText('THE PIGEON IS WALKING TOWARD YOU WITH PURPOSE.', W/2, H/2 - 10);
+        cx.fillText('IT HAS PRODUCED A SMALL CLIPBOARD. IT IS OVER.', W/2, H/2 + 18);
+      }
+      cx.font = '13px Courier New'; cx.fillStyle = '#B9AFD0';
+      cx.fillText('PRESS SPACE OR TAP TO RE-ENTER THE STRUCTURE', W/2, H/2 + 84);
+      cx.textAlign = 'left';
+    }
+  }
+
+  (function loop(){ step(); draw(); requestAnimationFrame(loop); })();
+})();
+</script>
+
+</body>
+</html>
