@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DOUCHECLOSURE COMMAND — Sub-Basement 4</title>
+<meta name="robots" content="noindex">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--void);}
+  body{margin:0; background:var(--void); color:var(--white);
+    font-family:"Courier New", Courier, monospace; line-height:1.55;
+    display:flex; flex-direction:column; align-items:center; min-height:100vh; padding-bottom:3rem;}
+  body::after{content:""; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.13) 0 1px, transparent 1px 3px);
+    pointer-events:none; z-index:100;}
+  .display{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-weight:400; text-transform:uppercase; letter-spacing:.03em; line-height:.95;}
+  header{text-align:center; padding:2rem 1rem .5rem;}
+  header h1{margin:0; font-size:clamp(1.8rem, 6vw, 2.8rem); color:var(--neon-pink);
+    text-shadow:0 0 14px rgba(255,61,138,.5);}
+  header p{color:var(--neon-cyan); font-size:.64rem; letter-spacing:.22em; text-transform:uppercase; margin:.4rem 0 0;}
+  main{width:100%; max-width:680px; padding:1rem 1.25rem 0;}
+  .lab{background:linear-gradient(180deg, var(--panel-2), var(--panel));
+    border:2px solid var(--neon-pink); border-radius:14px; padding:1.4rem;
+    box-shadow:0 0 26px rgba(255,61,138,.15); margin-bottom:1.25rem;}
+  h2.lab-h{margin:0 0 .8rem; font-size:1.3rem; color:var(--neon-cyan);
+    font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif; font-weight:400;
+    text-transform:uppercase; letter-spacing:.04em;}
+  label{display:block; font-size:.62rem; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--chrome); margin:.7rem 0 .25rem;}
+  input, textarea{
+    width:100%; background:var(--void); color:var(--white);
+    border:2px solid #35205C; border-radius:8px;
+    font-family:inherit; font-size:.88rem; padding:.6rem .7rem;
+  }
+  input:focus, textarea:focus{outline:2px solid var(--neon-yellow); outline-offset:1px; border-color:var(--neon-cyan);}
+  textarea{resize:vertical; min-height:140px;}
+  .row{display:flex; gap:.6rem; justify-content:center; margin-top:1rem; flex-wrap:wrap;}
+  button.ctl{
+    font-family:inherit; font-weight:bold; font-size:.78rem; letter-spacing:.12em;
+    text-transform:uppercase; padding:.8rem 1.3rem; border-radius:8px; cursor:pointer;
+    border:2px solid var(--neon-green); background:var(--neon-green); color:#052012;
+  }
+  button.ctl.secondary{background:transparent; color:var(--neon-cyan); border-color:var(--neon-cyan);}
+  button.ctl.danger{background:transparent; color:var(--neon-pink); border-color:var(--neon-pink);}
+  button.ctl:hover{filter:brightness(1.1);}
+  #status{text-align:center; font-size:.72rem; color:var(--neon-yellow); letter-spacing:.1em;
+    text-transform:uppercase; min-height:1.2rem; margin:.5rem 0;}
+  .post{border:2px solid #35205C; border-radius:10px; padding:.8rem 1rem; margin-bottom:.6rem; background:var(--void);}
+  .post .k{color:var(--neon-cyan); font-size:.62rem; letter-spacing:.18em; text-transform:uppercase;}
+  .post .t{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif; font-size:1.2rem;
+    text-transform:uppercase; margin:.1rem 0;}
+  .post .m{font-size:.66rem; color:#7E6F9E; text-transform:uppercase; letter-spacing:.08em;}
+  .post .pub{color:var(--neon-green);} .post .draft{color:var(--neon-yellow);}
+  .post .actions{margin-top:.5rem; display:flex; gap:.4rem; flex-wrap:wrap;}
+  .post .actions button{font-size:.62rem; padding:.4rem .7rem;}
+  #app{display:none;}
+  .whoami{text-align:center; font-size:.68rem; color:var(--chrome); letter-spacing:.1em;}
+  .fine{color:#7E6F9E; font-size:.62rem; text-align:center; margin-top:.75rem; letter-spacing:.05em; padding:0 1rem;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1 class="display">Doucheclosure Command</h1>
+  <p>Sub-Basement 4 &bull; Authorized Operators Only &bull; The Mop Remembers</p>
+</header>
+
+<main>
+  <!-- LOGIN -->
+  <div class="lab" id="auth">
+    <h2 class="lab-h">Identify Yourself To The Prongs</h2>
+    <label for="email">Email</label>
+    <input id="email" type="email" autocomplete="email" placeholder="operator@doucheclosure.com">
+    <label for="pass">Password</label>
+    <input id="pass" type="password" autocomplete="current-password" placeholder="••••••••">
+    <div class="row">
+      <button class="ctl" id="signin">SIGN IN</button>
+      <button class="ctl secondary" id="signup">FIRST TIME: CREATE ACCOUNT</button>
+    </div>
+    <p class="fine">Accounts only function if your email is on the operator allowlist.
+    Not on it? Ask the Publisher. Bring butter.</p>
+  </div>
+
+  <!-- APP -->
+  <div id="app">
+    <p class="whoami" id="whoami"></p>
+    <div class="lab">
+      <h2 class="lab-h">File A Daily Debrief</h2>
+      <label for="kicker">Kicker (series + day)</label>
+      <input id="kicker" placeholder="CHAIN OF CUSTODY WATCH • DAY 2">
+      <label for="title">Headline</label>
+      <input id="title" placeholder="The Cooler Sends Its Regards">
+      <label for="dek">Dek (one line under the headline)</label>
+      <input id="dek" placeholder="Sources confirm the ice was available the whole time.">
+      <label for="body">Body (HTML allowed — &lt;p&gt;, &lt;b&gt;, blockquotes)</label>
+      <textarea id="body" placeholder="<p>UNDISCLOSED LOCATION — ...</p>"></textarea>
+      <div class="row">
+        <button class="ctl" id="publish">PUBLISH TO THE ARCADE</button>
+        <button class="ctl secondary" id="draft">SAVE AS DRAFT</button>
+        <button class="ctl secondary" id="clearForm">CLEAR</button>
+      </div>
+      <p id="status">&nbsp;</p>
+    </div>
+
+    <div class="lab">
+      <h2 class="lab-h">The Record</h2>
+      <div id="posts"></div>
+      <div class="row"><button class="ctl secondary" id="signout">SIGN OUT</button></div>
+    </div>
+  </div>
+
+  <p class="fine">DOUCHECLOSURE COMMAND v1 &bull; Published posts appear on the homepage Daily Debrief feed within seconds.<br>
+  Wing management, product links, and the vending-wall editor arrive in v2.</p>
+</main>
+
+<script src="../assets/supabase.js"></script>
+<script>
+(() => {
+  const SB_URL = 'https://dvuyitufzmleoqnqjasl.supabase.co';
+  const SB_KEY = 'sb_publishable_w_TCHUcoWjY_jzQlXFUqwA_SICtAYTv';
+  const sb = window.supabase.createClient(SB_URL, SB_KEY);
+  const $ = id => document.getElementById(id);
+  const status = t => { $('status').textContent = t; };
+  let editingId = null;
+
+  function slugify(s){
+    return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,60)
+      + '-' + Math.random().toString(36).slice(2,6);
+  }
+
+  async function refreshUI(){
+    const { data: { session } } = await sb.auth.getSession();
+    if (session){
+      $('auth').style.display = 'none';
+      $('app').style.display = 'block';
+      $('whoami').textContent = 'OPERATOR: ' + session.user.email.toUpperCase();
+      loadPosts();
+    } else {
+      $('auth').style.display = 'block';
+      $('app').style.display = 'none';
+    }
+  }
+
+  $('signin').addEventListener('click', async () => {
+    const { error } = await sb.auth.signInWithPassword({ email: $('email').value.trim(), password: $('pass').value });
+    if (error) return alert('The prongs reject you: ' + error.message);
+    refreshUI();
+  });
+  $('signup').addEventListener('click', async () => {
+    const { error } = await sb.auth.signUp({ email: $('email').value.trim(), password: $('pass').value });
+    if (error) return alert('Enrollment failed: ' + error.message);
+    alert('Account created. If email confirmation is on, check your inbox, then sign in. Note: you can only WRITE if the Publisher has allowlisted your email.');
+  });
+  $('signout').addEventListener('click', async () => { await sb.auth.signOut(); refreshUI(); });
+
+  async function savePost(published){
+    const title = $('title').value.trim();
+    if (!title) return status('A HEADLINE IS REQUIRED. THIS IS A NEWSROOM, TECHNICALLY.');
+    const { data: { session } } = await sb.auth.getSession();
+    const row = {
+      kicker: $('kicker').value.trim(),
+      title,
+      dek: $('dek').value.trim(),
+      body_html: $('body').value,
+      published,
+      author_email: session?.user?.email || null,
+      updated_at: new Date().toISOString()
+    };
+    let error;
+    if (editingId){
+      ({ error } = await sb.from('dc_debrief_posts').update(row).eq('id', editingId));
+    } else {
+      row.slug = slugify(title);
+      ({ error } = await sb.from('dc_debrief_posts').insert(row));
+    }
+    if (error) return status('REJECTED: ' + error.message.toUpperCase() + ' (ARE YOU ALLOWLISTED?)');
+    status(published ? 'PUBLISHED. THE ARCADE UPDATES WITHIN SECONDS.' : 'DRAFT FILED. THE RECORD REMEMBERS.');
+    clearForm(); loadPosts();
+  }
+  function clearForm(){
+    editingId = null;
+    ['kicker','title','dek','body'].forEach(id => $(id).value = '');
+    $('publish').textContent = 'PUBLISH TO THE ARCADE';
+  }
+  $('publish').addEventListener('click', () => savePost(true));
+  $('draft').addEventListener('click', () => savePost(false));
+  $('clearForm').addEventListener('click', clearForm);
+
+  async function loadPosts(){
+    const { data, error } = await sb.from('dc_debrief_posts')
+      .select('*').order('created_at', { ascending: false }).limit(50);
+    const box = $('posts');
+    box.innerHTML = '';
+    if (error){ box.textContent = 'RECORD UNAVAILABLE: ' + error.message; return; }
+    (data || []).forEach(p => {
+      const d = document.createElement('div');
+      d.className = 'post';
+      d.innerHTML = '<div class="k">' + (p.kicker || 'THE DAILY DEBRIEF') + '</div>' +
+        '<div class="t display">' + p.title + '</div>' +
+        '<div class="m"><span class="' + (p.published ? 'pub' : 'draft') + '">' +
+        (p.published ? '● LIVE' : '○ DRAFT') + '</span> — ' +
+        new Date(p.created_at).toLocaleString() + (p.author_email ? ' — ' + p.author_email : '') + '</div>' +
+        '<div class="actions"></div>';
+      const acts = d.querySelector('.actions');
+      const mk = (label, cls, fn) => {
+        const b = document.createElement('button');
+        b.className = 'ctl ' + cls; b.textContent = label;
+        b.addEventListener('click', fn); acts.appendChild(b);
+      };
+      mk('EDIT', 'secondary', () => {
+        editingId = p.id;
+        $('kicker').value = p.kicker || ''; $('title').value = p.title;
+        $('dek').value = p.dek || ''; $('body').value = p.body_html || '';
+        $('publish').textContent = 'UPDATE & PUBLISH';
+        scrollTo({top:0, behavior:'smooth'});
+      });
+      mk(p.published ? 'UNPUBLISH' : 'PUBLISH', 'secondary', async () => {
+        await sb.from('dc_debrief_posts').update({ published: !p.published }).eq('id', p.id);
+        loadPosts();
+      });
+      mk('STRIKE FROM RECORD', 'danger', async () => {
+        if (!confirm('Permanently strike "' + p.title + '" from the record?')) return;
+        await sb.from('dc_debrief_posts').delete().eq('id', p.id);
+        loadPosts();
+      });
+      box.appendChild(d);
+    });
+    if (!data || !data.length) box.textContent = 'THE RECORD IS EMPTY. FILE THE FIRST REPORT ABOVE.';
+  }
+
+  refreshUI();
+})();
+</script>
+
+</body>
+</html>

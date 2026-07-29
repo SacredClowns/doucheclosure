@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CARCASS TO CASSEROLE: THE 8-MINUTE WINDOW — Doucheclosure</title>
+<meta name="description" content="The fight is over. He is down. The USDA clock is running. Sort the field into COOLER, POT, and OUT-BIN before regret reaches room temperature. The timeline where we ate begins now.">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --lobster:#E2604A; --icebox:#7FB8FF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;overflow:hidden;background:var(--void);color:var(--white);
+    font-family:"Courier New",Courier,monospace;}
+  .display{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-weight:400;text-transform:uppercase;letter-spacing:.03em;line-height:.95;}
+  #frame{position:fixed;inset:0;display:flex;flex-direction:column;}
+  #topbar{display:flex;justify-content:space-between;padding:.55rem 1rem;
+    font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;z-index:9;}
+  #topbar a{color:var(--neon-cyan);text-decoration:none;}
+  #topbar .t{color:var(--lobster);}
+  #gamewrap{flex:1;position:relative;}
+  #game{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;}
+
+  #hud{position:absolute;top:8px;left:12px;right:12px;display:flex;gap:1.25rem;z-index:9;
+    font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;pointer-events:none;flex-wrap:wrap;}
+  .bar{flex:1;min-width:150px;max-width:260px;}
+  .bar .lab{color:var(--chrome);margin-bottom:3px;}
+  .track{height:12px;background:#00000099;border:1px solid #000;border-radius:6px;overflow:hidden;}
+  #tempfill{height:100%;width:20%;background:linear-gradient(90deg,var(--icebox),var(--neon-pink));transition:width .3s;}
+  #quotafill{height:100%;width:0%;background:linear-gradient(90deg,#555,var(--neon-green));transition:width .3s;}
+
+  #annc{position:absolute;top:56px;left:50%;transform:translateX(-50%);z-index:9;
+    max-width:min(620px,92vw);text-align:center;color:var(--neon-yellow);
+    font-size:.8rem;letter-spacing:.05em;min-height:1.3rem;text-shadow:0 2px 0 #000;}
+
+  .toast{position:absolute;top:96px;left:50%;transform:translateX(-50%);z-index:30;
+    background:var(--panel);border:2px solid var(--neon-yellow);border-radius:10px;
+    padding:.6rem 1.1rem;text-align:center;animation:tin .3s;}
+  .toast .t1{color:var(--neon-yellow);font-size:.6rem;letter-spacing:.24em;}
+  .toast .t2{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;font-size:1.15rem;text-transform:uppercase;}
+  @keyframes tin{from{opacity:0;transform:translateX(-50%) translateY(-10px)}to{opacity:1;transform:translateX(-50%)}}
+
+  #briefing,#endcard{position:absolute;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;
+    flex-direction:column;background:rgba(4,4,10,.92);text-align:center;padding:1rem;}
+  #endcard{display:none;}
+  #briefing h1,#endcard h1{font-size:clamp(1.7rem,6vw,3rem);color:var(--lobster);
+    text-shadow:0 0 18px rgba(226,96,74,.55);}
+  #endcard h1.good{color:var(--neon-green);text-shadow:0 0 18px rgba(61,252,138,.55);}
+  #briefing p,#endcard p{max-width:37rem;margin:.9rem auto;color:var(--chrome);font-size:.9rem;line-height:1.65;}
+  #briefing b,#endcard b{color:var(--white);}
+  .btn{display:inline-block;margin:.4rem;padding:.85rem 1.6rem;border-radius:8px;
+    font-family:inherit;font-weight:bold;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;
+    text-decoration:none;cursor:pointer;border:2px solid var(--neon-green);background:var(--neon-green);color:#052012;}
+  .btn.ghost{background:transparent;color:var(--neon-cyan);border-color:var(--neon-cyan);}
+  #montage{max-width:38rem;margin:0 auto;}
+  #montage p{opacity:0;transition:opacity 1.2s;color:var(--chrome);font-size:.95rem;margin:.55rem auto;}
+  #montage p.show{opacity:1;}
+  #montage p b{color:var(--neon-yellow);}
+  #kbhint{position:absolute;bottom:8px;left:0;right:0;text-align:center;color:#7E6F9E;
+    font-size:11px;z-index:8;letter-spacing:.06em;}
+</style>
+</head>
+<body>
+<div id="frame">
+  <div id="topbar">
+    <a href="index.html">&larr; THE SANDS WING</a>
+    <span class="t display" style="font-size:1.05rem;">CARCASS TO CASSEROLE: THE 8-MINUTE WINDOW</span>
+    <span style="color:#7E6F9E;">USDA CLOCK: RUNNING</span>
+  </div>
+  <div id="gamewrap">
+    <canvas id="game"></canvas>
+    <div id="hud">
+      <div class="bar"><div class="lab">AMBIENT REGRET (KEEP LOW)</div><div class="track"><div id="tempfill"></div></div></div>
+      <div class="bar"><div class="lab" id="quotalab">MEAT ON ICE: 0 / 20</div><div class="track"><div id="quotafill"></div></div></div>
+    </div>
+    <p id="annc">&nbsp;</p>
+
+    <div id="briefing">
+      <h1 class="display">The Fight Is Over.<br>The Window Is Open.</h1>
+      <p>He won. We believed him instantly — that was never the issue. The issue is the next
+      <b>eight minutes</b>, the ones history fumbled. The field is streaming toward you:
+      sacred protein, honest aromatics, and federal debris. Your bins:</p>
+      <p><b style="color:var(--icebox)">&larr; COOLER</b> — meat. All meat. The claw, the lump, the knuckle. This is the whole ballgame.<br>
+      <b style="color:var(--neon-yellow)">&darr; POT</b> — butter, Old Bay, lemon, corn. The bisque waits for no timeline.<br>
+      <b style="color:var(--neon-pink)">OUT-BIN &rarr;</b> — dog tags, clipboards, lanyards, and the PHONE. Especially the phone.
+      The podcast can hear about this LATER. On ice. Everything can be discussed later, on ice.</p>
+      <p>Sort 20 cuts before regret reaches room temperature, and you will see the timeline
+      that should have been.</p>
+      <button class="btn" id="startBtn">OPEN THE WINDOW</button>
+    </div>
+
+    <div id="endcard">
+      <h1 class="display" id="endTitle"></h1>
+      <div id="montage"></div>
+      <p id="endText"></p>
+      <div id="endBtns" style="display:none;">
+        <button class="btn" onclick="location.reload()">RE-OPEN THE WINDOW</button>
+        <a class="btn ghost" href="../../cookbook.html">THE 111 RECIPES THIS TIMELINE DESERVES — $5</a>
+      </div>
+    </div>
+    <p id="kbhint">&larr; / A = COOLER &bull; &darr; / S = POT &bull; &rarr; / D = OUT-BIN &bull; SORT BEFORE IT LANDS &bull; TAP A THIRD OF THE SCREEN ON MOBILE</p>
+  </div>
+</div>
+
+<script>
+(() => {
+  const cv = document.getElementById('game');
+  const cx = cv.getContext('2d');
+  let W, H;
+  const fit = () => { W = cv.width = cv.clientWidth; H = cv.height = cv.clientHeight; };
+  addEventListener('resize', fit);
+
+  const $ = id => document.getElementById(id);
+  let annT = 0;
+  function say(t){ $('annc').textContent = t; annT = 300; }
+  function toast(t2){
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.innerHTML = '<div class="t1">ACHIEVEMENT UNLOCKED</div><div class="t2">' + t2 + '</div>';
+    $('gamewrap').appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
+  const got = {};
+  const once = (k, fn) => { if (!got[k]){ got[k] = true; fn(); } };
+
+  // item defs: [label, emoji-ish draw color, correct bin, kind]
+  const MEAT = [
+    ['CLAW (SWEETEST)', '#E2604A', 0], ['LUMP', '#E88A75', 0], ['KNUCKLE (UNDERRATED)', '#D0524A', 0],
+    ['BACKFIN', '#EDA090', 0], ['LEG MEAT', '#E2604A', 0]
+  ];
+  const POT = [
+    ['BUTTER (IDEOLOGY)', '#FFD23F', 1], ['OLD BAY', '#C9A24B', 1], ['LEMON', '#F2E94E', 1],
+    ['CORN', '#FFE08A', 1], ['SHERRY (PERSONALITY)', '#B0526E', 1]
+  ];
+  const OUT = [
+    ['DOG TAGS', '#B9AFD0', 2], ['TINY CLIPBOARD', '#8A93A6', 2], ['LANYARD (PIGEON-SIZED)', '#FFD23F', 2],
+    ['MANILA ENVELOPE', '#E8D9A8', 2], ['A SINGLE PRONG', '#7FB8FF', 2]
+  ];
+  const PHONE = ['THE PHONE (A PODCAST CALLING)', '#3DFC8A', 2];
+
+  const WRONG = {
+    0: { 1: "MEAT IN THE POT ALREADY?? SEAR DISCIPLINE. COOLER FIRST. HISTORY IS WATCHING.",
+         2: "You returned MEAT to the PENTAGON. They will lose it. They lose everything. −" },
+    1: { 0: "You iced the butter. The butter was already loyal. −",
+         2: "Old Bay does not go back. Old Bay never goes back. −" },
+    2: { 0: "DOG TAGS IN THE COOLER. Now the bisque has a service record. −",
+         1: "You boiled federal property. That's a NEW hearing. −" }
+  };
+
+  let items, temp, iced, t, state, spawnT, spawnGap, streak, phones, over;
+  function reset(){
+    fit();
+    items = []; temp = 20; iced = 0; t = 0; spawnT = 0; spawnGap = 95;
+    streak = 0; phones = 0; over = false; state = 'play';
+  }
+
+  function spawn(){
+    const r = Math.random();
+    let def;
+    if (r < 0.44) def = MEAT[Math.floor(Math.random()*MEAT.length)];
+    else if (r < 0.72) def = POT[Math.floor(Math.random()*POT.length)];
+    else if (r < 0.93) def = OUT[Math.floor(Math.random()*OUT.length)];
+    else def = PHONE;
+    items.push({
+      label: def[0], color: def[1], bin: def[2],
+      phone: def === PHONE,
+      x: W*0.5 + (Math.random()-0.5)*W*0.25,
+      y: -20,
+      vy: 1.1 + Math.min(1.6, t/3600),
+      wob: Math.random()*7
+    });
+  }
+
+  function binOf(input){ return input; } // 0 cooler, 1 pot, 2 out
+  function act(bin){
+    if (state !== 'play') return;
+    // act on the lowest active item
+    let low = null;
+    for (const it of items){ if (!it.done && (!low || it.y > low.y)) low = it; }
+    if (!low) return;
+    low.done = true;
+    if (low.bin === bin){
+      streak++;
+      if (streak === 10) once('mise', () => toast('🏆 MISE EN PLACE UNDER FIRE'));
+      if (low.phone){
+        phones++;
+        say('DECLINED. Voicemail, on ice. "Hey man, love the show — can\'t talk, the window\'s open."');
+        if (phones >= 3) once('pod', () => toast('🏆 NOTHING FOR THE PODCAST'));
+        temp = Math.max(0, temp - 4);
+      } else if (bin === 0){
+        iced++;
+        temp = Math.max(0, temp - 5);
+        $('quotalab').textContent = 'MEAT ON ICE: ' + iced + ' / 20';
+        $('quotafill').style.width = (iced/20*100) + '%';
+        if (iced === 1) say('The first cut touches ice. Somewhere, a timeline forks.');
+        if (iced === 10) say('Halfway. The cooler hums the song of a functioning republic.');
+        if (iced >= 20) win();
+      } else if (bin === 1){
+        say(low.label + ' — into the pot. The bisque stirs in its sleep.');
+      } else {
+        say(low.label + ' — logged, bagged, returned. The Pentagon sends a fruit basket. It is also classified.');
+      }
+    } else {
+      streak = 0;
+      temp = Math.min(100, temp + 9);
+      say(WRONG[low.bin][bin] || 'Wrong bin. The window narrows.');
+    }
+    renderTemp();
+  }
+  function renderTemp(){
+    $('tempfill').style.width = temp + '%';
+    if (temp >= 100 && state === 'play') lose();
+  }
+
+  addEventListener('keydown', e => {
+    if (state !== 'play') return;
+    const k = e.key.toLowerCase();
+    if (['arrowleft','a'].includes(k)){ e.preventDefault(); act(0); }
+    if (['arrowdown','s'].includes(k)){ e.preventDefault(); act(1); }
+    if (['arrowright','d'].includes(k)){ e.preventDefault(); act(2); }
+  });
+  cv.addEventListener('pointerdown', e => {
+    if (state !== 'play') return;
+    const r = cv.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width;
+    act(x < 0.34 ? 0 : x < 0.67 ? 1 : 2);
+  });
+
+  function step(){
+    t++;
+    spawnT++;
+    spawnGap = Math.max(55, 95 - t/60);
+    if (spawnT >= spawnGap){ spawn(); spawnT = 0; }
+    temp += 0.014; // ambient creep — the world warms
+    for (const it of items){
+      if (it.done) continue;
+      it.y += it.vy;
+      it.x += Math.sin(t*0.03 + it.wob) * 0.4;
+      if (it.y > H - 60){
+        it.done = true;
+        streak = 0;
+        if (it.bin === 0){ temp = Math.min(100, temp + 12); say('A cut of history hit the ground. Ambient. AMBIENT.'); }
+        else if (it.phone){ temp = Math.max(0, temp - 2); say('The phone rang out. Correct. It can always ring out.'); }
+        else { temp = Math.min(100, temp + 4); say('Dropped: ' + it.label + '. Sloppy, but survivable.'); }
+      }
+    }
+    items = items.filter(it => !it.done || it.y < H);
+    renderTemp();
+    if (annT > 0) annT--;
+  }
+
+  function draw(){
+    const g = cx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#0B0614'); g.addColorStop(1,'#141026');
+    cx.fillStyle = g; cx.fillRect(0,0,W,H);
+    // bins
+    const bw = W/3;
+    const cols = ['#7FB8FF','#FFD23F','#FF3D8A'];
+    const labels = ['COOLER ←','POT ↓','→ OUT-BIN'];
+    for (let i=0;i<3;i++){
+      cx.fillStyle = cols[i] + '22';
+      cx.fillRect(i*bw, H-56, bw, 56);
+      cx.strokeStyle = cols[i]; cx.lineWidth = 2;
+      cx.strokeRect(i*bw+3, H-53, bw-6, 50);
+      cx.fillStyle = cols[i];
+      cx.font = 'bold 14px Haettenschweiler, Impact, sans-serif';
+      cx.textAlign = 'center';
+      cx.fillText(labels[i], i*bw + bw/2, H-24);
+    }
+    cx.textAlign = 'left';
+    // items
+    for (const it of items){
+      if (it.done) continue;
+      cx.save(); cx.translate(it.x, it.y);
+      cx.shadowColor = it.color; cx.shadowBlur = 12;
+      cx.fillStyle = it.color;
+      if (it.phone){ cx.fillRect(-9, -14, 18, 28); cx.fillStyle='#052012'; cx.fillRect(-6,-10,12,16); }
+      else { cx.beginPath(); cx.ellipse(0, 0, 16, 11, 0, 0, 7); cx.fill(); }
+      cx.restore();
+      cx.fillStyle = '#B9AFD0'; cx.font = '10px Courier New';
+      cx.textAlign = 'center';
+      cx.fillText(it.label, it.x, it.y - 20);
+      cx.textAlign = 'left';
+    }
+    // lowest-item marker
+    let low = null;
+    for (const it of items){ if (!it.done && (!low || it.y > low.y)) low = it; }
+    if (low){
+      cx.strokeStyle = '#F4F0FF'; cx.lineWidth = 1.5; cx.setLineDash([4,4]);
+      cx.beginPath(); cx.arc(low.x, low.y, 24, 0, 7); cx.stroke(); cx.setLineDash([]);
+    }
+  }
+
+  function win(){
+    state = 'won'; over = true;
+    once('timeline', () => toast('🏆 THE TIMELINE WHERE WE ATE'));
+    $('endTitle').className = 'display good';
+    $('endTitle').textContent = 'YOU DID IT. THE WINDOW HELD.';
+    $('endcard').style.display = 'flex';
+    const lines = [
+      'The cooler closes with the click of a treaty.',
+      'In THIS timeline: <b>the bisque is served at the hearing.</b> Attendance is perfect.',
+      'The dog tags arrive at the Pentagon with a thank-you note. Lost & Found weeps.',
+      'The podcast still happens — <b>two days later, over leftovers.</b> Best episode ever recorded. Four hours. Nobody argues.',
+      'On the National Mall, a monument gleams in the sun: <b>a cooler, filled, forever.</b>',
+      'Schoolchildren visit it. They read the plaque: <b>"HE KILLED IT. AND THEN — AND THIS IS THE PART — HE CHILLED IT."</b>',
+      'Disclosure arrives on schedule, with drawn butter, and history, for once, tastes like something.'
+    ];
+    const m = $('montage');
+    m.innerHTML = lines.map(l => '<p>' + l + '</p>').join('');
+    [...m.children].forEach((p, i) => setTimeout(() => p.classList.add('show'), 700 + i*1400));
+    setTimeout(() => { $('endBtns').style.display = 'block'; }, 700 + lines.length*1400);
+  }
+
+  function lose(){
+    state = 'lost'; over = true;
+    $('endTitle').className = 'display';
+    $('endTitle').textContent = 'REGRET AT ROOM TEMPERATURE';
+    $('endText').innerHTML = 'The window closed. The meat went ambient. The phone was answered. ' +
+      'Somewhere, a hearing is scheduled and NOTHING is catered. This is the timeline we already live in — ' +
+      '<b>you have merely confirmed the physics.</b> Re-open the window. History deserves a second draft.';
+    $('endcard').style.display = 'flex';
+    $('endBtns').style.display = 'block';
+  }
+
+  $('startBtn').addEventListener('click', () => {
+    $('briefing').style.display = 'none';
+    reset();
+    say('THE WINDOW IS OPEN. MEAT LEFT. AROMATICS DOWN. DEBRIS RIGHT. GO.');
+  });
+
+  state = 'brief';
+  fit();
+  (function loop(){ if (state === 'play') step(); if (state !== 'brief') draw(); requestAnimationFrame(loop); })();
+})();
+</script>
+</body>
+</html>

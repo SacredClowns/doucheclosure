@@ -622,7 +622,7 @@ if (renderer) {
       <h2 class="display">The Daily Debrief</h2>
       <p>Every day, UFO Twitter files a report. Every day, we file it correctly.</p>
     </div>
-    <div class="headlines">
+    <div class="headlines" id="headlines">
       <a class="headline" href="daily/chain-of-custody-watch.html">
         <span class="date">2026-07-27 &bull; CHAIN OF CUSTODY WATCH</span>
         <span class="hl">Day 1: Still No Cooler</span>
@@ -657,8 +657,36 @@ if (renderer) {
 <footer>
   <p class="display">DOUCHECLOSURE&trade;</p>
   <p>A parody entertainment company. All items are comedy. The recipes, however, are real.<br>
-  &copy; 2026 Doucheclosure Press &bull; Somebody preheat the oven.</p>
+  &copy; 2026 Doucheclosure Press &bull; Somebody preheat the oven. &bull; <a href="admin/index.html" style="color:#4A3670;">sub-basement 4</a></p>
 </footer>
+
+<script>
+// Live Daily Debrief feed — published by the Standards Desk from Sub-Basement 4
+(() => {
+  const URL = 'https://dvuyitufzmleoqnqjasl.supabase.co/rest/v1/dc_debrief_posts' +
+    '?published=eq.true&order=created_at.desc&limit=6&select=slug,kicker,title,dek,created_at';
+  const KEY = 'sb_publishable_w_TCHUcoWjY_jzQlXFUqwA_SICtAYTv';
+  const esc = s => (s || '').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
+  fetch(URL, { headers: { apikey: KEY, Authorization: 'Bearer ' + KEY } })
+    .then(r => r.ok ? r.json() : [])
+    .then(posts => {
+      if (!posts || !posts.length) return;
+      const box = document.getElementById('headlines');
+      const staticCards = [...box.children];
+      posts.filter(p => p.slug !== 'chain-of-custody-watch-day-1').reverse().forEach(p => {
+        const a = document.createElement('a');
+        a.className = 'headline';
+        a.href = 'daily/chain-of-custody-watch.html';
+        const d = new Date(p.created_at).toISOString().slice(0,10);
+        a.innerHTML = '<span class="date">' + d + ' &bull; ' + esc(p.kicker || 'THE DAILY DEBRIEF') + '</span>' +
+          '<span class="hl">' + esc(p.title) + '</span>' +
+          '<span class="dek">' + esc(p.dek) + '</span>';
+        box.insertBefore(a, staticCards[0]);
+      });
+    })
+    .catch(() => {}); // the arcade never breaks over a feed
+})();
+</script>
 
 </body>
 </html>
