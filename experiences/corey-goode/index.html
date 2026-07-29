@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TWENTY AND BACK — Doucheclosure</title>
+<meta name="description" content="Twenty years of labor. Zero pay stubs. We believe every word, which is why this is not a space story — it is the largest wage-theft case in two worlds. Playable.">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --wire:#8A6EC9; --bakelite:#2B2320;
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--void);}
+  body{margin:0; background:var(--void); color:var(--white);
+    font-family:"Courier New", Courier, monospace; line-height:1.65; overflow-x:hidden;}
+  body::after{content:""; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 1px, transparent 1px 3px);
+    pointer-events:none; z-index:100;}
+  a{color:var(--neon-cyan);}
+  .wrap{max-width:720px; margin:0 auto; padding:0 1.25rem;}
+  .display{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-weight:400; text-transform:uppercase; letter-spacing:.03em; line-height:.95;}
+  .crumb{padding:1rem 1.25rem; font-size:.72rem; letter-spacing:.15em; text-transform:uppercase;}
+  .crumb a{text-decoration:none;}
+
+  header.wing{
+    text-align:center; padding:3rem 1rem 2.5rem;
+    background:radial-gradient(ellipse at 50% -20%, rgba(138,110,201,.24), transparent 60%),
+      radial-gradient(ellipse at 15% 110%, rgba(45,225,252,.1), transparent 55%);
+    border-bottom:3px solid var(--wire);
+  }
+  .wing .eyebrow{color:var(--neon-cyan); letter-spacing:.28em; text-transform:uppercase; font-size:.72rem;}
+  .wing h1{margin:.5rem 0 0; font-size:clamp(2.4rem, 8.5vw, 4.6rem); color:var(--wire);
+    text-shadow:0 0 16px rgba(138,110,201,.55), 4px 4px 0 #2C1E4A;}
+  .wing .sub{color:var(--chrome); max-width:37rem; margin:1.25rem auto 0; font-size:.95rem;}
+  .wing .sub b{color:var(--white);}
+
+  section{padding:2.5rem 0;}
+  h2.sec{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif; font-weight:400;
+    text-transform:uppercase; font-size:clamp(1.6rem, 5.5vw, 2.3rem);
+    color:var(--neon-cyan); text-shadow:0 0 12px rgba(45,225,252,.5);
+    text-align:center; margin:0 0 1.25rem;}
+  .prose{color:var(--chrome); font-size:.93rem;}
+  .prose b{color:var(--white);}
+  .pull{border-left:4px solid var(--wire); background:var(--panel);
+    padding:1rem 1.25rem; color:var(--white); font-size:1rem; margin:1.4rem 0;}
+
+  /* ---------- RECEIPTS ---------- */
+  .ledger{border:2px solid var(--wire); border-radius:12px; overflow:hidden;
+    background:linear-gradient(180deg, var(--panel-2), var(--panel));}
+  .ledger .lhead{padding:.8rem 1.2rem; border-bottom:2px dashed #35205C;
+    font-size:.66rem; letter-spacing:.16em; text-transform:uppercase; color:var(--chrome);
+    display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap;}
+  .line{padding:1rem 1.2rem; border-bottom:1px dashed #2A1A47;}
+  .line:last-child{border-bottom:0;}
+  .line .lt{font-size:.66rem; letter-spacing:.2em; text-transform:uppercase; color:var(--neon-yellow);}
+  .line .lv{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-size:1.55rem; text-transform:uppercase; color:var(--wire); margin:.1rem 0 .3rem;
+    text-shadow:0 0 12px rgba(138,110,201,.45); word-break:break-word;}
+  .line .ln{color:var(--chrome); font-size:.86rem;}
+  .line .ln b{color:var(--white);}
+  .stamp{display:inline-block; border:2px solid var(--neon-pink); color:var(--neon-pink);
+    font-size:.6rem; letter-spacing:.2em; padding:.2rem .5rem; border-radius:4px;
+    transform:rotate(-2deg); margin-top:.5rem;}
+
+  /* ---------- THE SHIFT ---------- */
+  .engine{
+    background:linear-gradient(180deg, var(--panel-2), var(--panel));
+    border:2px solid var(--wire); border-radius:14px;
+    box-shadow:0 0 26px rgba(138,110,201,.22); overflow:hidden; position:relative;
+  }
+  .engine-head{
+    display:flex; justify-content:space-between; align-items:center; gap:1rem;
+    padding:.8rem 1.2rem; border-bottom:2px dashed #35205C;
+    font-size:.66rem; letter-spacing:.16em; text-transform:uppercase; color:var(--chrome);
+  }
+  #chain{flex:1; height:8px; border-radius:6px; background:#2A1A47; overflow:hidden; min-width:60px;}
+  #chain i{display:block; height:100%; width:0%; background:var(--wire);
+    box-shadow:0 0 10px rgba(138,110,201,.8); transition:width .18s;}
+
+  #stage{padding:1.5rem 1.4rem 2.6rem; min-height:280px; position:relative;}
+  .official{text-align:center; margin-bottom:1rem; animation:fadein .5s;}
+  .official .title{font-size:.66rem; letter-spacing:.2em; text-transform:uppercase; color:var(--neon-yellow);}
+  .official .name{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-size:1.5rem; text-transform:uppercase; color:var(--white); margin-top:.15rem;}
+  @keyframes fadein{from{opacity:0; transform:translateY(6px)}to{opacity:1;}}
+
+  .meters{display:grid; grid-template-columns:repeat(3,1fr); gap:.5rem; margin:.4rem 0 1rem;}
+  .meter{border:2px dashed #35205C; border-radius:10px; padding:.6rem .4rem; text-align:center;}
+  .meter .k{font-size:.55rem; letter-spacing:.16em; text-transform:uppercase; color:var(--chrome);}
+  .meter .v{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-size:1.5rem; color:var(--white); line-height:1.1;}
+  .meter.zero .v{color:#6B5A8C;}
+  .meter.owed{grid-column:1 / -1; border-color:var(--wire); border-style:solid;
+    background:rgba(138,110,201,.09); display:none;}
+  .meter.owed .v{color:var(--wire); text-shadow:0 0 14px rgba(138,110,201,.55); font-size:2rem;}
+  .meter.owed.on{display:block; animation:fadein .6s;}
+
+  #task{
+    width:100%; display:block; cursor:pointer;
+    font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-size:clamp(1.6rem,6.5vw,2.6rem); text-transform:uppercase; letter-spacing:.04em;
+    color:#140B24; background:var(--wire); border:2px solid var(--wire); border-radius:12px;
+    padding:1.15rem 1rem; box-shadow:0 0 26px rgba(138,110,201,.45);
+    transition:transform .06s, filter .12s;
+  }
+  #task:hover{filter:brightness(1.12);}
+  #task:active{transform:translateY(3px); box-shadow:0 0 10px rgba(138,110,201,.35);}
+  #task:disabled{background:transparent; color:#5B4C7A; border-color:#2A1A47;
+    box-shadow:none; cursor:default; filter:none;}
+  #task.dimmed{filter:brightness(.55) saturate(.4);}
+
+  .flavor{text-align:center; color:var(--chrome); font-size:.85rem; font-style:italic;
+    min-height:2.6rem; margin-top:.9rem;}
+  .fineprint{text-align:center; color:#6B5A8C; font-size:.66rem; letter-spacing:.1em;
+    text-transform:uppercase; margin-top:.5rem;}
+
+  /* the easily-missed link */
+  #grieve{
+    position:absolute; right:.6rem; bottom:.5rem; display:none;
+    font-size:.58rem; letter-spacing:.06em; color:#4E4070; text-decoration:none;
+    border-bottom:1px dotted #3A2E58; background:none; border-left:0; border-right:0; border-top:0;
+    font-family:"Courier New", Courier, monospace; padding:0; cursor:pointer;
+  }
+  #grieve.on{display:inline-block;}
+  #grieve:hover{color:var(--neon-yellow); border-bottom-color:var(--neon-yellow);}
+  #grieve.noticed{animation:breathe 3.4s infinite;}
+  @keyframes breathe{0%,100%{opacity:.55}50%{opacity:1}}
+  #whisper{position:absolute; left:0; right:0; bottom:.5rem; text-align:center;
+    font-size:.62rem; letter-spacing:.18em; text-transform:uppercase; color:var(--neon-yellow);
+    opacity:0; transition:opacity .3s; pointer-events:none;}
+  #whisper.on{opacity:1;}
+
+  #flash{position:fixed; inset:0; background:#EDE4FF; opacity:0; pointer-events:none; z-index:90;}
+  #flash.go{animation:whiteout 1.1s ease-out;}
+  @keyframes whiteout{0%{opacity:0}8%{opacity:.92}100%{opacity:0}}
+
+  #toasts{position:fixed; left:50%; transform:translateX(-50%); bottom:1rem; z-index:110;
+    display:flex; flex-direction:column; gap:.4rem; align-items:center; pointer-events:none;
+    width:min(92vw,26rem);}
+  .toast{background:var(--panel-2); border:2px solid var(--neon-green); color:var(--neon-green);
+    border-radius:10px; padding:.55rem .9rem; font-size:.72rem; letter-spacing:.08em;
+    text-transform:uppercase; box-shadow:0 0 18px rgba(61,252,138,.28); animation:pop .35s;}
+  @keyframes pop{from{opacity:0; transform:translateY(10px)}to{opacity:1;}}
+
+  .docket{font-size:.78rem; color:var(--chrome); text-align:left; max-width:34rem;
+    margin:.6rem auto; border-left:3px solid var(--wire); padding:.4rem .8rem; animation:fadein .5s;}
+  .award{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-size:clamp(2rem,9vw,3.4rem); color:var(--neon-green); text-align:center;
+    text-shadow:0 0 18px rgba(61,252,138,.5); word-break:break-word; line-height:1;}
+
+  .prize{
+    border:2px dashed var(--neon-green); border-radius:12px;
+    text-align:center; padding:2rem 1.5rem;
+    background:radial-gradient(ellipse at 50% 120%, rgba(61,252,138,.12), transparent 70%);
+  }
+  .prize .display{color:var(--neon-green); font-size:clamp(1.5rem,6vw,2.3rem);
+    text-shadow:0 0 14px rgba(61,252,138,.5);}
+  .prize p{color:var(--chrome); font-size:.92rem; max-width:34rem; margin:.9rem auto;}
+  .prize p b{color:var(--white);}
+  .btn{display:inline-block; font-weight:bold; font-size:.9rem; letter-spacing:.16em;
+    text-transform:uppercase; text-decoration:none; padding:.95rem 1.8rem; border-radius:8px;
+    border:2px solid var(--neon-green); color:#052012; background:var(--neon-green);
+    box-shadow:0 0 22px rgba(61,252,138,.5); cursor:pointer;}
+  .btn:hover{background:var(--neon-yellow); border-color:var(--neon-yellow); color:#231602;}
+  .buy-note{color:#7E6F9E; font-size:.72rem; margin-top:.8rem;}
+  footer{padding:2rem 1rem 3rem; text-align:center; color:#7E6F9E; font-size:.72rem;}
+</style>
+</head>
+<body>
+
+<p class="crumb"><a href="../../index.html">&larr; THE ARCADE</a> &nbsp;/&nbsp; EXPERIENCES &nbsp;/&nbsp; TWENTY AND BACK</p>
+
+<header class="wing">
+  <p class="eyebrow">Doucheclosure Experiences &bull; Wing No. 12</p>
+  <h1 class="display">Twenty<br>And Back</h1>
+  <p class="sub">A man states publicly that he served roughly twenty years in a secret space program,
+  and was then age-regressed and returned to the exact moment he left. <b>We believe every word of it.</b>
+  Which is why this review board is not interested in the craft, the bases, or the biologics.
+  This board has one question, and it has had it since 1996:
+  <b>who was signing the timesheets?</b></p>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <p>Everyone hears this story and asks about the ships. Amateurs. Look at what is actually being
+      described: <b>twenty years of labor.</b> Full time. No relief crew documented. No shore leave
+      on the record. Off-world, off-book, off-payroll. And then the employee is <b>returned to the
+      calendar</b> — same day, same hour, same nineteen-year-old body — with nothing in his hands.</p>
+      <p class="pull">Zero pay stubs. No W-2. No overtime. No vesting. No exit interview.
+      This is not a space story. This is the largest wage-theft case in two worlds, and it has
+      never once been argued in front of anybody.</p>
+      <p>The board wishes to be clear about its posture. <b>The claim is accepted in full.</b> That
+      is precisely what makes the paperwork so alarming. If a man tells you he was abducted by
+      aliens, that is a mystery. If a man tells you he <b>worked a twenty-year shift</b> and came
+      home to a bedroom he never left, that is <b>a Department of Labor matter,</b> and someone at
+      that Department is going to have to explain why nobody opened a file.</p>
+      <p>Below: the ledger. Then the simulation, in which you will personally work the shift the
+      way the shift was worked — which is to say, for nothing — until you notice the only move
+      the game will not tell you about.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RECEIPTS ============ -->
+<section>
+  <div class="wrap">
+    <h2 class="sec">The Ledger</h2>
+    <div class="ledger">
+      <div class="lhead">
+        <span>FORM 20-B &bull; UNCOMPENSATED SERVICE, EXTRAPLANETARY</span>
+        <span>EMPLOYER: UNNAMED</span>
+      </div>
+
+      <div class="line">
+        <div class="lt">Item 01 &bull; Back Pay Owed</div>
+        <div class="lv">$2,107,961.52</div>
+        <div class="ln">Twenty years of continuous duty at the federal minimum wage in effect at
+        the time of induction — <b>$4.75 an hour</b> — forty straight, one hundred twenty-eight at
+        time and a half, compounded annually at six percent from the first hour. The overtime is
+        where it gets genuinely uncomfortable, because <b>nobody has produced a schedule showing
+        when he was off.</b> The board's working assumption is that he was never off. The board
+        would be delighted to be corrected. In writing. With a schedule.</div>
+      </div>
+
+      <div class="line">
+        <div class="lt">Item 02 &bull; The 401(k)</div>
+        <div class="lv">No Employer Match Across Two Planets</div>
+        <div class="ln">Twenty years is a full vesting cliff at any employer on this rock. The board
+        contacted the plan administrator and reached <b>a tone.</b> Not a person, not a menu —
+        a tone. We have logged it as a response but not as a match.</div>
+      </div>
+
+      <div class="line">
+        <div class="lt">Item 03 &bull; PTO Accrued</div>
+        <div class="lv">Carried Over, Per The Handbook Nobody Has Produced</div>
+        <div class="ln">At a conservative two weeks a year, that is <b>forty weeks</b> sitting on the
+        books, unpaid out, unrolled over, un-anything. Every employer in America will tell you their
+        carryover policy is in the handbook. This is the first employer in history to make that claim
+        while also having <b>no known address at which a handbook could be kept.</b></div>
+        <span class="stamp">PAYOUT ON SEPARATION: UNKNOWN</span>
+      </div>
+
+      <div class="line">
+        <div class="lt">Item 04 &bull; The Age Regression</div>
+        <div class="lv">Legally, A Benefit?</div>
+        <div class="ln">The board has consulted three attorneys. Attorney One holds that returned
+        youth is <b>compensation in kind</b> and taxable at fair market value, which nobody can
+        establish, because there is no comp. Attorney Two holds that it is
+        <b>destruction of evidence,</b> since the body was the timesheet. Attorney Three
+        left the profession. She was the one making progress.</div>
+      </div>
+
+      <div class="line">
+        <div class="lt">Item 05 &bull; The Exit Interview</div>
+        <div class="lv">Never Conducted</div>
+        <div class="ln">HR was, at the time, <b>on Mars.</b> This is not offered as an excuse. This
+        is offered as the single most damning line in the entire file, because it means there
+        <b>was</b> an HR, which means there was <b>a department,</b> which means there was
+        <b>a budget,</b> and a budget is a thing that has a signature on it.</div>
+      </div>
+
+      <div class="line">
+        <div class="lt">Item 06 &bull; The Only Open Question</div>
+        <div class="lv">Who Was Signing The Timesheets</div>
+        <div class="ln">Somebody approved these hours. Somebody has an initial in a box. The board
+        does not need the ship. <b>The board needs the box.</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE SHIFT ============ -->
+<section>
+  <div class="wrap">
+    <h2 class="sec">Work The Shift</h2>
+    <div class="engine">
+      <div class="engine-head">
+        <span>BADGE: PENDING</span>
+        <div id="chain"><i></i></div>
+        <span id="yrHud">YR 0/20</span>
+      </div>
+      <div id="stage">
+        <div class="official">
+          <div class="title" id="stTitle">SECTOR 7 &bull; SOLAR WARDEN LOGISTICS &bull; SHIFT IN PROGRESS</div>
+          <div class="name" id="stName">You Are Clocked In</div>
+        </div>
+
+        <div class="meters">
+          <div class="meter"><div class="k">Shifts Completed</div><div class="v" id="mShifts">0</div></div>
+          <div class="meter"><div class="k">Years Served</div><div class="v" id="mYears">0</div></div>
+          <div class="meter zero"><div class="k">Wages Earned</div><div class="v" id="mEarned">$0.00</div></div>
+          <div class="meter owed" id="owedBox"><div class="k">Wages Owed &mdash; Unbilled, Uncontested, Climbing</div><div class="v" id="mOwed">$0.00</div></div>
+        </div>
+
+        <button id="task">SORT CARGO</button>
+        <p class="flavor" id="flavor">The button is the job. The job is the button. Nothing accrues while you rest, because nothing was ever accruing.</p>
+        <p class="fineprint" id="fine">Automation: none. The program evaluated automation and selected you.</p>
+
+        <div id="whisper"></div>
+        <button id="grieve">file a grievance</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE PRIZE ============ -->
+<section id="prize">
+  <div class="wrap">
+    <div class="prize">
+      <p class="display">The Full Experience — $5</p>
+      <p><b>One ticket, yours forever:</b> Twenty And Back (owner's edition, offline), the
+      KNOW YOUR OPERATOR dossier — the ledger, the three attorneys, the tone the plan administrator
+      made — and the souvenir below, which is worth the ticket on its own and will outlive the joke.</p>
+      <p><b>THE 20-AND-BACK TIMESHEET — a real time tracker and invoice generator.
+      Bill every hour, in every timeline.</b> A genuinely working tool from Doucheclosure Labs:
+      start and stop a clock on any task, tag it to a client and a rate, watch the total build in
+      real time, and generate a clean, printable, numbered invoice in one click.</p>
+      <p>Overtime rules. Multiple rates. Unbilled-hours warnings that get louder the longer a client
+      sits on your work. CSV export of every minute you have ever logged, so that whatever happens
+      to you, <b>the record leaves with you.</b> Because the entire lesson of this wing is that the
+      labor was real and the paperwork was optional — and the paperwork is the only part
+      anybody can be made to answer for.</p>
+      <!-- REPLACE-ME: point at your payment link (Gumroad / Stripe / Lemon Squeezy) -->
+      <a class="btn" href="#REPLACE-WITH-PAYMENT-LINK">BUY THE FULL EXPERIENCE — $5</a>
+      <p class="buy-note">Instant download &bull; works offline &bull; the first invoice you generate has already paid for it.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>DOUCHECLOSURE&trade; EXPERIENCES &bull; A work of parody commenting on public statements of public figures.<br>
+  <a href="../../index.html">Back to the arcade</a> &bull; <a href="../mantis-counseling/index.html">Previous wing: Mantis Counseling</a></p>
+</footer>
+
+<div id="flash"></div>
+<div id="toasts"></div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const stage = $('stage'), taskBtn = $('task'), flavor = $('flavor'), fine = $('fine');
+  const mShifts = $('mShifts'), mYears = $('mYears'), mOwed = $('mOwed');
+  const owedBox = $('owedBox'), bar = document.querySelector('#chain i'), yrHud = $('yrHud');
+  const grieve = $('grieve'), whisper = $('whisper'), flash = $('flash'), toasts = $('toasts');
+  const stTitle = $('stTitle'), stName = $('stName');
+
+  // ---- the arithmetic nobody ever did ----
+  const YEAR_STRAIGHT = 4.75 * 40 * 52;          // 9,880.00
+  const YEAR_OVERTIME = 4.75 * 1.5 * 128 * 52;   // 47,424.00 — he was never off
+  const YEAR_TOTAL    = YEAR_STRAIGHT + YEAR_OVERTIME;
+  const INTEREST      = 0.06;
+
+  const TASKS = [
+    'SORT CARGO','CALIBRATE PANEL','MOP BAY 7','RE-SEAT THE GASKET','INVENTORY THE CRYSTALS',
+    'DEGAUSS THE LONG HALLWAY','ROTATE THE BARRELS','SCRUB THE GLYPHS','COUNT THE SPARES',
+    'MOP BAY 7 AGAIN','POLISH THE OBSERVATION GLASS','STACK THE CRATES','FILE FORM 20-B',
+    'WIPE THE VIEWPORT','LABEL THE UNLABELED','MOP BAY 7'
+  ];
+
+  const LINES = [
+    'Bay 7 is clean. Bay 7 will not stay clean. Bay 7 is a covenant.',
+    'A supervisor passes. He does not have a name tag. He has a posture.',
+    'The cargo is sorted. The cargo is re-scattered overnight by persons unspecified.',
+    'You are performing above expectations. Expectations are not written down anywhere.',
+    'Somewhere, a box on a form is being initialed. Not by you.',
+    'The panel reads NOMINAL. The panel has read NOMINAL for eleven years.',
+    'Lunch was provided. Lunch is not compensation. Legal has been firm on this.',
+    'You ask about pay. The question is logged as a maintenance request.',
+    'A being of great wisdom nods at your work ethic. He does not have a checkbook.',
+    'The glyphs come off. The glyphs come back. This is the job.',
+    'You are told the mission is bigger than money. The mission has a procurement office.',
+    'Morale is high, per a survey you were not offered.',
+    'A crate is labeled PAYROLL. It contains more crates.',
+    'Two suns. Zero pay periods.',
+    'Someone left a birthday cake in the break area. It is not your birthday. It is nobody’s birthday. It is a Tuesday, allegedly.'
+  ];
+
+  const REG_LINES = [
+    'You are nineteen. You are in your bedroom. The clock has not moved.',
+    'You are nineteen again. The mop is gone. The muscle memory is not.',
+    'You are nineteen. You remember nothing. Something in your shoulders remembers everything.',
+    'You are nineteen. It is the same afternoon it has always been. You have never been anywhere.'
+  ];
+
+  let shifts = 0, years = 0, careerYears = 0, owed = 0, regressions = 0;
+  let working = true, lastClick = Date.now(), tookBreak = false, linkFound = false;
+  const got = {};
+
+  const usd = n => '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+  function toast(txt){
+    if (got[txt]) return; got[txt] = 1;
+    const t = document.createElement('div');
+    t.className = 'toast'; t.textContent = '🏆 ' + txt;
+    toasts.appendChild(t);
+    setTimeout(() => { t.style.transition='opacity .6s'; t.style.opacity='0'; }, 4200);
+    setTimeout(() => t.remove(), 5000);
+  }
+
+  function render(){
+    mShifts.textContent = shifts;
+    mYears.textContent = years;
+    mOwed.textContent = usd(owed);
+    bar.style.width = (years/20*100) + '%';
+    yrHud.textContent = 'YR ' + years + '/20';
+  }
+
+  function nextTask(){
+    taskBtn.textContent = TASKS[shifts % TASKS.length];
+  }
+
+  function doShift(){
+    if (!working) return;
+    lastClick = Date.now();
+    shifts++; years++; careerYears++;
+    owed = owed * (1 + INTEREST) + YEAR_TOTAL;
+
+    flavor.textContent = LINES[Math.floor(Math.random()*LINES.length)];
+
+    if (shifts === 1) toast('CLOCKED IN');
+    if (shifts === 6){ grieve.classList.add('on'); }
+    if (shifts === 50) toast('THE HANDBOOK NOBODY HAS PRODUCED');
+    if (shifts === 120) toast('EMPLOYEE OF THE CENTURY (UNPAID)');
+
+    if (years >= 20) regress(); else { render(); nextTask(); }
+  }
+
+  function regress(){
+    regressions++;
+    years = 0;
+    flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go');
+    render(); nextTask();
+
+    stTitle.textContent = 'PERSONNEL ACTION • 20-AND-BACK • SERVICE CLOCK ZEROED';
+    stName.textContent = 'You Are Nineteen';
+    flavor.textContent = REG_LINES[Math.min(regressions-1, REG_LINES.length-1)];
+    fine.textContent = 'Years served: 0. Years worked: ' + careerYears + '. Only one of those numbers is on a form.';
+
+    if (regressions === 1){
+      owedBox.classList.add('on');
+      toast('TWENTY AND BACK');
+      setTimeout(() => toast('THE ONLY COUNTER THAT REMEMBERS'), 900);
+    }
+    if (regressions === 3){ grieve.classList.add('noticed'); }
+    if (regressions === 5) toast('A CENTURY OF SERVICE, ZERO YEARS SERVED');
+
+    setTimeout(() => {
+      if (!working) return;
+      stTitle.textContent = 'SECTOR 7 • SOLAR WARDEN LOGISTICS • SHIFT IN PROGRESS';
+      stName.textContent = 'You Are Clocked In';
+      fine.textContent = 'Automation: none. The program evaluated automation and selected you.';
+    }, 3400);
+  }
+
+  // the break nobody scheduled
+  setInterval(() => {
+    if (!working || shifts < 3 || tookBreak) return;
+    if (Date.now() - lastClick > 12000){
+      tookBreak = true;
+      toast('THE FIRST BREAK IN 20 YEARS');
+      flavor.textContent = 'You stopped for twelve seconds. Nothing happened. Nothing accrued. ' +
+        'Nobody came looking. That is worth knowing.';
+    }
+  }, 1000);
+
+  grieve.addEventListener('mouseenter', () => {
+    if (!working) return;
+    taskBtn.classList.add('dimmed');
+    whisper.textContent = 'you would have to stop working';
+    whisper.classList.add('on');
+    if (!linkFound){ linkFound = true; toast('YOU FOUND THE LINK'); }
+  });
+  grieve.addEventListener('mouseleave', () => {
+    taskBtn.classList.remove('dimmed');
+    whisper.classList.remove('on');
+  });
+
+  taskBtn.addEventListener('click', doShift);
+  grieve.addEventListener('click', file);
+
+  // ---------- THE WIN: YOU STOP ----------
+  function file(){
+    if (!working) return;
+    working = false;
+    taskBtn.disabled = true;
+    taskBtn.classList.remove('dimmed');
+    taskBtn.textContent = 'YOU ARE NOT WORKING';
+    grieve.classList.remove('on');
+    whisper.classList.remove('on');
+    toast('UNIONIZED');
+
+    const finalOwed = owed, finalShifts = shifts, finalYears = careerYears;
+
+    stTitle.textContent = 'GRIEVANCE FILED';
+    stName.textContent = 'You Put Down The Mop';
+    flavor.textContent = '';
+    fine.textContent = '';
+
+    const beats = [
+      '<p class="docket"><b>0800.</b> DOCKET 20-AND-BACK-001 CONVENED. VENUE DISPUTED. ' +
+      'GRAVITY NOMINAL. THE ARBITRATOR IS SEATED. THE ARBITRATOR’S SPECIES IS NOT ENTERED ' +
+      'INTO THE RECORD, AND NO PARTY OBJECTS, BECAUSE NO PARTY WANTS TO BE THE ONE WHO ASKED.</p>',
+
+      '<p class="docket"><b>0911.</b> THE EMPLOYER IS CALLED. THE EMPLOYER DOES NOT APPEAR. ' +
+      'THE EMPLOYER HAS NEVER APPEARED ANYWHERE, WHICH THE ARBITRATOR NOTES IS ITSELF ' +
+      'A PATTERN OF CONDUCT.</p>',
+
+      '<p class="docket"><b>1340.</b> THE ARBITRATOR REQUESTS ' + finalYears + ' YEARS OF TIMESHEETS. ' +
+      'NONE EXIST. THE ARBITRATOR RULES THAT WHEN AN EMPLOYER KEEPS NO RECORDS, ' +
+      '<b>THE WORKER’S ACCOUNT IS THE RECORD.</b> THIS IS NOT ALIEN LAW. THIS IS OURS. ' +
+      'WE HAVE HAD IT SINCE 1946.</p>',
+
+      '<p class="docket"><b>1602.</b> HR IS SUMMONED. HR IS, AT THE TIME, ON MARS. ' +
+      'THE ARBITRATOR OBSERVES THAT MARS HAS AN ADDRESS.</p>'
+    ];
+
+    stage.innerHTML = '<div class="official"><div class="title">THE HEARING</div>' +
+      '<div class="name">One Worker. No Records. A Room.</div></div><div id="docket"></div>';
+
+    let i = 0;
+    const dock = $('docket');
+    const iv = setInterval(() => {
+      dock.insertAdjacentHTML('beforeend', beats[i]);
+      i++;
+      if (i >= beats.length){ clearInterval(iv); setTimeout(() => ruling(finalOwed, finalShifts, finalYears), 1200); }
+    }, 1500);
+  }
+
+  function ruling(finalOwed, finalShifts, finalYears){
+    toast('THE CHECK CLEARED');
+    stage.innerHTML =
+      '<div class="official"><div class="title">RULING — IN FAVOR OF THE GRIEVANT</div>' +
+      '<div class="name">Award, In Full</div></div>' +
+      '<div class="award">' + usd(finalOwed) + '</div>' +
+      '<p style="color:var(--chrome); font-size:.9rem; max-width:34rem; margin:1.1rem auto; text-align:center;">' +
+      finalShifts + ' shifts. ' + finalYears + ' years of labor. Zero pay stubs. ' +
+      'The arbitrator awards back pay, overtime, the unpaid carryover, the unmatched contributions, ' +
+      'and interest from the first hour — and adds, unprompted, that <b style="color:var(--white)">' +
+      'the age regression is not a benefit,</b> because a benefit is something the worker gets to keep ' +
+      'a receipt for.</p>' +
+      '<p style="color:var(--chrome); font-size:.9rem; max-width:34rem; margin:1.1rem auto; text-align:center;">' +
+      'You did not win by working harder. There was no amount of working that was going to do it. ' +
+      '<b style="color:var(--white)">You won by stopping.</b> The mechanic was the argument the entire time: ' +
+      'the counter that never moved was your wages, the counter that never stopped was theirs, ' +
+      'and the only button that ever mattered was the small one at the edge of the screen ' +
+      'that nobody points out to you.</p>' +
+      '<p style="color:var(--wire); font-size:.95rem; max-width:34rem; margin:1.4rem auto; text-align:center;">' +
+      'The check is issued in a currency that does not exist here, drawn on a bank that will not ' +
+      'confirm it, endorsed by an entity that cannot be subpoenaed — <b style="color:var(--white)">' +
+      'and it cleared.</b> It cleared, and that is more than most workers get.</p>' +
+      '<p style="color:#7E6F9E; font-size:.78rem; text-align:center;">Case closed. Somebody still ' +
+      'initialed that box. The board would like the box.</p>' +
+      '<div style="text-align:center; margin-top:1.2rem;">' +
+      '<a class="btn" href="#prize" style="font-size:.8rem; padding:.75rem 1.3rem;">BILL EVERY HOUR — THE 20-AND-BACK TIMESHEET, $5</a> ' +
+      '<button class="btn" id="again" style="font-size:.8rem; padding:.75rem 1.3rem; background:transparent; color:var(--neon-cyan); border-color:var(--neon-cyan); box-shadow:none;">CLOCK IN AGAIN</button>' +
+      '</div>';
+    $('again').addEventListener('click', () => location.reload());
+  }
+
+  render(); nextTask();
+})();
+</script>
+
+</body>
+</html>

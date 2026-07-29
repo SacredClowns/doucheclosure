@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE PERMIT — Doucheclosure</title>
+<meta name="description" content="They built a building over it. Which means somebody filed for a permit, and somebody APPROVED it. Get your own permit through five departments. Playable.">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --wire:#C97F4A; --bakelite:#2B2320;
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--void);}
+  body{margin:0; background:var(--void); color:var(--white);
+    font-family:"Courier New", Courier, monospace; line-height:1.65; overflow-x:hidden;}
+  body::after{content:""; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 1px, transparent 1px 3px);
+    pointer-events:none; z-index:100;}
+  a{color:var(--neon-cyan);}
+  .wrap{max-width:720px; margin:0 auto; padding:0 1.25rem;}
+  .display{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-weight:400; text-transform:uppercase; letter-spacing:.03em; line-height:.95;}
+  .crumb{padding:1rem 1.25rem; font-size:.72rem; letter-spacing:.15em; text-transform:uppercase;}
+  .crumb a{text-decoration:none;}
+
+  header.wing{
+    text-align:center; padding:3rem 1rem 2.5rem;
+    background:radial-gradient(ellipse at 50% -20%, rgba(201,127,74,.22), transparent 60%),
+      radial-gradient(ellipse at 15% 110%, rgba(45,225,252,.1), transparent 55%);
+    border-bottom:3px solid var(--wire);
+  }
+  .wing .eyebrow{color:var(--neon-cyan); letter-spacing:.28em; text-transform:uppercase; font-size:.72rem;}
+  .wing h1{margin:.5rem 0 0; font-size:clamp(2.4rem, 8.5vw, 4.6rem); color:var(--wire);
+    text-shadow:0 0 16px rgba(201,127,74,.55), 4px 4px 0 #3E2413;}
+  .wing .sub{color:var(--chrome); max-width:37rem; margin:1.25rem auto 0; font-size:.95rem;}
+  .wing .sub b{color:var(--white);}
+
+  section{padding:2.5rem 0;}
+  h2.sec{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif; font-weight:400;
+    text-transform:uppercase; font-size:clamp(1.6rem, 5.5vw, 2.3rem);
+    color:var(--neon-cyan); text-shadow:0 0 12px rgba(45,225,252,.5);
+    text-align:center; margin:0 0 1.25rem;}
+  .prose{color:var(--chrome); font-size:.93rem;}
+  .prose b{color:var(--white);}
+  .pull{border-left:4px solid var(--wire); background:var(--panel);
+    padding:1rem 1.25rem; color:var(--white); font-size:1rem; margin:1.4rem 0;}
+
+  /* ---------- RECEIPTS ---------- */
+  .receipts{width:100%; border-collapse:collapse; font-size:.82rem; margin-top:.5rem;}
+  .receipts caption{caption-side:top; text-align:left; color:var(--chrome);
+    font-size:.68rem; letter-spacing:.18em; text-transform:uppercase; padding-bottom:.6rem;}
+  .receipts th{
+    text-align:left; color:var(--wire); border-bottom:2px solid var(--wire);
+    font-size:.66rem; letter-spacing:.16em; text-transform:uppercase; padding:.5rem .6rem;
+  }
+  .receipts td{border-bottom:1px dashed #35205C; padding:.75rem .6rem; vertical-align:top; color:var(--chrome);}
+  .receipts td:first-child{color:var(--white); white-space:nowrap; font-weight:bold;}
+  .receipts td.filed{color:var(--neon-yellow); font-size:.76rem;}
+  .receipts tr:nth-child(even) td{background:rgba(21,12,34,.6);}
+
+  /* ---------- ENGINE ---------- */
+  .engine{
+    background:linear-gradient(180deg, var(--panel-2), var(--panel));
+    border:2px solid var(--wire); border-radius:14px;
+    box-shadow:0 0 26px rgba(201,127,74,.22); overflow:hidden;
+  }
+  .engine-head{
+    display:flex; justify-content:space-between; align-items:center; gap:.75rem; flex-wrap:wrap;
+    padding:.8rem 1.2rem; border-bottom:2px dashed #35205C;
+    font-size:.66rem; letter-spacing:.16em; text-transform:uppercase; color:var(--chrome);
+  }
+  #stamprow{display:flex; gap:.35rem; align-items:center;}
+  #stamprow .stampdot{width:12px; height:12px; border-radius:2px; background:#35205C; border:2px solid #35205C;}
+  #stamprow .stampdot.good{background:var(--neon-green); border-color:var(--neon-green);}
+  #stamprow .stampdot.bad{background:var(--neon-pink); border-color:var(--neon-pink);}
+  #stamprow .stampdot.now{border-color:var(--neon-yellow); background:#35205C;}
+
+  #stage{padding:1.5rem 1.4rem 1.75rem; min-height:320px;}
+  .official{text-align:center; margin-bottom:1.1rem; animation:fadein .5s;}
+  .official .title{font-size:.66rem; letter-spacing:.2em; text-transform:uppercase; color:var(--neon-yellow);}
+  .official .name{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-size:1.5rem; text-transform:uppercase; color:var(--white); margin-top:.15rem;}
+  @keyframes fadein{from{opacity:0; transform:translateY(6px)}to{opacity:1;}}
+
+  .formrow{margin-bottom:.85rem;}
+  .formrow label{display:block; font-size:.62rem; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--wire); margin-bottom:.25rem;}
+  .formrow select{
+    width:100%; font-family:"Courier New", Courier, monospace; font-size:.86rem;
+    background:var(--void); color:var(--white); text-transform:uppercase;
+    border:2px solid #35205C; border-radius:8px; padding:.7rem .8rem; cursor:pointer;
+    appearance:none; -webkit-appearance:none;
+    background-image:linear-gradient(45deg,transparent 50%,var(--wire) 50%),linear-gradient(135deg,var(--wire) 50%,transparent 50%);
+    background-position:calc(100% - 17px) 50%, calc(100% - 12px) 50%;
+    background-size:5px 5px, 5px 5px; background-repeat:no-repeat;
+  }
+  .formrow select:focus{outline:none; border-color:var(--neon-yellow);}
+  .formrow.flagged select{border-color:var(--neon-pink);}
+  .formrow.stamped select{border-color:var(--neon-green);}
+  .fieldnote{font-size:.7rem; color:var(--neon-pink); margin:.3rem 0 0; line-height:1.45;}
+  .fieldnote b{color:var(--white);}
+
+  .route{border:2px dashed #35205C; border-radius:10px; padding:.9rem 1rem; margin-bottom:1rem;}
+  .routeline{display:flex; gap:.6rem; align-items:baseline; font-size:.72rem;
+    letter-spacing:.08em; text-transform:uppercase; color:#7E6F9E; padding:.28rem 0;}
+  .routeline .dept{flex:1;}
+  .routeline.on{color:var(--neon-yellow);}
+  .routeline.ok{color:var(--neon-green);}
+  .routeline.no{color:var(--neon-pink);}
+  .verdict{text-align:center; font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-size:1.5rem; text-transform:uppercase; letter-spacing:.04em; margin:.4rem 0 .2rem;}
+  .flavor{text-align:center; color:var(--chrome); font-size:.85rem; font-style:italic; margin-top:.9rem;}
+  .ctarow{display:flex; gap:.6rem; flex-wrap:wrap; justify-content:center; margin-top:1.1rem;}
+  .btn2{font-family:"Courier New",Courier,monospace; font-size:.78rem; letter-spacing:.14em;
+    text-transform:uppercase; background:transparent; color:var(--neon-cyan);
+    border:2px solid var(--neon-cyan); border-radius:8px; padding:.7rem 1.2rem; cursor:pointer;}
+  .btn2:hover{color:var(--neon-yellow); border-color:var(--neon-yellow);}
+  .submit{
+    width:100%; font-family:"Courier New",Courier,monospace; font-weight:bold; font-size:.85rem;
+    letter-spacing:.18em; text-transform:uppercase; cursor:pointer; margin-top:.5rem;
+    background:var(--wire); color:#201004; border:2px solid var(--wire); border-radius:8px;
+    padding:.9rem 1rem; box-shadow:0 0 18px rgba(201,127,74,.4);
+  }
+  .submit:hover{background:var(--neon-yellow); border-color:var(--neon-yellow); color:#231602;}
+
+  /* ---------- TOASTS ---------- */
+  #toasts{position:fixed; right:1rem; bottom:1rem; z-index:200; display:flex;
+    flex-direction:column; gap:.5rem; max-width:min(20rem, 84vw);}
+  .toast{background:var(--panel-2); border:2px solid var(--neon-yellow); border-radius:8px;
+    padding:.6rem .8rem; box-shadow:0 0 20px rgba(0,0,0,.6); animation:slidein .3s;}
+  .toast .t{font-size:.6rem; letter-spacing:.2em; text-transform:uppercase; color:var(--neon-yellow);}
+  .toast .n{font-size:.78rem; color:var(--white); text-transform:uppercase;
+    font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; letter-spacing:.03em;}
+  .toast .d{font-size:.7rem; color:var(--chrome); line-height:1.4;}
+  @keyframes slidein{from{opacity:0; transform:translateX(20px)}to{opacity:1;}}
+
+  .prize{
+    border:2px dashed var(--neon-green); border-radius:12px;
+    text-align:center; padding:2rem 1.5rem;
+    background:radial-gradient(ellipse at 50% 120%, rgba(61,252,138,.12), transparent 70%);
+  }
+  .prize .display{color:var(--neon-green); font-size:clamp(1.5rem,6vw,2.3rem);
+    text-shadow:0 0 14px rgba(61,252,138,.5);}
+  .prize p{color:var(--chrome); font-size:.92rem; max-width:34rem; margin:.9rem auto;}
+  .prize p b{color:var(--white);}
+  .btn{display:inline-block; font-weight:bold; font-size:.9rem; letter-spacing:.16em;
+    text-transform:uppercase; text-decoration:none; padding:.95rem 1.8rem; border-radius:8px;
+    border:2px solid var(--neon-green); color:#052012; background:var(--neon-green);
+    box-shadow:0 0 22px rgba(61,252,138,.5); cursor:pointer;}
+  .btn:hover{background:var(--neon-yellow); border-color:var(--neon-yellow); color:#231602;}
+  .buy-note{color:#7E6F9E; font-size:.72rem; margin-top:.8rem;}
+  footer{padding:2rem 1rem 3rem; text-align:center; color:#7E6F9E; font-size:.72rem;}
+</style>
+</head>
+<body>
+
+<p class="crumb"><a href="../../index.html">&larr; THE ARCADE</a> &nbsp;/&nbsp; EXPERIENCES &nbsp;/&nbsp; THE PERMIT</p>
+
+<header class="wing">
+  <p class="eyebrow">Doucheclosure Experiences &bull; Wing No. 11</p>
+  <h1 class="display">The<br>Permit</h1>
+  <p class="sub">A veteran investigative journalist reports that a recovered craft was too large to move
+  — so rather than move it, <b>they built a building over it.</b> The review board accepts this
+  completely and without reservation. Which is exactly the problem. Because if a building went up over
+  it, then a building went up. And buildings do not go up in this country without
+  <b>a permit, a plan set, and five departments signing their actual names.</b></p>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <p>We want to be extremely clear: <b>the board believes it.</b> Nobody here is litigating the craft.
+      The craft is stipulated. The craft is the least interesting thing in the story.</p>
+      <p>Here is the interesting thing. Somewhere in the United States, a general contractor opened a bid
+      package, read the scope, priced the concrete, sharpened the number to beat two competitors,
+      and won. He then mobilized a crew. He rented a pump truck. He ordered rebar by the ton and
+      Port-a-Johns by the month and he stood on that pad at 6:15 in the morning with a coffee, looking at
+      <b>the thing he was being paid to build a roof over,</b> and then he went home, and he had dinner,
+      and he said nothing. Not to his wife. Not to his brother. <b>Not at a single barbecue, for the
+      rest of his life.</b></p>
+      <p class="pull">The board has reviewed the men in its own families and finds this superhuman.
+      We know a man who could not keep quiet about a heat pump.</p>
+      <p>And before the concrete, before the crew, before the bid — <b>the paperwork.</b> Somebody sat at
+      a municipal counter, or a federal equivalent of one, and filled out a form with fields on it.
+      PROPOSED USE. STRUCTURE TYPE. SITE CONDITIONS. CONTENTS. EXPECTED DURATION. Somebody wrote
+      something in every one of those boxes. And then <b>somebody stamped it APPROVED.</b></p>
+      <p>That civil servant is, in the board's assessment, <b>the most interesting government employee
+      in American history</b>, and there is no plaque, no hearing, no book. There is only a signature,
+      in blue ink, on page four, and a beige building that has been standing there ever since,
+      doing the single most successful cover-up in the world: <b>being boring.</b></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RECEIPTS ============ -->
+<section>
+  <div class="wrap">
+    <h2 class="sec">The Receipts</h2>
+    <div class="prose">
+      <table class="receipts">
+        <caption>Board Exhibit 11 &bull; Items the board would like accounted for, none of which are the craft</caption>
+        <thead>
+          <tr><th>Item</th><th>Filed As</th><th>Board Note</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>THE SLAB</td>
+            <td class="filed">POURED TO SPEC</td>
+            <td>There is no spec. Concrete does not care about that. Concrete asks two questions — how
+            thick and how far — and somebody answered both, out loud, to a man in a truck, in feet and inches.</td>
+          </tr>
+          <tr>
+            <td>THE BID</td>
+            <td class="filed">LOW &amp; RESPONSIVE</td>
+            <td>Three contractors priced it. Two lost. Two men went home disappointed about a job they
+            would have found remarkable, and the board thinks about those two men constantly.</td>
+          </tr>
+          <tr>
+            <td>THE CONTRACTOR</td>
+            <td class="filed">BONDED, INSURED</td>
+            <td>Never bragged. Not once. Not at a wedding, not at a funeral, not at 11pm on the good
+            bourbon. The board's central grievance. This is not discretion, it is a superpower, and
+            it should have been studied.</td>
+          </tr>
+          <tr>
+            <td>THE ZONING VARIANCE</td>
+            <td class="filed">GRANTED 4&ndash;1</td>
+            <td>PROPOSED USE: STORAGE. STORING WHAT: &#9608;&#9608;&#9608;&#9608;&#9608;&#9608;&#9608;.
+            One board member voted no. His stated objection was the setback. His actual objection is not in the minutes.</td>
+          </tr>
+          <tr>
+            <td>THE INSPECTOR</td>
+            <td class="filed">PASSED, NO CORRECTIONS</td>
+            <td>Walked the footing. Checked the rebar spacing. Checked the vapor barrier. Signed.
+            Drove to the next site, which was a Wendy's. Ate a normal dinner. Slept.</td>
+          </tr>
+          <tr>
+            <td>THE PORT-A-JOHN</td>
+            <td class="filed">MONTHLY SERVICE</td>
+            <td>Every job site has one. Somebody serviced it on a route, on a schedule, with a truck,
+            and invoiced for it. Somewhere there is a line item. There is always a line item.</td>
+          </tr>
+          <tr>
+            <td>THE PAINT</td>
+            <td class="filed">1 COLOR, 400 GAL</td>
+            <td>Beige. Someone selected it from a fan deck. Someone held up two beiges and picked
+            the more forgettable beige, on purpose, and that person understood the assignment better
+            than any of us.</td>
+          </tr>
+          <tr>
+            <td>THE BUILDING</td>
+            <td class="filed">C OF O ISSUED</td>
+            <td>Still standing. Beige. Gutters. A downspout that needs attention on the northeast corner.
+            The most important boring beige building on earth and it has a wasp problem.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE ENGINE ============ -->
+<section>
+  <div class="wrap">
+    <h2 class="sec">File The Permit</h2>
+    <p class="prose" style="text-align:center; margin:0 0 1.1rem;">Five fields. Five departments.
+    Every department reviews the whole form and objects to exactly one box.
+    <b>Read the objection. Change the box. Refile.</b> This is how it was done. This is the only way it could have been done.</p>
+    <div class="engine">
+      <div class="engine-head">
+        <span>FORM 115-C &bull; STRUCTURE OVER ANOMALOUS OBJECT</span>
+        <div id="stamprow"></div>
+        <span id="hud">ATTEMPTS: 0 &bull; STAMPS: 0/5</span>
+      </div>
+      <div id="stage"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE PRIZE ============ -->
+<section id="prize">
+  <div class="wrap">
+    <div class="prize">
+      <p class="display">The Full Experience — $5</p>
+      <p><b>One ticket, yours forever:</b> THE PERMIT (owner's edition, offline), the KNOW YOUR PAPERWORK
+      dossier — the slab, the bid, the beige, the inspector's dinner — and the souvenir below,
+      which is not a bit.</p>
+      <p><b>THE FOIA MACHINE — the only tool in this field that actually asks the government for something.</b>
+      A real, working Freedom of Information Act request generator from Doucheclosure Labs. Pick your
+      agency, describe what you want, and it drafts a properly formatted request with the statutory
+      citation, a specific and reasonably described records demand, a fee-waiver argument, an expedited-processing
+      argument if you qualify, and the correct FOIA office address.</p>
+      <p>It also keeps your tracking log: what you asked, who you asked, the date, the 20-business-day
+      clock, the tracking number, and the appeal deadline the agency is hoping you forget.
+      <b>Everybody in this field says "they're hiding something." Almost nobody has ever mailed a letter
+      asking for it.</b> Building permits, incidentally, are usually public records. Start there.</p>
+      <!-- REPLACE-ME: point at your payment link (Gumroad / Stripe / Lemon Squeezy) -->
+      <a class="btn" href="#REPLACE-WITH-PAYMENT-LINK">BUY THE FULL EXPERIENCE — $5</a>
+      <p class="buy-note">Instant download &bull; works offline &bull; no clearance required, which is the entire point</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>DOUCHECLOSURE&trade; EXPERIENCES &bull; A work of parody commenting on public statements of public figures.<br>
+  <a href="../../index.html">Back to the arcade</a> &bull; <a href="../mantis-counseling/index.html">Previous wing: Mantis Counseling</a></p>
+</footer>
+
+<div id="toasts"></div>
+
+<script>
+(() => {
+  const stage = document.getElementById('stage');
+  const stamprow = document.getElementById('stamprow');
+  const hud = document.getElementById('hud');
+  const toastBox = document.getElementById('toasts');
+
+  /* ---------- THE FORM ---------- */
+  const FIELDS = [
+    { key:'use', label:'Proposed Use', opts:[
+      'STORAGE',
+      'AGRICULTURAL',
+      'RESEARCH',
+      'NO PROPOSED USE AT THIS TIME',
+      'COVERING SOMETHING'
+    ]},
+    { key:'type', label:'Structure Type', opts:[
+      'SHED, PREFABRICATED',
+      'TENT, TEMPORARY',
+      'WAREHOUSE, PRE-ENGINEERED METAL',
+      'CARPORT',
+      'PERMANENT ENCLOSURE, POURED IN PLACE, BUILT AROUND CONTENTS'
+    ]},
+    { key:'site', label:'Site Conditions', opts:[
+      'LEVEL AND UNREMARKABLE',
+      'SLOPED; REQUIRES GRADING',
+      'WETLAND-ADJACENT',
+      'PREVIOUSLY DISTURBED BY OTHERS',
+      'LEVEL, WITH ONE (1) PRE-EXISTING FEATURE'
+    ]},
+    { key:'contents', label:'Contents', opts:[
+      'NOTHING',
+      'EQUIPMENT',
+      'AN OBJECT OF UNDETERMINED ORIGIN',
+      'A SHED',
+      '[REDACTED]'
+    ]},
+    { key:'dur', label:'Expected Duration', opts:[
+      '90 DAYS',
+      '5 YEARS',
+      '30 YEARS (STANDARD)',
+      'UNTIL THE CONTENTS ARE REMOVED',
+      'INDEFINITE'
+    ]}
+  ];
+
+  /* ---------- THE DEPARTMENTS (routing order) ---------- */
+  const DEPTS = [
+    {
+      name:'ZONING', field:'use', ok:0,
+      pass:'STORAGE is the only word in the municipal code that means "it stays there and nobody asks." Stamped without reading page two.',
+      rej:{
+        1:'Parcel is not zoned agricultural. Applicant has also not described any agriculture. Applicant has described a slab.',
+        2:'RESEARCH is a Class-C use requiring public notice, a hearing, and a sign on the fence facing the road. Applicant went pale at "sign on the fence facing the road."',
+        3:'A structure must have a use. This is not a technicality, it is the entire premise of the department.',
+        4:'"COVERING SOMETHING" is not a use recognized by the code. The clerk notes, off the record, that it is the most honest thing filed here since 1991.'
+      }
+    },
+    {
+      name:'STRUCTURAL', field:'type', ok:4,
+      pass:'Poured in place. Built around the contents, because the contents are not going anywhere. Engineering finds this structurally sound and philosophically enormous. Stamped.',
+      rej:{
+        0:'A prefabricated shed arrives on a truck and is set down on top of the site. Applicant states the contents cannot be lifted, slid, rolled, or persuaded. Nothing about this is a shed.',
+        1:'Temporary structures must be removable in under four hours. Applicant estimated removal time as "we would rather not."',
+        2:'Pre-engineered metal buildings are assembled from a catalog onto a clear pad. Applicant’s pad is not clear. Applicant’s pad has a thing on it.',
+        3:'A carport implies a car. Engineering has reviewed the dimensions and load notes and states, with confidence, that whatever this is, it is not parked.'
+      }
+    },
+    {
+      name:'ENVIRONMENTAL', field:'contents', ok:4,
+      pass:'[REDACTED] is a recognized entry. This department maintains a form for it. The form has a checkbox. The checkbox has been on the form since 1974 and nobody currently employed here knows who added it. Stamped without incident.',
+      rej:{
+        0:'Cannot assess the impact of "NOTHING." Nothing has no runoff profile, no thermal signature, and no reason to require a 40,000 square foot building over it.',
+        1:'"EQUIPMENT" triggers a hazardous materials inventory: make, model, serial, manufacturer, emergency contact. Applicant supplied a hyphen.',
+        2:'Undetermined origin means no baseline. No baseline means a full Environmental Impact Statement: eighteen months, three public meetings, a comment period, and a court reporter. The reviewer wishes the applicant to understand that this rejection is a kindness.',
+        3:'Applicant proposes to construct a permanent structure in order to contain a shed. No environmental objection. The reviewer will be thinking about this at home tonight.'
+      }
+    },
+    {
+      name:'HISTORIC PRESERVATION', field:'site', ok:4,
+      pass:'One (1) pre-existing feature, acknowledged on the form. Preservation confirms the feature is ineligible for the National Register, as the Register requires a date of construction, and none was provided, and the room got very quiet. NO HISTORIC PROPERTIES AFFECTED. Stamped.',
+      rej:{
+        0:'If the site is unremarkable, no cultural resources survey is required. A survey was nevertheless ordered, by someone, at 2:40 in the morning, on a Sunday. Preservation invites the applicant to try that box again.',
+        1:'Grading requires a ground disturbance review. Applicant has stated in three other boxes that the ground must not be disturbed. Reconcile.',
+        2:'Wetlands are Environmental’s jurisdiction. Environmental is on the fourth floor. There is no fourth floor button in the east elevator. Refiled to this office in error, as always.',
+        3:'"BY OTHERS" is doing a tremendous amount of work in this sentence, and Preservation would like a name, a date, and a phone number.'
+      }
+    },
+    {
+      name:'THE OFFICE THAT DOES NOT APPEAR ON THE DIRECTORY', field:'dur', ok:4,
+      pass:'INDEFINITE. Correct. Stamped by a hand that did not sign, in an office that is not on the directory, on a floor that is not on the elevator.',
+      rej:{
+        0:'Returned. In ninety days the applicant would have to file again. Each filing creates a record. The records are the problem. The records were always the problem.',
+        1:'Returned. Five years is ninety days with extra steps and one additional signature, and this office has counted the signatures.',
+        2:'Returned. Thirty years is a mortgage. A mortgage has a payoff date. There is no payoff date.',
+        3:'Returned. This answer contains a plan. This office does not process plans. Also, gently: removed by whom, and with what.'
+      }
+    }
+  ];
+
+  const state = { use:0, type:0, site:0, contents:0, dur:0 };
+  let attempts = 0, bestStamps = 0, totalStamps = 0, won = false;
+  const unlocked = new Set();
+  let lastNotes = {};
+  let passedKeys = new Set();
+
+  /* ---------- TOASTS ---------- */
+  function achieve(id, name, desc){
+    if (unlocked.has(id)) return;
+    unlocked.add(id);
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.innerHTML = '<div class="t">Achievement Filed</div><div class="n">' + name +
+      '</div><div class="d">' + desc + '</div>';
+    toastBox.appendChild(t);
+    setTimeout(() => { t.style.transition = 'opacity .5s'; t.style.opacity = '0';
+      setTimeout(() => t.remove(), 520); }, 5200);
+  }
+
+  /* ---------- HUD ---------- */
+  function drawStamps(states){
+    stamprow.innerHTML = '';
+    for (let i = 0; i < DEPTS.length; i++){
+      const d = document.createElement('span');
+      d.className = 'stampdot';
+      if (states && states[i] === 'ok') d.classList.add('good');
+      if (states && states[i] === 'no') d.classList.add('bad');
+      if (states && states[i] === 'now') d.classList.add('now');
+      stamprow.appendChild(d);
+    }
+  }
+  function drawHud(cur){
+    hud.textContent = 'ATTEMPTS: ' + attempts + ' • STAMPS: ' + (cur === undefined ? bestStamps : cur) + '/5';
+  }
+
+  /* ---------- FORM VIEW ---------- */
+  function renderForm(){
+    drawStamps(null);
+    drawHud();
+    let html = '<div class="official"><div class="title">Application for Permit — Form 115-C</div>' +
+      '<div class="name">Structure Over Anomalous Object</div></div>';
+    FIELDS.forEach((f, i) => {
+      const note = lastNotes[f.key];
+      const cls = note ? ' flagged' : (passedKeys.has(f.key) ? ' stamped' : '');
+      html += '<div class="formrow' + cls + '">' +
+        '<label for="f_' + f.key + '">' + (i + 1) + '. ' + f.label + '</label>' +
+        '<select id="f_' + f.key + '" data-key="' + f.key + '">' +
+        f.opts.map((o, j) => '<option value="' + j + '"' + (state[f.key] === j ? ' selected' : '') + '>' + o + '</option>').join('') +
+        '</select>' +
+        (note ? '<p class="fieldnote"><b>' + note.dept + ':</b> ' + note.text + '</p>' : '') +
+        '</div>';
+    });
+    html += '<button class="submit" id="submitBtn">' +
+      (attempts === 0 ? 'SUBMIT TO PLAN REVIEW' : 'AMEND AND REFILE') + '</button>' +
+      '<p class="flavor">' + (attempts === 0
+        ? 'Every box must contain something. That is not a metaphor, it is the rule on the back of the form.'
+        : 'Amendments are free. Time is not. The concrete is scheduled.') + '</p>';
+    stage.innerHTML = html;
+    stage.querySelectorAll('select').forEach(sel => {
+      sel.addEventListener('change', e => { state[e.target.dataset.key] = parseInt(e.target.value, 10); });
+    });
+    document.getElementById('submitBtn').addEventListener('click', submit);
+  }
+
+  /* ---------- ROUTING ---------- */
+  function submit(){
+    attempts++;
+    lastNotes = {};
+    passedKeys = new Set();
+
+    if (state.contents === 2) achieve('candor', 'The Honest Answer',
+      'You wrote what it actually is on a government form. Watch what happens.');
+    if (state.contents === 3) achieve('shedshed', 'A Shed Within A Shed',
+      'A structure to contain a shed. The plans examiner has questions and no standing to ask them.');
+    if (state.type === 3) achieve('carport', 'The Carport Theory',
+      'Bold. Cheap. Structurally the funniest thing ever proposed to a county.');
+    if (state.use === 3) achieve('nouse', 'No Proposed Use At This Time',
+      'You have invented a building with no purpose. Zoning is calling its supervisor.');
+    if (attempts === 8) achieve('scenic', 'The Scenic Route',
+      'Eight filings. The counter clerk knows your face and has opinions about it.');
+
+    const results = new Array(DEPTS.length).fill(null);
+    let html = '<div class="official"><div class="title">Filing No. 11-' +
+      String(1000 + attempts) + '-C — In Routing</div>' +
+      '<div class="name">Plan Review, Five Desks</div></div><div class="route" id="route"></div>' +
+      '<div id="outcome"></div>';
+    stage.innerHTML = html;
+    const route = document.getElementById('route');
+    DEPTS.forEach((d, i) => {
+      const line = document.createElement('div');
+      line.className = 'routeline';
+      line.id = 'rl' + i;
+      line.innerHTML = '<span class="dept">' + d.name + '</span><span class="st">WAITING</span>';
+      route.appendChild(line);
+    });
+
+    let i = 0;
+    function step(){
+      if (i > 0){
+        const prev = DEPTS[i - 1];
+        const line = document.getElementById('rl' + (i - 1));
+        const chosen = state[prev.field];
+        const ok = chosen === prev.ok;
+        results[i - 1] = ok ? 'ok' : 'no';
+        line.className = 'routeline ' + (ok ? 'ok' : 'no');
+        line.querySelector('.st').textContent = ok ? '▣ APPROVED' : '✕ RETURNED';
+        if (ok){ totalStamps++; passedKeys.add(prev.field); }
+        else lastNotes[prev.field] = { dept: prev.name, text: prev.rej[chosen] };
+        drawStamps(results);
+        drawHud(results.filter(r => r === 'ok').length);
+      }
+      if (i >= DEPTS.length){ finish(results); return; }
+      const line = document.getElementById('rl' + i);
+      line.className = 'routeline on';
+      line.querySelector('.st').textContent = 'UNDER REVIEW…';
+      const cur = results.slice(); cur[i] = 'now';
+      drawStamps(cur);
+      i++;
+      setTimeout(step, 780);
+    }
+    setTimeout(step, 400);
+  }
+
+  /* ---------- OUTCOME ---------- */
+  function finish(results){
+    const stamps = results.filter(r => r === 'ok').length;
+    if (stamps > bestStamps) bestStamps = stamps;
+    drawHud(stamps);
+    if (stamps >= 1) achieve('first', 'First Stamp',
+      'One department has signed something. It cannot be unsigned. Welcome to the record.');
+    if (stamps === 4) achieve('four', 'Four Of Five',
+      'Four desks are satisfied. The fifth desk is not on the directory.');
+
+    const out = document.getElementById('outcome');
+
+    if (stamps === DEPTS.length){ win(out); return; }
+
+    const failed = DEPTS.filter(d => state[d.field] !== d.ok);
+    let html = '<div class="verdict" style="color:var(--neon-pink);">Returned For Correction — ' +
+      failed.length + ' Note' + (failed.length === 1 ? '' : 's') + '</div>';
+    html += '<p class="flavor">' + (stamps === 0
+      ? 'Zero stamps. The reviewer wrote "see attached" and attached nothing.'
+      : stamps + ' of 5 desks approved. The rest wrote on your form in pen.') + '</p>';
+    failed.forEach(d => {
+      html += '<p class="fieldnote" style="margin-top:.7rem;"><b>' + d.name + ' — re: ' +
+        FIELDS.find(f => f.key === d.field).label.toUpperCase() + ':</b> ' + d.rej[state[d.field]] + '</p>';
+    });
+    html += '<div class="ctarow"><button class="btn2" id="amend">TAKE IT BACK TO THE COUNTER</button></div>';
+    out.innerHTML = html;
+    document.getElementById('amend').addEventListener('click', renderForm);
+  }
+
+  function win(out){
+    won = true;
+    achieve('permit', 'THE PERMIT',
+      'Approved by all five. Somewhere, a real one of these exists in a real filing cabinet.');
+    if (attempts <= 3) achieve('minimum', 'Minimum Viable Paperwork',
+      'Three filings or fewer. You should be doing this professionally, and you may already be.');
+    out.innerHTML =
+      '<div class="verdict" style="color:var(--neon-green);">Permit Issued — All Five Stamps</div>' +
+      '<p class="flavor" style="font-style:normal; color:var(--neon-yellow); letter-spacing:.16em; font-size:.7rem; text-transform:uppercase;">' +
+      'Filing accepted on attempt ' + attempts + ' • Certificate of Occupancy to follow</p>' +
+      '<div class="prose" style="margin-top:1rem;">' +
+      '<p>The concrete truck came on a Tuesday. Two more on Wednesday. The pump operator had a bad ' +
+      'shoulder and complained about it, loudly, and nobody wrote that down, and now it is gone forever.</p>' +
+      '<p>The walls went up around it. The roof went on over it. An electrician ran conduit and ' +
+      'said, at one point, out loud, to another electrician, <b>"careful around that,"</b> and neither ' +
+      'of them elaborated, and they went to lunch.</p>' +
+      '<p>The building is beige. It has gutters. It has a loading dock nobody has ever loaded ' +
+      'anything onto. It has a sign with a number and no name. It is inspected annually for fire ' +
+      'suppression by a man who has never once asked a follow-up question, because his job is the ' +
+      'sprinklers, and the sprinklers are fine.</p>' +
+      '<p class="pull" style="border-color:var(--neon-green);">And every weekday morning at 7:40, ' +
+      'a school bus takes the county road past the northeast corner of that building. Forty-one ' +
+      'children. Some asleep. One doing homework badly. <b>Nobody looks up.</b> There is nothing to ' +
+      'look at. That was the entire objective, it cost roughly $2.1 million in concrete alone, ' +
+      'and it worked perfectly, and it is still working, right now, while you read this.</p>' +
+      '<p style="color:#7E6F9E; font-size:.82rem;">The board does not want the craft. The board wants ' +
+      'the file. Permits are usually public records. That is not a joke and it is not a bit — ' +
+      'it is the one door in this entire field that opens when you knock.</p>' +
+      '</div>' +
+      '<div class="ctarow">' +
+      '<a class="btn" href="#prize" style="font-size:.8rem; padding:.75rem 1.3rem;">ASK FOR THE FILE — THE FOIA MACHINE, $5</a>' +
+      '<button class="btn2" id="again">FILE ANOTHER</button></div>';
+    document.getElementById('again').addEventListener('click', () => {
+      state.use = 0; state.type = 0; state.site = 0; state.contents = 0; state.dur = 0;
+      lastNotes = {}; passedKeys = new Set(); renderForm();
+    });
+  }
+
+  renderForm();
+})();
+</script>
+
+</body>
+</html>

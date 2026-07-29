@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE GALACTIC FEDERATION EXPERIENCE — The Summit — Doucheclosure</title>
+<meta name="description" content="Wing No. 14. We believe the accords exist. Our grievance is procedural: nobody was CC'd. Schedule a six-delegation summit across nine rotational periods and one shared calendar that does not exist. Playable.">
+<style>
+  :root{
+    --void:#080A14; --panel:#111527; --panel-2:#191F36;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#A9AEC8; --white:#F7F3E8;
+    --wire:#D4B24A; --bakelite:#20263D;
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--void);}
+  body{margin:0; background:var(--void); color:var(--white);
+    font-family:"Courier New", Courier, monospace; line-height:1.65; overflow-x:hidden;}
+  body::after{content:""; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 1px, transparent 1px 3px);
+    pointer-events:none; z-index:100;}
+  a{color:var(--wire);}
+  .wrap{max-width:720px; margin:0 auto; padding:0 1.25rem;}
+  .display{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-weight:400; text-transform:uppercase; letter-spacing:.03em; line-height:.95;}
+  .crumb{padding:1rem 1.25rem; font-size:.72rem; letter-spacing:.15em; text-transform:uppercase;}
+  .crumb a{text-decoration:none;}
+
+  header.wing{
+    text-align:center; padding:3rem 1rem 2.5rem;
+    background:radial-gradient(ellipse at 50% -20%, rgba(212,178,74,.22), transparent 60%),
+      radial-gradient(ellipse at 15% 110%, rgba(45,225,252,.1), transparent 55%);
+    border-bottom:3px solid var(--wire);
+  }
+  .wing .eyebrow{color:var(--neon-cyan); letter-spacing:.28em; text-transform:uppercase; font-size:.72rem;}
+  .wing h1{margin:.5rem 0 0; font-size:clamp(2.4rem, 8.5vw, 4.6rem); color:var(--wire);
+    text-shadow:0 0 16px rgba(212,178,74,.55), 4px 4px 0 #3B2E0F;}
+  .wing .sub{color:var(--chrome); max-width:37rem; margin:1.25rem auto 0; font-size:.95rem;}
+  .wing .sub b{color:var(--white);}
+
+  section{padding:2.5rem 0;}
+  h2.sec{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif; font-weight:400;
+    text-transform:uppercase; font-size:clamp(1.6rem, 5.5vw, 2.3rem);
+    color:var(--neon-cyan); text-shadow:0 0 12px rgba(45,225,252,.5);
+    text-align:center; margin:0 0 1.25rem;}
+  .prose{color:var(--chrome); font-size:.93rem;}
+  .prose b{color:var(--white);}
+  .pull{border-left:4px solid var(--wire); background:var(--panel);
+    padding:1rem 1.25rem; color:var(--white); font-size:1rem; margin:1.4rem 0;}
+
+  /* ---------- RECEIPTS ---------- */
+  .receipts{display:grid; gap:.9rem;}
+  .rc{background:var(--panel); border:2px solid #2A3252; border-radius:12px; padding:1.1rem 1.2rem;}
+  .rc h3{margin:0 0 .35rem; font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-weight:400; text-transform:uppercase; letter-spacing:.04em;
+    font-size:1.25rem; color:var(--wire);}
+  .rc .stamp{font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; color:var(--neon-yellow);}
+  .rc p{margin:.5rem 0 0; color:var(--chrome); font-size:.9rem;}
+  .rc p b{color:var(--white);}
+  .rc.sincere{border-color:var(--wire); box-shadow:0 0 22px rgba(212,178,74,.14);}
+
+  /* ---------- ENGINE ---------- */
+  .engine{
+    background:linear-gradient(180deg, var(--panel-2), var(--panel));
+    border:2px solid var(--wire); border-radius:14px;
+    box-shadow:0 0 26px rgba(212,178,74,.22); overflow:hidden;
+  }
+  .engine-head{
+    display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap;
+    padding:.8rem 1.2rem; border-bottom:2px dashed #2A3252;
+    font-size:.66rem; letter-spacing:.16em; text-transform:uppercase; color:var(--chrome);
+  }
+  #seats{display:flex; gap:.35rem; align-items:center;}
+  #seats .seat{width:12px; height:12px; border-radius:50%; background:#2A3252; border:2px solid #2A3252;}
+  #seats .seat.yes{background:var(--neon-green); border-color:var(--neon-green);}
+  #seats .seat.no{background:var(--neon-pink); border-color:var(--neon-pink);}
+
+  #stage{padding:1.2rem 1.1rem 1.5rem;}
+  .lbl{font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; color:var(--neon-yellow);
+    margin:0 0 .4rem;}
+  .lbl span{color:var(--chrome); letter-spacing:.12em;}
+
+  .days{display:grid; grid-template-columns:repeat(7, 1fr); gap:.3rem;}
+  .hours{display:grid; grid-template-columns:repeat(8, 1fr); gap:.3rem;}
+  .cell{font-family:"Courier New", Courier, monospace; font-size:.72rem; letter-spacing:.04em;
+    text-transform:uppercase; background:var(--void); color:var(--white);
+    border:2px solid #2A3252; border-radius:7px; padding:.55rem .1rem; cursor:pointer;}
+  .cell:hover{border-color:var(--neon-yellow); color:var(--neon-yellow);}
+  .cell.on{background:var(--wire); border-color:var(--wire); color:#241B04; font-weight:bold;}
+  .block{margin-top:1rem;}
+
+  .tide{margin-top:1rem; border:2px dashed #2A3252; border-radius:10px; padding:.7rem .8rem;
+    font-size:.66rem; letter-spacing:.1em; color:var(--chrome); text-transform:uppercase;}
+  .tide b{color:var(--white);}
+  .tide .cap{color:var(--neon-yellow); letter-spacing:.2em; display:block; margin-bottom:.35rem;}
+
+  .proposal{margin-top:1.1rem; text-align:center;
+    font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-size:clamp(1.2rem, 4.5vw, 1.9rem); text-transform:uppercase; letter-spacing:.04em;
+    color:var(--wire); text-shadow:0 0 12px rgba(212,178,74,.45);
+    border:2px dashed #2A3252; border-radius:10px; padding:.9rem .8rem; min-height:3.6rem;
+    display:flex; align-items:center; justify-content:center;}
+
+  .ctl{width:100%; margin-top:.8rem; font-family:"Courier New", Courier, monospace;
+    font-size:.9rem; letter-spacing:.16em; text-transform:uppercase; font-weight:bold;
+    background:var(--void); color:var(--wire); border:2px solid var(--wire); border-radius:9px;
+    padding:.9rem 1rem; cursor:pointer;}
+  .ctl:hover{background:var(--wire); color:#241B04;}
+  .ctl:disabled{opacity:.35; cursor:not-allowed;}
+
+  .dels{display:grid; gap:.55rem; margin-top:1.1rem;}
+  .del{background:var(--void); border:2px solid #2A3252; border-radius:10px; padding:.75rem .9rem;}
+  .del.yes{border-color:var(--neon-green); box-shadow:0 0 14px rgba(61,252,138,.16);}
+  .del.no{border-color:var(--neon-pink);}
+  .del .row{display:flex; justify-content:space-between; align-items:baseline; gap:.6rem;}
+  .del h4{margin:0; font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-weight:400; text-transform:uppercase; letter-spacing:.04em; font-size:1.05rem; color:var(--white);}
+  .del .badge{font-size:.58rem; letter-spacing:.18em; text-transform:uppercase; color:var(--chrome);
+    white-space:nowrap;}
+  .del.yes .badge{color:var(--neon-green);}
+  .del.no .badge{color:var(--neon-pink);}
+  .del .rule{margin:.3rem 0 0; font-size:.74rem; letter-spacing:.05em; text-transform:uppercase;
+    color:var(--neon-yellow);}
+  .del .resp{margin:.35rem 0 0; font-size:.84rem; color:var(--chrome); font-style:italic; min-height:1.2rem;}
+
+  .narr{margin-top:1rem; text-align:center; color:var(--white); font-size:.88rem; min-height:3.2rem;
+    border:2px dashed #2A3252; border-radius:10px; padding:.85rem .9rem;}
+  .narr b{color:var(--neon-yellow);}
+  .verdict{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif; font-weight:400;
+    text-transform:uppercase; font-size:1.35rem; color:var(--wire); letter-spacing:.03em;
+    display:block; margin-bottom:.3rem;}
+
+  .endcard{margin-top:1rem; border:2px solid var(--wire); border-radius:12px; padding:1.4rem 1.2rem;
+    background:radial-gradient(ellipse at 50% 120%, rgba(212,178,74,.14), transparent 70%); text-align:center;}
+  .endcard .big{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif; font-weight:400;
+    text-transform:uppercase; font-size:clamp(1.5rem,6vw,2.2rem); color:var(--wire);
+    text-shadow:0 0 14px rgba(212,178,74,.5); line-height:.98;}
+  .endcard p{color:var(--chrome); font-size:.9rem; max-width:34rem; margin:.8rem auto; text-align:left;}
+  .endcard p b{color:var(--white);}
+  .endcard .chair{border:2px dashed var(--neon-pink); border-radius:10px; padding:.9rem;
+    color:var(--neon-pink); font-size:.82rem; letter-spacing:.1em; text-transform:uppercase; margin:1rem 0;
+    text-align:center;}
+  .endcard .finding{border:2px dashed var(--neon-green); border-radius:10px; padding:.9rem;
+    color:var(--neon-green); font-size:.86rem; letter-spacing:.06em; text-transform:uppercase; margin:1rem 0;
+    text-align:center;}
+
+  #toasts{position:fixed; right:1rem; bottom:1rem; z-index:120; display:flex; flex-direction:column;
+    gap:.5rem; align-items:flex-end; pointer-events:none; max-width:min(20rem, 82vw);}
+  .toast{background:var(--panel-2); border:2px solid var(--neon-green); border-radius:10px;
+    padding:.6rem .8rem; box-shadow:0 0 18px rgba(61,252,138,.25); animation:slidein .35s ease;}
+  .toast .t1{font-size:.58rem; letter-spacing:.2em; text-transform:uppercase; color:var(--neon-green);}
+  .toast .t2{font-size:.78rem; color:var(--white); line-height:1.35;}
+  @keyframes slidein{from{opacity:0; transform:translateX(16px);}to{opacity:1;}}
+
+  .prize{
+    border:2px dashed var(--neon-green); border-radius:12px;
+    text-align:center; padding:2rem 1.5rem;
+    background:radial-gradient(ellipse at 50% 120%, rgba(61,252,138,.12), transparent 70%);
+  }
+  .prize .display{color:var(--neon-green); font-size:clamp(1.5rem,6vw,2.3rem);
+    text-shadow:0 0 14px rgba(61,252,138,.5);}
+  .prize p{color:var(--chrome); font-size:.92rem; max-width:34rem; margin:.9rem auto;}
+  .prize p b{color:var(--white);}
+  .btn{display:inline-block; font-weight:bold; font-size:.9rem; letter-spacing:.16em;
+    text-transform:uppercase; text-decoration:none; padding:.95rem 1.8rem; border-radius:8px;
+    border:2px solid var(--neon-green); color:#052012; background:var(--neon-green);
+    box-shadow:0 0 22px rgba(61,252,138,.5); cursor:pointer;}
+  .btn:hover{background:var(--neon-yellow); border-color:var(--neon-yellow); color:#231602;}
+  .buy-note{color:#6E7599; font-size:.72rem; margin-top:.8rem;}
+  footer{padding:2rem 1rem 3rem; text-align:center; color:#6E7599; font-size:.72rem;}
+</style>
+</head>
+<body>
+
+<p class="crumb"><a href="../../index.html">&larr; THE ARCADE</a> &nbsp;/&nbsp; EXPERIENCES &nbsp;/&nbsp; THE GALACTIC FEDERATION</p>
+
+<header class="wing">
+  <p class="eyebrow">Doucheclosure Experiences &bull; Wing No. 14</p>
+  <h1 class="display">The Galactic<br>Federation</h1>
+  <p class="sub">In 2020 a retired Israeli general — a man who ran his country's space security
+  program for nearly thirty years — told a newspaper that humanity is already in contact with a
+  Galactic Federation, and that the arrangement is being kept quiet because we are, as widely
+  reported, <b>not ready.</b> The review board believes him completely. The accords exist. The
+  summits happen. Our objection is procedural, and it is devastating:
+  <b>nobody was CC'd.</b></p>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2 class="sec">The Finding</h2>
+    <div class="prose">
+      <p>Good afternoon, and welcome back to the test kitchen. Today's dish is diplomacy, and
+      we want to begin — as we always do — by taking the source seriously. This was not a man
+      shouting in a parking lot. This was a career space-security professional, decorated,
+      credentialed, retired, speaking on the record about accords between humanity and a
+      federation of other worlds. <b>The board accepts the claim in full.</b> We have never once
+      in fourteen wings found it useful to argue about whether. We argue about <b>logistics,</b>
+      because logistics is where every real thing on this planet either happens or quietly
+      doesn't.</p>
+
+      <p>And the logistics here are catastrophic. The broader literature — and there is a
+      literature, shelves of it, describing treaties signed at airbases in the fifties, councils
+      seated at nine, standing committees, working groups, ratified frameworks — describes a
+      diplomatic apparatus of genuine sophistication. Minutes are implied. Agendas are implied.
+      Chairs are implied, plural, arranged.</p>
+
+      <p class="pull">Humanity is described throughout as a founding party. Humanity has never
+      received a calendar invite. Not one. The board has checked the spam folder every single
+      day since 2020, and the board would like everyone to know that we have whitelisted
+      <b>the entire galaxy</b> and it did not help.</p>
+
+      <p>Let us be precise about the grievance, because it is not the grievance people expect.
+      We are not upset about secrecy. Secrecy is a policy position and we can argue policy.
+      We are upset about <b>the absence of an administrative trail.</b> A summit produces
+      paper. That is what a summit is — a room, a clock, and afterward, paper. Show the board a
+      three-line agenda with a start time on it and the board will fold this arcade tomorrow and
+      go home genuinely happy.</p>
+
+      <p>Instead we have accords with no attendance sheet, sessions with no minutes, and a
+      stated reason for our exclusion — <b>not ready</b> — that has now stood unrevised for
+      years while the species it describes hosted two Olympic Games, which for the record
+      required coordinating two hundred nations, eleven thousand athletes, and a torch.</p>
+
+      <p>So the board did the only responsible thing. We stopped complaining and we tried to
+      book the room. Below is the actual constraint set, as reconstructed from the literature.
+      Six delegations. Six rules. Nine rotational periods flattened, generously, into one
+      seven-day week and a twenty-four-hour clock that only one party in the room uses.</p>
+
+      <p><b>Exactly one slot works.</b> The board found it. Take as many attempts as you need —
+      the board took more than it is prepared to disclose.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 class="sec">The Receipts</h2>
+    <div class="receipts">
+
+      <div class="rc">
+        <p class="stamp">EXHIBIT A &bull; CORRESPONDENCE // NIL</p>
+        <h3>The Invite</h3>
+        <p><b>Never received.</b> Not declined, not lost, not filtered — never issued to any
+        address that anyone has ever produced. The board has whitelisted the entire galaxy. We
+        have added every known star system to the safe-sender list. We have disabled the
+        aggressive filter that once ate a wedding.</p>
+        <p>Nothing arrives. Meanwhile a dentist in Ohio has our correct email, our correct phone
+        number, and a standing six-month reminder that has never once failed to reach us. The
+        board is not saying the Federation should be run like a dental practice. The board is
+        saying <b>the dental practice is winning.</b></p>
+      </div>
+
+      <div class="rc">
+        <p class="stamp">EXHIBIT B &bull; RECORDS // UNPUBLISHED</p>
+        <h3>The Minutes</h3>
+        <p><b>Unpublished.</b> Not sealed. Not redacted. There is no cover sheet, no exemption
+        code, no denial letter. There is simply no document, which is a different and much more
+        alarming condition.</p>
+        <p>The board's position, stated once and never softened: <b>a summit with no minutes is
+        a lunch.</b> A lovely lunch, possibly. Historic, in the way lunches sometimes are. But
+        nobody governs a galaxy off a lunch, and if this has all been lunches for seventy years
+        it would explain the total absence of outcomes with an economy the board finds
+        uncomfortably persuasive.</p>
+      </div>
+
+      <div class="rc">
+        <p class="stamp">EXHIBIT C &bull; HOSPITALITY // UNKNOWN</p>
+        <h3>The Catering</h3>
+        <p><b>Unknown, and frankly the board's chief concern.</b> Nine species. Nine biologies.
+        At minimum four incompatible atmospheres, one delegation that observes a dietary
+        restriction based on spelling, and one that arrives on the tide. Somebody is sourcing
+        that. Somebody is standing at a loading dock at an odd hour making it work, and that
+        person has never been named, thanked, or reimbursed.</p>
+        <p>The board's position on hospitality is a matter of public record and was established
+        in our first wing: <b>you may judge any civilization entirely by how it feeds the people
+        who came a long way.</b> See <a href="../jason-sands/index.html">Wing No. 1</a>. Our
+        view has not moved an inch since.</p>
+      </div>
+
+      <div class="rc">
+        <p class="stamp">EXHIBIT D &bull; RATIONALE // STANDING</p>
+        <h3>"Not Ready"</h3>
+        <p>The stated reason humanity was excluded. The board accepts that it was said sincerely
+        and by someone in a position to know. The board simply notes, for the file, that in the
+        period during which we have been too unprepared to receive an agenda, this species has
+        <b>hosted the Olympics twice,</b> landed instruments on a comet, and coordinated a
+        global vaccine rollout across every border on the map.</p>
+        <p>We are not claiming to be impressive. We are claiming to be <b>schedulable.</b>
+        Those are different bars and only one of them is being applied to us.</p>
+      </div>
+
+      <div class="rc sincere">
+        <p class="stamp">EXHIBIT E &bull; ROOT CAUSE // READ THIS ONE STRAIGHT</p>
+        <h3>The Time Zones</h3>
+        <p>Nine species. Nine rotational periods. One shared calendar that <b>does not exist.</b></p>
+        <p><b>This, the board suspects, is the actual reason nothing has happened.</b> Not
+        secrecy. Not a conspiracy of silence. Not readiness. Consider what this planet alone
+        does to itself: two hundred jurisdictions, half of them shifting their clocks twice a
+        year on dates they choose independently, a date format war with real casualties, and a
+        species-wide inability to say "Tuesday at nine" without three follow-up emails.</p>
+        <p>Now add a delegation whose day is thirty-one hours long. Add one that measures time
+        against a tide. Add one that experiences the meeting slightly before you propose it. The
+        board has run the arithmetic and finds it entirely plausible that <b>the accords are
+        real, everyone means well, and the calendar invite has been in the drafting stage since
+        1954.</b> Nobody is hiding anything. Everybody is waiting on a doodle poll.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE SUMMIT ============ -->
+<section>
+  <div class="wrap">
+    <h2 class="sec">Book The Room</h2>
+    <div class="engine">
+      <div class="engine-head">
+        <span>SESSION 14 // ACCORDS // NO MINUTES</span>
+        <div id="seats"></div>
+        <span id="hud">ATTEMPTS: 0</span>
+      </div>
+      <div id="stage">
+
+        <div class="block">
+          <p class="lbl">Step One &mdash; <span>Select a day, Earth-side</span></p>
+          <div class="days" id="days"></div>
+        </div>
+
+        <div class="block">
+          <p class="lbl">Step Two &mdash; <span>Select an hour, twenty-four-hour clock</span></p>
+          <div class="hours" id="hours"></div>
+        </div>
+
+        <div class="tide">
+          <span class="cap">Attached: Earth-side high water table (the only document anyone has ever provided)</span>
+          <b>MON</b> 06 &amp; 18 &nbsp; <b>TUE</b> 07 &amp; 19 &nbsp; <b>WED</b> 08 &amp; 20 &nbsp;
+          <b>THU</b> 09 &amp; 21 &nbsp; <b>FRI</b> 10 &amp; 22 &nbsp; <b>SAT</b> 11 &amp; 23 &nbsp;
+          <b>SUN</b> 12 &amp; 00
+        </div>
+
+        <div class="proposal" id="proposal">NO SLOT PROPOSED</div>
+        <button class="ctl" id="convene" disabled>CONVENE</button>
+
+        <div class="dels" id="dels"></div>
+
+        <div class="narr" id="narr">
+          <span class="verdict">THE FLOOR IS OPEN</span>
+          Six delegations. Six rules, printed above their names, which is already more disclosure
+          than this arcade has received in thirteen previous wings. One slot satisfies all six.
+          Unlimited attempts. The board counts them, but the board does not judge.
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE PRIZE ============ -->
+<section id="prize">
+  <div class="wrap">
+    <div class="prize">
+      <p class="display">The Full Experience — $5</p>
+      <p><b>One ticket, yours forever:</b> THE SUMMIT (owner's edition, offline), the
+      KNOW YOUR OPERATOR dossier — the missing invite, the unpublished minutes, the catering
+      question, the time-zone root cause written straight — and the souvenir below, which is the
+      actual reason to buy this.</p>
+      <p><b>THE SUMMIT PLANNER — a real multi-timezone meeting finder.</b>
+      Add people anywhere on Earth, see <b>everyone's local time at a glance</b> in one honest
+      column, and drag across the day to find the overlap where nobody is asleep, nobody is
+      eating dinner, and nobody has to pretend 6&nbsp;AM is fine. Working hours per person.
+      Shareable slot summary you can paste into any thread and end the argument.</p>
+      <p>Built by Doucheclosure Labs for distributed teams, families spread across oceans, and
+      anyone who has ever sent "does 3 work?" to four continents and started a war.
+      <b>Now supporting Jupiter Standard Time,</b> which we added as a joke and then could not
+      remove because two customers were using it.</p>
+      <!-- REPLACE-ME: point at your payment link (Gumroad / Stripe / Lemon Squeezy) -->
+      <a class="btn" href="#REPLACE-WITH-PAYMENT-LINK">BUY THE FULL EXPERIENCE — $5</a>
+      <p class="buy-note">Instant download &bull; works offline &bull; runs entirely in your browser &bull; you will be CC'd.</p>
+    </div>
+  </div>
+</section>
+
+<div id="toasts"></div>
+
+<footer>
+  <p>DOUCHECLOSURE&trade; EXPERIENCES &bull; A work of parody commenting on public statements of public figures.<br>
+  <a href="../../index.html">Back to the arcade</a> &bull; <a href="../jeremy-corbell/index.html">Previous wing: The Frame</a></p>
+</footer>
+
+<script>
+(() => {
+  // ---------- ELEMENTS ----------
+  const daysEl  = document.getElementById('days');
+  const hoursEl = document.getElementById('hours');
+  const propEl  = document.getElementById('proposal');
+  const btn     = document.getElementById('convene');
+  const delsEl  = document.getElementById('dels');
+  const narr    = document.getElementById('narr');
+  const seatsEl = document.getElementById('seats');
+  const hud     = document.getElementById('hud');
+  const toasts  = document.getElementById('toasts');
+  const stage   = document.getElementById('stage');
+
+  // ---------- REFERENCE DATA ----------
+  const DAYS = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
+  const DAYFULL = ['MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY','SUNDAY'];
+  const HOURNAME = ['ZERO','ONE','TWO','THREE','FOUR','FIVE','SIX','SEVEN','EIGHT','NINE','TEN',
+    'ELEVEN','TWELVE','THIRTEEN','FOURTEEN','FIFTEEN','SIXTEEN','SEVENTEEN','EIGHTEEN','NINETEEN',
+    'TWENTY','TWENTY-ONE','TWENTY-TWO','TWENTY-THREE'];
+  const pad = h => (h < 10 ? '0' : '') + h;
+  // high water, Earth-side: two per day, twelve hours apart, walking one hour per day
+  const tide = d => [(6 + d) % 24, (18 + d) % 24];
+
+  // ---------- THE SIX DELEGATIONS ----------
+  const DELS = [
+    {
+      id:'mantis', name:'The Mantis Delegation',
+      rule:'Will not convene during any hour containing the letter R.',
+      test:(d,h) => HOURNAME[h].indexOf('R') === -1,
+      yes:(d,h) => HOURNAME[h] + '. Clean. The delegation has eaten and is in an excellent mood.',
+      no:(d,h)  => HOURNAME[h] + '. There is an R in it. We can see it from here.'
+    },
+    {
+      id:'tall', name:'The Tall Whites',
+      rule:'Daylight only. Theirs. Their star is up from 19:00 to 04:00, Earth-side.',
+      test:(d,h) => (h >= 19 || h <= 4),
+      yes:(d,h) => 'Sun is up where we are. We will bring our own light regardless.',
+      no:(d,h)  => 'It is night where we live and we are not seen at night. It is a posture thing.'
+    },
+    {
+      id:'aqua', name:'The Aquatics',
+      rule:'High tide, Earth-side, non-negotiable. Table attached above.',
+      test:(d,h) => tide(d).indexOf(h) !== -1,
+      yes:(d,h) => 'High water. We arrive on it, as we have always arrived on it.',
+      no:(d,h)  => 'Low water ' + DAYFULL[d] + '. High is ' + pad(tide(d)[0]) + ':00 and ' + pad(tide(d)[1]) + ':00. We are not carrying ourselves in.'
+    },
+    {
+      id:'nine', name:'The Council Of Nine',
+      rule:'Must be an odd-numbered hour.',
+      test:(d,h) => h % 2 === 1,
+      yes:(d,h) => 'An odd hour. Correct. We will speak in one voice and it will be lovely.',
+      no:(d,h)  => 'An even hour. We are the COUNCIL OF NINE. Consider what that implies.'
+    },
+    {
+      id:'greys', name:'The Greys',
+      rule:'Telepathically flexible. Physically unavailable Tuesdays.',
+      test:(d,h) => d !== 1,
+      yes:(d,h) => 'Confirmed. We confirmed forty minutes before you proposed it.',
+      no:(d,h)  => 'It is a Tuesday. We will attend in thought, which we count and you never do.'
+    },
+    {
+      id:'human', name:'Humanity',
+      rule:'Any time. We are extremely available. Please.',
+      test:() => true,
+      yes:(d,h) => 'YES. ' + DAYFULL[d] + '. ' + pad(h) + ':00. We will move anything. Anything at all.',
+      no:() => ''
+    }
+  ];
+
+  // ---------- SOLVE IT PROPERLY (and verify uniqueness) ----------
+  const SOLUTIONS = [];
+  for (let d = 0; d < 7; d++)
+    for (let h = 0; h < 24; h++)
+      if (DELS.every(x => x.test(d, h))) SOLUTIONS.push([d, h]);
+  // SOLUTIONS.length === 1 by construction: THU 21:00
+
+  // ---------- STATE ----------
+  let day = null, hour = null, attempts = 0, solved = false;
+  const tried = new Set();
+  const earned = new Set();
+  let rDeclines = 0, tueDeclines = 0;
+
+  // ---------- TOASTS ----------
+  function toast(tag, text){
+    const d = document.createElement('div');
+    d.className = 'toast';
+    d.innerHTML = '<div class="t1">' + tag + '</div><div class="t2">' + text + '</div>';
+    toasts.appendChild(d);
+    setTimeout(() => { d.style.transition = 'opacity .5s'; d.style.opacity = '0'; }, 4600);
+    setTimeout(() => d.remove(), 5200);
+  }
+  function achieve(id, tag, text){
+    if (earned.has(id)) return;
+    earned.add(id);
+    toast(tag, text);
+  }
+
+  // ---------- BUILD PICKERS ----------
+  DAYS.forEach((label, i) => {
+    const b = document.createElement('button');
+    b.className = 'cell'; b.type = 'button'; b.textContent = label;
+    b.setAttribute('aria-pressed', 'false');
+    b.addEventListener('click', () => { day = i; sync(); });
+    daysEl.appendChild(b);
+  });
+  for (let h = 0; h < 24; h++){
+    const b = document.createElement('button');
+    b.className = 'cell'; b.type = 'button'; b.textContent = pad(h);
+    b.setAttribute('aria-pressed', 'false');
+    b.addEventListener('click', () => { hour = h; sync(); });
+    hoursEl.appendChild(b);
+  }
+
+  // ---------- BUILD DELEGATION CARDS ----------
+  DELS.forEach(x => {
+    const c = document.createElement('div');
+    c.className = 'del'; c.id = 'del-' + x.id;
+    c.innerHTML =
+      '<div class="row"><h4>' + x.name + '</h4><span class="badge">AWAITING PROPOSAL</span></div>' +
+      '<p class="rule">' + x.rule + '</p>' +
+      '<p class="resp">&mdash;</p>';
+    delsEl.appendChild(c);
+  });
+
+  for (let i = 0; i < 6; i++){
+    const s = document.createElement('span');
+    s.className = 'seat';
+    seatsEl.appendChild(s);
+  }
+  const seatEls = [...seatsEl.children];
+
+  // ---------- SYNC ----------
+  function sync(){
+    [...daysEl.children].forEach((b, i) => {
+      b.classList.toggle('on', i === day);
+      b.setAttribute('aria-pressed', String(i === day));
+    });
+    [...hoursEl.children].forEach((b, i) => {
+      b.classList.toggle('on', i === hour);
+      b.setAttribute('aria-pressed', String(i === hour));
+    });
+    const ready = day !== null && hour !== null;
+    btn.disabled = !ready || solved;
+    propEl.textContent = ready
+      ? 'PROPOSED: ' + DAYFULL[day] + ', ' + pad(hour) + ':00'
+      : (day === null ? 'SELECT A DAY' : 'SELECT AN HOUR');
+  }
+
+  // ---------- CONVENE ----------
+  btn.addEventListener('click', () => {
+    if (day === null || hour === null || solved) return;
+
+    const key = day + ':' + hour;
+    const repeat = tried.has(key);
+    tried.add(key);
+    attempts++;
+    hud.textContent = 'ATTEMPTS: ' + attempts;
+
+    let yesCount = 0;
+    DELS.forEach((x, i) => {
+      const ok = x.test(day, hour);
+      if (ok) yesCount++;
+      const c = document.getElementById('del-' + x.id);
+      c.classList.toggle('yes', ok);
+      c.classList.toggle('no', !ok);
+      c.querySelector('.badge').textContent = ok ? 'CONFIRMED' : 'DECLINED';
+      c.querySelector('.resp').textContent = ok ? x.yes(day, hour) : x.no(day, hour);
+      seatEls[i].className = 'seat ' + (ok ? 'yes' : 'no');
+    });
+
+    if (!DELS[0].test(day, hour)) rDeclines++;
+    if (!DELS[4].test(day, hour)) tueDeclines++;
+
+    achieve('first', 'ACHIEVEMENT // FILED',
+      'THE FIRST MOTION — You have proposed a time to the galaxy. The galaxy has opinions.');
+    if (repeat) achieve('repeat', 'ACHIEVEMENT // TABLED',
+      'THE REPEAT MOTION — You proposed this exact slot before. Nobody’s schedule changed. That is not how schedules work.');
+    if (rDeclines >= 3) achieve('oyster', 'ACHIEVEMENT // DIETARY',
+      'THE OYSTER RULE — Three declines on a single letter. The hours are spelled out somewhere in your own head. Say them.');
+    if (tueDeclines >= 3) achieve('tuesday', 'ACHIEVEMENT // TUESDAYS',
+      'AGAIN WITH TUESDAY — The Greys have now missed three of them in thought.');
+    if (attempts >= 10) achieve('ten', 'ACHIEVEMENT // PERSISTENCE',
+      'TEN PROPOSALS — Earth scheduled two Olympic Games in less correspondence. The board is not comparing.');
+    if (yesCount === 1) achieve('lunch', 'ACHIEVEMENT // CATERING',
+      'A LUNCH — One delegation attending is not a summit. See Exhibit B.');
+    if (yesCount === 5 && !solved) achieve('five', 'ACHIEVEMENT // SO CLOSE',
+      'FIVE OF SIX — One holdout. This is how every treaty in the historical record has actually died.');
+
+    if (yesCount === 6){
+      solved = true;
+      btn.disabled = true;
+      if (attempts === 1) achieve('cold', 'ACHIEVEMENT // COLD OPEN',
+        'FIRST PROPOSAL — No prior contact with the tide table. The board suspects you are already read in.');
+      else if (attempts <= 5) achieve('clean', 'ACHIEVEMENT // COMPETENT',
+        'BOOKED IN ' + attempts + ' — You are now the most qualified scheduler in the history of interstellar diplomacy.');
+      achieve('summit', 'ACHIEVEMENT // HISTORIC',
+        'THE SUMMIT CONVENES — All six. Warm. Productive. Check the end card. Then check your email.');
+      finale();
+      return;
+    }
+
+    const flavor = yesCount === 5
+      ? 'One delegation short. The board wishes to note that this is not close. In scheduling there is no close — there is a room with people in it, or a room.'
+      : yesCount >= 3
+        ? 'A partial quorum, which the literature calls a working session and the board calls ' +
+          '<b>a lunch with better lighting.</b>'
+        : 'The proposal collapses. Somewhere a chair is stacked against a wall by someone who was ' +
+          'never named in any document.';
+
+    narr.innerHTML =
+      '<span class="verdict">' + yesCount + ' OF 6 CONFIRMED</span>' +
+      DAYFULL[day] + ', ' + pad(hour) + ':00 &mdash; ' + flavor +
+      '<br><b>Adjust and re-propose. The board has unlimited patience and a documented history of needing it.</b>';
+  });
+
+  // ---------- THE PAYOFF ----------
+  function finale(){
+    narr.innerHTML =
+      '<span class="verdict" style="color:var(--neon-green);">SLOT SECURED &mdash; ' +
+      DAYFULL[day] + ', ' + pad(hour) + ':00</span>' +
+      'Six confirmations, in writing, from six delegations, after ' + attempts +
+      (attempts === 1 ? ' attempt.' : ' attempts.') +
+      ' The board has never held a document like this and is handling it with both hands.';
+
+    const card = document.createElement('div');
+    card.className = 'endcard';
+    card.innerHTML =
+      '<p class="big">The Summit Convenes</p>' +
+      '<p>They all come. <b>Early.</b> The Aquatics arrive on the high water precisely as promised ' +
+      'and are gracious about the ramp. The Tall Whites bring their own light and it is, everyone ' +
+      'agrees privately, a little much and completely beautiful. The Mantis Delegation, having ' +
+      'eaten, is patient and unexpectedly funny. The Council of Nine speaks in one voice at an odd ' +
+      'hour. The Greys — it is not a Tuesday — attend physically for the first time in seventy ' +
+      'years and shake hands, which they hate, and do anyway.</p>' +
+      '<p>It is productive. It is historic. It is <b>warm</b> — the word in the record is warm. ' +
+      'Three long-standing disputes close before the break. The catering is superb, sourced across ' +
+      'four incompatible atmospheres by somebody working a loading dock at ' + pad(hour) + ':00, and ' +
+      'the board would very much like that person’s name.</p>' +
+      '<p><b>Minutes are taken.</b> Nine copies. Circulated same evening.</p>' +
+      '<div class="chair">Chair Seven is empty.</div>' +
+      '<p>Humanity does not attend. The invitation was issued correctly — on time, in full, agenda ' +
+      'attached, dial-in included, minutes to follow — to <b>the only Earth contact string on ' +
+      'file:</b> a Gmail address created in 2009 for a fantasy football league, listed as primary by ' +
+      'somebody who has since retired, and last opened by any human being in March of 2011.</p>' +
+      '<p>It is still there. It is unread. It is sitting under a decade of newsletters from a store ' +
+      'that closed, and a monthly reminder about a car we no longer own.</p>' +
+      '<div class="finding">Final board finding: we were never excluded.<br>We were never ready to answer our email.</div>' +
+      '<a class="btn" href="#prize" style="font-size:.8rem; padding:.75rem 1.3rem;">GET CC’D &mdash; THE SUMMIT PLANNER, $5</a> ' +
+      '<button class="btn" id="again" style="font-size:.8rem; padding:.75rem 1.3rem; background:transparent; color:var(--neon-cyan); border-color:var(--neon-cyan); box-shadow:none;">SCHEDULE ANOTHER SUMMIT</button>';
+    stage.appendChild(card);
+    card.scrollIntoView({behavior:'smooth', block:'nearest'});
+
+    document.getElementById('again').addEventListener('click', () => {
+      card.remove();
+      solved = false; day = null; hour = null;
+      DELS.forEach((x, i) => {
+        const c = document.getElementById('del-' + x.id);
+        c.className = 'del';
+        c.querySelector('.badge').textContent = 'AWAITING PROPOSAL';
+        c.querySelector('.resp').textContent = '—';
+        seatEls[i].className = 'seat';
+      });
+      narr.innerHTML =
+        '<span class="verdict">THE FLOOR IS OPEN AGAIN</span>' +
+        'Attempts carry over. The board keeps a running total forever, which is the single most ' +
+        'bureaucratic sentence in this entire building.';
+      sync();
+      stage.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  }
+
+  sync();
+})();
+</script>
+
+</body>
+</html>
