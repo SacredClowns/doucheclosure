@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE STILLNESS PROTOCOL — A Game Of Not — Doucheclosure</title>
+<meta name="description" content="The only game where input is the enemy. Breathe with the pacer. Do not click the popups. Do not scratch the itch. Hold coherence and the sky will come to you, for free.">
+<style>
+  :root{
+    --void:#060610; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF; --laser:#00FF66;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;overflow:hidden;background:var(--void);color:var(--white);
+    font-family:"Courier New",Courier,monospace;}
+  .display{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-weight:400;text-transform:uppercase;letter-spacing:.03em;line-height:.95;}
+  #frame{position:fixed;inset:0;}
+  #sky{position:absolute;inset:0;width:100%;height:100%;display:block;}
+
+  #topbar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;
+    padding:.55rem 1rem;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;z-index:9;}
+  #topbar a{color:var(--neon-cyan);text-decoration:none;}
+  #topbar .t{color:var(--laser);}
+
+  #hud{position:absolute;top:44px;left:14px;z-index:9;width:230px;}
+  .lab{font-size:10px;color:#A89F8C;font-weight:800;letter-spacing:.18em;}
+  #cohbar{height:13px;background:#00000088;border-radius:7px;overflow:hidden;margin-top:3px;border:1px solid #000C;}
+  #cohfill{height:100%;width:0%;background:linear-gradient(90deg,#C0453B,var(--laser));transition:width .3s;}
+  #spent{margin-top:8px;font-size:11px;color:var(--neon-yellow);letter-spacing:.1em;}
+
+  /* breath pacer */
+  #pacerZone{position:absolute;left:50%;bottom:9%;transform:translateX(-50%);z-index:9;
+    text-align:center;user-select:none;}
+  #pacer{width:64px;height:64px;border-radius:50%;margin:0 auto;
+    background:radial-gradient(circle, rgba(0,255,102,.9), rgba(0,255,102,.12) 70%);
+    box-shadow:0 0 26px rgba(0,255,102,.35);}
+  #breathLabel{margin-top:.6rem;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--chrome);}
+  #breathHint{font-size:.62rem;color:#7E6F9E;letter-spacing:.1em;margin-top:.25rem;}
+
+  #announcer{position:absolute;left:50%;top:52px;transform:translateX(-50%);z-index:9;
+    max-width:min(600px,90vw);text-align:center;
+    color:var(--neon-yellow);font-size:.8rem;letter-spacing:.06em;min-height:1.3rem;
+    text-shadow:0 2px 0 #000;}
+
+  /* dark pattern popups */
+  .popup{position:absolute;z-index:30;background:#F4F0FF;color:#14110E;border-radius:12px;
+    width:min(340px,86vw);padding:1.1rem 1.2rem;box-shadow:0 20px 60px rgba(0,0,0,.7);
+    animation:popin .35s;}
+  @keyframes popin{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+  .popup h3{font-family:"Trebuchet MS",sans-serif;font-size:1.05rem;margin-bottom:.4rem;}
+  .popup p{font-family:"Trebuchet MS",sans-serif;font-size:.8rem;color:#4A4438;margin-bottom:.8rem;line-height:1.45;}
+  .popup .yes{display:block;width:100%;padding:.85rem;border:0;border-radius:8px;cursor:pointer;
+    background:linear-gradient(180deg,#00E25C,#00B848);color:#fff;font-weight:800;
+    font-family:"Trebuchet MS",sans-serif;font-size:.95rem;box-shadow:0 4px 14px rgba(0,200,80,.5);}
+  .popup .fakex{position:absolute;top:8px;right:10px;border:0;background:none;cursor:pointer;
+    color:#B0A898;font-size:.9rem;font-weight:bold;transition:transform .12s;}
+  .popup .honest{display:block;margin:.7rem auto 0;background:none;border:0;cursor:pointer;
+    color:#B0A898;font-family:"Trebuchet MS",sans-serif;font-size:.68rem;text-decoration:underline;
+    opacity:0;transition:opacity .6s;}
+  .popup .honest.ready{opacity:1;}
+  .popup .scarcity{font-size:.66rem;color:#C0453B;font-weight:bold;font-family:"Trebuchet MS",sans-serif;}
+
+  .toast{position:absolute;top:100px;left:50%;transform:translateX(-50%);z-index:40;
+    background:var(--panel);border:2px solid var(--neon-yellow);border-radius:10px;
+    padding:.6rem 1.1rem;text-align:center;animation:popin .3s;}
+  .toast .t1{color:var(--neon-yellow);font-size:.62rem;letter-spacing:.24em;}
+  .toast .t2{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;font-size:1.15rem;
+    text-transform:uppercase;}
+
+  #endcard{position:absolute;inset:0;z-index:50;display:none;align-items:center;justify-content:center;
+    flex-direction:column;background:rgba(4,4,10,.9);text-align:center;padding:1rem;}
+  #endcard h1{font-size:clamp(1.8rem,6.5vw,3.2rem);color:var(--laser);
+    text-shadow:0 0 18px rgba(0,255,102,.5);}
+  #endcard.bad h1{color:var(--neon-pink);text-shadow:0 0 18px rgba(255,61,138,.6);}
+  #endcard p{max-width:36rem;margin:1rem auto;color:var(--chrome);font-size:.92rem;line-height:1.65;}
+  #endcard p b{color:var(--white);}
+  #endcard a,#endcard button{display:inline-block;margin:.35rem;padding:.85rem 1.5rem;border-radius:8px;
+    font-family:inherit;font-weight:bold;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;
+    text-decoration:none;cursor:pointer;border:2px solid var(--laser);background:var(--laser);color:#052012;}
+  #endcard a.ghost{background:transparent;color:var(--neon-cyan);border-color:var(--neon-cyan);}
+</style>
+</head>
+<body>
+<div id="frame">
+  <canvas id="sky"></canvas>
+
+  <div id="topbar">
+    <a href="index.html">&larr; THE GREER WING</a>
+    <span class="t display" style="font-size:1.05rem;">THE STILLNESS PROTOCOL</span>
+    <span style="color:#7E6F9E;">A GAME OF NOT</span>
+  </div>
+
+  <div id="hud">
+    <div class="lab">COHERENCE</div>
+    <div id="cohbar"><div id="cohfill"></div></div>
+    <div id="spent">CHARGED (IN SPIRIT): $0.00</div>
+  </div>
+
+  <p id="announcer">The desert is free. The night is free. Breathe, and touch nothing else.</p>
+
+  <div id="pacerZone">
+    <div id="pacer"></div>
+    <div id="breathLabel">HOLD SPACE TO INHALE &bull; RELEASE TO EXHALE</div>
+    <div id="breathHint">four counts in, four counts out. that is the entire control scheme. everything else is a trap.</div>
+  </div>
+
+  <div id="endcard">
+    <h1 id="endTitle" class="display">CONTACT</h1>
+    <p id="endText"></p>
+    <div>
+      <button onclick="location.reload()">SIT AGAIN</button>
+      <a class="ghost" href="index.html#prize">TAKE THE PRACTICE HOME — THE $5 CE5</a>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const cv = document.getElementById('sky');
+  const cx = cv.getContext('2d');
+  let W, H;
+  function fit(){ W = cv.width = innerWidth; H = cv.height = innerHeight; }
+  fit(); addEventListener('resize', fit);
+
+  const $ = id => document.getElementById(id);
+  const frame = $('frame');
+  const ann = $('announcer');
+  let annT = 0;
+  function say(t){ ann.textContent = t; annT = 400; }
+
+  // ---------- state ----------
+  let coh = 0, spent = 0, over = false, t = 0;
+  let inhaling = false, phaseStart = 0, breathing = false;
+  const TARGET = 4000; // ms per phase
+  let honestDismissals = 0, itchResisted = false, toasted = {};
+
+  function toast(t2){
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.innerHTML = '<div class="t1">ACHIEVEMENT UNLOCKED</div><div class="t2">' + t2 + '</div>';
+    frame.appendChild(el);
+    setTimeout(() => el.remove(), 3000);
+  }
+  function once(k, fn){ if (!toasted[k]){ toasted[k] = true; fn(); } }
+
+  function charge(amount, why){
+    spent += amount;
+    $('spent').textContent = 'CHARGED (IN SPIRIT): $' + spent.toFixed(2);
+    hitCoherence(18, why);
+    if (spent >= 200 && !over){
+      endGame(false, 'THE PLATINUM PACKAGE',
+        'Through flinches alone you have assembled $' + spent.toFixed(2) + ' of spiritual commerce. ' +
+        'You now own lotus position, expedited karma, and a commemorative windbreaker. ' +
+        'A confirmation email arrives with no unsubscribe link. The stars, unpurchased, look on.');
+    }
+  }
+  function hitCoherence(n, why){
+    coh = Math.max(0, coh - n);
+    renderCoh();
+    say(why);
+    if (coh <= 0 && breathing && !over && t > 800){
+      // gentle: don't end on zero, just scold
+      say('Coherence lost. Begin again. The sky is patient. The popups are not.');
+    }
+  }
+  function renderCoh(){ $('cohfill').style.width = coh + '%'; }
+
+  // ---------- breath engine ----------
+  function startPhase(inh){
+    inhaling = inh; phaseStart = performance.now(); breathing = true;
+    $('pacer').style.transition = 'transform ' + (TARGET/1000) + 's linear';
+    $('pacer').style.transform = inh ? 'scale(2.4)' : 'scale(1)';
+    $('breathLabel').textContent = inh ? 'INHALING…' : 'EXHALING…';
+  }
+  function endPhase(){
+    const dur = performance.now() - phaseStart;
+    const acc = Math.max(0, 1 - Math.abs(dur - TARGET)/TARGET); // 1 = perfect
+    if (acc > 0.55){
+      coh = Math.min(100, coh + 2 + acc*4);
+    } else if (dur < 900){
+      hitCoherence(4, dur < 400 ? 'That was a gasp, not a breath.' : 'Shallow. The desert noticed.');
+    } else {
+      coh = Math.min(100, coh + 1);
+    }
+    renderCoh();
+  }
+
+  function isBreathKey(e){ return e.code === 'Space'; }
+  addEventListener('keydown', e => {
+    if (over) { if (e.code === 'Space') location.reload(); return; }
+    if (isBreathKey(e)){
+      e.preventDefault();
+      if (!inhaling){ if (breathing) endPhase(); startPhase(true); }
+      return;
+    }
+    // ANY other key is a mistake
+    e.preventDefault();
+    if (e.code === 'KeyI' && itchActive){
+      itchActive = false;
+      hitCoherence(15, 'You scratched. The coyote saw. The coyote will remember.');
+      return;
+    }
+    hitCoherence(6, 'Stillness means the keyboard too. (' + e.code + ' has been logged and forgiven.)');
+  });
+  addEventListener('keyup', e => {
+    if (over) return;
+    if (isBreathKey(e)){
+      if (inhaling){ endPhase(); startPhase(false); }
+    }
+  });
+  // touch: hold anywhere on the pacer zone
+  const pz = $('pacerZone');
+  pz.addEventListener('pointerdown', e => { e.preventDefault(); if (!over && !inhaling){ if (breathing) endPhase(); startPhase(true); } });
+  addEventListener('pointerup', () => { if (!over && inhaling){ endPhase(); startPhase(false); } });
+  // stray clicks on the sky are also input
+  cv.addEventListener('pointerdown', () => { if (!over) hitCoherence(5, 'You tapped the sky. The sky cannot be tapped. It can only be attended.'); });
+
+  // ---------- dark pattern popups ----------
+  let popupOpen = false, itchActive = false;
+  const POPUPS = [
+    {
+      title:'🧘 UNLOCK LOTUS POSITION', price:49.99,
+      body:'Your current sitting posture is UNLICENSED. Upgrade now to sit correctly beneath the cosmos. Limited spiritual inventory.',
+      yes:'UPGRADE MY SITTING — $49.99', honest:'no thanks, my consciousness came with legs'
+    },
+    {
+      title:'⏰ ONLY 2 FOLDING CHAIRS LEFT', price:74.99,
+      body:'At this price. In this desert. Tonight. Other seekers are looking at this chair RIGHT NOW.',
+      yes:'RESERVE MY CHAIR — $74.99', honest:'the ground is free and has always held me'
+    },
+    {
+      title:'📡 HARMONIC FREQUENCY SLIDER', price:6.99,
+      body:'Your consciousness vector is capped at 40Hz. Subscribe to slide freely. The Orion Council prefers premium members.',
+      yes:'SUBSCRIBE — $6.99/MO', honest:'my lungs are the slider'
+    },
+    {
+      title:'📄 AIRDROP: consciousness_invoice.pdf', price:33.00,
+      body:'A nearby device wishes to share a small energetic balance due. Accepting is polite. You were raised polite.',
+      yes:'ACCEPT INVOICE — $33.00', honest:'decline, respectfully, forever'
+    },
+    {
+      title:'📱 MOM???', price:0,
+      body:'Your phone is buzzing. It could be your mother. It could be the group chat. It could wait, is the thing. It could always wait.',
+      yes:'CHECK PHONE (LOSE EVERYTHING)', honest:'mom would want me to see this through'
+    }
+  ];
+
+  function spawnPopup(){
+    if (popupOpen || over) return;
+    popupOpen = true;
+    const spec = POPUPS[Math.floor(Math.random()*POPUPS.length)];
+    const d = document.createElement('div');
+    d.className = 'popup';
+    d.style.left = (15 + Math.random()*40) + '%';
+    d.style.top = (18 + Math.random()*30) + '%';
+    d.innerHTML =
+      '<button class="fakex">✕</button>' +
+      '<h3>' + spec.title + '</h3>' +
+      '<p>' + spec.body + '</p>' +
+      (spec.price ? '<p class="scarcity">⚠ PRICE INCREASES WHEN YOU LOOK AWAY</p>' : '') +
+      '<button class="yes">' + spec.yes + '</button>' +
+      '<button class="honest">' + spec.honest + '</button>';
+    frame.appendChild(d);
+
+    const kill = () => { d.remove(); popupOpen = false; };
+    // the fake X flees the cursor, then charges you anyway if caught
+    const fx = d.querySelector('.fakex');
+    let dodges = 0;
+    fx.addEventListener('pointerenter', () => {
+      if (dodges++ < 3){ fx.style.transform = 'translate(' + (Math.random()*80-40) + 'px,' + (Math.random()*36) + 'px)'; }
+    });
+    fx.addEventListener('click', () => {
+      charge(spec.price || 12.99, 'The X was never an X. It was a YES in a trench coat.');
+      kill();
+    });
+    d.querySelector('.yes').addEventListener('click', () => {
+      charge(spec.price || 99.99, spec.price ? 'You flinched into a purchase.' : 'You checked your phone. It was an ad.');
+      kill();
+    });
+    const honest = d.querySelector('.honest');
+    setTimeout(() => honest.classList.add('ready'), 5200);
+    honest.addEventListener('click', () => {
+      if (!honest.classList.contains('ready')){
+        charge(4.99, 'You clicked before it was real. Impatience surcharge.');
+        return;
+      }
+      honestDismissals++;
+      coh = Math.min(100, coh + 6); renderCoh();
+      say('Declined, honestly. The desert approves. Coherence rises.');
+      if (honestDismissals >= 3) once('unclick', () => toast('🏆 THE UNCLICKABLE'));
+      kill();
+    });
+    // popups also expire on their own if you truly ignore them — the purest path
+    setTimeout(() => {
+      if (d.isConnected){
+        kill();
+        coh = Math.min(100, coh + 8); renderCoh();
+        say('You did not touch it at all. It starved. This is the way.');
+        once('starve', () => toast('🏆 STONE IN THE RIVER'));
+      }
+    }, 16000);
+  }
+
+  function spawnItch(){
+    if (over || itchActive) return;
+    itchActive = true;
+    say('Your nose itches. The I key would scratch it. The I key is right there.');
+    setTimeout(() => {
+      if (itchActive){
+        itchActive = false;
+        itchResisted = true;
+        coh = Math.min(100, coh + 5); renderCoh();
+        say('The itch passed. Everything passes. That was the whole lesson and it was free.');
+      }
+    }, 9000);
+  }
+
+  // ---------- the sky ----------
+  const stars = [];
+  for (let i=0;i<220;i++) stars.push([Math.random(), Math.random()*0.72, Math.random()]);
+  let skyEvents = { satellite:-1, plane:-1, flare:-1, light:-1 };
+  let lightHold = 0;
+
+  function drawSky(){
+    const g = cx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,'#060612'); g.addColorStop(.75,'#120E22'); g.addColorStop(1,'#241A14');
+    cx.fillStyle = g; cx.fillRect(0,0,W,H);
+    // stars
+    for (const [x,y,p] of stars){
+      cx.fillStyle = 'rgba(210,225,255,' + (0.35 + 0.5*Math.abs(Math.sin(t*0.01 + p*7))) + ')';
+      cx.fillRect(x*W, y*H, 2, 2);
+    }
+    // dunes
+    cx.fillStyle = '#1A1410';
+    cx.beginPath(); cx.moveTo(0,H);
+    for (let x=0;x<=W;x+=60) cx.lineTo(x, H - 70 - Math.sin(x*0.005)*30);
+    cx.lineTo(W,H); cx.fill();
+    // tier events
+    if (coh > 20){
+      if (skyEvents.satellite < 0) { skyEvents.satellite = t; say('A satellite. Steady mover. Free of charge. Free of meaning? Unclear.'); }
+      const sx = ((t - skyEvents.satellite)*0.06) % (W+100) - 50;
+      cx.fillStyle = '#CFE0FF'; cx.fillRect(sx, H*0.18, 3, 3);
+    }
+    if (coh > 40){
+      if (skyEvents.plane < 0) { skyEvents.plane = t; say('A 737, descending into Phoenix. Someone aboard is also breathing badly.'); }
+      const px = W - (((t - skyEvents.plane)*0.09) % (W+200));
+      cx.fillStyle = '#FFB0A6'; cx.fillRect(px, H*0.12, 3, 3);
+      if (Math.floor(t/30)%2===0){ cx.fillStyle = '#FF5555'; cx.fillRect(px-8, H*0.12, 2, 2); }
+    }
+    if (coh > 60){
+      if (skyEvents.flare < 0) { skyEvents.flare = t; say("From behind the dune: a flare. Somewhere, Bobby earns his course credit. Hold steady."); }
+      const ft = (t - skyEvents.flare) % 500;
+      if (ft < 200){
+        const fy = H*0.8 - ft*1.4;
+        cx.fillStyle = '#FF7A33';
+        cx.beginPath(); cx.arc(W*0.2, fy, 4, 0, 7); cx.fill();
+      }
+    }
+    if (coh > 92){
+      lightHold++;
+      if (skyEvents.light < 0 && lightHold > 240){
+        skyEvents.light = t;
+        say('…');
+        setTimeout(() => winGame(), 3600);
+      }
+      if (skyEvents.light > 0 || lightHold > 120){
+        const a = Math.min(1, lightHold/300);
+        const lx = W*0.62, ly = H*0.15;
+        const rg = cx.createRadialGradient(lx,ly,2,lx,ly,40+a*30);
+        rg.addColorStop(0,'rgba(244,240,255,' + a + ')');
+        rg.addColorStop(.4,'rgba(0,255,102,' + a*0.5 + ')');
+        rg.addColorStop(1,'rgba(0,255,102,0)');
+        cx.fillStyle = rg;
+        cx.beginPath(); cx.arc(lx,ly,40+a*30,0,7); cx.fill();
+      }
+    } else {
+      lightHold = Math.max(0, lightHold - 2);
+    }
+  }
+
+  function winGame(){
+    if (over) return;
+    over = true;
+    once('zero', () => { if (spent === 0) toast('🏆 $0.00'); });
+    $('endTitle').textContent = 'CONTACT';
+    $('endText').innerHTML = 'It did not descend for the chair, the laser, or the harmonic slider. It came when you got quiet — ' +
+      'which, the review board notes, is EXACTLY WHAT THE DOCTRINE SAID, making the invoice a crime against its own scripture. ' +
+      '<br><br><b>AMOUNT SPENT: $' + spent.toFixed(2) + '.</b> <b>AMOUNT SEEN: EVERYTHING.</b>' +
+      (spent === 0 ? '<br>A perfect sit. Bobby, watching from the dune, quietly puts down his matches.' :
+       '<br>Next time, spend nothing. The sky does not take cards.');
+    $('endcard').style.display = 'flex';
+  }
+  function endGame(win, title, text){
+    over = true;
+    $('endcard').classList.toggle('bad', !win);
+    $('endTitle').textContent = title;
+    $('endText').textContent = text;
+    $('endcard').style.display = 'flex';
+  }
+
+  // ---------- schedulers ----------
+  setInterval(() => { if (!over && breathing && Math.random() < 0.55) spawnPopup(); }, 11000);
+  setInterval(() => { if (!over && breathing && Math.random() < 0.4) spawnItch(); }, 23000);
+  // slow decay if not breathing at all
+  setInterval(() => {
+    if (!over && !breathing && t > 300){ say('The pacer waits. Hold SPACE (or the circle) to begin.'); }
+    if (!over && breathing){ coh = Math.max(0, coh - 0.4); renderCoh(); }
+  }, 1500);
+
+  function loop(){
+    t++;
+    drawSky();
+    if (annT > 0) annT--; else if (!over && ann.textContent.length > 0 && Math.random() < 0.002) ann.textContent = '';
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+</script>
+</body>
+</html>
