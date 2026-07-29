@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>EPISODE 05: THE POP-PUNK IPO — Doucheclosure</title>
+<meta name="description" content="Arena soundcheck boss fight: dodge 180-BPM power chords, stamp DENIED on preferred shares, pull the Marshall breaker. And then the rafters hum the chord back.">
+<style>
+  :root{ --ink:#14110E; --parch:#EDE6D6; --brass:#C9A24B; --blood:#C0453B;
+    --toxic:#7CFC3A; --cyan:#2DE1FC; --pink:#FF3D8A; }
+  *{box-sizing:border-box;margin:0;padding:0;user-select:none;}
+  html,body{height:100%;overflow:hidden;background:#08060A;color:var(--parch);
+    font-family:"Courier New",Courier,monospace;}
+  .display{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-weight:400;text-transform:uppercase;letter-spacing:.03em;line-height:.95;}
+  #frame{position:fixed;inset:0;overflow:hidden;}
+  #gl{position:absolute;inset:0;}
+  #gl canvas{display:block;}
+  #fx{position:absolute;inset:0;pointer-events:none;z-index:6;}
+  #topbar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;
+    padding:.55rem 1rem;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;z-index:9;}
+  #topbar a{color:var(--cyan);text-decoration:none;}
+  #topbar .t{color:var(--toxic);}
+  #hud{position:absolute;top:44px;left:14px;width:220px;z-index:9;}
+  .lab{font-size:10px;color:#A89F8C;font-weight:800;letter-spacing:.18em;}
+  #credbar{height:13px;background:#00000088;border-radius:7px;overflow:hidden;margin-top:3px;border:1px solid #000C;}
+  #credfill{height:100%;width:100%;background:linear-gradient(90deg,var(--blood),var(--toxic));transition:width .25s;}
+  #parryHud{margin-top:8px;font-size:10px;color:var(--toxic);letter-spacing:.14em;}
+  .pop{position:absolute;font-weight:800;color:var(--parch);text-shadow:0 3px 0 #000;pointer-events:none;
+    font-size:22px;animation:poprise 1s forwards;transform:translate(-50%,-50%);white-space:nowrap;
+    font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;letter-spacing:.04em;text-transform:uppercase;}
+  .pop.toxic{color:var(--toxic);} .pop.gold{color:var(--brass);} .pop.red{color:#FFB0A6;}
+  @keyframes poprise{0%{opacity:0;transform:translate(-50%,-20%) scale(.5)}20%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}100%{opacity:0;transform:translate(-50%,-100%) scale(1)}}
+  .toast{position:absolute;top:64px;left:50%;transform:translateX(-50%);z-index:30;
+    background:#0A120A;border:2px solid var(--brass);border-radius:10px;
+    padding:.6rem 1.1rem;text-align:center;animation:tin .3s;}
+  .toast .t1{color:var(--brass);font-size:.62rem;letter-spacing:.24em;}
+  .toast .t2{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;font-size:1.2rem;
+    text-transform:uppercase;color:var(--parch);}
+  @keyframes tin{from{opacity:0;transform:translateX(-50%) translateY(-10px)}to{opacity:1;transform:translateX(-50%)}}
+
+  #ipoOverlay{position:absolute;inset:0;z-index:22;display:none;background:rgba(10,5,15,0.92);
+    align-items:center;justify-content:center;flex-direction:column;}
+  #ipoOverlay h3{color:var(--toxic);margin-bottom:10px;font-family:Haettenschweiler,Impact,sans-serif;
+    font-size:1.4rem;letter-spacing:.05em;text-transform:uppercase;}
+  #ipoOverlay .sub{color:#A8B8A8;font-size:.72rem;margin-bottom:12px;letter-spacing:.1em;}
+  #laneContainer{width:min(340px,90vw);height:400px;background:#151020;border:3px solid var(--toxic);
+    border-radius:8px;position:relative;overflow:hidden;}
+  .laneNote{position:absolute;width:calc(100% - 40px);left:20px;height:40px;background:var(--brass);
+    color:#000;font-weight:800;text-align:center;line-height:40px;border-radius:6px;font-size:.8rem;}
+  #targetZone{position:absolute;bottom:20px;left:10px;right:10px;height:56px;
+    border:2px dashed var(--toxic);border-radius:6px;}
+
+  #dlg{position:absolute;left:50%;bottom:4%;transform:translateX(-50%);width:min(680px,92vw);z-index:20;}
+  #dlgbox{background:#0A0812D9;border:2px solid var(--toxic);border-radius:12px;padding:11px 16px;}
+  #dlgname{font-size:10px;font-weight:800;letter-spacing:.2em;color:var(--toxic);}
+  #dlgtext{font-size:16px;font-weight:700;margin-top:3px;}
+
+  #endcard{position:absolute;inset:0;z-index:40;display:none;align-items:center;justify-content:center;
+    flex-direction:column;background:rgba(4,4,8,.9);text-align:center;padding:1rem;}
+  #endcard h1{font-size:clamp(1.7rem,6vw,3rem);color:var(--toxic);
+    text-shadow:0 0 18px rgba(124,252,58,.55);}
+  #endcard.bad h1{color:var(--pink);text-shadow:0 0 18px rgba(255,61,138,.6);}
+  #endcard p{max-width:38rem;margin:1rem auto;color:#C9C2B0;font-size:.92rem;line-height:1.65;}
+  #endcard p b{color:var(--parch);}
+  #endcard a,#endcard button{display:inline-block;margin:.35rem;padding:.85rem 1.5rem;border-radius:8px;
+    font-family:inherit;font-weight:bold;font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;
+    text-decoration:none;cursor:pointer;border:2px solid var(--toxic);background:var(--toxic);color:#052012;}
+  #endcard a.ghost{background:transparent;color:var(--cyan);border-color:var(--cyan);}
+  #kbhint{position:absolute;bottom:8px;left:0;right:0;text-align:center;color:#A8A08C;font-size:11px;z-index:8;letter-spacing:.06em;}
+</style>
+</head>
+<body>
+<div id="frame">
+  <div id="gl"></div>
+  <div id="fx"></div>
+
+  <div id="topbar">
+    <a href="index.html">&larr; THE DELONGE WING</a>
+    <span class="t display" style="font-size:1.05rem;">EPISODE 05: THE POP-PUNK IPO</span>
+    <span style="color:#7E6F9E;">180 BPM &bull; $500/SHARE &bull; ALL AGES</span>
+  </div>
+
+  <div id="hud">
+    <div class="lab">CREDIBILITY</div>
+    <div id="credbar"><div id="credfill"></div></div>
+    <div id="parryHud">CHORDS PARRIED: 0</div>
+  </div>
+
+  <div id="ipoOverlay">
+    <h3>TO THE STARS IPO — STAMP THE PREFERRED SHARES</h3>
+    <p class="sub">SPACE WHEN THE SHARE ENTERS THE ZONE. MISS = AUTOMATIC PURCHASE.</p>
+    <div id="laneContainer"><div id="targetZone"></div></div>
+  </div>
+
+  <div id="dlg"><div id="dlgbox">
+    <div id="dlgname">TOM DELONGE</div>
+    <div id="dlgtext"></div>
+  </div></div>
+
+  <div id="endcard">
+    <h1 id="endTitle" class="display">THE CHORD WAS REAL.</h1>
+    <p id="endText"></p>
+    <div>
+      <button onclick="location.reload()">SOUNDCHECK AGAIN</button>
+      <a class="ghost" href="index.html#prize">TUNE UP FOR REAL — TUNED TO THE STARS, $5</a>
+    </div>
+  </div>
+
+  <div id="kbhint">WASD/ARROWS: MOVE &bull; SPACE: STAMP / PARRY &bull; E: PULL THE BREAKER &bull; DESKTOP RECOMMENDED</div>
+</div>
+
+<script type="importmap">
+{ "imports": { "three": "../../assets/three.module.min.js" } }
+</script>
+<script type="module">
+'use strict';
+import * as THREE from 'three';
+
+/* Episode 05: The Pop-Punk IPO
+   Doctrine: roast the securities offering. Never the chord. */
+
+const $ = id => document.getElementById(id);
+const rand = (a,b) => a + Math.random()*(b-a);
+const State = { cred:100, parries:0, stamped:0, misses:0, phase:1, active:true, toasted:{} };
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x080610);
+scene.fog = new THREE.FogExp2(0x080610, 0.028);
+const camera = new THREE.PerspectiveCamera(50, innerWidth/innerHeight, 0.1, 1000);
+camera.position.set(0, 3, 10);
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+$('gl').appendChild(renderer.domElement);
+addEventListener('resize', () => {
+  camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+scene.add(new THREE.AmbientLight(0x2A1A3E, 2.4));
+const stageLight = new THREE.PointLight(0x7CFC3A, 80, 40); stageLight.position.set(0, 5, -2); scene.add(stageLight);
+const washPink = new THREE.PointLight(0xFF3D8A, 50, 35); washPink.position.set(-8, 6, 2); scene.add(washPink);
+
+// stage
+const stage = new THREE.Mesh(new THREE.BoxGeometry(30, 1, 20),
+  new THREE.MeshStandardMaterial({color:0x17130F, roughness:0.8}));
+stage.position.set(0, -0.5, -2); scene.add(stage);
+
+// amp stacks + the breaker
+function amp(x, z){
+  const a = new THREE.Mesh(new THREE.BoxGeometry(1.5, 3, 1),
+    new THREE.MeshStandardMaterial({color:0x111111}));
+  a.position.set(x, 1.5, z); scene.add(a);
+}
+amp(-6,-4); amp(6,-4); amp(-7.5,-4); amp(7.5,-4);
+const breaker = new THREE.Mesh(new THREE.BoxGeometry(0.6, 1, 0.4),
+  new THREE.MeshStandardMaterial({color:0xC0453B, emissive:0x3A0A08}));
+breaker.position.set(6.8, 1, -3.2); scene.add(breaker);
+
+// THE DENNY'S BOOTH (cardboard, on stage, load-bearing for the lore)
+const booth = new THREE.Group();
+const table = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.1, 0.9),
+  new THREE.MeshStandardMaterial({color:0xC9A24B}));
+table.position.y = 0.8; booth.add(table);
+const seatA = new THREE.Mesh(new THREE.BoxGeometry(1.6, 1.2, 0.15),
+  new THREE.MeshStandardMaterial({color:0xC0453B}));
+seatA.position.set(0, 0.6, 0.6); booth.add(seatA);
+const seatB = seatA.clone(); seatB.position.z = -0.6; booth.add(seatB);
+booth.position.set(-4, 0, 0); scene.add(booth);
+
+// GENERAL DENNY — starstruck, holding a CD case
+const general = new THREE.Group();
+const genBody = new THREE.Mesh(new THREE.CapsuleGeometry(0.45, 0.9, 4, 8),
+  new THREE.MeshStandardMaterial({color:0x2B3E2B}));
+genBody.position.y = 1; general.add(genBody);
+const cd = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.03),
+  new THREE.MeshStandardMaterial({color:0xEDE6D6, emissive:0x223322}));
+cd.position.set(0.5, 1.2, 0.2); general.add(cd);
+general.position.set(-4, 0, 1.4); scene.add(general);
+
+// THE PROTOTYPE (FOAM) — drifts overhead the entire game
+const glider = new THREE.Group();
+const gBody = new THREE.Mesh(new THREE.ConeGeometry(0.18, 1.1, 8),
+  new THREE.MeshStandardMaterial({color:0xEDE6D6}));
+gBody.rotation.z = -Math.PI/2; glider.add(gBody);
+const gWing = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.02, 0.4),
+  new THREE.MeshStandardMaterial({color:0xEDE6D6}));
+glider.add(gWing);
+glider.position.set(-14, 7, -4); scene.add(glider);
+
+// player + tom
+const player = new THREE.Mesh(new THREE.CapsuleGeometry(0.5, 1, 4, 8),
+  new THREE.MeshStandardMaterial({color:0x33405E}));
+player.position.set(0, 1, 4); scene.add(player);
+const tom = new THREE.Group();
+const tBody = new THREE.Mesh(new THREE.CapsuleGeometry(0.55, 1.1, 4, 8),
+  new THREE.MeshStandardMaterial({color:0x17130F, emissive:0x1A2E1A}));
+tBody.position.y = 1.1; tom.add(tBody);
+const guitar = new THREE.Mesh(new THREE.BoxGeometry(0.25, 1.4, 0.1),
+  new THREE.MeshStandardMaterial({color:0x7CFC3A, emissive:0x1A3A0A}));
+guitar.rotation.z = 0.6; guitar.position.set(0.5, 1, 0.3); tom.add(guitar);
+tom.position.set(0, 0, -4); scene.add(tom);
+
+// waves
+const waves = [];
+function spawnWave(){
+  const m = new THREE.Mesh(new THREE.TorusGeometry(1, 0.1, 8, 24),
+    new THREE.MeshBasicMaterial({color:0x7CFC3A, wireframe:true}));
+  m.rotation.x = Math.PI/2;
+  m.position.set(tom.position.x, 1.2, tom.position.z);
+  scene.add(m);
+  waves.push({m, scale:0.2, alive:true});
+}
+
+// dialogue bank
+const BANK = [
+  ['GENE',"That general met you at a Denny's because he wanted free concert tickets, Tom."],
+  ['GENE',"A B-minor chord is not a security clearance."],
+  ['GENE',"Hand me the marker. This prospectus violates SEC regulations and basic music theory."],
+  ['ERIC',"The frequency off that amp is sixty hertz of distortion and bad grounding."],
+  ['ERIC',"I've wired research stations at the South Pole. That's not an anti-gravity engine, Tom — it's a fog machine."],
+  ['MOOKS',"The music's fast, brother, but the frequency is pure corporate, man."],
+  ['MOOKS',"The bus plays three notes too, man, but we don't file an IPO for it."],
+  ['TOM DELONGE',"DUDE! The generals told me the aliens love Octaver pedals!"],
+  ['TOM DELONGE',"That stock offering is going to build a craft that runs on pure vibes!"],
+  ['TOM DELONGE',"The DoD gave me this data because they knew I'd make a cool documentary about it!"],
+  ['GENERAL DENNY',"He signed my Enema of the State CD in exchange for the Roswell telemetry!"],
+  ['GENERAL DENNY',"Is the stock liquid?! Can I roll my military pension into To The Stars?!"]
+];
+let bankIdx = 0, bankT = 0;
+function say(t, n){ $('dlgname').textContent = n || 'NARRATOR'; $('dlgtext').textContent = '"' + t + '"'; }
+
+function pop(text, pos3D, type='gold'){
+  const el = document.createElement('div');
+  el.className = 'pop ' + type; el.textContent = text;
+  const v = pos3D.clone().project(camera);
+  el.style.left = ((v.x*.5+.5)*innerWidth) + 'px';
+  el.style.top = ((-(v.y*.5)+.5)*innerHeight) + 'px';
+  $('fx').appendChild(el);
+  setTimeout(() => el.remove(), 1000);
+}
+function toast(t2){
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.innerHTML = '<div class="t1">ACHIEVEMENT UNLOCKED</div><div class="t2">' + t2 + '</div>';
+  $('frame').appendChild(el);
+  setTimeout(() => el.remove(), 3000);
+}
+function once(k, fn){ if (!State.toasted[k]){ State.toasted[k] = true; fn(); } }
+
+// input
+const keys = {};
+addEventListener('keydown', e => {
+  keys[e.code] = true;
+  if (e.code === 'Space'){
+    e.preventDefault();
+    if (State.phase === 1) parry();
+    else if (State.phase === 2) rhythmHit();
+  }
+  if (e.code === 'KeyE' && State.phase === 3) pullBreaker();
+});
+addEventListener('keyup', e => keys[e.code] = false);
+
+function parry(){
+  if (!State.active) return;
+  let hit = false;
+  for (const w of waves){
+    if (w.alive && Math.abs(w.m.position.distanceTo(player.position) - w.scale) < 1.2){
+      w.alive = false; scene.remove(w.m); hit = true;
+      State.parries++;
+      pop('POWER CHORD PARRIED', w.m.position, 'toxic');
+    }
+  }
+  if (!hit) pop('CENSOR STAMP (PRACTICE SWING)', player.position, 'gold');
+  $('parryHud').textContent = 'CHORDS PARRIED: ' + State.parries;
+  if (State.parries >= 10) once('mosh', () => toast('🏆 MOSH PIT AUDITOR'));
+  if (State.parries >= 6 && State.phase === 1) phase2();
+}
+
+let activeNote = null;
+function phase2(){
+  State.phase = 2;
+  $('ipoOverlay').style.display = 'flex';
+  say('Check out lane four, dude! Preferred shares scrolling at 180 BPM!', 'TOM DELONGE');
+  spawnNote();
+}
+function spawnNote(){
+  if (State.phase !== 2) return;
+  const container = $('laneContainer');
+  const note = document.createElement('div');
+  note.className = 'laneNote';
+  note.textContent = '$500 PREFERRED SHARE';
+  note.style.top = '0px';
+  container.appendChild(note);
+  let pos = 0;
+  const anim = setInterval(() => {
+    pos += 4;
+    note.style.top = pos + 'px';
+    if (pos > 380){
+      clearInterval(anim);
+      if (note.parentNode){
+        note.remove();
+        State.misses++;
+        State.cred -= 15;
+        $('credfill').style.width = Math.max(0, State.cred) + '%';
+        pop('AUTOMATIC STOCK PURCHASE! (−15)', player.position, 'red');
+        if (State.cred <= 0) return lose();
+        spawnNote();
+      }
+    }
+  }, 20);
+  activeNote = { el: note, anim, getPos: () => pos };
+}
+function rhythmHit(){
+  if (!activeNote) return;
+  const pos = activeNote.getPos();
+  if (pos >= 300 && pos <= 376){
+    clearInterval(activeNote.anim);
+    activeNote.el.remove();
+    activeNote = null;
+    State.stamped++;
+    pop('SHARE STAMPED: DENIED — $5.00 SAVED', player.position, 'gold');
+    if (State.stamped >= 4){
+      $('ipoOverlay').style.display = 'none';
+      if (State.misses === 0) once('sec', () => toast('🏆 SEC COMPLIANT'));
+      phase3();
+    } else setTimeout(spawnNote, 400);
+  }
+}
+
+function phase3(){
+  State.phase = 3;
+  say('The red breaker box. Right amp stack. Pull it, and then — listen.', 'GENE');
+  pop('PULL BREAKER (PRESS E)', breaker.position, 'red');
+}
+function pullBreaker(){
+  if (player.position.distanceTo(breaker.position) < 3.0) win();
+}
+
+function win(){
+  State.active = false;
+  once('unplug', () => toast('🏆 UNPLUGGED'));
+  say('DUDE! The main fuse blew! How are we going to fold space-ti— ...wait. Do you hear that?', 'TOM DELONGE');
+  stageLight.intensity = 8;
+  setTimeout(() => {
+    say('...', 'THE RAFTERS');
+    setTimeout(() => {
+      once('dude', () => toast('🏆 DUDE.'));
+      $('endText').innerHTML = 'The stage dies. The generals scatter into the parking lot clutching signed CDs. ' +
+        'The prospectuses settle like snow. And in the silence — from somewhere up in the rigging, faint but ' +
+        'unmistakable — <b>something hums the chord back.</b> Three notes. Palm-muted. Patient. ' +
+        'Tom whispers "dude" with his whole chest, and for once the review board whispers it with him. ' +
+        '<br><br><b>FINDING: THE CHORD WAS REAL. THE IPO WAS THE DELUSION.</b> ' +
+        '<br><b>COLLECTIBLE ACQUIRED: CUSTOM 180-BPM ANTI-GRAVITY PICK (+50% STAMP SPEED).</b> ' +
+        '<br>Your checking account remains yours. The sky remains everyone\'s. The needle of the republic, ' +
+        'as ever, was moved by a man in Dickies shorts.';
+      $('endcard').style.display = 'flex';
+    }, 2400);
+  }, 2000);
+}
+function lose(){
+  State.active = false;
+  $('endcard').classList.add('bad');
+  $('endTitle').textContent = 'ACCREDITED';
+  $('endText').textContent = 'You now own 10,000 preferred shares of an imaginary zero-point glider. ' +
+    'The certificate is beautiful. The glider is foam. Your financial advisor is weeping in a silk ' +
+    'sleeping bag next to a man who once managed satellites. The chord, for the record, still slaps.';
+  $('endcard').style.display = 'flex';
+}
+
+// loop
+const clock = new THREE.Clock();
+let spawnT = 0;
+function tick(){
+  requestAnimationFrame(tick);
+  const dt = Math.min(clock.getDelta(), 0.05);
+  bankT += dt;
+  if (State.active && State.phase === 1 && bankT > 7){
+    bankT = 0;
+    const [n, t] = BANK[bankIdx++ % BANK.length];
+    say(t, n);
+  }
+  if (State.active){
+    const speed = 6 * dt;
+    if (keys['KeyW']||keys['ArrowUp'])    player.position.z -= speed;
+    if (keys['KeyS']||keys['ArrowDown'])  player.position.z += speed;
+    if (keys['KeyA']||keys['ArrowLeft'])  player.position.x -= speed;
+    if (keys['KeyD']||keys['ArrowRight']) player.position.x += speed;
+    player.position.x = Math.max(-14, Math.min(14, player.position.x));
+    player.position.z = Math.max(-8, Math.min(7, player.position.z));
+    camera.position.x = player.position.x;
+    camera.position.z = player.position.z + 6.5;
+    camera.lookAt(player.position.x, 2, player.position.z - 8);
+
+    // tom shreds
+    tom.children[1].rotation.z = 0.6 + Math.sin(clock.elapsedTime * 12) * 0.25;
+    tBody.scale.y = 1 + Math.sin(clock.elapsedTime * 6) * 0.06;
+    // general denny vibrates with belief
+    general.rotation.z = Math.sin(clock.elapsedTime * 9) * 0.03;
+    // the prototype (foam) drifts, majestic, unbillable
+    glider.position.x += dt * 0.7;
+    glider.position.y = 7 + Math.sin(clock.elapsedTime * 0.8) * 0.5;
+    glider.rotation.z = Math.sin(clock.elapsedTime * 0.5) * 0.15;
+    if (glider.position.x > 16) glider.position.x = -16;
+
+    if (State.phase === 1){
+      spawnT += dt;
+      if (spawnT > 1.1){ spawnWave(); spawnT = 0; }
+    }
+    for (let i = waves.length-1; i >= 0; i--){
+      const w = waves[i];
+      if (!w.alive) continue;
+      w.scale += dt * 3;
+      w.m.scale.set(w.scale, w.scale, w.scale);
+      if (w.scale > 14){ w.alive = false; scene.remove(w.m); continue; }
+      if (Math.abs(w.m.position.distanceTo(player.position) - w.scale) < 0.5){
+        w.alive = false; scene.remove(w.m);
+        State.cred -= 10;
+        $('credfill').style.width = Math.max(0, State.cred) + '%';
+        pop('HIT BY 180-BPM POWER CHORD! (−10)', player.position, 'red');
+        if (State.cred <= 0) lose();
+      }
+    }
+  }
+  renderer.render(scene, camera);
+}
+
+say('Welcome to soundcheck, boys! Prepare for 180 BPM of pure disclosure!', 'TOM DELONGE');
+tick();
+</script>
+</body>
+</html>
