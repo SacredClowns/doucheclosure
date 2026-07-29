@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE HALL OF SHRINES — Doucheclosure</title>
+<meta name="description" content="We roast them in the arcade. We book them in the hall. Every witness gets a shrine: their record, their clips, their socials, and their booking information.">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF; --gold:#D4B24A;
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--void); scroll-behavior:smooth;}
+  body{margin:0; background:var(--void); color:var(--white);
+    font-family:"Courier New", Courier, monospace; line-height:1.65;}
+  body::after{content:""; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 1px, transparent 1px 3px);
+    pointer-events:none; z-index:100;}
+  a{color:var(--neon-cyan);}
+  .wrap{max-width:860px; margin:0 auto; padding:0 1.25rem;}
+  .display{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-weight:400; text-transform:uppercase; letter-spacing:.03em; line-height:.95;}
+  .crumb{padding:1rem 1.25rem; font-size:.72rem; letter-spacing:.15em; text-transform:uppercase;}
+  .crumb a{text-decoration:none;}
+
+  header.hall{
+    text-align:center; padding:3rem 1rem 2.5rem;
+    background:radial-gradient(ellipse at 50% -20%, rgba(212,178,74,.22), transparent 60%);
+    border-bottom:3px solid var(--gold);
+  }
+  header.hall h1{margin:0; font-size:clamp(2.2rem, 8vw, 4rem); color:var(--gold);
+    text-shadow:0 0 18px rgba(212,178,74,.5), 4px 4px 0 #3B2E0F;}
+  header.hall .tag{color:var(--neon-cyan); letter-spacing:.26em; text-transform:uppercase; font-size:.7rem; margin:.5rem 0 0;}
+  header.hall .thesis{color:var(--chrome); max-width:36rem; margin:1.4rem auto 0; font-size:.95rem;}
+  header.hall .thesis b{color:var(--white);}
+
+  section{padding:2.5rem 0;}
+  .grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:1.1rem;}
+  .card{
+    background:linear-gradient(180deg, var(--panel-2), var(--panel));
+    border:2px solid #35205C; border-radius:12px; padding:1.2rem 1.3rem;
+    cursor:pointer; text-align:left; font-family:inherit; color:inherit;
+    display:flex; flex-direction:column; gap:.4rem;
+  }
+  .card:hover{border-color:var(--gold); transform:translateY(-2px);}
+  .card .nm{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; font-size:1.45rem;
+    text-transform:uppercase; line-height:1;}
+  .card .tl{font-size:.76rem; color:var(--chrome);}
+  .card .go{font-size:.6rem; letter-spacing:.2em; text-transform:uppercase; color:var(--neon-green); margin-top:.3rem;}
+
+  .noshrine{
+    border:2px dashed #4A3670; border-radius:12px; padding:1.2rem 1.3rem;
+    color:#7E6F9E; font-size:.85rem; margin-top:1.1rem;
+  }
+  .noshrine b{color:var(--chrome);}
+
+  /* ---------- SHRINE VIEW ---------- */
+  #shrine{display:none;}
+  .sh-head{text-align:center; padding:2.5rem 1rem 2rem; border-bottom:3px solid var(--accent, var(--gold));
+    background:radial-gradient(ellipse at 50% -20%, rgba(212,178,74,.18), transparent 62%);}
+  .sh-head h2{margin:0; font-size:clamp(2rem,7vw,3.6rem); color:var(--accent, var(--gold));
+    text-shadow:0 0 16px rgba(212,178,74,.4);}
+  .sh-head .role{color:var(--chrome); font-size:.85rem; margin-top:.5rem;}
+  .sh-block{margin:2rem 0;}
+  .sh-block h3{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; font-weight:400;
+    text-transform:uppercase; font-size:1.5rem; color:var(--neon-cyan); margin:0 0 .8rem;
+    letter-spacing:.04em;}
+  .sh-block p{color:var(--chrome); font-size:.92rem; margin:0 0 .9rem;}
+  .sh-block p b{color:var(--white);}
+  .claims{list-style:none; margin:0; padding:0; display:grid; gap:.5rem;}
+  .claims li{border-left:3px solid var(--accent, var(--gold)); background:var(--panel);
+    padding:.6rem .9rem; font-size:.87rem; color:var(--chrome);}
+  .claims li b{color:var(--white);}
+
+  .linkrow{display:grid; gap:.55rem;}
+  .lk{display:flex; align-items:center; gap:.7rem; background:var(--panel);
+    border:2px solid #35205C; border-radius:10px; padding:.7rem .9rem; text-decoration:none; color:inherit;}
+  .lk:hover{border-color:var(--neon-cyan);}
+  .lk .kind{font-size:.58rem; letter-spacing:.2em; text-transform:uppercase; color:var(--neon-cyan); min-width:5.5rem;}
+  .lk .val{font-size:.86rem; color:var(--white);}
+  .pending{
+    display:flex; align-items:center; gap:.7rem; border:2px dashed #4A3670; border-radius:10px;
+    padding:.7rem .9rem; color:#7E6F9E; font-size:.8rem;
+  }
+  .pending .kind{font-size:.58rem; letter-spacing:.2em; text-transform:uppercase; color:#8A7BA8; min-width:5.5rem;}
+
+  .booking{
+    border:2px solid var(--neon-green); border-radius:12px; padding:1.3rem 1.4rem;
+    background:radial-gradient(ellipse at 50% 130%, rgba(61,252,138,.12), transparent 70%);
+  }
+  .booking h3{color:var(--neon-green);}
+  .booking .why{color:var(--chrome); font-size:.85rem; margin-bottom:.9rem;}
+
+  .custody{
+    border-left:4px solid var(--neon-yellow); background:var(--panel);
+    padding:.9rem 1.1rem; color:var(--chrome); font-size:.82rem; margin-top:1.2rem;
+  }
+  .custody b{color:var(--neon-yellow);}
+
+  .backbtn{display:inline-block; margin:1.5rem 0 0; padding:.75rem 1.4rem; border-radius:8px;
+    font-family:inherit; font-weight:bold; font-size:.75rem; letter-spacing:.14em; text-transform:uppercase;
+    border:2px solid var(--neon-cyan); background:transparent; color:var(--neon-cyan); cursor:pointer;}
+  .wingbtn{display:inline-block; margin:1.5rem .4rem 0; padding:.75rem 1.4rem; border-radius:8px;
+    font-family:inherit; font-weight:bold; font-size:.75rem; letter-spacing:.14em; text-transform:uppercase;
+    border:2px solid var(--neon-pink); background:var(--neon-pink); color:#1B0210; text-decoration:none;}
+  footer{padding:2.5rem 1rem 3rem; text-align:center; color:#7E6F9E; font-size:.72rem;}
+</style>
+</head>
+<body>
+
+<p class="crumb"><a href="../index.html">&larr; THE ARCADE</a> &nbsp;/&nbsp; THE HALL OF SHRINES</p>
+
+<!-- ============ HALL ============ -->
+<div id="hall">
+  <header class="hall">
+    <h1 class="display">The Hall Of Shrines</h1>
+    <p class="tag">We roast them in the arcade &bull; We book them in the hall</p>
+    <p class="thesis">Downstairs, this organization makes fun of the paperwork. Up here, we do the
+    other half of the job. <b>Every person in this hall said a thing out loud that cost them
+    something</b> — a career, a reputation, a decade of being laughed at by people who have
+    never risked a Tuesday. So each of them gets a shrine: the record of what they actually
+    say, where to watch them, where to follow them, and — <b>most importantly — how to book
+    them.</b> If you came here to laugh, stay to hire somebody.</p>
+    <p class="thesis" style="margin-top:1rem;"><b>House rule: equal-opportunity offender.</b>
+    Nobody in this field gets a pass — which is why the last shrine in this hall belongs to
+    <b>Doucheclosure Press</b>, and it is the harshest one we published.</p>
+  </header>
+
+  <section>
+    <div class="wrap">
+      <div class="grid" id="cards"></div>
+      <div class="noshrine">
+        <b>ONE WING HAS NO SHRINE.</b> The Aggregator has no record to display, no clips of his
+        own to watch, and nothing to book — a shrine requires a story, and that is the entire
+        finding of Wing 10. The hall is for people who put their name on something.
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ SHRINE ============ -->
+<div id="shrine">
+  <div class="sh-head">
+    <h2 class="display" id="shName"></h2>
+    <p class="role" id="shRole"></p>
+  </div>
+  <div class="wrap">
+    <div class="sh-block">
+      <h3>The Record</h3>
+      <div id="shRecord"></div>
+    </div>
+    <div class="sh-block">
+      <h3>What They Say</h3>
+      <ul class="claims" id="shClaims"></ul>
+    </div>
+    <div class="sh-block">
+      <h3>Watch &amp; Read</h3>
+      <div class="linkrow" id="shClips"></div>
+    </div>
+    <div class="sh-block">
+      <h3>Follow</h3>
+      <div class="linkrow" id="shSocials"></div>
+    </div>
+    <div class="sh-block booking">
+      <h3>Booking</h3>
+      <p class="why">Podcasts, conferences, documentaries, panels, private events. These people
+      do this for a living, and the single most useful thing a laughing website can do is send
+      them paid work.</p>
+      <div class="linkrow" id="shBooking"></div>
+    </div>
+    <div class="sh-block booking" style="border-color:var(--neon-yellow); background:radial-gradient(ellipse at 50% 130%, rgba(255,210,63,.1), transparent 70%);">
+      <h3 style="color:var(--neon-yellow);">The House Tip</h3>
+      <p class="why" style="margin-bottom:0;">Doucheclosure is a comedy company that makes its
+      money off wings built around other people&rsquo;s stories. So here is the standing house
+      policy, printed where you can hold us to it: <b style="color:#F4F0FF;">a share of what this
+      wing earns goes to the person it is about.</b> Not because anyone made us. Because they did
+      the hard part — they said the thing out loud first, took the ridicule, and kept talking.
+      We just made the jokes and the games afterward, which is the easy half.
+      <b style="color:#F4F0FF;">If you are the subject of this shrine and you want your cut, your
+      links corrected, or this wing taken down entirely — write to us and it happens.</b>
+      That offer has no expiration and no conditions.</p>
+    </div>
+    <div class="custody" id="shCustody"></div>
+    <div style="text-align:center;">
+      <a class="wingbtn" id="shWing" href="#">Play their wing</a>
+      <button class="backbtn" onclick="location.hash=''">&larr; Back to the hall</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>DOUCHECLOSURE&trade; &bull; THE HALL OF SHRINES<br>
+  Records are drawn from public statements and public appearances. Links are published only once verified.<br>
+  <a href="../index.html">Back to the arcade</a></p>
+</footer>
+
+<script>
+(() => {
+  /* Every entry describes PUBLIC claims and PUBLIC appearances only.
+     Link fields are intentionally empty until a human verifies them —
+     an unverified booking contact can misroute someone's livelihood. */
+  const P = 'AWAITING VERIFIED LINK';
+  const SHRINES = [
+    {
+      id:'jason-sands', name:'Jason Sands', accent:'#E2604A',
+      role:'Retired U.S. Air Force master sergeant · experiencer',
+      wing:'../experiences/jason-sands/index.html',
+      record:[
+        `Sands served in the U.S. Air Force and has spoken publicly about encounters he says
+         occurred during and around his service. His account reached a very large audience through
+         long-form podcast appearances, where he describes events in the plain, unhurried register
+         of a man recounting a shift rather than selling a story.`,
+        `In his widely heard 2025 appearance he described a roadside encounter on a Nevada range
+         with a pale, ear-less figure in a pristine uniform who — telepathically, he says — asked
+         where he might find tritium to repair a craft. He has described additional encounters in
+         other venues. <b>The Doucheclosure position is unchanged: we believe him.</b> Wing 1 of
+         the arcade concerns itself exclusively with what happened to the remains.`
+      ],
+      claims:[
+        `<b>The desert encounter:</b> a being in immaculate battle dress, wide-set eyes, no visible ears, requesting tritium.`,
+        `<b>Telepathic transmission:</b> a wave of disgust when military contact was suggested — "barbarians and murderers."`,
+        `<b>Hostile crustacean-like entities</b> described in other appearances, including an encounter he says turned lethal.`
+      ]
+    },
+    {
+      id:'chris-bledsoe', name:'Chris Bledsoe', accent:'#FFB84D',
+      role:'Experiencer · author · Cape Fear River',
+      wing:'../experiences/chris-bledsoe/index.html',
+      record:[
+        `In January 2007, on a fishing trip along the Cape Fear River in North Carolina, Bledsoe
+         says he encountered lights and a figure in an event that reordered the rest of his life.
+         What distinguishes his account from nearly every other in this field is duration and
+         repetition: he says the phenomena returned, and kept returning, for the better part of
+         two decades, at his home, in front of witnesses.`,
+        `Those witnesses have reportedly included scientists, film crews, and current and former
+         government officials. He published his account in <i>UFO of God</i> (2023).
+         <b>He has kept telling the same story for eighteen years while being mocked for it</b>,
+         which is a longer run of consistency than most institutions manage.`
+      ],
+      claims:[
+        `<b>The 2007 Cape Fear encounter</b> — the origin event, on a riverbank, with witnesses nearby.`,
+        `<b>Recurring visitations</b> at his property over ~18 years, often on nights he says he can anticipate.`,
+        `<b>Observers present</b> — including credentialed people who have described what they saw.`
+      ]
+    },
+    {
+      id:'christopher-mellon', name:'Christopher Mellon', accent:'#E8D9A8',
+      role:'Former Deputy Assistant Secretary of Defense for Intelligence',
+      wing:'../experiences/christopher-mellon/index.html',
+      record:[
+        `Mellon served as Deputy Assistant Secretary of Defense for Intelligence under two
+         administrations and spent years on the Senate Intelligence Committee staff. He is,
+         by any measure, an establishment figure — which is precisely what made his advocacy
+         on this subject consequential.`,
+        `He has described obtaining Navy encounter videos through an intermediary and helping
+         route them to the press, contributing to the December 2017 reporting that reopened the
+         entire public conversation. He has since briefed Congress and written extensively on
+         why the subject deserves serious defense attention. <b>Wing 4 concerns the envelope.
+         It does not concern the substance, which the board considers settled.</b>`
+      ],
+      claims:[
+        `<b>Career national-security service</b> at the highest levels of Defense intelligence oversight.`,
+        `<b>Role in the 2017 disclosures</b> that brought Navy UAP footage into mainstream reporting.`,
+        `<b>Ongoing policy advocacy</b> — congressional briefings, essays, and testimony-adjacent work.`
+      ]
+    },
+    {
+      id:'lue-elizondo', name:'Lue Elizondo', accent:'#6E7F9E',
+      role:'Former Department of Defense counterintelligence official · author',
+      wing:'../experiences/lue-elizondo/index.html',
+      record:[
+        `Elizondo spent a career in Army counterintelligence and Defense Department security work.
+         He says he ran AATIP, the Pentagon program examining unidentified aerial phenomena — a
+         characterization the Department has publicly disputed. He resigned in October 2017 with a
+         protest letter, and the reporting that followed weeks later changed the subject's public
+         standing permanently.`,
+        `He published <i>Imminent</i> in 2024 following government prepublication review. He speaks
+         constantly and says, repeatedly and sincerely, that there are things he cannot say.
+         <b>Wing 9 audits the clock, not the man</b> — and notes that of everyone currently
+         arguing about him online, he is the only participant who has ever signed anything.`
+      ],
+      claims:[
+        `<b>AATIP leadership</b> — his stated role in the Pentagon's UAP effort (disputed by DoD).`,
+        `<b>The 2017 resignation</b> and the reporting that followed it.`,
+        `<b>Ongoing constraints</b> — prepublication review, classification, and the limits he says bind him.`
+      ]
+    },
+    {
+      id:'jake-barber', name:'Jake Barber', accent:'#FFD23F',
+      role:'Former special operations helicopter pilot · recovery crew',
+      wing:'../experiences/the-egg/index.html',
+      record:[
+        `Barber came forward publicly in January 2025, describing service as a special operations
+         pilot and later work he says involved retrieving craft of unknown origin. His most
+         discussed account involves an egg-shaped object recovered under a helicopter sling load
+         at night.`,
+        `He has also described programs he says used "psionic" operators to locate or summon
+         craft. Coming forward under his own name, on camera, with a service record attached,
+         places him in a small category. <b>Wing 2 of the arcade is a formal complaint about
+         cable-and-wind handling procedure, and nothing else.</b>`
+      ],
+      claims:[
+        `<b>Sling-load retrieval</b> of an egg-shaped craft, conducted at night by helicopter.`,
+        `<b>Special operations flight background</b> preceding the recovery work he describes.`,
+        `<b>Psionics programs</b> — operators he says were used to locate or draw down craft.`
+      ]
+    },
+    {
+      id:'david-grusch', name:'David Grusch', accent:'#D0524A',
+      role:'Former Air Force intelligence officer · congressional witness',
+      wing:'../experiences/hearsay-engine/index.html',
+      record:[
+        `Grusch is a decorated Air Force intelligence officer who served on the government's own
+         UAP task force. In June 2023 he went public, saying that through his official duties he
+         interviewed dozens of officials who described a multi-decade crash-retrieval and
+         reverse-engineering effort.`,
+        `In July 2023 he testified under oath before a House subcommittee, using the phrase
+         "non-human biologics." The Intelligence Community Inspector General had previously found
+         his complaint "credible and urgent." <b>Wing 6 satirizes the architecture of secrecy —
+         a relay race where every runner is blindfolded — never the runner.</b>`
+      ],
+      claims:[
+        `<b>Sworn congressional testimony</b> in July 2023 regarding retrieval programs.`,
+        `<b>Interviews with dozens of officials</b> conducted in his official capacity.`,
+        `<b>"Credible and urgent"</b> — the ICIG finding attached to his whistleblower complaint.`
+      ]
+    },
+    {
+      id:'bob-lazar', name:'Bob Lazar', accent:'#7FB8FF',
+      role:'The S-4 account · Element 115',
+      wing:'../experiences/element-115/index.html',
+      record:[
+        `In 1989 Lazar appeared on Las Vegas television — initially in silhouette — describing work
+         he says he performed at a site called S-4 near Papoose Lake, reverse-engineering craft
+         powered by a stable superheavy element he identified as number 115.`,
+        `At the time, element 115 did not exist in any laboratory. It was first synthesized in 2003
+         and named moscovium in 2016; the isotopes produced decay in fractions of a second.
+         Lazar has never materially changed his account in thirty-five years. <b>Wing 5 does not
+         dispute a word of it. Wing 5 is about the shelf it is stored on.</b>`
+      ],
+      claims:[
+        `<b>S-4 employment</b> — reverse-engineering work on craft of non-human origin.`,
+        `<b>Element 115 as fuel</b> — described years before the element was synthesized.`,
+        `<b>Gravity amplification</b> and the propulsion system he describes in detail.`
+      ]
+    },
+    {
+      id:'steven-greer', name:'Dr. Steven Greer', accent:'#00FF66',
+      role:'Founder, CSETI &amp; The Disclosure Project · CE-5',
+      wing:'../experiences/steven-greer/index.html',
+      record:[
+        `A former emergency-room physician, Greer founded CSETI in 1990 and developed the CE-5
+         protocol — the claim that ordinary people can initiate contact using consciousness and
+         attention. In May 2001 he convened the Disclosure Project press conference at the
+         National Press Club, presenting military and government witnesses to a packed room.`,
+        `That event put dozens of named witnesses on the public record and remains one of the most
+         consequential gatherings in the subject's history. He has since produced documentaries and
+         run contact expeditions. <b>Wing 7 audits the price of the folding chair, and nothing
+         else. The board agrees with the doctrine that the sky is free — arguably more than its
+         author does.</b>`
+      ],
+      claims:[
+        `<b>The CE-5 protocol</b> — consciousness-initiated contact, taught at expeditions.`,
+        `<b>The 2001 Disclosure Project</b> press conference and its witness testimony.`,
+        `<b>Ongoing documentary work</b> and public advocacy for open disclosure.`
+      ]
+    },
+    {
+      id:'tom-delonge', name:'Tom DeLonge', accent:'#7CFC3A',
+      role:'Musician · co-founder, To The Stars',
+      wing:'../experiences/tom-delonge/index.html',
+      record:[
+        `DeLonge co-founded Blink-182 and wrote some of the most recognizable songs of a generation.
+         In 2015 he stepped away from the band to pursue this subject full time, and in 2017
+         launched To The Stars Academy with former intelligence and aerospace officials attached.`,
+        `The organization sat in the chain that brought Navy encounter footage to public attention —
+         footage the Pentagon later confirmed was authentic. <b>Whatever else is argued, a man in
+         Dickies shorts moved the needle of the republic, and Wing 8 finds that both hilarious and
+         completely true.</b> The board's only formal objection concerns the preferred shares.`
+      ],
+      claims:[
+        `<b>To The Stars Academy</b> — founded 2017 with defense and intelligence figures on the masthead.`,
+        `<b>Role in the 2017 footage release</b> chain that reopened the public conversation.`,
+        `<b>Ongoing media work</b> — books, documentaries, and film projects on the subject.`
+      ]
+    },
+    {
+      id:'jeremy-corbell', name:'Jeremy Corbell', accent:'#4ADBC9',
+      role:'Documentary filmmaker · investigative journalist',
+      wing:'../experiences/jeremy-corbell/index.html',
+      record:[
+        `Corbell is a documentary filmmaker whose films include <i>Bob Lazar: Area 51 &amp; Flying
+         Saucers</i> and <i>Extraordinary: The Seeding</i>. Beginning in 2021 he released a series
+         of military videos and images — the pyramid-shaped objects, the "transmedium" sphere, and
+         the widely discussed "jellyfish" clip.`,
+        `A striking number of those releases have been subsequently acknowledged as genuine
+         military footage. <b>That is a real record, and Wing 13 says so plainly.</b> The board's
+         audit concerns his adjective reserve, which has been operating at a deficit since 2021.`
+      ],
+      claims:[
+        `<b>Authenticated releases</b> — footage later acknowledged as genuine by officials.`,
+        `<b>Long-form documentary work</b> on witnesses across the field.`,
+        `<b>The jellyfish and related clips</b> and his reporting on their provenance.`
+      ]
+    },
+    {
+      id:'ross-coulthart', name:'Ross Coulthart', accent:'#C97F4A',
+      role:'Investigative journalist · author',
+      wing:'../experiences/ross-coulthart/index.html',
+      record:[
+        `Coulthart is a veteran Australian investigative journalist with decades of mainstream
+         reporting and multiple Walkley Awards — the field's most credentialed working reporter by
+         a distance. He published <i>In Plain Sight</i> in 2021 and has reported the subject
+         extensively for television since.`,
+        `His interviews brought several major witnesses to wide audiences, and he has described
+         accounts of retrieved craft — including one he says was too large to move, prompting
+         construction around it. <b>Wing 11 is a comedy about zoning permits. It is not a comedy
+         about his reporting, which the board reads carefully.</b>`
+      ],
+      claims:[
+        `<b>Decades of mainstream investigative journalism</b> preceding his work on this subject.`,
+        `<b>Reporting on retrieval programs</b> and the witnesses who describe them.`,
+        `<b>The "too big to move" account</b> — a craft with a structure built around it.`
+      ]
+    },
+    {
+      id:'corey-goode', name:'Corey Goode', accent:'#8A6EC9',
+      role:'Secret Space Program account · "20 and Back"',
+      wing:'../experiences/corey-goode/index.html',
+      record:[
+        `Goode describes service in what he calls a Secret Space Program — roughly twenty years of
+         duty, followed by an age-regression and return to the moment of his departure, a
+         arrangement he refers to as "20 and Back." He has described the account across
+         documentary series and conferences since the mid-2010s.`,
+        `<b>Wing 12 takes the claim entirely at face value and reaches the only conclusion available
+         to a responsible institution: this is a labor dispute.</b> Twenty years of service with no
+         pay stub, no overtime, no vesting, and no exit interview is a grievance regardless of which
+         planet the timesheet was filed on.`
+      ],
+      claims:[
+        `<b>"20 and Back"</b> — two decades of service followed by age-regression and return.`,
+        `<b>Secret Space Program duty</b> aboard vessels and installations he describes in detail.`,
+        `<b>Ongoing public account</b> through series, talks, and conference appearances.`
+      ]
+    },
+    {
+      id:'haim-eshed', name:'Prof. Haim Eshed', accent:'#D4B24A',
+      role:'Former head of Israeli space security programs',
+      wing:'../experiences/galactic-federation/index.html',
+      record:[
+        `Eshed is a retired Israeli general and former head of the Israeli Defense Ministry's space
+         directorate, a position he held for roughly three decades. He is credited with foundational
+         work in Israel's satellite program and is a genuinely senior figure in his nation's
+         defense-science establishment.`,
+        `In December 2020, in interviews around a book release, he stated that contact exists and
+         that a "Galactic Federation" has been in touch, adding that humanity is not yet ready to
+         know. <b>Wing 14 does not question the accords. Wing 14 is furious that nobody was CC'd.</b>`
+      ],
+      claims:[
+        `<b>Career leadership</b> of Israeli military space and satellite programs.`,
+        `<b>The 2020 statements</b> regarding contact and a "Galactic Federation."`,
+        `<b>"Not ready"</b> — his stated reason humanity has not been formally told.`
+      ]
+    },
+    {
+      id:'doucheclosure', name:'Doucheclosure Press', accent:'#FF3D8A',
+      role:'A comedy company that profits from other people&rsquo;s testimony',
+      wing:'../index.html',
+      record:[
+        `This organization has published fourteen wings of jokes about people who risked something,
+         built by a company that has risked nothing, from an office that does not exist, under a
+         name chosen because it sounded funny out loud. <b>We are an equal-opportunity offender,
+         and that obligation begins here.</b>`,
+        `The review board has audited itself and returns the following findings. We have never seen
+         anything. We have no clearance, no footage, no scar, and no night we cannot explain. We
+         make money from a phenomenon we have contributed exactly zero evidence toward. Our entire
+         business model is <b>standing behind braver people and making noises.</b> The only defense
+         we will offer is that we say so on our own website, we send them the bookings, and we cut
+         them in — which is more than the ecosystem's other commentators have ever done.`,
+        `<b>If this hall ever starts punching down at experiencers instead of up at institutions,
+         somebody please screenshot this page and end us with it.</b> We would deserve it, and
+         frankly, the ratio would be earned.`
+      ],
+      claims:[
+        `<b>Zero sightings.</b> Fourteen wings. The math is not flattering and we publish it anyway.`,
+        `<b>Total belief as a business model</b> — convenient, sincere, and admittedly profitable.`,
+        `<b>An office in Sub-Basement 4</b> that no inspector has ever located, because it is a bit.`
+      ]
+    }
+  ];
+
+  const $ = id => document.getElementById(id);
+  const hall = $('hall'), shrine = $('shrine');
+
+  // build hall
+  const cards = $('cards');
+  SHRINES.forEach(s => {
+    const b = document.createElement('button');
+    b.className = 'card';
+    b.innerHTML = '<span class="nm" style="color:' + s.accent + '">' + s.name + '</span>' +
+      '<span class="tl">' + s.role + '</span>' +
+      '<span class="go">Enter the shrine &rarr;</span>';
+    b.addEventListener('click', () => { location.hash = s.id; });
+    cards.appendChild(b);
+  });
+
+  function linkList(target, items, kindDefault){
+    target.innerHTML = '';
+    if (!items || !items.length){
+      const d = document.createElement('div');
+      d.className = 'pending';
+      d.innerHTML = '<span class="kind">' + kindDefault + '</span>' +
+        '<span>' + P + ' &mdash; this shrine does not publish an unverified link.</span>';
+      target.appendChild(d);
+      return;
+    }
+    items.forEach(it => {
+      const a = document.createElement('a');
+      a.className = 'lk'; a.href = it.url; a.target = '_blank'; a.rel = 'noopener';
+      a.innerHTML = '<span class="kind">' + (it.kind || kindDefault) + '</span><span class="val">' + it.label + '</span>';
+      target.appendChild(a);
+    });
+  }
+
+  function show(id){
+    const s = SHRINES.find(x => x.id === id);
+    if (!s){ hall.style.display = 'block'; shrine.style.display = 'none'; return; }
+    hall.style.display = 'none';
+    shrine.style.display = 'block';
+    document.documentElement.style.setProperty('--accent', s.accent);
+    $('shName').textContent = s.name;
+    $('shName').style.color = s.accent;
+    $('shRole').innerHTML = s.role;
+    $('shRecord').innerHTML = s.record.map(p => '<p>' + p + '</p>').join('');
+    $('shClaims').innerHTML = s.claims.map(c => '<li>' + c + '</li>').join('');
+    linkList($('shClips'), s.clips, 'Watch');
+    linkList($('shSocials'), s.socials, 'Follow');
+    linkList($('shBooking'), s.booking, 'Booking');
+    $('shWing').href = s.wing;
+    $('shCustody').innerHTML = '<b>CHAIN OF CUSTODY — LINK POLICY.</b> This hall publishes a ' +
+      'contact only after a human has confirmed it is current and genuinely theirs. An unverified ' +
+      'booking address does not merely look sloppy; it can route a real person&rsquo;s livelihood to ' +
+      'the wrong inbox, or to somebody impersonating them. We spent nine wings making fun of ' +
+      'organizations that never checked. We are not going to be one.';
+    scrollTo({top:0});
+  }
+
+  function route(){
+    const id = location.hash.replace('#','');
+    if (id) show(id); else { hall.style.display='block'; shrine.style.display='none'; }
+  }
+  addEventListener('hashchange', route);
+  route();
+})();
+</script>
+
+</body>
+</html>

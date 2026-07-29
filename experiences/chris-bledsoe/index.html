@@ -231,6 +231,7 @@
   <a href="../../index.html">Back to the arcade</a> &bull; <a href="../the-egg/index.html">Previous wing: The Egg</a></p>
 </footer>
 
+<script src="../../assets/arcade.js"></script>
 <script>
 (() => {
   const cv = document.getElementById('game');
@@ -417,8 +418,30 @@
 
   cv.addEventListener('pointerdown', () => { if (state !== 'play') reset(); });
 
-  reset();
-  (function loop(){ if (state === 'play') step(); draw(); requestAnimationFrame(loop); })();
+  Arcade.cabinet({
+    id: 'orb-photographer',
+    wing: 'THE CHRIS BLEDSOE EXPERIENCE',
+    title: 'Orb Photographer',
+    subtitle: 'One Focused Frame. That’s All History Wants.',
+    accent: '#FFB84D',
+    scoreLabel: 'BEST SHOT',
+    lore: 'Since 2007 the lights have come to one stretch of a North Carolina river — on schedule, ' +
+          'in front of witnesses, for eighteen years. In all that time the phenomenon has been ' +
+          'photographed exclusively in the visual language of a dropped phone. <b>You have twelve ' +
+          'exposures and a focus ring that will not hold still.</b> Take one sharp picture and you ' +
+          'will have contributed more to the evidentiary record than the entire preceding century.',
+    howto: [
+      'MOUSE / TOUCH — aim the reticle',
+      'CLICK or SPACE — take the shot',
+      'The focus ring cycles — fire when it locks GREEN',
+      'Orbs drift away when you get close. They are shy, not fake.'
+    ],
+    shrine: '../../shrines/index.html#chris-bledsoe',
+    onStart: () => {
+      reset();
+      (function loop(){ if (state === 'play') step(); draw(); requestAnimationFrame(loop); })();
+    }
+  });
 })();
 </script>
 
