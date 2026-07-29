@@ -170,10 +170,46 @@ const host = new THREE.Mesh(new THREE.CapsuleGeometry(0.55, 1.1, 4, 8),
   new THREE.MeshStandardMaterial({color:0x4A5A3A, emissive:0x1A2E1A}));
 host.position.set(3, 1.1, -4); scene.add(host);
 
-// a visibly moved federal observer, in a lawn chair
-const observer = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.8, 0.8),
+// DIRECTOR JIM — deep-state believer, weeping in a lawn chair, clutching an iPad
+const observer = new THREE.Group();
+const jimBody = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.8, 0.8),
   new THREE.MeshStandardMaterial({color:0x2B4A7A}));
-observer.position.set(-3, 0.4, -1); scene.add(observer);
+jimBody.position.y = 0.4; observer.add(jimBody);
+const jimPad = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.35, 0.04),
+  new THREE.MeshStandardMaterial({color:0xEDE6D6, emissive:0x334455}));
+jimPad.position.set(0.5, 0.6, 0.3); jimPad.rotation.y = -0.5; observer.add(jimPad);
+const dirtJar = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.24, 10),
+  new THREE.MeshStandardMaterial({color:0x8C6E4A, transparent:true, opacity:0.85}));
+dirtJar.position.set(-0.55, 0.15, 0.3); observer.add(dirtJar);
+observer.position.set(-3, 0, -1); scene.add(observer);
+
+// the doghouse, and near it: THE DOT (a forty-watt bug zapper that changed a life)
+const doghouse = new THREE.Mesh(new THREE.BoxGeometry(1.4, 1, 1.2),
+  new THREE.MeshStandardMaterial({color:0x5A3A22}));
+doghouse.position.set(7, 0.5, -8); scene.add(doghouse);
+const zapper = new THREE.PointLight(0xFF9E33, 30, 12);
+zapper.position.set(7.9, 1.6, -7.6); scene.add(zapper);
+const zapperBulb = new THREE.Mesh(new THREE.SphereGeometry(0.12, 10, 10),
+  new THREE.MeshBasicMaterial({color:0xFFB055}));
+zapperBulb.position.copy(zapper.position); scene.add(zapperBulb);
+
+// rotating punch-up dialogue bank (phase 1)
+const BANK = [
+  ['GENE',"That orb has a serial number from a LED manufacturer."],
+  ['GENE',"Don't cry, Jim. It's a forty-watt bulb in a tree."],
+  ['GENE',"Hand me the microfiber. His lens is greasy."],
+  ['ERIC',"The thermal signature on that goddess is thirty-seven watts."],
+  ['ERIC',"That's not an orb, Chris. That's a commercial camera reflection."],
+  ['MOOKS',"The orbs are just high-frequency dust, brother."],
+  ['MOOKS',"The bus doesn't need an orb to start. Just tea."],
+  ['CHRIS BLEDSOE',"She came down right past the porch, boys!"],
+  ['CHRIS BLEDSOE',"Look at 'er glow! That's pure Hathor energy!"],
+  ['CHRIS BLEDSOE',"The CIA director wept right on my picnic table!"],
+  ['DIRECTOR JIM',"I managed sat-coms... but that dot changed my soul!"],
+  ['DIRECTOR JIM',"Is the orb willing to sign a defense contract?!"],
+  ['DIRECTOR JIM',"Where do I send the black-budget check, Chris?!"]
+];
+let bankIdx = 0, bankT = 0;
 
 // --- orbs ---
 const activeOrbs = [];
@@ -253,10 +289,13 @@ function win(){
   say('Lens is clean. And the orbs are— the orbs are still there. Of course they are. They were always there.');
   pop('FAITH AND WINDEX: BOTH VINDICATED', player.position, 'gold');
   setTimeout(() => {
-    $('endText').textContent = 'You wiped the motes. You cleaned the lunch. And above the river the orbs remain — ' +
+    $('endText').innerHTML = 'You wiped the motes. You cleaned the lunch. And above the river the orbs remain — ' +
       'real, patient, professionally punctual, and still, somehow, out of focus. The phenomenon was never the smudge. ' +
-      'The smudge was just in the way. A visibly moved federal observer whispers: "Forty billion in satellites, ' +
-      'and the answer was Windex." Now claim the field kit and come back with a tripod.';
+      'The smudge was just in the way. Director Jim whispers: <b>"My forty-billion-dollar satellite budget... ' +
+      'defeated by Windex,"</b> and gently sets down his jar of Anomalous Yard Dirt. Somewhere behind the doghouse, ' +
+      'a forty-watt dot keeps changing lives at no charge. The host departs with dignity on a Segway he summoned ' +
+      'with his mind (it was in the garage). <b>COLLECTIBLE ACQUIRED: ANOMALOUS BOJANGLES GREASE (+100% FLAVOR, ' +
+      '0% GODDESS).</b> Now claim the field kit and come back with a tripod.';
     $('endcard').style.display = 'flex';
   }, 2600);
 }
@@ -281,7 +320,8 @@ function pop(text, pos3D, type='gold'){
   setTimeout(() => el.remove(), 1000);
 }
 
-function say(text){
+function say(text, name){
+  $('dlgname').textContent = name || 'REVIEW BOARD';
   $('dlgtext').textContent = '"' + text + '"';
   $('dlg').style.display = 'block';
 }
@@ -322,6 +362,16 @@ function tick(){
     }
     // the host sways with certainty
     host.rotation.z = Math.sin(clock.elapsedTime * 0.8) * 0.06;
+    // director jim trembles with awe
+    observer.rotation.z = Math.sin(clock.elapsedTime * 7) * 0.02;
+    zapperBulb.material.color.setHex(Math.floor(clock.elapsedTime*2)%2 ? 0xFFB055 : 0xFF7A22);
+    // punch-up dialogue rotation
+    bankT += dt;
+    if (State.phase === 1 && bankT > 7){
+      bankT = 0;
+      const [n, t2] = BANK[bankIdx++ % BANK.length];
+      say(t2, n);
+    }
   }
   renderer.render(scene, camera);
 }
