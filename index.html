@@ -663,9 +663,9 @@ if (renderer) {
 <script>
 // Live Daily Debrief feed — published by the Standards Desk from Sub-Basement 4
 (() => {
-  const URL = 'https://dvuyitufzmleoqnqjasl.supabase.co/rest/v1/dc_debrief_posts' +
+  const URL = 'https://iumonzhavgdzoaqjqdil.supabase.co/rest/v1/dc_debrief_posts' +
     '?published=eq.true&order=created_at.desc&limit=6&select=slug,kicker,title,dek,created_at';
-  const KEY = 'sb_publishable_w_TCHUcoWjY_jzQlXFUqwA_SICtAYTv';
+  const KEY = 'sb_publishable_TipV5nSZX1fHBqXDp3lwMA_lkAP5VvA';
   const esc = s => (s || '').replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
   fetch(URL, { headers: { apikey: KEY, Authorization: 'Bearer ' + KEY } })
     .then(r => r.ok ? r.json() : [])
