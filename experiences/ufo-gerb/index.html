@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE UFO GERB EXPERIENCE — The Aggregator — Doucheclosure</title>
+<meta name="description" content="Every wing on this site believes somebody. This wing noticed one account that believes nothing, claims nothing, and harvests everything. Play THE RATIO: post a true story and hold the thread.">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --gerb:#9A8FB8; --ratio:#FF5C5C;
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--void);}
+  body{margin:0; background:var(--void); color:var(--white);
+    font-family:"Courier New", Courier, monospace; line-height:1.65; overflow-x:hidden;}
+  body::after{content:""; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 1px, transparent 1px 3px);
+    pointer-events:none; z-index:100;}
+  a{color:var(--neon-cyan);}
+  .wrap{max-width:760px; margin:0 auto; padding:0 1.25rem;}
+  .display{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-weight:400; text-transform:uppercase; letter-spacing:.03em; line-height:.95;}
+  .crumb{padding:1rem 1.25rem; font-size:.72rem; letter-spacing:.15em; text-transform:uppercase;}
+  .crumb a{text-decoration:none;}
+
+  header.wing{
+    text-align:center; padding:3rem 1rem 2.5rem;
+    background:radial-gradient(ellipse at 50% -20%, rgba(154,143,184,.2), transparent 60%),
+      radial-gradient(ellipse at 85% 110%, rgba(255,92,92,.1), transparent 55%);
+    border-bottom:3px solid var(--gerb);
+  }
+  .wing .eyebrow{color:var(--neon-cyan); letter-spacing:.28em; text-transform:uppercase; font-size:.72rem;}
+  .wing h1{margin:.5rem 0 0; font-size:clamp(2.3rem, 8vw, 4.4rem); color:var(--gerb);
+    text-shadow:0 0 16px rgba(154,143,184,.5), 4px 4px 0 #2A2440;}
+  .wing .sub{color:var(--chrome); max-width:37rem; margin:1.25rem auto 0; font-size:.95rem;}
+  .wing .sub b{color:var(--white);}
+  .stamp{
+    display:inline-block; margin-top:1.4rem; transform:rotate(-2.5deg);
+    border:3px solid var(--ratio); color:var(--ratio);
+    padding:.3rem 1rem; font-size:.75rem; letter-spacing:.22em; text-transform:uppercase;
+  }
+
+  section{padding:2.5rem 0;}
+  h2.sec{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif; font-weight:400;
+    text-transform:uppercase; font-size:clamp(1.6rem, 5.5vw, 2.3rem);
+    color:var(--neon-cyan); text-shadow:0 0 12px rgba(45,225,252,.5);
+    text-align:center; margin:0 0 1.25rem;}
+  .prose{color:var(--chrome); font-size:.93rem;}
+  .prose b{color:var(--white);}
+  .pull{border-left:4px solid var(--gerb); background:var(--panel);
+    padding:1rem 1.25rem; color:var(--white); font-size:1rem; margin:1.4rem 0;}
+
+  .evidence{width:100%; border-collapse:collapse; font-size:.85rem; background:var(--panel);
+    border:2px solid #35205C;}
+  .evidence th{background:var(--gerb); color:#14102A; text-align:left; padding:.5rem .8rem;
+    font-size:.68rem; letter-spacing:.18em; text-transform:uppercase;}
+  .evidence td{padding:.6rem .8rem; border-bottom:1px dashed #3C2B60; color:var(--chrome); vertical-align:top;}
+  .evidence td:first-child{color:var(--neon-yellow); white-space:nowrap; font-weight:bold;}
+  .evidence tr:last-child td{border-bottom:none;}
+
+  /* ---------- THE RATIO (game) ---------- */
+  .game-shell{
+    background:linear-gradient(180deg, var(--panel-2), var(--panel));
+    border:2px solid var(--gerb); border-radius:12px;
+    padding:1rem; box-shadow:0 0 26px rgba(154,143,184,.22);
+  }
+  #arena{position:relative; height:480px; background:#0D0A18; border-radius:8px; overflow:hidden;
+    touch-action:manipulation;}
+  #thread{position:absolute; left:12px; top:12px; bottom:64px; width:min(300px, 55%);
+    overflow:hidden; display:flex; flex-direction:column; justify-content:flex-end; gap:.5rem;}
+  .post{
+    background:#171230; border:1px solid #35205C; border-radius:10px;
+    padding:.6rem .8rem; font-size:.78rem; color:var(--white); line-height:1.5;
+    animation:postin .4s;
+  }
+  .post .handle{color:var(--neon-cyan); font-size:.64rem; letter-spacing:.08em;}
+  @keyframes postin{from{opacity:0; transform:translateY(10px)}to{opacity:1;}}
+  .dunk{
+    position:absolute; cursor:pointer; user-select:none;
+    background:#231A38; border:2px solid var(--ratio); border-radius:10px;
+    padding:.4rem .6rem; font-size:.7rem; color:#FFC9C9; max-width:200px; line-height:1.4;
+    box-shadow:0 4px 14px rgba(0,0,0,.5); z-index:5;
+  }
+  .dunk:hover{border-color:var(--neon-yellow);}
+  .dunk .who{color:var(--gerb); font-size:.6rem; display:block; letter-spacing:.06em;}
+  .dunk.latched{border-color:#FF2222; animation:latchpulse .6s infinite alternate;}
+  @keyframes latchpulse{from{box-shadow:0 0 6px rgba(255,34,34,.4)}to{box-shadow:0 0 16px rgba(255,34,34,.8)}}
+  .dunk.mega{border-width:3px; font-size:.76rem; max-width:230px;}
+  .poof{position:absolute; color:var(--neon-green); font-family:Haettenschweiler,Impact,sans-serif;
+    font-size:1rem; pointer-events:none; animation:poofup .6s forwards; z-index:6; text-transform:uppercase;}
+  @keyframes poofup{to{opacity:0; transform:translateY(-24px)}}
+
+  #hudRow{display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap;
+    padding:.6rem .25rem 0; font-size:.7rem; letter-spacing:.1em; text-transform:uppercase;}
+  .track{flex:1; min-width:140px; max-width:260px; height:12px; background:#00000099;
+    border:1px solid #000; border-radius:6px; overflow:hidden;}
+  #ratiofill{height:100%; width:100%; background:linear-gradient(90deg, var(--ratio), var(--neon-green)); transition:width .3s;}
+  #storyfill{height:100%; width:0%; background:linear-gradient(90deg, #555, var(--neon-cyan)); transition:width .3s;}
+  #composeRow{position:absolute; left:12px; right:12px; bottom:12px; display:flex; gap:.6rem; align-items:center;}
+  #composeBtn{
+    flex:1; font-family:inherit; font-weight:bold; font-size:.78rem; letter-spacing:.12em;
+    text-transform:uppercase; padding:.85rem; border-radius:10px; cursor:pointer;
+    border:2px solid var(--neon-cyan); background:transparent; color:var(--neon-cyan);
+  }
+  #composeBtn:disabled{opacity:.35; cursor:default;}
+  #composeBtn.typing{background:var(--neon-cyan); color:#031A20;}
+  #annc{min-height:1.3rem; text-align:center; color:var(--neon-yellow);
+    font-size:.78rem; letter-spacing:.06em; padding:.45rem 0 0;}
+
+  #endcard{position:absolute; inset:0; z-index:40; display:none; align-items:center; justify-content:center;
+    flex-direction:column; background:rgba(6,4,12,.93); text-align:center; padding:1.25rem;}
+  #endcard h1{font-size:clamp(1.6rem,5.5vw,2.6rem); color:var(--neon-green);
+    text-shadow:0 0 18px rgba(61,252,138,.5);}
+  #endcard.bad h1{color:var(--ratio); text-shadow:0 0 18px rgba(255,92,92,.6);}
+  #endcard p{max-width:32rem; margin:.9rem auto; color:var(--chrome); font-size:.88rem; line-height:1.65;}
+  #endcard p b{color:var(--white);}
+  #endcard .lastreply{
+    background:#171230; border:1px solid var(--neon-green); border-radius:10px;
+    padding:.7rem .9rem; font-size:.8rem; color:var(--white); max-width:24rem; margin:.5rem auto;
+    text-align:left;
+  }
+  #endcard .lastreply .handle{color:var(--neon-cyan); font-size:.64rem;}
+  #endcard button, #endcard a{display:inline-block; margin:.35rem; padding:.8rem 1.4rem; border-radius:8px;
+    font-family:inherit; font-weight:bold; font-size:.78rem; letter-spacing:.14em; text-transform:uppercase;
+    text-decoration:none; cursor:pointer; border:2px solid var(--neon-green); background:var(--neon-green); color:#052012;}
+  #endcard a.ghost{background:transparent; color:var(--neon-cyan); border-color:var(--neon-cyan);}
+
+  .prize{
+    border:2px dashed var(--neon-green); border-radius:12px;
+    text-align:center; padding:2rem 1.5rem;
+    background:radial-gradient(ellipse at 50% 120%, rgba(61,252,138,.12), transparent 70%);
+  }
+  .prize .display{color:var(--neon-green); font-size:clamp(1.5rem,6vw,2.3rem);
+    text-shadow:0 0 14px rgba(61,252,138,.5);}
+  .prize p{color:var(--chrome); font-size:.92rem; max-width:34rem; margin:.9rem auto;}
+  .prize p b{color:var(--white);}
+  .btn{display:inline-block; font-weight:bold; font-size:.9rem; letter-spacing:.16em;
+    text-transform:uppercase; text-decoration:none; padding:.95rem 1.8rem; border-radius:8px;
+    border:2px solid var(--neon-green); color:#052012; background:var(--neon-green);
+    box-shadow:0 0 22px rgba(61,252,138,.5); cursor:pointer;}
+  .btn:hover{background:var(--neon-yellow); border-color:var(--neon-yellow); color:#231602;}
+  .buy-note{color:#7E6F9E; font-size:.72rem; margin-top:.8rem;}
+  footer{padding:2rem 1rem 3rem; text-align:center; color:#7E6F9E; font-size:.72rem;}
+</style>
+</head>
+<body>
+
+<p class="crumb"><a href="../../index.html">&larr; THE ARCADE</a> &nbsp;/&nbsp; EXPERIENCES &nbsp;/&nbsp; UFO GERB</p>
+
+<header class="wing">
+  <p class="eyebrow">Doucheclosure Experiences &bull; Wing No. 9 &bull; The Aggregator</p>
+  <h1 class="display">The UFO Gerb<br>Experience</h1>
+  <p class="sub">Every wing in this arcade believes somebody. The crab man. The orb man. The egg
+  crew. The chord. Then the review board audited an account that <b>believes nothing, claims
+  nothing, has seen nothing, and harvests engagement from all of the above</b> — a commentator
+  whose entire contribution to the greatest question in human history is the quote-tweet. This
+  wing is different, because the subject is different: <b>he is the only figure on this site
+  with no story at all.</b></p>
+  <span class="stamp">CLAIMS: 0 &bull; DUNKS: 40,000 &bull; SIGHTINGS: A RATIO</span>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <p>Study the business model, because it is a marvel of thermodynamics: the Aggregator
+      produces no witness testimony, no footage, no research, no night spent cold in a field
+      looking up — and yet extracts engagement from all of it, the way a remora extracts lunch
+      from a shark it would never dare be. His current campaign: <b>dunking on Lue Elizondo</b>
+      — a man the Pentagon actually employed — <b>using screenshots.</b> The board does not
+      take sides in that feud. The board simply notes that exactly one participant in it has
+      ever held a clearance, and it is not the one posting at 2 A.M.</p>
+      <p class="pull">Here is the review board's finding, and it is the most sincere sentence
+      on this entire website: <b>laughing in the faces of experiencers and whistleblowers with
+      real stories is for the birds.</b> We built eight wings of jokes on a foundation of total
+      belief. The Aggregator built a following on a foundation of total contempt. These are
+      not the same business, and this wing exists to show the difference.</p>
+      <p>Below: the game. You will not play as him. <b>You will play as the person he dunks
+      on.</b> You have a true story. Seven sentences. Post it — all of it — while the swarm
+      arrives. Hold the thread.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE AUDIT ============ -->
+<section>
+  <div class="wrap">
+    <h2 class="sec">The Contribution Audit</h2>
+    <table class="evidence">
+      <tr><th>Asset</th><th>Review board notes</th></tr>
+      <tr><td>ORIGINAL CLAIMS</td><td>Zero. In a field built entirely of people risking ridicule
+        to say what they saw, the Aggregator has, on the record, seen nothing and risked nothing.
+        A perfect score. Frame it.</td></tr>
+      <tr><td>THE FEUD</td><td>An anonymous account versus a named former counterintelligence
+        officer. One party wrote a book under his legal name. The other party has a cartoon
+        avatar and the courage of a smoke detector with the battery out.</td></tr>
+      <tr><td>THE AUDIENCE</td><td>Real, large, and — the board notes with genuine sadness —
+        assembled substantially from people who once looked up at the sky with wonder and were
+        taught, one dunk at a time, to point and laugh instead.</td></tr>
+      <tr><td>THE PRODUCT</td><td>Other people's stories, clipped, captioned, and served back
+        with a sneer. Content cost: $0. Emotional cost: billed entirely to the witnesses.
+        The board has reviewed the invoice and is declining it on their behalf.</td></tr>
+      <tr><td>THE SKY</td><td>Still up there. Still free. Still, per eight wings of this
+        arcade's testimony, worth looking at. The Aggregator has never once posted from a
+        field at 3 A.M. The board checks nightly. The board will keep checking.</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ============ THE GAME ============ -->
+<section>
+  <div class="wrap">
+    <h2 class="sec">The Ratio: Hold The Thread</h2>
+    <div class="game-shell">
+      <div id="hudRow">
+        <span>STORY HEALTH <span class="track" style="display:inline-block; vertical-align:middle;"><span id="ratiofill" style="display:block;"></span></span></span>
+        <span>TESTIMONY <span class="track" style="display:inline-block; vertical-align:middle;"><span id="storyfill" style="display:block;"></span></span></span>
+      </div>
+      <p id="annc">You saw something once. Tonight you finally post it. HOLD THE THREAD.</p>
+      <div id="arena">
+        <div id="thread"></div>
+        <div id="composeRow">
+          <button id="composeBtn">HOLD TO KEEP TYPING (SPACE)</button>
+        </div>
+        <div id="endcard">
+          <h1 id="endTitle" class="display"></h1>
+          <div id="endBody"></div>
+        </div>
+      </div>
+      <p class="buy-note" style="text-align:center;">CLICK / TAP DUNK-REPLIES TO DISMISS THEM BEFORE THEY LATCH &bull; HOLD SPACE OR THE BUTTON TO KEEP TELLING YOUR STORY</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE FULL EXPERIENCE ============ -->
+<section id="prize">
+  <div class="wrap">
+    <div class="prize">
+      <p class="display">The Full Experience — $5</p>
+      <p><b>One ticket, yours forever:</b> THE RATIO (owner's edition, offline), the
+      CONTRIBUTION AUDIT dossier, and a souvenir that is not a joke at all.</p>
+      <p><b>THE SOUVENIR: THE EXPERIENCER'S FIELD JOURNAL.</b> A genuinely private place to
+      write down what you saw — date, sky conditions, what happened, how it felt, who was
+      with you — stored only on your device, exportable only by you, read by no one you
+      don't choose. No feed. No replies. No ratio. <b>Your story, kept safe, laughed at by
+      nobody.</b> Built by people who believe you, because this entire arcade was.</p>
+      <!-- REPLACE-ME: point at your payment link (Stripe when connected) -->
+      <a class="btn" href="#REPLACE-WITH-PAYMENT-LINK">BUY THE FULL EXPERIENCE — $5</a>
+      <p class="buy-note">Instant download &bull; works offline, in a field, at 3 A.M., where the stories actually happen</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>DOUCHECLOSURE&trade; EXPERIENCES &bull; A work of parody commenting on the public posting conduct of a public, pseudonymous commentator.<br>
+  We believe every experiencer. We audit everyone who invoices them.<br>
+  <a href="../../index.html">Back to the arcade</a> &bull; <a href="../tom-delonge/index.html">Previous wing: Tom DeLonge</a></p>
+</footer>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const arena = $('arena'), thread = $('thread'), btn = $('composeBtn'),
+        annc = $('annc'), ratiofill = $('ratiofill'), storyfill = $('storyfill');
+
+  const STORY = [
+    "I was nine. My dad and I were driving back from my grandmother's, two-lane road, no streetlights.",
+    "The radio dropped out. Not static — gone. Dad leaned forward over the wheel and went quiet.",
+    "There were three lights over the field to our left, low, in a triangle, not moving. Not even a little.",
+    "We stopped. He rolled the window down. There was no sound at all. A whole field in July, and no crickets.",
+    "The lights slid sideways — all three together, like one thing — and stopped again over the treeline.",
+    "Then they were gone. Not fast, just... done. The crickets came back like someone unpaused them.",
+    "Dad never talked about it again his whole life. I'm posting this because he can't anymore, and it was real."
+  ];
+  const DUNKS = [
+    ['@aggregator_prime', 'cool story bro 💀'],
+    ['@replyguy4040', 'community note: birds exist. look it up'],
+    ['@clipfarm_hq', 'clipped for my channel (monetized) thanks champ'],
+    ['@aggregator_prime', 'source: trust me lol'],
+    ['@skeptic_dunks', '🚨 THREAD DEBUNKED 🚨 (link to my merch)'],
+    ['@aggregator_prime', 'imagine believing your own dad 😂'],
+    ['@replyguy4040', 'this you? *photo of a streetlight*'],
+    ['@dunk_aggregate', 'ratio + didn\'t happen + crickets are fake'],
+    ['@clipfarm_hq', 'reacting to this live at 8, come laugh'],
+    ['@aggregator_prime', 'lue liked this which tells you everything lmaooo']
+  ];
+  const MEGA = ['@aggregator_prime', 'QUOTE-TWEET: "the desperation on this app istg" — 40.2K views'];
+
+  let health = 100, posted = 0, typing = false, typeProg = 0, over = false, t = 0;
+  let dunks = [], spawnTimer = 0, megaSpawned = false;
+
+  function say(s){ annc.textContent = s; }
+  function render(){
+    ratiofill.style.width = Math.max(0, health) + '%';
+    storyfill.style.width = (posted / STORY.length * 100) + '%';
+  }
+
+  function addPost(text){
+    const d = document.createElement('div');
+    d.className = 'post';
+    d.innerHTML = '<span class="handle">@you · just now</span><br>' + text;
+    thread.appendChild(d);
+    while (thread.children.length > 5) thread.removeChild(thread.firstChild);
+  }
+
+  function spawnDunk(mega){
+    const [who, text] = mega ? MEGA : DUNKS[Math.floor(Math.random()*DUNKS.length)];
+    const d = document.createElement('div');
+    d.className = 'dunk' + (mega ? ' mega' : '');
+    d.innerHTML = '<span class="who">' + who + '</span>' + text;
+    const fromRight = Math.random() < 0.7;
+    d.style.left = (fromRight ? arena.clientWidth + 10 : -220) + 'px';
+    d.style.top = (20 + Math.random() * (arena.clientHeight - 160)) + 'px';
+    arena.appendChild(d);
+    const target = { x: 20 + Math.random() * (Math.min(300, arena.clientWidth*0.5) - 40),
+                     y: parseFloat(d.style.top) };
+    const obj = { el: d, x: parseFloat(d.style.left), y: target.y, tx: target.x,
+                  speed: (mega ? 0.35 : 0.55 + Math.random()*0.5), latched: false,
+                  hp: mega ? 5 : 1, mega };
+    d.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      if (over) return;
+      obj.hp--;
+      if (obj.hp <= 0){
+        const p = document.createElement('div');
+        p.className = 'poof';
+        p.textContent = obj.mega ? 'MUTED. BLESSED SILENCE.' : ['BLOCKED','MUTED','NOT TODAY','TOUCH GRASS'][Math.floor(Math.random()*4)];
+        p.style.left = d.style.left; p.style.top = d.style.top;
+        arena.appendChild(p);
+        setTimeout(() => p.remove(), 600);
+        d.remove();
+        dunks = dunks.filter(x => x !== obj);
+        if (obj.latched) obj.latched = false;
+      } else {
+        d.style.transform = 'scale(' + (1 + (5-obj.hp)*0.06) + ')';
+      }
+    });
+    dunks.push(obj);
+  }
+
+  // typing input
+  function startType(){ if (!over && posted < STORY.length){ typing = true; btn.classList.add('typing'); } }
+  function stopType(){ typing = false; btn.classList.remove('typing'); }
+  btn.addEventListener('pointerdown', e => { e.preventDefault(); startType(); });
+  addEventListener('pointerup', stopType);
+  addEventListener('keydown', e => { if (e.code === 'Space'){ e.preventDefault(); if (over){ location.reload(); } else startType(); } });
+  addEventListener('keyup', e => { if (e.code === 'Space') stopType(); });
+
+  function step(){
+    if (over) return;
+    t++;
+    // typing progress
+    if (typing){
+      typeProg += 0.9;
+      btn.textContent = 'TYPING… ' + Math.min(100, Math.floor(typeProg)) + '%';
+      if (typeProg >= 100){
+        typeProg = 0;
+        addPost(STORY[posted]);
+        posted++;
+        say(posted === STORY.length ? 'POSTED. ALL OF IT. NOW SURVIVE.' :
+            ['The swarm smells sincerity.', 'Keep going. He can smell a main character forming.',
+             'Halfway. The quote-tweets are circling.', 'Your dad would think this was brave. It is.'][Math.min(3, posted-1)]);
+        render();
+        if (posted >= STORY.length){ setTimeout(win, 2500); }
+      }
+    } else {
+      btn.textContent = posted >= STORY.length ? 'THREAD COMPLETE' : 'HOLD TO KEEP TYPING (SPACE)';
+    }
+    // spawn dunks (pressure scales with progress)
+    spawnTimer++;
+    const gap = Math.max(55, 150 - posted * 15);
+    if (spawnTimer > gap && posted > 0){
+      spawnTimer = 0;
+      spawnDunk(false);
+      if (posted >= 4 && !megaSpawned){ megaSpawned = true; spawnDunk(true); say('OH NO. THE QUOTE-TWEET. HIS FOLLOWERS ARE ARRIVING. CLICK IT. KEEP CLICKING IT.'); }
+    }
+    // move dunks
+    for (const o of dunks){
+      if (o.latched){
+        health -= o.mega ? 0.12 : 0.05;
+      } else {
+        o.x += (o.tx - o.x) * 0.02 * o.speed * 2;
+        if (Math.abs(o.x - o.tx) < 12){
+          o.latched = true;
+          o.el.classList.add('latched');
+        }
+        o.el.style.left = o.x + 'px';
+      }
+    }
+    health = Math.min(100, health + 0.008); // stories heal, slowly
+    render();
+    if (health <= 0) lose();
+  }
+
+  function win(){
+    if (over) return;
+    over = true;
+    dunks.forEach(o => o.el.remove());
+    $('endTitle').textContent = 'THE STORY HELD.';
+    $('endBody').innerHTML =
+      '<p>By morning the swarm has moved on — a new main character, a fresh field to strip. ' +
+      'The impressions are spent. The merch link expired. And your thread is still there, all seven ' +
+      'sentences, in order, true.</p>' +
+      '<p>One reply remains. It has two likes. It will matter more than everything else that happened tonight:</p>' +
+      '<div class="lastreply"><span class="handle">@quiet_account_1994 · 4:07 AM</span><br>' +
+      'i was on that road in \'94. same lights. same silence. i never told anyone either — not even my wife. ' +
+      'thank you. tell your dad\'s story as many times as you need to.</div>' +
+      '<p><b>They laugh in the faces of people with real stories. The stories outlast the laughing. ' +
+      'They always have.</b></p>' +
+      '<button onclick="location.reload()">POST IT AGAIN</button> ' +
+      '<a class="ghost" href="#prize">KEEP YOUR STORY SAFE — THE FIELD JOURNAL, $5</a>';
+    $('endcard').style.display = 'flex';
+  }
+  function lose(){
+    over = true;
+    $('endcard').classList.add('bad');
+    $('endTitle').textContent = 'RATIOED.';
+    $('endBody').innerHTML =
+      '<p>The thread comes down at 3 A.M. The Aggregator got forty thousand impressions off your silence ' +
+      'and moved on before sunrise. This is how it usually goes. This is exactly how it usually goes.</p>' +
+      '<p><b>Write it again. Write it always. The delete button never made anything less true.</b></p>' +
+      '<button onclick="location.reload()">WRITE IT AGAIN</button>';
+    $('endcard').style.display = 'flex';
+  }
+
+  addPost("okay. deep breath. i've never told this publicly. thread: 🧵");
+  render();
+  (function loop(){ step(); requestAnimationFrame(loop); })();
+})();
+</script>
+
+</body>
+</html>

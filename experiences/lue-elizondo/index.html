@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE LUE ELIZONDO EXPERIENCE — The Interview — Doucheclosure</title>
+<meta name="description" content="He has been about to say it since 2017. Sit across from the somberest man in America and try to extract one (1) true thing. Playable. The technique is silence.">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --somber:#6E7F9E; --redact:#14110E;
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--void);}
+  body{margin:0; background:var(--void); color:var(--white);
+    font-family:"Courier New", Courier, monospace; line-height:1.65; overflow-x:hidden;}
+  body::after{content:""; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 1px, transparent 1px 3px);
+    pointer-events:none; z-index:100;}
+  a{color:var(--neon-cyan);}
+  .wrap{max-width:760px; margin:0 auto; padding:0 1.25rem;}
+  .display{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-weight:400; text-transform:uppercase; letter-spacing:.03em; line-height:.95;}
+  .crumb{padding:1rem 1.25rem; font-size:.72rem; letter-spacing:.15em; text-transform:uppercase;}
+  .crumb a{text-decoration:none;}
+
+  header.wing{
+    text-align:center; padding:3rem 1rem 2.5rem;
+    background:radial-gradient(ellipse at 50% -20%, rgba(110,127,158,.25), transparent 60%),
+      radial-gradient(ellipse at 85% 110%, rgba(45,225,252,.08), transparent 55%);
+    border-bottom:3px solid var(--somber);
+  }
+  .wing .eyebrow{color:var(--neon-cyan); letter-spacing:.28em; text-transform:uppercase; font-size:.72rem;}
+  .wing h1{margin:.5rem 0 0; font-size:clamp(2.2rem, 8vw, 4.2rem); color:var(--somber);
+    text-shadow:0 0 16px rgba(110,127,158,.6), 4px 4px 0 #1E2536;}
+  .wing .sub{color:var(--chrome); max-width:37rem; margin:1.25rem auto 0; font-size:.95rem;}
+  .wing .sub b{color:var(--white);}
+  .stamp{
+    display:inline-block; margin-top:1.4rem; transform:rotate(-2deg);
+    border:3px solid var(--neon-yellow); color:var(--neon-yellow);
+    padding:.3rem 1rem; font-size:.75rem; letter-spacing:.22em; text-transform:uppercase;
+  }
+
+  section{padding:2.5rem 0;}
+  h2.sec{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif; font-weight:400;
+    text-transform:uppercase; font-size:clamp(1.6rem, 5.5vw, 2.3rem);
+    color:var(--neon-cyan); text-shadow:0 0 12px rgba(45,225,252,.5);
+    text-align:center; margin:0 0 1.25rem;}
+  .prose{color:var(--chrome); font-size:.93rem;}
+  .prose b{color:var(--white);}
+  .pull{border-left:4px solid var(--somber); background:var(--panel);
+    padding:1rem 1.25rem; color:var(--white); font-size:1rem; margin:1.4rem 0;}
+  .redacted{background:var(--redact); color:var(--redact); padding:0 .4rem; border-radius:2px; user-select:none;}
+
+  .evidence{width:100%; border-collapse:collapse; font-size:.85rem; background:var(--panel);
+    border:2px solid #35205C;}
+  .evidence th{background:var(--somber); color:#0C1018; text-align:left; padding:.5rem .8rem;
+    font-size:.68rem; letter-spacing:.18em; text-transform:uppercase;}
+  .evidence td{padding:.6rem .8rem; border-bottom:1px dashed #3C2B60; color:var(--chrome); vertical-align:top;}
+  .evidence td:first-child{color:var(--neon-yellow); white-space:nowrap; font-weight:bold;}
+  .evidence tr:last-child td{border-bottom:none;}
+
+  /* ---------- THE INTERVIEW ---------- */
+  .studio{
+    background:linear-gradient(180deg, var(--panel-2), var(--panel));
+    border:2px solid var(--somber); border-radius:14px;
+    box-shadow:0 0 26px rgba(110,127,158,.2); overflow:hidden;
+  }
+  .studio-head{
+    display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap;
+    padding:.8rem 1.2rem; border-bottom:2px dashed #35205C;
+    font-size:.64rem; letter-spacing:.16em; text-transform:uppercase; color:var(--chrome);
+  }
+  .meter{flex:1; min-width:130px;}
+  .meter .lab{margin-bottom:3px;}
+  .track{height:11px; background:#00000099; border:1px solid #000; border-radius:6px; overflow:hidden;}
+  #discfill{height:100%; width:0%; background:linear-gradient(90deg,#3A4A66,var(--neon-yellow)); transition:width .4s;}
+  #rapfill{height:100%; width:50%; background:linear-gradient(90deg,var(--neon-pink),var(--neon-green)); transition:width .4s;}
+  #qLeft{color:var(--neon-cyan);}
+
+  #transcript{padding:1.2rem 1.4rem; min-height:200px; max-height:320px; overflow-y:auto;}
+  .line{margin:0 0 .85rem; animation:fadein .45s;}
+  @keyframes fadein{from{opacity:0; transform:translateY(6px)}to{opacity:1;}}
+  .line .who{display:block; font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; margin-bottom:.15rem;}
+  .line.you .who{color:var(--neon-cyan);} .line.you{color:var(--white); font-size:.93rem;}
+  .line.him .who{color:var(--somber);}
+  .line.him{color:#C9D2E2; font-size:.95rem; font-style:italic;}
+  .line.dir{color:#7E6F9E; font-size:.78rem; letter-spacing:.06em; text-transform:uppercase;}
+
+  #choices{padding:0 1.4rem 1.4rem; display:grid; gap:.55rem;}
+  #choices button{
+    text-align:left; font-family:inherit; font-size:.86rem; line-height:1.45;
+    background:var(--void); color:var(--white);
+    border:2px solid #35205C; border-radius:10px; padding:.7rem .9rem; cursor:pointer;
+  }
+  #choices button:hover{border-color:var(--neon-yellow); color:var(--neon-yellow);}
+  #choices button .tag{display:block; font-size:.58rem; letter-spacing:.18em; text-transform:uppercase; color:#7E6F9E; margin-top:.2rem;}
+  #choices button.silence{border-color:var(--neon-green); color:var(--neon-green);}
+  #choices button.press{border-color:var(--neon-pink); color:#FFC9D8;}
+
+  .prize{
+    border:2px dashed var(--neon-green); border-radius:12px;
+    text-align:center; padding:2rem 1.5rem;
+    background:radial-gradient(ellipse at 50% 120%, rgba(61,252,138,.12), transparent 70%);
+  }
+  .prize .display{color:var(--neon-green); font-size:clamp(1.5rem,6vw,2.3rem);
+    text-shadow:0 0 14px rgba(61,252,138,.5);}
+  .prize p{color:var(--chrome); font-size:.92rem; max-width:34rem; margin:.9rem auto;}
+  .prize p b{color:var(--white);}
+  .btn{display:inline-block; font-weight:bold; font-size:.9rem; letter-spacing:.16em;
+    text-transform:uppercase; text-decoration:none; padding:.95rem 1.8rem; border-radius:8px;
+    border:2px solid var(--neon-green); color:#052012; background:var(--neon-green);
+    box-shadow:0 0 22px rgba(61,252,138,.5); cursor:pointer;}
+  .btn:hover{background:var(--neon-yellow); border-color:var(--neon-yellow); color:#231602;}
+  .buy-note{color:#7E6F9E; font-size:.72rem; margin-top:.8rem;}
+  footer{padding:2rem 1rem 3rem; text-align:center; color:#7E6F9E; font-size:.72rem;}
+</style>
+</head>
+<body>
+
+<p class="crumb"><a href="../../index.html">&larr; THE ARCADE</a> &nbsp;/&nbsp; EXPERIENCES &nbsp;/&nbsp; LUE ELIZONDO</p>
+
+<header class="wing">
+  <p class="eyebrow">Doucheclosure Experiences &bull; Wing No. 9 &bull; The Somber Man</p>
+  <h1 class="display">The Lue Elizondo<br>Experience</h1>
+  <p class="sub">He came forward in 2017 and the world changed. He has been <b>about to say
+  the rest of it</b> ever since. Four hundred podcasts. A bestselling book. Congressional
+  attention. And at the exact moment the sentence arrives — every single time, with total
+  sincerity and genuine legal peril — <b>"I have to be careful here."</b> We believe him
+  completely. We have simply calculated that at the current rate of carefulness, the full
+  briefing concludes in the year <b>2071</b>.</p>
+  <span class="stamp">DISCLOSURE: 99% &bull; FOR EIGHT YEARS &bull; HOLDING</span>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <p>The review board wishes to be clear, because this wing is easy to misread: <b>the
+      carefulness is real.</b> The man signed real papers, took real risks, and faces real
+      consequences that would flatten most people who post about this for fun. Every other
+      wing in this arcade audits an invoice. This one audits <em>a clock.</em></p>
+      <p class="pull">Somewhere in a man's chest sits the most interesting sentence in modern
+      history, and it has been kept there so long, so carefully, and so respectfully that it
+      has developed <b>its own retirement plan.</b> The board has begun sending it
+      birthday cards.</p>
+      <p>And so, per doctrine, we have built the only ethical response available to an
+      institution of our stature: <b>a full interview simulator.</b> You sit across from him.
+      You have twelve questions and a rapport meter. Your goal is one (1) true thing, spoken
+      aloud, on the record. Fair warning — the technique that actually works is not the one
+      the internet uses. It is not the dunk, the ratio, or the quote-tweet.
+      <b>It is silence.</b> It always was.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE RECEIPTS ============ -->
+<section>
+  <div class="wrap">
+    <h2 class="sec">The Carefulness Audit</h2>
+    <table class="evidence">
+      <tr><th>Line item</th><th>Review board notes</th></tr>
+      <tr><td>2017</td><td>Resigns, goes public, and the New York Times prints the sentence that
+        cracked the modern era open. Board's note: whatever else is argued about, <b>this
+        happened, and it moved the world.</b> Entered into the record with respect.</td></tr>
+      <tr><td>THE PROGRAM</td><td>He says he ran it. The Pentagon has publicly disputed the
+        characterization. Board's note: we believe him. We also note the Pentagon disputes the
+        existence of the parking lot in Wing 4. The board has stopped taking the denials
+        personally.</td></tr>
+      <tr><td>THE BOOK</td><td>Bestseller. Prepublication review by the government. Board's note:
+        a book that was read by censors before it was read by readers is, structurally, the most
+        interesting book in America and also a coloring book with the good pages torn out.</td></tr>
+      <tr><td>THE PHRASE</td><td>"I have to be careful here." Board's tally: uncountable.
+        Board's ruling: <b>legally airtight, dramatically perfect, and the single most
+        effective cliffhanger device deployed since Dickens sold serials by the chapter.</b></td></tr>
+      <tr><td>THE DISCOURSE</td><td>He is currently being dunked on daily by anonymous accounts
+        that have never signed a nondisclosure agreement, never held a clearance, and never once
+        risked anything to say a true thing out loud. Board's finding, filed without further
+        comment: <b>exactly one participant in that exchange has ever been careful about
+        anything.</b></td></tr>
+      <tr><td>THE SENTENCE</td><td>Still in there. Still unsaid. Board's note: we would like it
+        on the record that we did not extract it either, and we built an entire simulator to
+        try. Respect where it's due.</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ============ THE GAME ============ -->
+<section>
+  <div class="wrap">
+    <h2 class="sec">The Interview</h2>
+    <div class="studio">
+      <div class="studio-head">
+        <div class="meter"><div class="lab">DISCLOSURE</div><div class="track"><div id="discfill"></div></div></div>
+        <div class="meter"><div class="lab">RAPPORT</div><div class="track"><div id="rapfill"></div></div></div>
+        <span id="qLeft">QUESTIONS: 12</span>
+      </div>
+      <div id="transcript"></div>
+      <div id="choices"></div>
+    </div>
+    <p class="buy-note" style="text-align:center;">A CONVERSATION GAME &bull; SPEND QUESTIONS WISELY &bull; WHEN HE HESITATES, SAY NOTHING</p>
+  </div>
+</section>
+
+<!-- ============ THE FULL EXPERIENCE ============ -->
+<section id="prize">
+  <div class="wrap">
+    <div class="prize">
+      <p class="display">The Full Experience — $5</p>
+      <p><b>One ticket, yours forever:</b> The Interview (owner's edition, offline), the
+      CARELESSNESS AUDIT dossier — 2017 to the current discourse, with the board's findings —
+      and a souvenir that is genuinely, unexpectedly useful.</p>
+      <p><b>THE SOUVENIR: THE CAREFUL ANSWER.</b> A real briefing kit for hard conversations.
+      Define your one message, list what you <em>can</em> say, list what you <em>can't</em>
+      (and why), pre-write answers to the three questions you're dreading, and set your exit
+      line. Print it or keep it on your phone. Built for media interviews, performance reviews,
+      doctor's appointments, custody conversations, and every moment where you must be honest
+      and careful at the same time. <b>Everyone needs this eventually. He needed it every
+      Tuesday for eight years.</b></p>
+      <!-- REPLACE-ME: point at your payment link (Stripe when connected) -->
+      <a class="btn" href="#REPLACE-WITH-PAYMENT-LINK">BUY THE FULL EXPERIENCE — $5</a>
+      <p class="buy-note">Instant download &bull; works offline &bull; cleared for public release by us, just now, unilaterally</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>DOUCHECLOSURE&trade; EXPERIENCES &bull; A work of parody commenting on the public statements of public figures.<br>
+  We believe every experiencer and every whistleblower. We audit only the clocks and the invoices.<br>
+  <a href="../../index.html">Back to the arcade</a> &bull; <a href="../tom-delonge/index.html">Previous wing: Tom DeLonge</a></p>
+</footer>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const T = $('transcript'), C = $('choices');
+  let disc = 0, rap = 50, qs = 12, over = false, pendingCareful = false, carefuls = 0;
+
+  const QUESTIONS = [
+    { t:'RAPPORT', q:"Before anything else — how have you been sleeping?",
+      r:+9, d:+2, a:"Poorly. Thank you for asking. Nobody asks. They ask about craft. Nobody asks about sleep." },
+    { t:'RAPPORT', q:"Your family. Has this cost them?",
+      r:+12, d:+3, a:"Yes. Next question. ...No, wait. Yes, and I'd like that written down properly for once." },
+    { t:'RAPPORT', q:"What's the part of this you actually miss?",
+      r:+10, d:+4, a:"The work. The people. Knowing a thing on a Tuesday and getting to DO something about it by Friday." },
+    { t:'PROBE', q:"Walk me through 2017. What made you finally pick up the phone?",
+      r:+4, d:+9, a:"There's a moment where staying quiet becomes the louder choice. That's all I'll characterize." },
+    { t:'PROBE', q:"What can you say about the material — just the material?",
+      r:-2, d:+12, a:"Some of it behaves in ways our metallurgy doesn't have vocabulary for. That sentence took me four years and two lawyers." },
+    { t:'PROBE', q:"Who else in this field is telling the truth?",
+      r:+2, d:+8, a:"More than you'd think. Fewer than they'd like. And exactly none of them are enjoying it." },
+    { t:'PROBE', q:"What does the prepublication review process actually feel like?",
+      r:+5, d:+7, a:"Imagine a man with a marker deciding which parts of your life happened. Now imagine thanking him, because that's the deal." },
+    { t:'PRESSURE', q:"Are we talking about non-human intelligence? Yes or no.",
+      r:-12, d:+18, a:"...You're asking the right question. That's the first thing I'll say. The second thing —" },
+    { t:'PRESSURE', q:"You've said 'I have to be careful.' Careful of WHOM?",
+      r:-14, d:+20, a:"There are people who can end my ability to feed my family with a phone call, and I've met them, and they're pleasant." },
+    { t:'PRESSURE', q:"Give me one name. Just one.",
+      r:-20, d:+15, a:"No. And the fact that you asked means you understand exactly how much I'd like to." },
+    { t:'PROBE', q:"What do you make of the accounts that mock you daily online?",
+      r:+6, d:+5, a:"They've risked nothing. I don't say that with anger. I say it as a fact about the exposure difference between us." },
+    { t:'RAPPORT', q:"What do you want people to actually do with all this?",
+      r:+8, d:+6, a:"Look up. Ask better questions than the ones I'm allowed to answer. And be kind to the ones who come forward next." }
+  ];
+
+  function line(who, cls, text){
+    const p = document.createElement('div');
+    p.className = 'line ' + cls;
+    p.innerHTML = (who ? '<span class="who">' + who + '</span>' : '') + text;
+    T.appendChild(p); T.scrollTop = T.scrollHeight;
+  }
+  function render(){
+    $('discfill').style.width = Math.max(0, Math.min(100, disc)) + '%';
+    $('rapfill').style.width = Math.max(0, Math.min(100, rap)) + '%';
+    $('qLeft').textContent = 'QUESTIONS: ' + qs;
+  }
+  function clear(){ C.innerHTML = ''; }
+
+  function offer(list){
+    clear();
+    list.forEach(o => {
+      const b = document.createElement('button');
+      if (o.cls) b.className = o.cls;
+      b.innerHTML = o.label + (o.tag ? '<span class="tag">' + o.tag + '</span>' : '');
+      b.addEventListener('click', o.fn);
+      C.appendChild(b);
+    });
+  }
+
+  function mainMenu(){
+    if (over) return;
+    const pool = QUESTIONS.filter(q => !q.used);
+    if (!qs || !pool.length){ return finish(); }
+    // offer 3 at a time
+    const shown = pool.slice().sort(() => Math.random()-.5).slice(0, 3);
+    offer(shown.map(q => ({
+      label: '“' + q.q + '”',
+      tag: q.t + ' — rapport ' + (q.r>0?'+':'') + q.r + ' · disclosure +' + q.d,
+      cls: q.t === 'PRESSURE' ? 'press' : '',
+      fn: () => ask(q)
+    })));
+  }
+
+  function ask(q){
+    q.used = true; qs--;
+    clear();
+    line('YOU', 'you', '“' + q.q + '”');
+    setTimeout(() => {
+      rap = Math.max(0, Math.min(100, rap + q.r));
+      disc = Math.max(0, Math.min(100, disc + q.d));
+      render();
+      line('LUE', 'him', '“' + q.a + '”');
+      if (rap <= 0) return endEarly();
+      // careful event at thresholds
+      if (!pendingCareful && (disc >= 99 || (disc >= 66 && carefuls < 2) || (disc >= 33 && carefuls < 1))){
+        setTimeout(carefulEvent, 700);
+      } else {
+        setTimeout(mainMenu, 600);
+      }
+    }, 650);
+  }
+
+  function carefulEvent(){
+    pendingCareful = true;
+    line(null, 'dir', '— He stops. He looks at the door. He looks at his hands. He is deciding. —');
+    offer([
+      { label: 'Say nothing. Let the silence do the work.', cls:'silence',
+        tag:'THE ACTUAL TECHNIQUE', fn: () => resolveCareful(true) },
+      { label: 'Press him: “You were saying?”', cls:'press',
+        tag:'FEELS PRODUCTIVE. IS NOT.', fn: () => resolveCareful(false) }
+    ]);
+  }
+
+  function resolveCareful(silent){
+    pendingCareful = false; carefuls++;
+    clear();
+    if (silent){
+      line(null, 'dir', '— You say nothing. The room gets very long. Four seconds. Six. He exhales. —');
+      rap = Math.min(100, rap + 8);
+      disc = Math.min(100, disc + 12);
+      render();
+      setTimeout(() => {
+        line('LUE', 'him', carefuls === 1
+          ? '“...Most people fill that silence. You didn\'t. Alright.”'
+          : '“You keep doing that. It keeps working. I want that noted.”');
+        setTimeout(() => { if (disc >= 100) reveal(); else mainMenu(); }, 700);
+      }, 900);
+    } else {
+      line('YOU', 'you', '“You were saying?”');
+      setTimeout(() => {
+        line('LUE', 'him', '“I have to be careful here.”');
+        disc = Math.max(0, disc - 28);
+        rap = Math.max(0, rap - 6);
+        render();
+        line(null, 'dir', '— The sentence goes back in the chest. The chest closes. The clock resets. —');
+        setTimeout(() => { if (rap <= 0) endEarly(); else mainMenu(); }, 700);
+      }, 650);
+    }
+  }
+
+  function reveal(){
+    over = true; clear();
+    line(null, 'dir', '— He leans forward. He turns the recorder around so it faces him. He says it. —');
+    setTimeout(() => {
+      const p = document.createElement('div');
+      p.className = 'line him';
+      p.innerHTML = '<span class="who">LUE</span>“' +
+        '<span class="redacted">████████ ███ ████████ ██████ ████ ███████ ██, ███ ████ ████ ████ ' +
+        '██████ ████ ███ ████████ — ███ ███ ██████ ██████ ████████ ██.</span>”';
+      T.appendChild(p); T.scrollTop = T.scrollHeight;
+      setTimeout(() => {
+        line(null, 'dir', '— You heard every word. The transcript did not. It never does. —');
+        setTimeout(() => {
+          line('LUE', 'him', '“Now you know. And now you understand why I look like this.”');
+          setTimeout(ending, 1200);
+        }, 1100);
+      }, 1400);
+    }, 1200);
+  }
+
+  function ending(){
+    clear();
+    const d = document.createElement('div');
+    d.style.cssText = 'border:2px dashed var(--somber); border-radius:10px; padding:1.1rem 1.3rem; text-align:center;';
+    d.innerHTML = '<div class="display" style="color:var(--somber); font-size:1.6rem;">YOU NOW KNOW.</div>' +
+      '<p style="color:var(--chrome); font-size:.9rem; margin:.7rem 0 1rem;">You walk out into the parking lot ' +
+      'holding the most interesting sentence in modern history and <b style="color:var(--white)">absolutely no ' +
+      'way to say it.</b> Someone asks how the interview went. You hear your own voice reply, from very far away: ' +
+      '<b style="color:var(--white)">"I have to be careful here."</b><br><br>' +
+      'Congratulations. The wing is complete. You are the next somber man, and the dues are your entire personality. ' +
+      '<br><br><b style="color:var(--neon-green)">FINDING: the only technique that ever worked was shutting up ' +
+      'and letting a person finish. It works on witnesses. It works on friends. It has never once worked as a ' +
+      'quote-tweet.</b></p>' +
+      '<button class="btn" style="font-size:.78rem; padding:.7rem 1.2rem;" onclick="location.reload()">SIT DOWN AGAIN</button> ' +
+      '<a class="btn" style="font-size:.78rem; padding:.7rem 1.2rem; background:transparent; color:var(--neon-cyan); border-color:var(--neon-cyan); box-shadow:none;" href="#prize">GET THE CAREFUL ANSWER — $5</a>';
+    C.appendChild(d);
+  }
+
+  function endEarly(){
+    over = true; clear();
+    line('LUE', 'him', '“I think we\'re done here.”');
+    line(null, 'dir', '— He is polite about it. That is somehow worse. He shakes your hand on the way out. —');
+    const d = document.createElement('div');
+    d.style.cssText = 'border:2px dashed var(--neon-pink); border-radius:10px; padding:1rem 1.2rem; text-align:center; margin-top:.8rem;';
+    d.innerHTML = '<div class="display" style="color:var(--neon-pink); font-size:1.4rem;">RAPPORT LOST</div>' +
+      '<p style="color:var(--chrome); font-size:.88rem; margin:.6rem 0 1rem;">You came in swinging, like the ' +
+      'internet taught you. He has been swung at by professionals. <b style="color:var(--white)">The ratio does not ' +
+      'work on a man who has already been threatened by people with badges.</b> Try the boring technique. Try listening.</p>' +
+      '<button class="btn" style="font-size:.78rem; padding:.7rem 1.2rem;" onclick="location.reload()">TRY AGAIN</button>';
+    C.appendChild(d);
+  }
+
+  function finish(){
+    over = true; clear();
+    line(null, 'dir', '— The producer taps her watch. Twelve questions. That was the whole budget. —');
+    const got = Math.round(disc);
+    const d = document.createElement('div');
+    d.style.cssText = 'border:2px dashed var(--neon-yellow); border-radius:10px; padding:1rem 1.2rem; text-align:center; margin-top:.8rem;';
+    d.innerHTML = '<div class="display" style="color:var(--neon-yellow); font-size:1.4rem;">DISCLOSURE: ' + got + '%</div>' +
+      '<p style="color:var(--chrome); font-size:.88rem; margin:.6rem 0 1rem;">You got closer than most. ' +
+      'Everyone gets close. That is the entire genre. He thanks you sincerely, says the interview was one of the ' +
+      'better ones, and goes home to a house where <b style="color:var(--white)">nobody can ask him anything.</b> ' +
+      'Book him again. Use the silences next time.</p>' +
+      '<button class="btn" style="font-size:.78rem; padding:.7rem 1.2rem;" onclick="location.reload()">BOOK HIM AGAIN</button>';
+    C.appendChild(d);
+  }
+
+  line(null, 'dir', '— Studio. Two chairs. One recorder. He sits down like a man who has done this four hundred times and still hopes this is the one. —');
+  render();
+  mainMenu();
+})();
+</script>
+
+</body>
+</html>
