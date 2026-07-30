@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE DEBUNK GAUNTLET — Doucheclosure</title>
+<meta name="description" content="You finally got one photograph in focus. Now comes the part nobody prepares a witness for: the internet. Nine objections, ten cards, each card usable once. Answer with evidence, not volume.">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --rose:#E85C8A; --orb:#FFB84D; --shadow:rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--void);}
+  body{margin:0; background:var(--void); color:var(--white);
+    font-family:"Courier New", Courier, monospace; line-height:1.65; overflow-x:hidden;}
+  body::after{content:""; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 1px, transparent 1px 3px);
+    pointer-events:none; z-index:100;}
+  a{color:var(--neon-cyan);}
+  .wrap{max-width:960px; margin:0 auto; padding:0 1.25rem;}
+  .display{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-weight:400; text-transform:uppercase; letter-spacing:.03em; line-height:.95;}
+  .crumb{padding:1rem 1.25rem; font-size:.72rem; letter-spacing:.15em; text-transform:uppercase;}
+  .crumb a{text-decoration:none;}
+
+  header.wing{
+    text-align:center; padding:2.4rem 1rem 2.2rem;
+    background:radial-gradient(ellipse at 50% -20%, rgba(232,92,138,.26), transparent 60%),
+      radial-gradient(ellipse at 88% 120%, rgba(255,184,77,.10), transparent 55%);
+    border-bottom:3px solid var(--rose);
+  }
+  .wing .eyebrow{color:var(--neon-cyan); letter-spacing:.28em; text-transform:uppercase; font-size:.72rem;}
+  .wing h1{margin:.5rem 0 0; font-size:clamp(2.4rem,9vw,4.4rem); color:var(--rose);
+    text-shadow:0 0 16px rgba(232,92,138,.55), 4px 4px 0 #3A0F23;}
+  .wing .sub{color:var(--chrome); max-width:36rem; margin:1.1rem auto 0; font-size:.9rem;}
+  .wing .sub b{color:var(--white);}
+  .file-tab{display:inline-block; margin-top:1.2rem; border:2px solid var(--neon-yellow);
+    color:var(--neon-yellow); padding:.4rem 1.1rem; font-size:.72rem; letter-spacing:.2em;
+    text-transform:uppercase; transform:rotate(-2deg);}
+
+  section{padding:2rem 0 2.6rem;}
+
+  /* ---------- stage ---------- */
+  #stage{position:relative; background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:2px solid #4A2036; border-radius:12px;
+    box-shadow:0 0 26px rgba(232,92,138,.14),0 12px 34px var(--shadow);
+    padding:1.1rem; overflow:hidden;}
+  #stage::before{content:""; position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(ellipse at 76% 12%, rgba(232,92,138,.13), transparent 58%);}
+
+  #hud{display:flex; gap:.9rem; flex-wrap:wrap; align-items:flex-end; position:relative; z-index:2;}
+  .bar{flex:1 1 230px; min-width:190px;}
+  .bar .lab{font-size:.6rem; letter-spacing:.16em; text-transform:uppercase; color:var(--chrome);
+    margin-bottom:4px; display:flex; justify-content:space-between; gap:.5rem;}
+  .bar .lab b{color:var(--white); font-weight:normal;}
+  .track{height:13px; background:#00000099; border:1px solid #000; border-radius:7px; overflow:hidden;}
+  #credfill{height:100%; width:36%; background:linear-gradient(90deg,#6B2440,var(--rose)); transition:width .45s;}
+  .pill{flex:0 0 auto; font-size:.62rem; letter-spacing:.2em; text-transform:uppercase;
+    border:1px dashed rgba(255,210,63,.45); border-radius:6px; padding:.35rem .6rem; color:var(--neon-yellow);}
+  .pill.stand{color:var(--neon-pink); border-color:rgba(255,61,138,.45);}
+  .pill.reps{color:#8E7FA8; border-color:rgba(142,127,168,.4);}
+
+  #rail{display:flex; gap:.3rem; margin:.7rem 0 0; position:relative; z-index:2;}
+  #rail i{flex:1 1 0; height:6px; border-radius:3px; background:#2A2038; border:1px solid #000;}
+  #rail i.now{background:var(--neon-yellow); box-shadow:0 0 8px rgba(255,210,63,.6);}
+  #rail i.kill{background:var(--neon-green);}
+  #rail i.stand{background:var(--neon-pink);}
+  #rail i.quiet{background:var(--neon-cyan);}
+
+  #board{position:relative; z-index:2; margin:.55rem 0 0; font-size:.62rem; letter-spacing:.14em;
+    text-transform:uppercase; color:#7E6F9E; min-height:1.2rem;}
+
+  #arena{display:grid; grid-template-columns:minmax(0,300px) minmax(0,1fr); gap:1.1rem;
+    margin-top:.75rem; position:relative; z-index:2;}
+
+  /* ---------- the photograph ---------- */
+  #photobox{background:#07060E; border:2px solid #3A2440; border-radius:10px; padding:.5rem;}
+  #photo{display:block; width:100%; height:auto; max-height:230px; border-radius:4px;}
+  .orbglow{animation:breathe 5.5s ease-in-out infinite;}
+  @keyframes breathe{0%,100%{opacity:.85}50%{opacity:1}}
+  #exif{margin:.45rem 0 0; font-size:.53rem; letter-spacing:.08em; line-height:1.7; color:#7F6E93;}
+  #exif b{color:var(--neon-cyan); font-weight:normal;}
+  #photocap{text-align:center; font-size:.58rem; letter-spacing:.2em; text-transform:uppercase;
+    color:#7A5E6E; margin:.5rem 0 .1rem;}
+
+  /* ---------- the thread ---------- */
+  #thread{background:#0B0812; border:2px solid #3A2440; border-left:5px solid var(--rose);
+    border-radius:8px; padding:.85rem .95rem; min-height:10rem;}
+  #objhead{display:flex; align-items:center; gap:.55rem; margin-bottom:.5rem;}
+  #avatar{width:30px; height:30px; flex:0 0 30px; border-radius:5px; border:1px solid #000;
+    background:linear-gradient(145deg,#4B2A3E,#241522); display:flex; align-items:center;
+    justify-content:center; font-family:Haettenschweiler,Impact,sans-serif; font-size:.95rem; color:#E2A8BE;}
+  #handle{font-size:.68rem; letter-spacing:.1em; color:var(--rose);}
+  #stamp{margin-left:auto; font-size:.52rem; letter-spacing:.18em; text-transform:uppercase; color:#6B5C80;}
+  #objtext{font-size:.88rem; color:var(--white); line-height:1.62; margin:0; min-height:4.6rem;}
+  #verdict{margin:.7rem 0 0; padding-top:.65rem; border-top:1px dashed #3A2440;
+    font-size:.84rem; color:var(--chrome); line-height:1.6; min-height:3.4rem;}
+  #verdict b{color:var(--white);}
+  #verdict .up{color:var(--neon-green);} #verdict .dn{color:var(--neon-pink);}
+  #verdict .flat{color:var(--neon-cyan);}
+  .tag{display:inline-block; font-size:.55rem; letter-spacing:.2em; text-transform:uppercase;
+    border:1px solid currentColor; border-radius:4px; padding:.08rem .4rem; margin-right:.35rem;}
+
+  /* ---------- the hand ---------- */
+  #handwrap{margin-top:1rem; position:relative; z-index:2;}
+  #handlab{font-size:.6rem; letter-spacing:.22em; text-transform:uppercase; color:var(--chrome);
+    margin-bottom:.5rem; display:flex; justify-content:space-between; gap:.6rem; flex-wrap:wrap;}
+  #handlab b{color:var(--white); font-weight:normal;}
+  #hand{display:grid; grid-template-columns:repeat(auto-fill,minmax(168px,1fr)); gap:.55rem;}
+  .card{position:relative; min-height:88px; text-align:left; cursor:pointer; color:var(--white);
+    font-family:inherit; background:linear-gradient(180deg,#241A33,#15101F);
+    border:2px solid #4A3560; border-radius:9px; padding:.55rem .6rem .5rem;
+    transition:transform .1s, border-color .15s, box-shadow .15s;}
+  .card .n{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; font-weight:400;
+    text-transform:uppercase; letter-spacing:.04em; font-size:1rem; line-height:1.05; color:#D8C4F0;
+    padding-right:1.2rem;}
+  .card .d{font-size:.6rem; color:#8C7EA6; letter-spacing:.02em; line-height:1.4; margin-top:.25rem;}
+  .card .go{display:none; margin-top:.4rem; font-size:.53rem; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--neon-yellow);}
+  .card:hover:not(:disabled){border-color:var(--rose); box-shadow:0 0 14px rgba(232,92,138,.32); transform:translateY(-2px);}
+  .card.armed{border-color:var(--neon-yellow); box-shadow:0 0 18px rgba(255,210,63,.45); transform:translateY(-3px);}
+  .card.armed .go{display:block;}
+  .card:disabled{cursor:default;}
+  .card.spent{opacity:.34; filter:grayscale(.7);}
+  .card.spent::after{content:"SPENT"; position:absolute; top:8px; right:-16px; transform:rotate(28deg);
+    font-size:.5rem; letter-spacing:.18em; color:#FF3D8A; border-top:1px solid #FF3D8A;
+    border-bottom:1px solid #FF3D8A; padding:.05rem 1.1rem;}
+  .card.deadpan{border-color:#3E5560; background:linear-gradient(180deg,#16232A,#0E161B);}
+  .card.deadpan .n{color:#9FC6D6;}
+  .card.trap{border-color:#7A5A18; background:linear-gradient(180deg,#332510,#1E1608);}
+  .card.trap .n{color:var(--neon-yellow);}
+  .card.trap .d{color:#A28B5C;}
+  .card.trap:hover:not(:disabled){border-color:var(--neon-yellow); box-shadow:0 0 18px rgba(255,210,63,.5);}
+  .card .badge{position:absolute; top:6px; right:6px; font-size:.46rem; letter-spacing:.12em;
+    text-transform:uppercase; color:#0B0614; background:var(--neon-yellow); border-radius:3px; padding:.05rem .3rem;}
+  .card.spent .badge{display:none;}
+
+  #passwrap{margin-top:.7rem; display:flex; align-items:center; gap:.7rem; flex-wrap:wrap;}
+  #passBtn{font-family:inherit; cursor:pointer; border-radius:8px; padding:.7rem 1.3rem;
+    font-size:.7rem; letter-spacing:.16em; text-transform:uppercase; font-weight:bold;
+    border:2px dashed var(--neon-cyan); background:transparent; color:var(--neon-cyan);}
+  #passBtn.armed{border-style:solid; background:var(--neon-cyan); color:#04202A;}
+  #passBtn:disabled{opacity:.35; cursor:default;}
+  #passnote{font-size:.58rem; letter-spacing:.1em; color:#6E6288;}
+
+  /* ---------- briefing ---------- */
+  #briefing{position:absolute; inset:0; z-index:40; display:none; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center; padding:1.4rem;
+    background:rgba(8,5,14,.96); overflow-y:auto;}
+  #briefing h2{font-size:clamp(1.5rem,5vw,2.4rem); color:var(--rose); text-shadow:0 0 18px rgba(232,92,138,.5);}
+  #briefing p{max-width:34rem; margin:.8rem auto; color:var(--chrome); font-size:.86rem;}
+  #briefing b{color:var(--white);}
+  .btn{display:inline-block; margin:.4rem; padding:.85rem 1.6rem; border-radius:8px; cursor:pointer;
+    font-family:inherit; font-weight:bold; font-size:.8rem; letter-spacing:.14em; text-transform:uppercase;
+    text-decoration:none; border:2px solid var(--rose); background:var(--rose); color:#2A0A17;}
+  .btn.ghost{background:transparent; color:var(--neon-cyan); border-color:var(--neon-cyan);}
+
+  .dossier{border-left:4px solid var(--neon-yellow); background:var(--panel);
+    padding:1.05rem 1.25rem; color:var(--chrome); font-size:.86rem; margin-top:1.6rem;}
+  .dossier b{color:var(--white);}
+  footer{padding:2rem 1rem 3rem; text-align:center; color:#7E6F9E; font-size:.72rem;}
+
+  @media (max-width:760px){
+    #arena{grid-template-columns:1fr; gap:.7rem;}
+    #photo{max-height:150px;}
+    #photobox{padding:.35rem;}
+    #exif{font-size:.5rem;}
+    #photocap{margin:.35rem 0 0;}
+    #thread{min-height:0; padding:.7rem .75rem;}
+    #objtext{min-height:0;}
+    #verdict{min-height:0;}
+    #hand{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));}
+    #stage{padding:.8rem;}
+    header.wing{padding:1.8rem 1rem 1.6rem;}
+  }
+  @media (prefers-reduced-motion: reduce){ .orbglow{animation:none;} }
+</style>
+</head>
+<body>
+
+<p class="crumb"><a href="../../index.html">&larr; THE ARCADE</a> &nbsp;/&nbsp; <a href="index.html">CHRIS BLEDSOE</a> &nbsp;/&nbsp; THE DEBUNK GAUNTLET</p>
+
+<header class="wing">
+  <p class="eyebrow">The Chris Bledsoe Experience &bull; Cabinet No. 2</p>
+  <h1 class="display">The Debunk<br>Gauntlet</h1>
+  <p class="sub">You did it. Eighteen years of porch-light smears and <b>you finally got one in focus</b> —
+  sharp, dated, contextual, and you were sober. The review board congratulates you. The review board
+  also has bad news about what happens next, and it is not the government.</p>
+  <span class="file-tab">UPLOADED 22:14 &bull; FIRST REPLY 22:16 &bull; IT IS GOING TO BE A LONG NIGHT</span>
+</header>
+
+<section>
+  <div class="wrap">
+    <div id="stage">
+
+      <div id="hud">
+        <div class="bar">
+          <div class="lab"><span>Credibility</span><b id="credlab">36 / 100</b></div>
+          <div class="track"><div id="credfill"></div></div>
+        </div>
+        <div class="pill" id="roundpill">Objection 1 / 9</div>
+        <div class="pill stand" id="standpill">Standing: 0</div>
+        <div class="pill reps" id="repspill">Replies: 118</div>
+      </div>
+
+      <div id="rail"></div>
+      <p id="board">&nbsp;</p>
+
+      <div id="arena">
+        <div>
+          <div id="photobox">
+            <svg id="photo" viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg" aria-label="A sharp photograph: a glowing orb hovering low over a river at dusk, with a pine treeline for scale.">
+              <defs>
+                <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#0D1430"/>
+                  <stop offset="58%" stop-color="#2A2140"/>
+                  <stop offset="100%" stop-color="#4A2A38"/>
+                </linearGradient>
+                <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#1B1A2E"/><stop offset="100%" stop-color="#0A0912"/>
+                </linearGradient>
+                <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#FFD9A0" stop-opacity=".85"/>
+                  <stop offset="45%" stop-color="#FFB84D" stop-opacity=".32"/>
+                  <stop offset="100%" stop-color="#FFB84D" stop-opacity="0"/>
+                </radialGradient>
+                <radialGradient id="core" cx="42%" cy="38%" r="62%">
+                  <stop offset="0%" stop-color="#FFFDF4"/><stop offset="70%" stop-color="#FFD98A"/>
+                  <stop offset="100%" stop-color="#FFA92E"/>
+                </radialGradient>
+              </defs>
+              <rect x="0" y="0" width="320" height="220" fill="url(#sky)"/>
+              <!-- a small, honest, distant Venus, top right -->
+              <circle cx="284" cy="26" r="1.8" fill="#DFE8FF" opacity=".9"/>
+              <circle cx="240" cy="18" r="1" fill="#DFE8FF" opacity=".5"/>
+              <circle cx="196" cy="34" r=".8" fill="#DFE8FF" opacity=".4"/>
+              <!-- far bank treeline -->
+              <path d="M0 132 L14 118 L22 128 L34 106 L46 126 L58 112 L70 128 L82 104 L96 126 L108 116
+                       L120 130 L134 110 L146 128 L158 118 L172 130 L186 108 L198 128 L212 114 L226 130
+                       L240 112 L254 128 L268 118 L282 130 L296 110 L310 128 L320 120 L320 152 L0 152 Z"
+                    fill="#0B0F16"/>
+              <!-- water -->
+              <rect x="0" y="152" width="320" height="68" fill="url(#water)"/>
+              <!-- the orb: below the treeline, over the water -->
+              <g class="orbglow">
+                <circle cx="118" cy="140" r="46" fill="url(#halo)"/>
+                <circle cx="118" cy="140" r="12.5" fill="url(#core)"/>
+                <circle cx="118" cy="140" r="12.5" fill="none" stroke="#FFF6E0" stroke-width=".7" opacity=".9"/>
+              </g>
+              <!-- reflection -->
+              <ellipse cx="118" cy="176" rx="15" ry="4.5" fill="#FFB84D" opacity=".26"/>
+              <ellipse cx="118" cy="188" rx="24" ry="3" fill="#FFB84D" opacity=".12"/>
+              <!-- dock post for scale, foreground -->
+              <rect x="272" y="150" width="7" height="52" fill="#0A0810"/>
+              <rect x="262" y="150" width="30" height="5" fill="#0A0810"/>
+              <!-- burned-in stamp -->
+              <text x="8" y="212" font-family="Courier New, monospace" font-size="8" fill="#FFB84D" opacity=".8">2026:04:11 21:58:04</text>
+              <text x="252" y="212" font-family="Courier New, monospace" font-size="8" fill="#FFB84D" opacity=".55">DSC_4471.NEF</text>
+            </svg>
+            <p id="exif">
+              <b>FILE</b> DSC_4471.NEF &bull; 8.4 MB &bull; RAW+JPEG<br>
+              <b>LENS</b> 200mm &bull; f/2.8 &bull; 1/60 &bull; ISO 800<br>
+              <b>TIME</b> 21:58:04 EDT &bull; GPS ON &bull; EXIF INTACT<br>
+              <b>SUBJECT</b> below treeline &bull; est. 30 ft over water
+            </p>
+          </div>
+          <p id="photocap">It is in focus. That was supposed to be the hard part.</p>
+        </div>
+
+        <div>
+          <div id="thread">
+            <div id="objhead">
+              <div id="avatar">?</div>
+              <div id="handle">@&mdash;</div>
+              <div id="stamp">Reply 1</div>
+            </div>
+            <p id="objtext">&nbsp;</p>
+            <div id="verdict">&nbsp;</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="handwrap">
+        <p id="handlab">
+          <span>Your evidence &mdash; each card plays <b>once</b></span>
+          <span id="handcount">10 in hand</span>
+        </p>
+        <div id="hand"></div>
+        <div id="passwrap">
+          <button type="button" id="passBtn">Say nothing</button>
+          <span id="passnote">Tap a card once to arm it, again to play it. Spend nothing you'll need later.</span>
+        </div>
+      </div>
+
+      <div id="briefing">
+        <h2 class="display">The Photograph Is Fine.</h2>
+        <p>Sharp. Dated. Wide enough to have a treeline in it. Shot on a night with a public weather
+        record and a public sky. <b>You did everything right, for once, in this entire field.</b></p>
+        <p>At 22:16 the first reply arrives, and then eight more, and they are not stupid — most of
+        them are the exact objections that correctly demolished a thousand blurry lights before yours.
+        You have <b>ten cards</b> and there are <b>nine replies</b>. Do the arithmetic and then do it
+        again, because one of those cards is worth nothing and two of them are worth less than nothing.</p>
+        <p>And somewhere late in the thread there is one reply that <b>no document on this earth answers.</b>
+        You will know it. Everyone knows it. Almost nobody does the right thing about it.</p>
+        <button class="btn" id="startBtn">Open the thread</button>
+      </div>
+
+    </div>
+
+    <div class="dossier">
+      <b>WING DOCTRINE:</b> We do not doubt the orbs, we never have, and we have said so at volume.
+      Our grievance has always been procedural &mdash; eighteen years of the most cooperative
+      phenomenon in history and no one kept a clean file. This cabinet is the other half of that
+      complaint. Because the moment a witness <em>does</em> keep a clean file, we ask him to defend it
+      alone, at midnight, unpaid, against strangers, forever. <b>The paperwork is the price of being
+      believed, and we charge it only to the people who saw something.</b>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>DOUCHECLOSURE&trade; EXPERIENCES &bull; A work of parody commenting on public statements of public figures.<br>
+  <a href="index.html">Back to the Bledsoe wing</a> &bull; <a href="../../shrines/index.html#chris-bledsoe">The shrine</a> &bull;
+  <a href="../../index.html">The arcade</a></p>
+</footer>
+
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const stage = $('stage');
+  Juice.init(stage);
+
+  /* ============================================================
+     TUNING
+     ============================================================ */
+  const START_CRED = 36, MAX_CRED = 100, WIN_AT = 70;
+  const K_KILL = 7, K_WRONG = -9, K_TRAP = -16,
+        K_PASS_BAD = -6, K_PASS_GOOD = 15, K_UNANS_CARD = -11;
+
+  /* ============================================================
+     THE HAND — ten cards, each playable exactly once
+     ============================================================ */
+  const CARDS = [
+    { id:'raw',       n:'Timestamped RAW File',
+      d:'8.4 MB, camera-original, EXIF intact. Never opened in anything.' },
+    { id:'witness',   n:'Second Witness',
+      d:'Your daughter. Her own phone. Nine seconds. She did not want to be involved.' },
+    { id:'wide',      n:'Wide Shot With Treeline',
+      d:'The ugly frame. Horizon, pines, scale. Nobody ever posts this one.' },
+    { id:'flight',    n:'Flight-Tracker Log',
+      d:'ADS-B for that box of sky, that hour. Downloaded, not authored.' },
+    { id:'weather',   n:'Weather Record',
+      d:'Airfield eleven miles out. Public, timestamped, magnificently boring.' },
+    { id:'satellite', n:'Satellite Pass Table',
+      d:'Everything in orbit that night &mdash; and where the planets actually were.' },
+    { id:'negative',  n:'The Negative / Original',
+      d:'Physical film. Second camera on the tripod. Dated lab envelope.' },
+    { id:'sober',     n:'Sobriety', deadpan:true,
+      d:'You were sober. Completely. Legally, checkably, boringly sober.' },
+    { id:'trustme',   n:'&ldquo;Trust Me&rdquo;', trap:true, badge:'Most played',
+      d:'I know what I saw. Free. Instant. Feels incredible for four seconds.' },
+    { id:'doyourown', n:'&ldquo;Do Your Own Research&rdquo;', trap:true, badge:'Crowd favourite',
+      d:'Powerful. Popular. Ends the conversation &mdash; in the wrong direction.' }
+  ];
+  const BY = {};
+  CARDS.forEach(c => { BY[c.id] = c; });
+
+  /* ============================================================
+     THE THREAD — eight real objections. Every one of them is a
+     good-faith argument that has correctly killed a thousand
+     blurry lights. That is what makes them hard.
+     ============================================================ */
+  const OBJECTIONS = [
+    { id:'venus', handle:'@venus_actually', av:'V',
+      text:'That’s Venus. Bright, low, sits in one spot for an hour, fools people constantly. I have looked at four hundred of these and three hundred and ninety of them were Venus. This is not an attack on you. It is arithmetic.',
+      kills:{
+        wide:'You post the ugly frame &mdash; the wide one, the one with the treeline and the boat ramp and forty percent dead sky. The object sits <b>below the pines</b>, thirty feet over the water. And up in the corner of that same exposure, forty degrees high and unmistakable, <b>there is Venus.</b> Both of them. One frame. The thread goes quiet the way a room goes quiet.',
+        satellite:'You post the pass table. It is not your document, it did not come off your computer, and it says Venus set at 19:41. The exposure is stamped <b>21:58</b>. At the moment of the photograph, Venus was on the other side of the planet &mdash; and anyone can check that in nine seconds, and somebody does, and says so out loud.'
+      },
+      survive:'Venus stays in the thread. Venus is immortal.' },
+
+    { id:'flare', handle:'@glass_and_ghosts', av:'G',
+      text:'Textbook lens flare. Bright source, cheap coating, ghost artifact sitting opposite the light on the frame diagonal. I shoot for a living. That is an artifact of your equipment, not an object in your sky.',
+      kills:{
+        negative:'You put up the film original. Second camera, different glass, forty feet to the left, on a tripod you set an hour before any of this. Same object. Same place in the sky. <b>A flare lives inside one lens.</b> It does not move house.',
+        witness:'Your daughter filmed nine seconds of it on her own phone from the dock. Two sensors, two lenses, two coatings, two people, <b>one object</b>, same position, same minute. Flares do not coordinate.'
+      },
+      survive:'The word &ldquo;artifact&rdquo; is now in eleven replies, doing a great deal of work for a word that means nothing here.' },
+
+    { id:'plane', handle:'@adsb_andy', av:'A',
+      text:'You are eleven miles off an approach corridor. That is an aircraft on final with the landing light pointed straight at you — no apparent motion, no sound at that distance, looks parked. Somebody posts this exact photo every single week.',
+      kills:{
+        flight:'You post the ADS-B log for that box of sky, that hour. <b>Two aircraft. Both above thirty thousand feet. Both squawking. Neither within nineteen miles.</b> He asked for aircraft. He has now been given every aircraft there was.'
+      },
+      survive:'The plane survives. Somebody adds &ldquo;or a helicopter,&rdquo; which is how these grow.' },
+
+    { id:'drone', handle:'@quadcopter_pete', av:'Q',
+      text:'Drone. I fly them. That is a drone hovering with its downlight on, and you are describing, in detail, exactly what a drone looks like to a man who has never seen a drone at night.',
+      kills:{
+        weather:'You post the airfield record from eleven miles out: <b>sustained 24, gusting 38.</b> There is no consumer quadcopter in North America that holds a stationary hover in 38-mile gusts. Every drone pilot in that thread already knows it &mdash; and one of them says it out loud, which is worth ten of you saying it.'
+      },
+      survive:'The drone survives, and multiplies. There are now three drones and one of them has a laser.' },
+
+    { id:'raw', handle:'@rawORitdidnthappen', av:'R',
+      text:'Where is the RAW? Not the JPEG. Not the export. Not a screenshot of the export. Camera-original, EXIF intact. No RAW, no conversation — and there is never, ever a RAW.',
+      kills:{
+        raw:'You upload the camera-original. 8.4 megabytes, EXIF untouched, shutter count, lens serial, the whole boring skeleton of the night. <b>The RAW that never exists exists.</b> Three people download it. One of them goes very quiet and stays that way.',
+        negative:'You go one better than a RAW. You post the <b>negative</b> &mdash; physical, dated, still in the lab envelope, off a camera with no software in it anywhere. There is no such thing as a doctored file when there was never a file.'
+      },
+      survive:'&ldquo;No RAW.&rdquo; Two words. They will outlive you.' },
+
+    { id:'alone', handle:'@sole_witness_problem', av:'S',
+      text:'Nobody else saw it. Twenty thousand people live in that county and exactly one of them has a photograph. Extraordinary claim, single source, zero corroboration. You know how that reads, because you would read it the same way.',
+      kills:{
+        witness:'Your daughter did not want to be in this. She came anyway. Nine seconds, her own phone, her own timestamp, her own name. <b>The single-source problem is no longer a single source</b> &mdash; and it cost her something to fix, and everyone in that thread should know that it cost her something.'
+      },
+      survive:'&ldquo;Single source.&rdquo; The thread files it, satisfied, and moves along.' },
+
+    { id:'zapper', handle:'@porchlight_theory', av:'P',
+      text:'Bug zapper. Or a neighbour’s security light, or a barn LED up on a pole. You were outdoors at dusk near structures and you photographed a fixture. Happens constantly. Nobody ever checks.',
+      kills:{
+        wide:'You post the wide frame. It is the entire horizon: river, far bank, treeline, sky &mdash; and <b>not one structure, pole, porch, barn or fixture within a mile and a quarter in any direction.</b> The nearest bulb in that photograph is the one behind the camera, and you are holding the camera.'
+      },
+      survive:'Somebody draws a red circle on your photograph and captions it &ldquo;LIGHT POLE?&rdquo; There is no light pole.' },
+
+    { id:'shop', handle:'@pixel_peeper_9', av:'X',
+      text:'Photoshop. Sorry. The gradient falloff on that glow is too clean and the edge is too resolved for that focal length. And &ldquo;I would never do that&rdquo; is not a rebuttal, it is a character reference. Anyone can build this in nine minutes.',
+      kills:{
+        negative:'You post the negative. Physical film, dated lab envelope, developed by a stranger in a strip mall who has never heard of you and does not care. <b>You cannot Photoshop a thing that was never a file.</b>',
+        raw:'You hand over the camera-original: EXIF, shutter count, lens serial, no edit history, no save state, nothing at all between the sensor and the disk. The forgery charge survives exactly as long as it takes one person to open it, which is eleven minutes.'
+      },
+      survive:'&ldquo;Photoshop&rdquo; stands. It costs nothing to say and everything to disprove, which is the entire reason it gets said.' }
+  ];
+
+  const UNANSWERABLE = {
+    id:'nope', handle:'@nope_1974', av:'—', unanswerable:true,
+    text:'I just don’t believe you. I read the whole thread. Not the file, not the log, not the weather, not your daughter. You. I don’t believe you and there is nothing in that folder that is going to change it.',
+    survive:'It is still there. It was always going to still be there.'
+  };
+
+  /* ============================================================
+     WHAT THE THREAD SAYS WHEN YOU SPEND THE WRONG CARD
+     ============================================================ */
+  const WRONG = {
+    raw:'You post the RAW. Nobody asked for the RAW. Four people download it, one says the histogram looks &ldquo;off,&rdquo; and the objection you were supposed to be answering is still sitting there at the top, untouched, first in line.',
+    witness:'You bring your daughter into it. She did not ask to be in a thread. The objection survives anyway, and now there are two of you standing in it instead of one.',
+    wide:'You post the wide frame. Right picture, wrong moment &mdash; nothing in it speaks to what was actually asked, and a thread will always read a mismatch as a dodge.',
+    flight:'You post the flight log against a claim that has nothing to do with aircraft. Somebody replies &ldquo;cool log.&rdquo; Somebody else replies &ldquo;so it WAS a plane??&rdquo; The objection is still standing and it has friends now.',
+    weather:'You post the weather. It was, indeed, the weather. Nobody disputed the weather. The thread thanks you for the weather and returns to the question.',
+    satellite:'You post the pass table &mdash; a beautiful, exhaustive, completely irrelevant document. Nothing in orbit was ever the argument here, and you have just burned the one card that could prove where the sky was.',
+    negative:'You bring out the negative for a question the negative does not answer. You have now spent <b>the one thing on this table that cannot be faked</b> on nothing at all, and it is not coming back.'
+  };
+
+  const SOBER_LINES = [
+    'You state, flatly, that you were sober. You were. It is true, it is checkable, and it is the least persuasive true thing you will say all night. Nobody in the history of the internet has ever been argued out of a position by somebody else’s blood alcohol.',
+    'You mention, without heat, that you had not been drinking. Three people say &ldquo;sure.&rdquo; One person says &ldquo;nobody said you were.&rdquo; He is right. The objection does not collapse. It also does not grow.',
+    'Sobriety. Deadpan, accurate, and evidentially worth precisely nothing &mdash; which is the joke the field has never got: the one fact everybody volunteers is the one fact that proves nothing.'
+  ];
+
+  const TRAPS = {
+    trustme:'You type <b>TRUST ME</b>. It is the most honest sentence available to you and it is worth exactly nothing, and the thread knows it, and the thread is <em>delighted</em>. Forty-one replies in ninety seconds. Not one of them is about the photograph anymore.',
+    doyourown:'You tell them to <b>do their own research</b>. They will not. That was never on offer. What you have actually done is hand every reader in the thread a signed permission slip to stop reading, and they take it, gratefully, and they screenshot it.'
+  };
+
+  const PASS_BAD = 'You say nothing. Silence is a fine instrument and this was the wrong place for it &mdash; there was a document for this one, sitting right there in your hand, and a gap where an answer should be gets read as an answer.';
+  const PASS_GOOD = 'You say nothing. <b>Nothing at all.</b> No file, no log, no link, no temper. Because he was never asking for evidence &mdash; he was announcing a decision, and there is no document on this earth that opens that door. The thread waits for you to lose it. You do not. Two hundred people watch a man decline to argue with a man who is not arguing, and <b>that</b> is the exhibit.';
+  const UNANS_CARD = 'You show him the file. He says the file could be faked. You show him the second file. He says you could have made that one too. He is not weighing evidence &mdash; he never came to the table, so there is nothing on the table for him. And you have just spent a card you are going to need in about ninety seconds.';
+
+  const BOARD_NOTES = [
+    'BOARD: the photograph has not changed. Only the number of people looking at it.',
+    'BOARD: eighteen years of blur and the first sharp one gets a peer review. Noted.',
+    'BOARD: no government agency has replied. No government agency has ever replied.',
+    'BOARD: documents you did not write are worth four of the ones you did.',
+    'BOARD: reminder — volume is not evidence. Volume has never once been evidence.',
+    'BOARD: the second witness is a person, not an asset. Handle accordingly.',
+    'BOARD: two cards in that hand are load-bearing. Two are landmines.',
+    'BOARD: somewhere in this thread is a reply with no answer. There is still a right move.',
+    'BOARD: the receipts were always the whole job. Nobody told him that in advance.'
+  ];
+
+  /* ============================================================
+     STATE
+     ============================================================ */
+  let cred, roundIdx, order, spent, standing, replies, armed, current,
+      running, typing, typeTimer, ended, awarded,
+      playedTrust, playedAnyTrap, playedWrong, passedRight, passedWrong, kills;
+
+  const ROUNDS = 9;
+
+  function award(key, label){
+    if (awarded[key]) return;
+    awarded[key] = true;
+    Arcade.toast(label);
+  }
+
+  function shuffle(a){
+    for (let i = a.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      const t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function reset(){
+    cred = START_CRED; roundIdx = 0; spent = {}; standing = 0; replies = 118;
+    armed = null; current = null; running = false; typing = false; ended = false;
+    awarded = {}; playedTrust = false; playedAnyTrap = false; playedWrong = false;
+    passedRight = false; passedWrong = false; kills = 0;
+
+    const pool = shuffle(OBJECTIONS.slice());
+    order = pool.slice(0, 7);
+    order.push(UNANSWERABLE);
+    order.push(pool[7]);
+
+    buildRail();
+    renderHand();
+    renderHud();
+    $('avatar').textContent = '?';
+    $('handle').innerHTML = '@&mdash;';
+    $('stamp').textContent = 'Reply 1';
+    $('objtext').innerHTML = '&nbsp;';
+    $('verdict').innerHTML = '&nbsp;';
+    $('board').innerHTML = '&nbsp;';
+    $('photocap').textContent = 'It is in focus. That was supposed to be the hard part.';
+  }
+
+  /* ---------- rendering ---------- */
+  function buildRail(){
+    const rail = $('rail');
+    rail.innerHTML = '';
+    for (let i = 0; i < ROUNDS; i++) rail.appendChild(document.createElement('i'));
+  }
+  function markRail(i, cls){
+    const el = $('rail').children[i];
+    if (el) el.className = cls;
+  }
+
+  function renderHud(){
+    const c = Math.max(0, Math.min(MAX_CRED, Math.round(cred)));
+    $('credfill').style.width = c + '%';
+    $('credlab').textContent = c + ' / 100';
+    $('credfill').style.background = c >= WIN_AT
+      ? 'linear-gradient(90deg,#2E7A55,var(--neon-green))'
+      : (c <= 25 ? 'linear-gradient(90deg,#5A1020,var(--neon-pink))'
+                 : 'linear-gradient(90deg,#6B2440,var(--rose))');
+    $('roundpill').textContent = 'Objection ' + Math.min(roundIdx + 1, ROUNDS) + ' / ' + ROUNDS;
+    $('standpill').textContent = 'Standing: ' + standing;
+    $('repspill').textContent = 'Replies: ' + replies;
+    let left = 0;
+    CARDS.forEach(c2 => { if (!spent[c2.id]) left++; });
+    $('handcount').textContent = left + ' in hand';
+  }
+
+  function renderHand(){
+    const box = $('hand');
+    box.innerHTML = '';
+    CARDS.forEach(c => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'card' + (c.trap ? ' trap' : '') + (c.deadpan ? ' deadpan' : '') +
+                    (spent[c.id] ? ' spent' : '') + (armed === c.id ? ' armed' : '');
+      b.dataset.id = c.id;
+      b.innerHTML =
+        (c.badge && !spent[c.id] ? '<span class="badge">' + c.badge + '</span>' : '') +
+        '<div class="n">' + c.n + '</div>' +
+        '<div class="d">' + c.d + '</div>' +
+        '<div class="go">&#9658; Tap again to play</div>';
+      b.disabled = !!spent[c.id] || !running || typing;
+      b.addEventListener('click', () => tapCard(c, b));
+      box.appendChild(b);
+    });
+    const pb = $('passBtn');
+    pb.disabled = !running || typing;
+    pb.classList.toggle('armed', armed === '__pass__');
+    pb.textContent = armed === '__pass__' ? 'Confirm: say nothing' : 'Say nothing';
+  }
+
+  function setInputEnabled(on){
+    [].forEach.call($('hand').children, el => {
+      el.disabled = !on || !!spent[el.dataset.id];
+    });
+    $('passBtn').disabled = !on;
+  }
+
+  function centerOf(el){
+    const a = el.getBoundingClientRect(), b = stage.getBoundingClientRect();
+    return { x: a.left - b.left + a.width / 2, y: a.top - b.top + a.height / 2 };
+  }
+
+  /* ---------- typing ---------- */
+  function typeOut(str){
+    typing = true;
+    setInputEnabled(false);
+    const el = $('objtext');
+    let i = 0;
+    clearInterval(typeTimer);
+    typeTimer = setInterval(() => {
+      i += 2;
+      el.textContent = str.slice(0, i);
+      if (i % 14 === 0) Juice.sfx('tick');
+      if (i >= str.length){
+        clearInterval(typeTimer);
+        el.textContent = str;
+        typing = false;
+        setInputEnabled(true);
+      }
+    }, 13);
+  }
+  function skipType(){
+    if (!typing || !current) return;
+    clearInterval(typeTimer);
+    $('objtext').textContent = current.text;
+    typing = false;
+    setInputEnabled(true);
+  }
+  $('thread').addEventListener('click', skipType);
+
+  /* ---------- round flow ---------- */
+  function ensureVisible(){
+    const r = $('thread').getBoundingClientRect();
+    if (r.top < 0 || r.top > innerHeight * 0.45){
+      const y = scrollY + r.top - Math.max(8, innerHeight * 0.06);
+      scrollTo({ top: y, behavior: 'smooth' });
+    }
+  }
+
+  function beginRound(){
+    if (roundIdx >= ROUNDS){ finish('through'); return; }
+    current = order[roundIdx];
+    armed = null;
+    replies += 38 + Math.floor(Math.random() * 55);
+    $('avatar').textContent = current.av;
+    $('handle').textContent = current.handle;
+    $('stamp').textContent = 'Reply ' + (roundIdx + 1) + ' of 9';
+    $('verdict').innerHTML = '&nbsp;';
+    $('board').textContent = BOARD_NOTES[roundIdx % BOARD_NOTES.length];
+    markRail(roundIdx, 'now');
+    renderHud();
+    renderHand();
+    ensureVisible();
+    Juice.sfx(current.unanswerable ? 'alarm' : 'blip');
+    if (current.unanswerable){
+      $('photocap').textContent = 'The photograph has not changed. Remember that.';
+      Juice.flash('#E85C8A', .14);
+    }
+    typeOut(current.text);
+  }
+
+  function tapCard(card, btn){
+    if (!running || typing || ended || spent[card.id]) return;
+    if (armed !== card.id){
+      armed = card.id;
+      Juice.sfx('blip');
+      renderHand();
+      return;
+    }
+    playCard(card, btn);
+  }
+
+  function tapPass(){
+    if (!running || typing || ended) return;
+    if (armed !== '__pass__'){
+      armed = '__pass__';
+      Juice.sfx('blip');
+      renderHand();
+      return;
+    }
+    doPass();
+  }
+  $('passBtn').addEventListener('click', tapPass);
+
+  function resolveEnd(delta, html, railCls){
+    cred = Math.max(0, Math.min(MAX_CRED, cred + delta));
+    const sign = delta > 0 ? '<span class="up tag">+' + delta + ' credibility</span> '
+               : (delta < 0 ? '<span class="dn tag">' + delta + ' credibility</span> '
+                            : '<span class="flat tag">no change</span> ');
+    $('verdict').innerHTML = sign + html;
+    markRail(roundIdx, railCls);
+    armed = null;
+    renderHud();
+    renderHand();
+    setInputEnabled(false);
+
+    roundIdx++;
+    if (cred <= 0){ setTimeout(() => finish('zero'), 1800); return; }
+    if (roundIdx >= ROUNDS) setTimeout(() => finish('through'), 2600);
+    else setTimeout(() => { if (!ended) beginRound(); }, 2300);
+  }
+
+  function playCard(card, btn){
+    const pt = centerOf(btn);
+    spent[card.id] = true;
+    Juice.sfx('click');
+    if (card.id === 'trustme') playedTrust = true;
+    if (card.trap) playedAnyTrap = true;
+
+    const o = current;
+
+    /* ---- the unanswerable: every card is the wrong card ---- */
+    if (o.unanswerable){
+      playedWrong = true;
+      standing++;
+      replies += 60;
+      Juice.impact(pt.x, pt.y, { text:String(K_UNANS_CARD), color:'#FF3D8A', power:9, sound:'bad' });
+      resolveEnd(K_UNANS_CARD, UNANS_CARD + ' <em>' + o.survive + '</em>', 'stand');
+      return;
+    }
+
+    /* ---- traps ---- */
+    if (card.trap){
+      playedWrong = true;
+      standing++;
+      replies += 210 + Math.floor(Math.random() * 180);
+      Juice.impact(pt.x, pt.y, { text:'✖', color:'#FFD23F', power:15, count:26, sound:'lose' });
+      Juice.flash('#FFD23F', .3);
+      Juice.shake(14);
+      $('board').textContent = 'BOARD: that reply is now the most-quoted thing you have ever written. It is not about the photograph.';
+      resolveEnd(K_TRAP, TRAPS[card.id] + ' <em>' + o.survive + '</em>', 'stand');
+      return;
+    }
+
+    /* ---- sobriety: true, checkable, worth nothing ---- */
+    if (card.deadpan){
+      standing++;
+      Juice.sfx('thud');
+      Juice.text(pt.x, pt.y - 14, 'TRUE. IRRELEVANT.', { color:'#9FC6D6', size:18 });
+      resolveEnd(0, SOBER_LINES[roundIdx % SOBER_LINES.length] + ' <em>' + o.survive + '</em>', 'stand');
+      return;
+    }
+
+    /* ---- the right document ---- */
+    if (Object.prototype.hasOwnProperty.call(o.kills, card.id)){
+      kills++;
+      Juice.reward(pt.x, pt.y, { text:'COLLAPSED', color:'#3DFC8A', sound:'good', count:26 });
+      Juice.burst(pt.x, pt.y, { color:'#FFD23F', count:16, speed:4.6, gravity:.015 });
+      Juice.flash('#3DFC8A', .16);
+      Juice.hitstop(70);
+      Juice.buzz(22);
+      if (kills >= 4) award('paper', '🏆 DEATH BY PAPERWORK');
+      resolveEnd(K_KILL,
+        '<b>OBJECTION COLLAPSES.</b> ' + o.kills[card.id], 'kill');
+      return;
+    }
+
+    /* ---- the wrong document ---- */
+    playedWrong = true;
+    standing++;
+    Juice.impact(pt.x, pt.y, { text:String(K_WRONG), color:'#FF3D8A', power:8, sound:'bad' });
+    resolveEnd(K_WRONG, (WRONG[card.id] || 'It does not land.') + ' <em>' + o.survive + '</em>', 'stand');
+  }
+
+  function doPass(){
+    const pt = centerOf($('passBtn'));
+    Juice.sfx('click');
+    const o = current;
+    if (o.unanswerable){
+      passedRight = true;
+      award('unans', '🏆 PASSED ON THE UNANSWERABLE');
+      Juice.reward(pt.x, pt.y, { text:'SAID NOTHING', color:'#2DE1FC', sound:'win', count:34 });
+      Juice.burst(pt.x, pt.y, { color:'#F4F0FF', count:22, speed:5.2, gravity:.01 });
+      Juice.flash('#2DE1FC', .22);
+      Juice.hitstop(120);
+      $('board').textContent = 'BOARD: no rebuttal was filed, because none was possible. Finding: correct procedure.';
+      $('photocap').textContent = 'The photograph is unchanged. So are you.';
+      markRail(roundIdx, 'quiet');
+      resolveEnd(K_PASS_GOOD, PASS_GOOD, 'quiet');
+      return;
+    }
+    standing++;
+    passedWrong = true;
+    Juice.sfx('bad');
+    Juice.shake(6);
+    resolveEnd(K_PASS_BAD, PASS_BAD + ' <em>' + o.survive + '</em>', 'stand');
+  }
+
+  /* ============================================================
+     ENDINGS
+     ============================================================ */
+  function finish(cause){
+    if (ended) return;
+    ended = true; running = false;
+    clearInterval(typeTimer);
+    setInputEnabled(false);
+    armed = null;
+    renderHand();
+
+    const won = cred >= WIN_AT && cause !== 'zero';
+    if (!playedTrust) award('trust', '🏆 NEVER PLAYED &ldquo;TRUST ME&rdquo;');
+    if (!playedWrong && !playedAnyTrap && !passedWrong && passedRight && won)
+      award('spotless', '🏆 SPOTLESS RECORD');
+
+    let title, lines;
+
+    if (won){
+      Juice.sfx('win');
+      Juice.flash('#3DFC8A', .3);
+      Juice.burst(stage.clientWidth / 2, stage.clientHeight * 0.35,
+        { color:'#FFB84D', count:46, speed:6, gravity:.02 });
+      $('photocap').textContent = 'Still in focus. Still there. Still yours.';
+      title = 'The Photograph Stands.';
+      lines = [
+        'Nine replies came. Eight of them were, in their way, <b>fair</b> — they are the same eight objections that have correctly demolished a thousand blurry lights, and they exist because a thousand blurry lights deserved them.',
+        'You did not shout at a single one. You did not tell anybody to wake up. You did not once say the words <em>do your own research</em>. <b>You opened a folder.</b>',
+        'And look at what was in it. The flight log was not yours. The weather record was not yours. The pass table was not yours. The lab envelope was signed by a stranger in a strip mall. <b>Every document that saved you tonight was written by somebody who had no idea you existed</b> — which is exactly why they worked.',
+        'The review board would like the following in the finding, in full, at the top. <b>None of this should have been your job.</b> You did not apply for it. You were standing on your own land at dusk with a camera you bought yourself, and something arrived, and from that second forward you owed the entire internet a filing cabinet.',
+        'The witnesses who get believed are never the ones who felt it hardest. They are the ones who kept the receipts — the boring paperwork, the second camera, the timestamp, the wide shot nobody wants to look at because there is too much sky in it.',
+        'That is an unreasonable thing to ask of a person who has just seen something they cannot explain, at night, alone, on a riverbank, while their hands are still shaking. It is unreasonable and it is unfair and it is <b>the only thing that has ever worked.</b>',
+        '<b>Keep the receipts anyway.</b> Keep them for the version of you that gets asked in four years by somebody who was not born yet.',
+        'REVIEW BOARD FINDING: <b>the photograph stands.</b> Not because you won an argument — nobody wins an argument — but because there was nothing left in the thread that the paperwork had not already answered. The thread has moved on to somebody with a blurry one. It always does. That is not your problem tonight.'
+      ];
+    } else {
+      Juice.sfx('lose');
+      Juice.shake(13);
+      Juice.flash('#FF3D8A', .3);
+      $('photocap').textContent = 'Still in focus. Nobody is looking at it anymore.';
+      title = cause === 'zero' ? 'You Deleted The Post.' : 'The Thread Won.';
+      lines = [
+        (cause === 'zero'
+          ? 'At 02:40 you take it down. Not because you were wrong — <b>you were not wrong</b> — but because it stopped being a photograph six hours ago and started being a referendum on your character, conducted by people who will not remember your name on Thursday. '
+          : 'The thread does not end. Threads do not end. It just stops being about the photograph. ') +
+        'The file is still on the card. It is still sharp. It is still dated. Nobody is going to look at it again.',
+        'Here is the autopsy, and it is not the one you are expecting. <b>The people replying were not the problem.</b> Most of those objections were good ones. Venus really does do that. Flares really do that. There really is never a RAW.',
+        'The problem is that the answer to a good objection is a <b>document</b>, and every time you reached for volume instead — for a feeling, for your own word, for the word of a man who was there — you handed the thread the one thing it can actually digest.',
+        '<b>&ldquo;Trust me&rdquo; is the most honest sentence in this entire field and it has never once worked.</b> Not for you, not for a general, not for a pilot with four hundred hours. It is not a lie. It is just not a receipt.',
+        'And somewhere in the middle of that mess was a reply that no folder on earth could answer — <b>&ldquo;I just don’t believe you&rdquo;</b> — and the only correct move there was to let it sit in the daylight and stay exactly as small as it was.',
+        'REVIEW BOARD FINDING: eighteen years of this field has produced a magnificent archive of blur and an even more magnificent archive of people yelling about blur. You had the sharp one. <b>You had the sharp one.</b>',
+        'Run it again. The paperwork is still in the drawer. It does not expire, and it does not get tired, which is more than can be said for you or for us.'
+      ];
+    }
+
+    setTimeout(() => {
+      Arcade.gameOver({
+        won: won,
+        title: title,
+        score: Math.round(cred),
+        accent: won ? '#3DFC8A' : '#E85C8A',
+        lines: lines,
+        onRetry: () => {
+          reset();
+          $('briefing').style.display = 'flex';
+          stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        },
+        links: won
+          ? [{ label:'The Bledsoe wing', href:'index.html' },
+             { label:'Visit the shrine', href:'../../shrines/index.html#chris-bledsoe' }]
+          : [{ label:'The Bledsoe wing', href:'index.html' },
+             { label:'Visit the shrine', href:'../../shrines/index.html#chris-bledsoe' }]
+      });
+      const ovs = document.querySelectorAll('.dcab-overlay');
+      const ov = ovs[ovs.length - 1];
+      if (ov){
+        ov.scrollTop = 0;
+        const ps = ov.querySelectorAll('.dcab-lore');
+        [].forEach.call(ps, (p, i) => {
+          p.style.opacity = '0';
+          p.style.transition = 'opacity 1s';
+          setTimeout(() => { p.style.opacity = '1'; }, 260 + i * 850);
+        });
+      }
+    }, 1500);
+  }
+
+  /* ---------- boot ---------- */
+  $('startBtn').addEventListener('click', () => {
+    Juice.sfx('click');
+    $('briefing').style.display = 'none';
+    running = true;
+    roundIdx = 0;
+    beginRound();
+  });
+
+  reset();
+
+  Arcade.cabinet({
+    id: 'debunk-gauntlet',
+    wing: 'THE CHRIS BLEDSOE EXPERIENCE',
+    title: 'The Debunk Gauntlet',
+    subtitle: 'Evidence, Not Volume',
+    accent: '#E85C8A',
+    scoreLabel: 'CREDIBILITY',
+    lore: 'You have a photograph. It is sharp, it is dated, it has a treeline in it for scale, and you ' +
+          'were sober. Congratulations — you have cleared the easy part. Now comes the part every ' +
+          'witness in history has faced and <b>nobody prepares anybody for: the internet.</b> Nine ' +
+          'replies are coming. Eight of them are real, fair, load-bearing skeptical arguments. One of ' +
+          'them cannot be answered by anything. You hold ten cards. Each one plays <b>once</b>.',
+    howto: [
+      'TAP a card to arm it &bull; TAP AGAIN to play it',
+      'EACH CARD PLAYS ONCE. There are 10 cards and 9 replies.',
+      'RIGHT DOCUMENT = the objection collapses',
+      'WRONG DOCUMENT = it survives and you bleed credibility',
+      'SAY NOTHING is always available. Sometimes it is the best card in the game.',
+      'The two cards that look free are not free',
+      'CREDIBILITY 70 at the end and the photograph stands'
+    ],
+    shrine: '../../shrines/index.html#chris-bledsoe',
+    onStart: () => {
+      $('briefing').style.display = 'flex';
+      stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+})();
+</script>
+</body>
+</html>

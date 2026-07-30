@@ -173,6 +173,8 @@
   <a href="../../index.html">Back to the arcade</a> &bull; <a href="../jason-sands/index.html">Previous wing: Jason Sands</a></p>
 </footer>
 
+<script src="../../assets/screen.js"></script>
+
 <script src="../../assets/arcade.js"></script>
 <script src="../../assets/juice.js"></script>
 <script>
@@ -180,6 +182,7 @@
   const cv = document.getElementById('game');
   const cx = cv.getContext('2d');
   Juice.init(cv);
+  if (window.Optics) Optics.apply(cv, { bloom: 1.2, curve: 0.075, scanline: 0.6 });
   const W = cv.width, H = cv.height;
   const shellHud = document.getElementById('shellHud');
   const windHud = document.getElementById('windHud');

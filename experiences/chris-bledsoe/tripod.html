@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TRIPOD — Doucheclosure</title>
+<meta name="description" content="For eighteen years the orbs have kept every appointment over one stretch of the Cape Fear River, in front of witnesses. Nobody was ever ready. Tonight you get ninety seconds to set up properly before they arrive.">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --orb:#FFB84D; --shadow:rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--void);}
+  body{margin:0; background:var(--void); color:var(--white);
+    font-family:"Courier New", Courier, monospace; line-height:1.65; overflow-x:hidden;}
+  body::after{content:""; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 1px, transparent 1px 3px);
+    pointer-events:none; z-index:100;}
+  a{color:var(--neon-cyan);}
+  .wrap{max-width:1000px; margin:0 auto; padding:0 1.25rem;}
+  .display{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-weight:400; text-transform:uppercase; letter-spacing:.03em; line-height:.95;}
+  .crumb{padding:1rem 1.25rem; font-size:.72rem; letter-spacing:.15em; text-transform:uppercase;}
+  .crumb a{text-decoration:none;}
+
+  header.wing{
+    text-align:center; padding:2.4rem 1rem 2.2rem;
+    background:radial-gradient(ellipse at 50% -20%, rgba(255,184,77,.26), transparent 60%),
+      radial-gradient(ellipse at 12% 120%, rgba(45,225,252,.08), transparent 55%);
+    border-bottom:3px solid var(--orb);
+  }
+  .wing .eyebrow{color:var(--neon-cyan); letter-spacing:.28em; text-transform:uppercase; font-size:.72rem;}
+  .wing h1{margin:.5rem 0 0; font-size:clamp(2.6rem,10vw,5rem); color:var(--orb);
+    text-shadow:0 0 18px rgba(255,184,77,.55), 4px 4px 0 #3A2405;}
+  .wing .sub{color:var(--chrome); max-width:37rem; margin:1.1rem auto 0; font-size:.9rem;}
+  .wing .sub b{color:var(--white);}
+  .file-tab{display:inline-block; margin-top:1.2rem; border:2px solid var(--neon-yellow);
+    color:var(--neon-yellow); padding:.4rem 1.1rem; font-size:.72rem; letter-spacing:.2em;
+    text-transform:uppercase; transform:rotate(-2deg);}
+
+  section{padding:2rem 0 2.6rem;}
+
+  /* ---------- stage ---------- */
+  #stage{position:relative; background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:2px solid #5A4118; border-radius:12px;
+    box-shadow:0 0 26px rgba(255,184,77,.13),0 12px 34px var(--shadow);
+    padding:1.1rem; overflow:hidden;}
+  #stage::before{content:""; position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(ellipse at 26% 18%, rgba(255,184,77,.11), transparent 58%);}
+
+  /* ---------- clock ---------- */
+  #clockrow{position:relative; z-index:2; display:flex; gap:1rem; align-items:center; flex-wrap:wrap;}
+  #clockbox{flex:0 0 auto; text-align:center; border:2px solid #5A4118; border-radius:10px;
+    background:#0A0710; padding:.35rem .9rem .5rem; min-width:9.2rem;}
+  #clocklab{font-size:.54rem; letter-spacing:.22em; text-transform:uppercase; color:#8A7A5A;}
+  #clock{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; font-weight:400;
+    font-size:2.9rem; line-height:1; color:var(--orb); letter-spacing:.04em;}
+  #clock.warn{color:var(--neon-yellow);}
+  #clock.crit{color:var(--neon-pink); animation:pulse .5s steps(1) infinite;}
+  @keyframes pulse{50%{opacity:.35}}
+  #clockmeterwrap{flex:1 1 220px; min-width:180px;}
+  #clockmeterlab{font-size:.58rem; letter-spacing:.16em; text-transform:uppercase; color:var(--chrome);
+    display:flex; justify-content:space-between; gap:.5rem; margin-bottom:4px;}
+  #clockmeterlab b{color:var(--white); font-weight:normal;}
+  .track{height:13px; background:#00000099; border:1px solid #000; border-radius:7px; overflow:hidden;}
+  #clockfill{height:100%; width:100%; background:linear-gradient(90deg,#7A4E10,var(--orb));}
+  #spendlog{flex:1 1 200px; min-width:170px; font-size:.6rem; letter-spacing:.12em;
+    text-transform:uppercase; color:#8B7CA8; min-height:2.4rem;}
+  #spendlog b{color:var(--neon-yellow); font-weight:normal;}
+
+  /* ---------- conditions ---------- */
+  #condwrap{position:relative; z-index:2; margin-top:.9rem; border:2px dashed #5A4118;
+    border-radius:10px; padding:.7rem .85rem; background:#0D0817;}
+  #condhead{font-size:.58rem; letter-spacing:.24em; text-transform:uppercase; color:var(--orb);
+    margin-bottom:.5rem;}
+  #conds{display:flex; flex-wrap:wrap; gap:.4rem;}
+  .cond{border:1px solid #4A5F7E; border-radius:6px; padding:.28rem .55rem; font-size:.63rem;
+    letter-spacing:.12em; text-transform:uppercase; color:#CFE0F5; background:#111A28;}
+  .cond.hot{border-color:var(--neon-pink); color:#FFB9D3; background:#26101B;}
+  .cond.cool{border-color:var(--neon-cyan); color:#B6EEFA; background:#0C1D24;}
+  .cond.warm{border-color:var(--orb); color:#FFD9A0; background:#241804;}
+  #condnote{margin:.55rem 0 0; font-size:.68rem; color:#8B7CA8; letter-spacing:.04em;}
+
+  /* ---------- bench ---------- */
+  #bench{position:relative; z-index:2; margin-top:.9rem;
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(238px,1fr)); gap:.6rem;}
+  .ctrl{background:linear-gradient(180deg,#1B1528,#121020); border:2px solid #3A2E52;
+    border-radius:9px; padding:.55rem .6rem .6rem;}
+  .ctrl .cn{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; font-weight:400;
+    text-transform:uppercase; letter-spacing:.05em; font-size:.98rem; color:var(--orb); line-height:1;}
+  .ctrl .cd{font-size:.58rem; color:#7E6F9E; letter-spacing:.03em; line-height:1.35; margin:.15rem 0 .4rem;}
+  .opts{display:flex; flex-wrap:wrap; gap:.28rem;}
+  .opt{font-family:inherit; cursor:pointer; color:#C8BEE0; background:#0E0B18;
+    border:1.5px solid #3A2E52; border-radius:6px; padding:.32rem .42rem; line-height:1.15;
+    font-size:.63rem; letter-spacing:.05em; text-transform:uppercase; text-align:center;
+    display:flex; flex-direction:column; gap:1px; flex:1 1 auto; min-width:0;
+    transition:border-color .12s, background .12s, transform .08s;}
+  .opt .ov{white-space:nowrap;}
+  .opt .oc{font-size:.5rem; letter-spacing:.08em; color:#6E6288;}
+  .opt:hover:not(:disabled):not(.on){border-color:var(--orb); transform:translateY(-1px);}
+  .opt.on{background:var(--orb); border-color:var(--orb); color:#231602; font-weight:bold;}
+  .opt.on .oc{color:#4A3208;}
+  .opt:disabled{opacity:.35; cursor:not-allowed;}
+  .opt.broke{border-color:#5B2436; color:#7C5364;}
+  .ctrl.changed{border-color:#6B5326; box-shadow:0 0 12px rgba(255,184,77,.16);}
+
+  /* ---------- field guide ---------- */
+  #guidebtn{margin-top:.8rem; position:relative; z-index:2; display:inline-block; cursor:pointer;
+    font-family:inherit; font-size:.64rem; letter-spacing:.18em; text-transform:uppercase;
+    background:transparent; color:var(--neon-cyan); border:1.5px dashed var(--neon-cyan);
+    border-radius:7px; padding:.45rem .8rem;}
+  #guide{position:relative; z-index:2; display:none; margin-top:.6rem; border-left:4px solid var(--neon-cyan);
+    background:#0B131A; padding:.85rem 1rem; font-size:.76rem; color:var(--chrome); line-height:1.6;}
+  #guide h4{margin:.9rem 0 .25rem; font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; color:var(--neon-cyan);}
+  #guide h4:first-child{margin-top:0;}
+  #guide b{color:var(--white);}
+  #guide .warnrow{color:var(--neon-yellow); font-size:.62rem; letter-spacing:.14em;
+    text-transform:uppercase; margin-top:.85rem;}
+
+  /* ---------- shoot ---------- */
+  #shootrow{position:relative; z-index:2; margin-top:1rem; text-align:center;}
+  .btn{display:inline-block; margin:.35rem; padding:.85rem 1.6rem; border-radius:8px; cursor:pointer;
+    font-family:inherit; font-weight:bold; font-size:.8rem; letter-spacing:.14em; text-transform:uppercase;
+    text-decoration:none; border:2px solid var(--orb); background:var(--orb); color:#231602;}
+  .btn.ghost{background:transparent; color:var(--neon-cyan); border-color:var(--neon-cyan);}
+  .btn:disabled{opacity:.4; cursor:default;}
+
+  /* ---------- result ---------- */
+  #result{position:relative; z-index:2; display:none; margin-top:1rem;}
+  #photowrap{background:#05060B; border:2px solid #3A2E52; border-radius:10px; padding:.5rem;}
+  #photo{display:block; width:100%; height:auto; border-radius:4px; background:#05060B;}
+  #photocap{font-size:.58rem; letter-spacing:.14em; text-transform:uppercase; color:#6E6288;
+    text-align:center; margin:.45rem 0 0;}
+  #scores{margin-top:.9rem; display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:.6rem;}
+  .sc .lab{font-size:.58rem; letter-spacing:.16em; text-transform:uppercase; color:var(--chrome);
+    display:flex; justify-content:space-between; gap:.5rem; margin-bottom:4px;}
+  .sc .lab b{color:var(--white); font-weight:normal;}
+  .sc .fill{height:100%; width:0%; transition:width .9s ease-out;}
+  .sc .note{font-size:.6rem; color:#8B7CA8; margin:.25rem 0 0; line-height:1.45;}
+  #gradebox{margin-top:1rem; text-align:center; border:2px solid var(--orb); border-radius:10px;
+    padding:.9rem 1rem; background:#0D0817;}
+  #gradebox .g{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; font-weight:400;
+    font-size:clamp(3rem,13vw,5.4rem); line-height:.9; color:var(--orb);}
+  #gradebox .gl{font-size:.62rem; letter-spacing:.24em; text-transform:uppercase; color:var(--chrome);}
+  #gradebox .gs{margin:.5rem auto 0; max-width:38rem; font-size:.82rem; color:var(--chrome);}
+  #gradebox .gs b{color:var(--white);}
+
+  /* ---------- briefing ---------- */
+  #briefing{position:absolute; inset:0; z-index:40; display:none; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center; padding:1.4rem;
+    background:rgba(6,5,12,.96); overflow-y:auto;}
+  #briefing h2{font-size:clamp(1.5rem,5vw,2.4rem); color:var(--orb); text-shadow:0 0 18px rgba(255,184,77,.45);}
+  #briefing p{max-width:35rem; margin:.8rem auto; color:var(--chrome); font-size:.86rem;}
+  #briefing b{color:var(--white);}
+
+  .dossier{border-left:4px solid var(--neon-yellow); background:var(--panel);
+    padding:1.05rem 1.25rem; color:var(--chrome); font-size:.86rem; margin-top:1.6rem;}
+  .dossier b{color:var(--white);}
+  footer{padding:2rem 1rem 3rem; text-align:center; color:#7E6F9E; font-size:.72rem;}
+
+  @media (max-width:760px){
+    #stage{padding:.8rem;}
+    header.wing{padding:1.8rem 1rem 1.6rem;}
+    #bench{grid-template-columns:1fr; gap:.5rem;}
+    #clock{font-size:2.3rem;}
+    #clockbox{min-width:7.6rem;}
+    #spendlog{flex-basis:100%;}
+  }
+  @media (prefers-reduced-motion: reduce){ #clock.crit{animation:none;} }
+</style>
+</head>
+<body>
+
+<p class="crumb"><a href="../../index.html">&larr; THE ARCADE</a> &nbsp;/&nbsp; <a href="index.html">CHRIS BLEDSOE</a> &nbsp;/&nbsp; TRIPOD</p>
+
+<header class="wing">
+  <p class="eyebrow">The Chris Bledsoe Experience &bull; Cabinet No. 2</p>
+  <h1 class="display">Tripod</h1>
+  <p class="sub">Eighteen years. Every appointment kept. Rain, holidays, film crews with lunch
+  budgets — the orbs have never once no-showed. The review board's grievance has never been the
+  phenomenon. <b>The grievance is that nobody was ever ready.</b> Tonight you get ninety seconds
+  at the gear bench before they come over the water.</p>
+  <span class="file-tab">CAPE FEAR RIVER &bull; 21:38 &bull; T&minus;90 SECONDS</span>
+</header>
+
+<section>
+  <div class="wrap">
+    <div id="stage">
+
+      <div id="clockrow">
+        <div id="clockbox">
+          <div id="clocklab">Until arrival</div>
+          <div id="clock">1:30</div>
+        </div>
+        <div id="clockmeterwrap">
+          <div id="clockmeterlab"><span>Setup time remaining</span><b id="spentlab">0s spent</b></div>
+          <div class="track"><div id="clockfill"></div></div>
+        </div>
+        <div id="spendlog">Bench is cold. Camera is as it came out of the bag.</div>
+      </div>
+
+      <div id="condwrap">
+        <div id="condhead">Tonight's conditions &mdash; read them before you touch anything</div>
+        <div id="conds"></div>
+        <p id="condnote">&nbsp;</p>
+      </div>
+
+      <div id="bench"></div>
+
+      <button id="guidebtn" type="button">&#9656; Open the field guide &mdash; the clock does not stop for reading</button>
+      <div id="guide">
+        <h4>1 &bull; Autofocus is why there is no archive</h4>
+        <p>A point of light against a black sky gives an autofocus system almost no contrast to work
+        with. It hunts, it gives up, and then it fires anyway. Switch the lens to <b>manual</b>, run
+        the ring to infinity, then back it off a hair and check it at 10&times; on a bright star.
+        That one change is the difference between eighteen years of orbs and one photograph.</p>
+
+        <h4>2 &bull; Then tape the ring</h4>
+        <p>Gaffer tape across the focus ring once you've nailed it. In the dark, in gloves, in a
+        hurry, with something extraordinary happening over the water, <b>you will move it.</b>
+        Everyone moves it.</p>
+
+        <h4>3 &bull; Shutter is for the subject. The tripod is for the camera.</h4>
+        <p>They fix two different blurs and they do not substitute for each other. If the light is
+        <b>moving</b>, no tripod on earth saves a two-second exposure — you need <b>1/500</b>, and
+        you pay for it in ISO. If the light is <b>holding still</b>, a long exposure at low ISO is
+        cleaner, quieter, and it records the landscape for free.</p>
+
+        <h4>4 &bull; It is one budget, measured in stops</h4>
+        <p>Doubling the ISO buys one stop of shutter. Opening from f/5.6 to f/2.8 buys two.
+        Every stop you take from one, you give back to another. <b>You cannot spend the same
+        stop twice.</b></p>
+
+        <h4>5 &bull; The handheld floor is about 1/125</h4>
+        <p>Unsupported, on a normal lens, that's roughly as long as you can hold before your own
+        pulse shows up in the frame. Anything slower needs the tripod.</p>
+
+        <h4>6 &bull; On a tripod, the shutter button is the enemy</h4>
+        <p>Pressing it puts a shove into the first moment of a long exposure. Use the
+        <b>2-second self-timer</b> or a remote. It costs you two seconds and buys the whole frame.
+        On a fast shutter it buys nothing and can cost you the moment.</p>
+
+        <h4>7 &bull; Wind is a tripod problem</h4>
+        <p>In wind, shorten the exposure and raise ISO, hang your bag off the center column, and
+        never raise the column. A tripod in an 8mph gust during a 4-second exposure is just an
+        expensive way to blur something.</p>
+
+        <h4>8 &bull; Frame wide. A light with nothing around it is not evidence, it's a light.</h4>
+        <p>Put the <b>treeline and the river</b> in the frame. That hands an analyst scale, bearing,
+        distance, parallax, and a place. The tight crop on the sky is precisely why the existing
+        archive is worth nothing.</p>
+
+        <h4>9 &bull; Your exposure decides whether the context exists at all</h4>
+        <p>On a moonless night a 1/500 frame records the light and <b>nothing else</b> — you framed
+        wide and got black. Moonlight is not a nuisance, it's free fill for the landscape. If you
+        get to choose the night, choose the one with a moon.</p>
+
+        <h4>10 &bull; Shoot RAW</h4>
+        <p>A JPEG has already been processed and thrown away by the camera. A RAW file is the sensor
+        data with its EXIF intact, and it is the first thing anyone competent will ask you for.
+        <b>Never hand over a screenshot.</b></p>
+
+        <h4>11 &bull; Take a sequence, not a frame</h4>
+        <p>Burst. One frame of eight will be the sharp one, and a sequence in a locked frame shows a
+        trajectory, which a single still can never do.</p>
+
+        <h4>12 &bull; Phone night mode is a composite</h4>
+        <p>It stacks several seconds of exposures and invents the difference. It will genuinely
+        rescue a handheld shot of something holding still. It will <b>smear anything that moves</b>,
+        and analysts discount it, because those pixels are the phone's opinion.</p>
+
+        <h4>13 &bull; The real answer is two exposures</h4>
+        <p>One fast frame for the object, one long frame for the landscape, back to back, from the
+        same locked position. Tonight you only get one. Choose accordingly.</p>
+
+        <p class="warnrow">&#9888; The clock has been running this entire time.</p>
+      </div>
+
+      <div id="shootrow">
+        <button class="btn" id="lockBtn" type="button">Ready &mdash; wait for them</button>
+      </div>
+
+      <div id="result">
+        <div id="photowrap">
+          <canvas id="photo" width="900" height="560" aria-label="The resulting photograph."></canvas>
+        </div>
+        <p id="photocap">&nbsp;</p>
+        <div id="scores"></div>
+        <div id="gradebox">
+          <div class="gl">Review board grade</div>
+          <div class="g" id="gradeletter">&mdash;</div>
+          <p class="gs" id="gradesum">&nbsp;</p>
+        </div>
+      </div>
+
+      <div id="briefing">
+        <h2 class="display">Ninety Seconds.</h2>
+        <p>They come over the water at the same bend they have come to for eighteen years. Witnesses
+        on the bank. A camera in a bag. This has happened <b>thousands of times</b> and the archive
+        is still a porch light in a hurricane.</p>
+        <p>Not because the phenomenon was shy. Because <b>nobody was ever set up.</b></p>
+        <p>The bench is in front of you. Every adjustment costs seconds off the clock, and the clock
+        is the only thing you have. <b>You cannot set everything.</b> Read the conditions, decide
+        what actually matters tonight, and be standing behind a camera that is ready when they
+        arrive.</p>
+        <button class="btn" id="startBtn" type="button">Start the clock</button>
+      </div>
+
+    </div>
+
+    <div class="dossier">
+      <b>WING DOCTRINE:</b> We do not question the orbs. The orbs have an attendance record no
+      human contractor on this continent could survive an audit with. We question the reception —
+      specifically, eighteen years of a cooperative luminous intelligence hovering patiently over a
+      known river while an entire species failed to bring a tripod. This cabinet is remedial.
+      Everything it teaches about photography is real and will work at your river.
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>DOUCHECLOSURE&trade; EXPERIENCES &bull; A work of parody commenting on public statements of public figures.<br>
+  <a href="index.html">Back to the Bledsoe wing</a> &bull; <a href="../../shrines/index.html#chris-bledsoe">The shrine</a> &bull;
+  <a href="../../index.html">The arcade</a></p>
+</footer>
+
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const stage = $('stage');
+  Juice.init(stage);
+
+  const clamp = (v, a, b) => v < a ? a : (v > b ? b : v);
+  const L2 = Math.log2 ? Math.log2 : (x => Math.log(x) / Math.LN2);
+
+  /* ============================================================
+     THE BENCH
+     Cost = seconds burned off the arrival clock to switch TO that value.
+     ============================================================ */
+  const CONTROLS = [
+    { id:'tripod', n:'Tripod', d:'Legs, level, plate, weight on the hook.',
+      def:'HANDHELD',
+      opts:[ { v:'HANDHELD', c:3 }, { v:'DEPLOYED', c:14 } ] },
+
+    { id:'focus', n:'Focus', d:'The single most expensive habit in this field.',
+      def:'AUTO',
+      opts:[ { v:'AUTO', c:4 }, { v:'MANUAL ∞', c:10 }, { v:'MANUAL + TAPED', c:20 } ] },
+
+    { id:'iso', n:'ISO', d:'Sensitivity. Buys shutter speed. Sells detail.',
+      def:'100',
+      opts:[ { v:'100', c:8 }, { v:'800', c:8 }, { v:'1600', c:8 }, { v:'3200', c:8 } ] },
+
+    { id:'aperture', n:'Aperture', d:'How wide the hole is. f/2.8 is two stops of free light.',
+      def:'f/5.6',
+      opts:[ { v:'f/2.8', c:7 }, { v:'f/5.6', c:7 }, { v:'f/11', c:7 } ] },
+
+    { id:'shutter', n:'Shutter', d:'This is the one about the SUBJECT moving.',
+      def:'1/125',
+      opts:[ { v:'1/500', c:8 }, { v:'1/125', c:8 }, { v:'2s', c:8 }, { v:'4s', c:8 } ] },
+
+    { id:'timer', n:'Self-timer', d:'Buried three menus deep, as always.',
+      def:'OFF',
+      opts:[ { v:'OFF', c:6 }, { v:'2s DELAY', c:6 } ] },
+
+    { id:'format', n:'Format', d:'What you will actually be able to hand somebody.',
+      def:'JPEG',
+      opts:[ { v:'JPEG', c:9 }, { v:'RAW', c:9 } ] },
+
+    { id:'framing', n:'Framing', d:'Where the evidence lives, or does not.',
+      def:'TIGHT ON SKY',
+      opts:[ { v:'TIGHT ON SKY', c:9 }, { v:'WIDE W/ TREELINE', c:9 } ] },
+
+    { id:'drive', n:'Drive', d:'One frame, or a sequence in a locked frame.',
+      def:'SINGLE',
+      opts:[ { v:'SINGLE', c:6 }, { v:'BURST', c:6 } ] },
+
+    { id:'phone', n:'Phone', d:'The backup device in your other hand.',
+      def:'OFF',
+      opts:[ { v:'OFF', c:4 }, { v:'NIGHT MODE', c:4 } ] }
+  ];
+
+  const ISO_STOP  = { '100':0, '800':3, '1600':4, '3200':5 };
+  const SH_STOP   = { '1/500': L2(1/500), '1/125': L2(1/125), '2s': 1, '4s': 2 };
+  const AP_STOP   = { 'f/2.8': 2 * L2(2.8), 'f/5.6': 2 * L2(5.6), 'f/11': 2 * L2(11) };
+  const HANDHELD_FLOOR = L2(1/125);
+
+  /* ============================================================
+     CONDITIONS
+     ============================================================ */
+  const MOONS = [
+    { v:'NO MOON',      amb:0,   need:-3.0 },
+    { v:'QUARTER MOON', amb:0.5, need:-5.0 },
+    { v:'FULL MOON',    amb:1,   need:-7.0 }
+  ];
+  const MOTIONS = [
+    { v:'STATIONARY', limit: 2,               blurb:'It is holding position over the water. It has done this before.' },
+    { v:'DRIFTING',   limit: SH_STOP['1/125'], blurb:'It is walking the treeline at the pace of somebody thinking.' },
+    { v:'MOVING',     limit: SH_STOP['1/500'], blurb:'It is crossing the bend. It does not intend to wait for you.' }
+  ];
+
+  function rollConditions(){
+    const motion = MOTIONS[Math.floor(Math.random() * 3)];
+    const bright = Math.random() < 0.5;
+    let moonIdx = Math.floor(Math.random() * 3);
+    // never hand the player a dim fast target on a moonless night — that is not a night, that is a punishment
+    if (motion.v === 'MOVING' && !bright && moonIdx === 0) moonIdx = 1;
+    const moon = MOONS[moonIdx];
+    const cold = Math.random() < 0.55;
+    const wind = Math.floor(Math.random() * 15);
+    return {
+      motion: motion,
+      bright: bright,
+      brightLab: bright ? 'SUBJECT: BRIGHT' : 'SUBJECT: DIM',
+      moon: moon,
+      cold: cold,
+      wind: wind,
+      target: (bright ? -7.0 : -3.0) - 0.6 * moon.amb
+    };
+  }
+
+  const CONDNOTES = [
+    'BOARD: witnesses on the bank. Four of them. Two are relatives, which is worse for us, not for them.',
+    'BOARD: the phenomenon has kept every appointment for eighteen years. Our side has never once been on time.',
+    'BOARD: reminder — this is not a hunt. They are coming. The only variable in this experiment is you.',
+    'BOARD: the tripod is in the truck. It has been in the truck for eighteen years.',
+    'BOARD: no craft has ever declined to be photographed here. The camera has declined roughly nine thousand times.',
+    'BOARD: somebody already has a phone out. Somebody always already has a phone out.'
+  ];
+
+  /* ============================================================
+     STATE
+     ============================================================ */
+  let cond, set, remain, running, locked, ended, lastT, lastTickSec, awarded, spent, changes;
+  const TOTAL = 90;
+
+  function award(key, label){
+    if (awarded[key]) return;
+    awarded[key] = true;
+    Arcade.toast(label);
+  }
+
+  function reset(){
+    cond = rollConditions();
+    set = {};
+    CONTROLS.forEach(c => { set[c.id] = c.def; });
+    remain = TOTAL; running = false; locked = false; ended = false;
+    lastTickSec = 99; awarded = {}; spent = 0; changes = 0;
+    $('result').style.display = 'none';
+    $('guide').style.display = 'none';
+    $('guidebtn').innerHTML = '▸ Open the field guide — the clock does not stop for reading';
+    $('lockBtn').disabled = false;
+    $('lockBtn').textContent = 'Ready — wait for them';
+    $('spendlog').innerHTML = 'Bench is cold. Camera is as it came out of the bag.';
+    renderConditions();
+    renderBench();
+    renderClock();
+  }
+
+  /* ---------- conditions render ---------- */
+  function renderConditions(){
+    const box = $('conds');
+    box.innerHTML = '';
+    const tags = [
+      { t: cond.motion.v + ' TARGET', k: cond.motion.v === 'MOVING' ? 'hot' : '' },
+      { t: cond.brightLab, k: cond.bright ? 'warm' : '' },
+      { t: cond.moon.v, k: cond.moon.amb === 0 ? 'hot' : (cond.moon.amb === 1 ? 'warm' : '') },
+      { t: cond.cold ? 'COLD' : 'MILD', k: cond.cold ? 'cool' : '' },
+      { t: 'WIND ' + cond.wind + 'MPH', k: cond.wind >= 8 ? 'hot' : '' }
+    ];
+    tags.forEach(x => {
+      const d = document.createElement('span');
+      d.className = 'cond' + (x.k ? ' ' + x.k : '');
+      d.textContent = x.t;
+      box.appendChild(d);
+    });
+    $('condnote').textContent = cond.motion.blurb + '  ' +
+      CONDNOTES[Math.floor(Math.random() * CONDNOTES.length)];
+  }
+
+  /* ---------- bench render ---------- */
+  function renderBench(){
+    const bench = $('bench');
+    bench.innerHTML = '';
+    CONTROLS.forEach(c => {
+      const wrap = document.createElement('div');
+      wrap.className = 'ctrl' + (set[c.id] !== c.def ? ' changed' : '');
+      const head = document.createElement('div');
+      head.className = 'cn';
+      head.textContent = c.n;
+      const desc = document.createElement('div');
+      desc.className = 'cd';
+      desc.textContent = c.d;
+      const opts = document.createElement('div');
+      opts.className = 'opts';
+      c.opts.forEach(o => {
+        const b = document.createElement('button');
+        const on = set[c.id] === o.v;
+        const afford = on || o.c <= remain - 0.05;
+        b.type = 'button';
+        b.className = 'opt' + (on ? ' on' : '') + (!on && !afford ? ' broke' : '');
+        b.disabled = locked || (!on && !afford);
+        b.innerHTML = '<span class="ov">' + o.v + '</span>' +
+                      '<span class="oc">' + (on ? 'SET' : '−' + o.c + 's') + '</span>';
+        b.addEventListener('click', () => choose(c, o, b));
+        opts.appendChild(b);
+      });
+      wrap.appendChild(head); wrap.appendChild(desc); wrap.appendChild(opts);
+      bench.appendChild(wrap);
+    });
+  }
+
+  function centerOf(el){
+    const a = el.getBoundingClientRect(), b = stage.getBoundingClientRect();
+    return { x: a.left - b.left + a.width / 2, y: a.top - b.top + a.height / 2 };
+  }
+
+  function choose(ctrl, opt, btn){
+    if (!running || locked || ended) return;
+    if (set[ctrl.id] === opt.v) return;
+    const pt = centerOf(btn);
+    if (opt.c > remain - 0.05){
+      Juice.sfx('bad'); Juice.buzz(30); Juice.shake(5);
+      Juice.text(pt.x, pt.y - 14, 'NO TIME', { color:'#FF3D8A' });
+      return;
+    }
+    set[ctrl.id] = opt.v;
+    remain -= opt.c;
+    spent += opt.c;
+    changes++;
+    Juice.sfx('click');
+    Juice.burst(pt.x, pt.y, { color:'#FFB84D', count:8, speed:2.6, gravity:.03 });
+    Juice.text(pt.x, pt.y - 14, '−' + opt.c + 's', { color:'#FFB84D', size:16 });
+    $('spendlog').innerHTML = '<b>' + ctrl.n.toUpperCase() + ' → ' + opt.v + '</b> &nbsp;−' +
+      opt.c + 's &nbsp;·&nbsp; ' + Math.ceil(remain) + 's on the clock';
+
+    if (ctrl.id === 'focus' && opt.v === 'MANUAL + TAPED') award('tape', '🏆 TAPED THE RING');
+    if (ctrl.id === 'format' && opt.v === 'RAW') award('raw', '🏆 SHOT RAW');
+    if (ctrl.id === 'tripod' && opt.v === 'DEPLOYED') award('legs', '🏆 THE LEGS CAME OUT OF THE TRUCK');
+
+    renderBench();
+    renderClock();
+  }
+
+  /* ---------- clock ---------- */
+  function fmt(s){
+    s = Math.max(0, s);
+    const m = Math.floor(s / 60), r = Math.floor(s % 60);
+    return m + ':' + (r < 10 ? '0' : '') + r;
+  }
+  function renderClock(){
+    const el = $('clock');
+    el.textContent = fmt(remain);
+    el.className = remain <= 10 ? 'crit' : (remain <= 25 ? 'warn' : '');
+    $('clockfill').style.width = clamp(remain / TOTAL * 100, 0, 100) + '%';
+    $('clockfill').style.background = remain <= 10
+      ? 'linear-gradient(90deg,#7A1030,var(--neon-pink))'
+      : (remain <= 25 ? 'linear-gradient(90deg,#7A6410,var(--neon-yellow))'
+                      : 'linear-gradient(90deg,#7A4E10,var(--orb))');
+    $('spentlab').textContent = spent + 's spent · ' + changes + ' change' + (changes === 1 ? '' : 's');
+  }
+
+  function loop(now){
+    requestAnimationFrame(loop);
+    if (!running || locked || ended) { lastT = now; return; }
+    const dt = clamp((now - (lastT || now)) / 1000, 0, 0.25);
+    lastT = now;
+    remain -= dt;
+    const sec = Math.ceil(remain);
+    if (sec !== lastTickSec){
+      lastTickSec = sec;
+      if (remain > 0 && remain <= 10){ Juice.sfx('tick'); Juice.buzz(6); }
+      if (sec === 30 || sec === 15) Juice.sfx('blip');
+      renderBench();
+    }
+    renderClock();
+    if (remain <= 0){ remain = 0; renderClock(); lockIn(true); }
+  }
+
+  /* ============================================================
+     SCORING — real photography, modeled honestly
+     ============================================================ */
+  function evaluate(leftover){
+    const s = set;
+    const tripod  = s.tripod === 'DEPLOYED';
+    const focus   = s.focus;              // AUTO | MANUAL ∞ | MANUAL + TAPED
+    const taped   = focus === 'MANUAL + TAPED';
+    const manual  = focus !== 'AUTO';
+    const raw     = s.format === 'RAW';
+    const wide    = s.framing === 'WIDE W/ TREELINE';
+    const burst   = s.drive === 'BURST';
+    const night   = s.phone === 'NIGHT MODE';
+    const delay   = s.timer === '2s DELAY';
+    const isoS    = ISO_STOP[s.iso];
+    const shS     = SH_STOP[s.shutter];
+    const apS     = AP_STOP[s.aperture];
+    const longExp = shS >= 1;             // 2s or 4s
+    const wind    = cond.wind;
+    const moving  = cond.motion.v !== 'STATIONARY';
+
+    const light   = isoS + shS - apS;             // stops of light collected
+    const err     = light - cond.target;          // + = overexposed, − = underexposed
+
+    /* ---------- EXPOSURE ---------- */
+    let expo = 100 - clamp((Math.abs(err) - 1.2) * 16, 0, 100);
+
+    /* ---------- SHARPNESS ---------- */
+    let sharp = 100;
+    const notes = [];
+
+    if (!manual){
+      sharp -= 45;
+      notes.push('AUTOFOCUS on a point of light in the dark: it hunted, it quit, it fired anyway.');
+    } else if (!taped){
+      const drift = 4 + wind * 0.8 + (cond.cold ? 6 : 0);
+      sharp -= drift;
+      notes.push('Manual focus set, ring untaped — ' +
+        (cond.cold ? 'cold hands and ' : '') + (wind ? wind + 'mph of wind ' : 'handling ') + 'nudged it off infinity.');
+    } else {
+      notes.push('Focus locked at infinity and TAPED. The ring did not move all night.');
+    }
+
+    const subjOver = Math.max(0, shS - cond.motion.limit);
+    if (subjOver > 0){
+      sharp -= subjOver * 11;
+      notes.push('Subject motion: ' + s.shutter + ' is ' + subjOver.toFixed(1) +
+        ' stops too slow for a ' + cond.motion.v.toLowerCase() + ' light. No tripod fixes that.');
+    }
+
+    let shake = 0;
+    if (!tripod){
+      shake = 8 + Math.max(0, shS - HANDHELD_FLOOR) * 13 + wind * 0.5;
+      if (night && !moving){
+        shake *= 0.35;
+        sharp += 10;
+        notes.push('Handheld, but NIGHT MODE stacked and aligned several seconds of frames. It genuinely saved this.');
+      } else {
+        notes.push('Handheld' + (shS > HANDHELD_FLOOR ? ' below the 1/125 floor — that is your own pulse in the frame.' : ' — inside the handheld floor, but nothing is truly still.'));
+      }
+    } else {
+      if (longExp){
+        if (wind >= 4){ shake += wind * 1.2; notes.push('Tripod up, but ' + wind + 'mph across a ' + s.shutter + ' exposure moved the whole rig.'); }
+        if (!delay){ shake += 14; notes.push('You pressed the shutter button on a ' + s.shutter + ' exposure. The shove is in the first half of the frame.'); }
+        else notes.push('2-second timer on a long exposure. The camera was untouched when it opened.');
+      } else {
+        notes.push('Tripod deployed. Camera shake is not on tonight’s list of problems.');
+      }
+    }
+    sharp -= shake;
+
+    if (night && moving){ sharp -= 25; notes.push('NIGHT MODE on a moving light: the phone averaged frames that did not match and produced a smear.'); }
+    if (wide) sharp -= 6;
+    if (burst) sharp += longExp ? 5 : 7;
+
+    let grain = { '100':0, '800':4, '1600':10, '3200':20 }[s.iso];
+    if (raw) grain *= 0.5;
+    sharp -= grain;
+    if (grain >= 5) notes.push('ISO ' + s.iso + ' grain is eating the fine detail' + (raw ? ' — RAW clawed half of it back.' : ' and the JPEG engine smeared what was left.'));
+
+    sharp += clamp(leftover * 0.5, 0, 6);
+    sharp = clamp(sharp, 0, 100);
+
+    /* ---------- CONTEXT ---------- */
+    const treelineVis = light >= cond.moon.need ? 1 : clamp(1 - (cond.moon.need - light) * 0.20, 0, 1);
+    let ctxs = 20;
+    if (wide) ctxs += 55 * (0.25 + 0.75 * treelineVis);
+    if (tripod) ctxs += 8;
+    if (burst) ctxs += (tripod && wide) ? 14 : 6;
+    if (night) ctxs += 5;
+    if (delay && moving) ctxs -= 12;
+    ctxs = clamp(ctxs, 0, 100);
+
+    /* ---------- PROVENANCE ---------- */
+    let prov = 30;
+    if (raw) prov += 34;
+    if (tripod) prov += 12;
+    if (burst) prov += 12;
+    if (wide) prov += 10;
+    if (taped) prov += 6;
+    if (night) prov -= 14;
+    prov = clamp(prov, 0, 100);
+
+    const overall = 0.34 * sharp + 0.24 * expo + 0.22 * ctxs + 0.20 * prov;
+
+    return {
+      sharp: sharp, expo: expo, ctxs: ctxs, prov: prov, overall: overall,
+      light: light, err: err, treelineVis: treelineVis, notes: notes,
+      tripod: tripod, manual: manual, taped: taped, raw: raw, wide: wide,
+      burst: burst, night: night, delay: delay, longExp: longExp,
+      grain: grain, subjOver: subjOver, shake: shake, moving: moving
+    };
+  }
+
+  const GRADES = [
+    [95,'A+'],[89,'A'],[83,'A−'],[77,'B+'],[71,'B'],[65,'B−'],
+    [59,'C+'],[53,'C'],[47,'C−'],[41,'D+'],[35,'D'],[29,'D−']
+  ];
+  function gradeOf(v){
+    for (let i = 0; i < GRADES.length; i++) if (v >= GRADES[i][0]) return GRADES[i][1];
+    return 'F';
+  }
+
+  /* ============================================================
+     THE PHOTOGRAPH — drawn from the settings, not from a library
+     ============================================================ */
+  const cv = $('photo'), cx = cv.getContext('2d');
+  const PW = 900, PH = 560, IMGH = PH - 44;
+  let seed = 1;
+  function srand(){ seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }
+
+  function glow(x, y, r, a, col){
+    const g = cx.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0, 'rgba(' + col + ',' + a + ')');
+    g.addColorStop(0.45, 'rgba(' + col + ',' + (a * 0.45) + ')');
+    g.addColorStop(1, 'rgba(' + col + ',0)');
+    cx.fillStyle = g;
+    cx.beginPath(); cx.arc(x, y, r, 0, 6.2832); cx.fill();
+  }
+  /* a defocused point light is a bokeh disc: flat plateau, hard-ish edge */
+  function bokeh(x, y, r, a){
+    const g = cx.createRadialGradient(x, y, 0, x, y, r);
+    g.addColorStop(0,    'rgba(255,232,182,' + (a * 0.85) + ')');
+    g.addColorStop(0.74, 'rgba(255,226,170,' + (a * 0.78) + ')');
+    g.addColorStop(0.90, 'rgba(255,214,150,' + (a * 0.52) + ')');
+    g.addColorStop(1,    'rgba(255,205,130,0)');
+    cx.fillStyle = g;
+    cx.beginPath(); cx.arc(x, y, r, 0, 6.2832); cx.fill();
+  }
+
+  function drawSky(res, amb){
+    const g = cx.createLinearGradient(0, 0, 0, IMGH);
+    const top = 8 + amb * 26, mid = 12 + amb * 30;
+    g.addColorStop(0, 'rgb(' + Math.round(top * 0.7) + ',' + Math.round(top * 0.85) + ',' + Math.round(top * 1.6 + 8) + ')');
+    g.addColorStop(0.62, 'rgb(' + Math.round(mid * 0.55) + ',' + Math.round(mid * 0.6) + ',' + Math.round(mid * 1.1 + 6) + ')');
+    g.addColorStop(1, '#05060C');
+    cx.fillStyle = g;
+    cx.fillRect(0, 0, PW, IMGH);
+
+    // stars: a long exposure records more of them. this is true and it is the tell.
+    seed = 424242;
+    const starA = clamp((res.light + 9) / 9, 0, 1) * (1 - amb * 0.35);
+    const n = Math.round(30 + starA * 200);
+    cx.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < n; i++){
+      const x = srand() * PW, y = srand() * IMGH * 0.9;
+      const b = srand();
+      cx.fillStyle = 'rgba(226,236,255,' + (starA * (0.25 + b * 0.6)) + ')';
+      const sz = b > 0.93 ? 2 : 1;
+      cx.fillRect(x, y, sz, sz);
+    }
+    cx.globalCompositeOperation = 'source-over';
+
+    if (amb > 0){
+      cx.globalCompositeOperation = 'lighter';
+      glow(PW * 0.84, IMGH * 0.16, 130 * amb, 0.10 + amb * 0.10, '210,224,255');
+      cx.fillStyle = 'rgba(232,240,255,' + (0.55 * amb) + ')';
+      cx.beginPath(); cx.arc(PW * 0.84, IMGH * 0.16, 13 + amb * 9, 0, 6.2832); cx.fill();
+      cx.globalCompositeOperation = 'source-over';
+    }
+  }
+
+  function drawTreeline(res, amb){
+    const vis = res.treelineVis;
+    if (vis <= 0.02) return;
+    const horizon = IMGH * 0.62;
+    const base = 16 + vis * 34 + amb * 10;
+    // river
+    const rg = cx.createLinearGradient(0, horizon, 0, IMGH);
+    rg.addColorStop(0, 'rgba(' + Math.round(base * 0.5) + ',' + Math.round(base * 0.62) + ',' + Math.round(base * 0.95) + ',1)');
+    rg.addColorStop(1, 'rgba(4,6,12,1)');
+    cx.fillStyle = rg;
+    cx.fillRect(0, horizon, PW, IMGH - horizon);
+
+    // pines
+    seed = 90210;
+    cx.fillStyle = 'rgba(' + Math.round(4 + vis * 8) + ',' + Math.round(6 + vis * 10) + ',' + Math.round(10 + vis * 14) + ',1)';
+    cx.beginPath();
+    cx.moveTo(0, IMGH);
+    cx.lineTo(0, horizon);
+    let x = 0;
+    while (x < PW){
+      const w = 14 + srand() * 30;
+      const h = 18 + srand() * 46;
+      cx.lineTo(x + w * 0.5, horizon - h);
+      cx.lineTo(x + w, horizon - 2 - srand() * 6);
+      x += w;
+    }
+    cx.lineTo(PW, IMGH);
+    cx.closePath();
+    cx.fill();
+
+    // far bank line
+    cx.strokeStyle = 'rgba(' + Math.round(30 + vis * 60) + ',' + Math.round(36 + vis * 70) + ',' + Math.round(52 + vis * 90) + ',' + (0.35 * vis) + ')';
+    cx.lineWidth = 1.4;
+    cx.beginPath(); cx.moveTo(0, horizon); cx.lineTo(PW, horizon); cx.stroke();
+    return horizon;
+  }
+
+  function drawLight(res, ox, oy, scale){
+    // how out of focus is it
+    let defocus = res.manual ? (res.taped ? 5 : 8 + (100 - res.sharp) * 0.10) : 44;
+    if (!res.manual) defocus = 40 + (100 - res.sharp) * 0.16;
+    defocus *= scale;
+
+    // exposure drives brightness and bloom
+    const over = clamp(res.err, -6, 6);
+    const bright = clamp(Math.pow(2, over * 0.30), 0.10, 3.2);
+    const blown = over > 1.6;
+
+    // subject motion streak + camera shake jitter
+    const streak = clamp(res.subjOver * 34, 0, 420) * scale;
+    const jitter = clamp(res.shake * 1.5, 0, 90) * scale;
+    const samples = (streak > 2 || jitter > 2) ? 26 : 1;
+    const ang = -0.28;
+
+    cx.globalCompositeOperation = 'lighter';
+    seed = 7777;
+    for (let i = 0; i < samples; i++){
+      const t = samples === 1 ? 0 : (i / (samples - 1) - 0.5);
+      const jx = (srand() - 0.5) * jitter, jy = (srand() - 0.5) * jitter * 0.7;
+      const x = ox + Math.cos(ang) * streak * t + jx;
+      const y = oy + Math.sin(ang) * streak * t + jy;
+      const a = (bright / samples) * (samples === 1 ? 1 : 1.9);
+      if (defocus > 14) bokeh(x, y, defocus, clamp(a, 0, 1));
+      else {
+        glow(x, y, defocus * 4.2, clamp(a * 0.5, 0, 1), '255,206,132');
+        cx.fillStyle = 'rgba(255,246,226,' + clamp(a * 0.95, 0, 1) + ')';
+        cx.beginPath(); cx.arc(x, y, Math.max(1.6, defocus * 0.55), 0, 6.2832); cx.fill();
+      }
+    }
+    if (blown){
+      glow(ox, oy, defocus * 5 + 130, clamp((over - 1.6) * 0.20, 0, 0.55), '255,250,240');
+      cx.fillStyle = 'rgba(255,255,255,' + clamp((over - 1.6) * 0.28, 0, 0.9) + ')';
+      cx.beginPath(); cx.arc(ox, oy, defocus * (streak > 2 ? 1.1 : 0.9) + 6, 0, 6.2832); cx.fill();
+    }
+    cx.globalCompositeOperation = 'source-over';
+    return { defocus: defocus, bright: bright, streak: streak, jitter: jitter, blown: blown };
+  }
+
+  function drawGrainAndArtifacts(res){
+    // sensor noise
+    if (res.grain > 0.5){
+      seed = 31337;
+      const n = Math.round(res.grain * 900);
+      for (let i = 0; i < n; i++){
+        const x = srand() * PW, y = srand() * IMGH;
+        const v = srand();
+        cx.fillStyle = 'rgba(' + Math.round(120 + v * 135) + ',' + Math.round(110 + v * 120) + ',' + Math.round(140 + v * 115) + ',' + (0.05 + v * 0.16) + ')';
+        cx.fillRect(x, y, 2, 2);
+      }
+    }
+    // night mode: the phone's opinion
+    if (res.night){
+      cx.globalCompositeOperation = 'lighter';
+      cx.fillStyle = 'rgba(96,120,160,0.07)';
+      cx.fillRect(0, 0, PW, IMGH);
+      cx.globalCompositeOperation = 'source-over';
+      for (let y = 0; y < IMGH; y += 3){
+        cx.fillStyle = 'rgba(140,160,200,' + (0.012 + (y % 12 === 0 ? 0.016 : 0)) + ')';
+        cx.fillRect(0, y, PW, 1);
+      }
+    }
+    // JPEG blocking on a dark frame
+    if (!res.raw){
+      cx.globalAlpha = 0.14;
+      for (let y = 0; y < IMGH; y += 16){
+        for (let x = 0; x < PW; x += 16){
+          if ((x / 16 + y / 16) % 3 === 0){
+            cx.fillStyle = 'rgba(30,36,54,1)';
+            cx.fillRect(x, y, 16, 16);
+          }
+        }
+      }
+      cx.globalAlpha = 1;
+    }
+    // vignette
+    const vg = cx.createRadialGradient(PW / 2, IMGH / 2, IMGH * 0.35, PW / 2, IMGH / 2, IMGH * 1.05);
+    vg.addColorStop(0, 'rgba(0,0,0,0)');
+    vg.addColorStop(1, 'rgba(0,0,0,0.55)');
+    cx.fillStyle = vg;
+    cx.fillRect(0, 0, PW, IMGH);
+  }
+
+  function filenameFor(res){
+    const stem = res.sharp >= 78 && res.ctxs >= 70 ? 'CFR-1804-A' : 'IMG_0184';
+    return stem + (res.raw ? '.CR3' : '.JPG');
+  }
+
+  function drawExif(res){
+    cx.fillStyle = '#0A0810';
+    cx.fillRect(0, IMGH, PW, PH - IMGH);
+    cx.fillStyle = '#3A2E52';
+    cx.fillRect(0, IMGH, PW, 2);
+    cx.font = '15px "Courier New", monospace';
+    cx.textAlign = 'left';
+    cx.fillStyle = res.raw ? '#FFB84D' : '#7E6F9E';
+    cx.fillText(filenameFor(res), 14, IMGH + 28);
+    cx.fillStyle = '#8B7CA8';
+    const chain = set.aperture + '  ' + set.shutter + '  ISO' + set.iso + '  ' +
+      (res.tripod ? 'TRIPOD' : 'HANDHELD') + '  ' + (res.manual ? (res.taped ? 'MF TAPED' : 'MF') : 'AF') +
+      (res.night ? '  +PHONE' : '');
+    cx.fillText(chain, 150, IMGH + 28);
+    cx.textAlign = 'right';
+    cx.fillStyle = res.raw ? '#8B7CA8' : '#5B4E74';
+    cx.fillText(res.raw ? 'RAW · EXIF INTACT · UNMODIFIED' : 'PROCESSED IN CAMERA · RECOMPRESSED',
+      PW - 14, IMGH + 28);
+  }
+
+  function renderPhoto(res){
+    const amb = cond.moon.amb;
+    cx.setTransform(1, 0, 0, 1, 0, 0);
+    cx.clearRect(0, 0, PW, PH);
+    drawSky(res, amb);
+
+    let ox, oy, scale;
+    if (res.wide){
+      drawTreeline(res, amb);
+      ox = PW * 0.40; oy = IMGH * 0.36; scale = 0.72;
+    } else {
+      ox = PW * 0.50; oy = IMGH * 0.46; scale = 1.0;
+    }
+
+    const drawn = drawLight(res, ox, oy, scale);
+
+    // reflection on the river — only if the water is registering at all
+    if (res.wide && res.treelineVis > 0.25){
+      cx.save();
+      cx.globalAlpha = 0.30 * res.treelineVis;
+      cx.globalCompositeOperation = 'lighter';
+      const ry = IMGH * 0.62 + (IMGH * 0.62 - oy) * 0.55;
+      for (let i = 0; i < 7; i++){
+        const yy = ry + i * 7;
+        glow(ox + (i % 2 ? 5 : -5), yy, drawn.defocus * 1.5 + 14, 0.16 * drawn.bright, '255,206,132');
+      }
+      cx.restore();
+    }
+
+    // overexposure lifts the whole frame
+    if (res.err > 2.4){
+      cx.fillStyle = 'rgba(226,232,255,' + clamp((res.err - 2.4) * 0.05, 0, 0.22) + ')';
+      cx.fillRect(0, 0, PW, IMGH);
+    }
+    drawGrainAndArtifacts(res);
+
+    // burst = a locked frame with a sequence in it
+    if (res.burst){
+      cx.strokeStyle = 'rgba(255,184,77,0.30)';
+      cx.lineWidth = 1;
+      cx.strokeRect(10.5, 10.5, PW - 21, IMGH - 21);
+      cx.font = '12px "Courier New", monospace';
+      cx.textAlign = 'left';
+      cx.fillStyle = 'rgba(255,184,77,0.6)';
+      cx.fillText('FRAME 4 / 8  ·  LOCKED SEQUENCE', 18, 28);
+    }
+    if (!res.manual){
+      cx.font = '12px "Courier New", monospace';
+      cx.textAlign = 'right';
+      cx.fillStyle = 'rgba(255,61,138,0.55)';
+      cx.fillText('AF ◎  FOCUS CONFIRM NOT ACHIEVED', PW - 18, 28);
+    }
+    drawExif(res);
+  }
+
+  /* ---------- arrival animation ---------- */
+  function arrival(then){
+    const t0 = performance.now();
+    const amb = cond.moon.amb;
+    (function frame(now){
+      const p = clamp((now - t0) / 2300, 0, 1);
+      cx.setTransform(1, 0, 0, 1, 0, 0);
+      cx.clearRect(0, 0, PW, PH);
+      cx.fillStyle = '#05060C'; cx.fillRect(0, 0, PW, PH);
+      drawSky({ light: -4 }, amb);
+      drawTreeline({ treelineVis: 0.75 }, amb);
+      cx.globalCompositeOperation = 'lighter';
+      for (let i = 0; i < 3; i++){
+        const px = PW * (0.22 + i * 0.28) + Math.sin(now / 700 + i) * 22;
+        const py = IMGH * (0.72 - p * 0.42) + Math.cos(now / 900 + i * 2) * 14;
+        glow(px, py, 24 + p * 46, 0.20 + p * 0.55, '255,206,132');
+      }
+      cx.globalCompositeOperation = 'source-over';
+      cx.font = 'bold 26px "Courier New", monospace';
+      cx.textAlign = 'center';
+      cx.fillStyle = 'rgba(255,184,77,' + (0.35 + Math.sin(now / 180) * 0.25) + ')';
+      cx.fillText(p < 0.7 ? 'THEY ARE COMING OVER THE WATER' : 'SHUTTER', PW / 2, IMGH - 40);
+      if (p < 1) requestAnimationFrame(frame);
+      else {
+        Juice.sfx('shatter'); Juice.flash('#FFB84D', 0.5); Juice.shake(10); Juice.buzz(40);
+        setTimeout(then, 260);
+      }
+    })(t0);
+  }
+
+  /* ============================================================
+     VERDICTS
+     ============================================================ */
+  function verdictLines(res, grade){
+    const L = [];
+    if (grade === 'A+'){
+      L.push('There is a photograph. Not a smear, not a glare, not a jpeg of a screen showing a jpeg. ' +
+        '<b>A photograph.</b> The treeline is in it, so we know the height. The river is in it, so we know the place. ' +
+        'The light has an edge on it, and the edge is not a guess.');
+      L.push('For eighteen years this thing kept every single appointment. It came in rain. It came on holidays. ' +
+        'It came while a documentary crew stood in the mud and expensed a lunch. It has never once been late ' +
+        'and it has never once been photographed, and those two facts have never had anything to do with each other.');
+      L.push('The failure was never on the water. <b>The failure was on the bank.</b> Nobody taped a focus ring. ' +
+        'Nobody put the legs down. Everyone shot tight, at f/5.6, on autofocus, in JPEG, with one hand, ' +
+        'while saying the words <em>oh my god</em>.');
+      L.push('Tonight somebody was ready. That is the whole thing. That is the entire eighteen years, resolved by ' +
+        'a person who read the conditions, spent ninety seconds properly, and stood still behind a camera that was ' +
+        'already correct when it mattered.');
+      L.push('The file goes into the record as <b>' + filenameFor(res) + '</b>. Sensor data, EXIF intact, ' +
+        'unmodified, from a locked frame, in a sequence, at a named bend of a named river on a dated night.');
+      L.push('<b>It has a filename now, instead of a shrug.</b>');
+      L.push('REVIEW BOARD FINDING: the phenomenon is entered into evidence. The witnesses are, at long last, ' +
+        'corroborated by their own equipment. We would like the record to show that they were always telling us ' +
+        'exactly where to stand.');
+    } else if (grade === 'A' || grade === 'A−'){
+      L.push('That is a real photograph and it is the best one this field has. Somebody looked at the conditions, ' +
+        'made choices, and lived with them.');
+      L.push('It is not perfect and you already know which one it was. ' + (res.notes[0] || ''));
+      L.push('REVIEW BOARD FINDING: <b>preparedness demonstrated.</b> Eighteen years of nobody being ready, and ' +
+        'tonight somebody almost entirely was. Come back and take the last stop off it.');
+    } else if (grade[0] === 'B'){
+      L.push('This would survive being shown to a stranger, which puts it comfortably ahead of the entire ' +
+        'existing archive, which is not a compliment so much as an indictment of the archive.');
+      L.push('The frame has something in it. It also has an argument in it, and the argument will be won by ' +
+        'whoever is not you.');
+      L.push('REVIEW BOARD FINDING: <b>partially ready.</b> You bought the right things with the wrong seconds.');
+    } else if (grade[0] === 'C'){
+      L.push('We can tell there was a light. We cannot tell how big it was, how far away it was, how fast it was ' +
+        'moving, or what it was near. Those are, unfortunately, the four questions.');
+      L.push('You were on the bank. You had ninety seconds. The camera was in your hands and it was still mostly ' +
+        'set up for a birthday party.');
+      L.push('REVIEW BOARD FINDING: <b>attendance without preparation.</b> The orbs were, once again, the ' +
+        'professional party in this arrangement.');
+    } else if (grade[0] === 'D'){
+      L.push('This is the archive. This is exactly the archive. Eighteen years of this, and here is one more.');
+      L.push('Nobody will say you are lying. They will say something much worse: they will say ' +
+        '<b>"huh"</b> and then change the subject, and that is how a decade goes by.');
+      L.push('REVIEW BOARD FINDING: <b>not ready.</b> The phenomenon kept its appointment. We did not keep ours.');
+    } else {
+      L.push('There is a shape. The shape is soft, and bright, and it is going to be described in a caption for ' +
+        'the rest of its life because the picture does not describe it at all.');
+      L.push('The light came, in front of witnesses, exactly as it has for eighteen years, and we met it with ' +
+        'a camera set the way it came out of the bag.');
+      L.push('REVIEW BOARD FINDING: <b>this is why there is no evidence.</b> Not secrecy. Not disinformation. ' +
+        'Not the government. <b>The focus ring.</b>');
+    }
+    L.push('<span style="color:#FFB84D">TONIGHT: ' + cond.motion.v + ' · ' + cond.brightLab + ' · ' +
+      cond.moon.v + ' · ' + (cond.cold ? 'COLD' : 'MILD') + ' · WIND ' + cond.wind + 'MPH</span>');
+    return L;
+  }
+
+  const GRADE_SUM = {
+    'A+':'Ready. For the first time in eighteen years, somebody was ready.',
+    'A' :'Very nearly the frame this river has been waiting for.',
+    'A−':'A genuinely defensible photograph with one soft edge on it.',
+    'B+':'Good work under pressure. One decision cost you the top of the scale.',
+    'B' :'A real picture of a real thing, with a real argument attached.',
+    'B−':'Better than the archive. Not yet better than the doubt.',
+    'C+':'Something is in the frame. Nothing in the frame is settled.',
+    'C' :'A light, in a void, at an unknown distance, at an unknown size.',
+    'C−':'The caption is now doing all of the work.',
+    'D+':'This is what the last eighteen years look like.',
+    'D' :'Porch light. Hurricane. You know the one.',
+    'D−':'The thumb is in motion.',
+    'F' :'Eighteen years and one more of these.'
+  };
+
+  /* ---------- score bars ---------- */
+  function scoreBar(label, val, note, color){
+    const d = document.createElement('div');
+    d.className = 'sc';
+    d.innerHTML = '<div class="lab"><span>' + label + '</span><b>' + Math.round(val) + ' / 100</b></div>' +
+      '<div class="track"><div class="fill"></div></div>' +
+      '<p class="note">' + note + '</p>';
+    const f = d.querySelector('.fill');
+    f.style.background = 'linear-gradient(90deg,#2A1F10,' + color + ')';
+    setTimeout(() => { f.style.width = clamp(val, 0, 100) + '%'; }, 60);
+    return d;
+  }
+
+  function noteSharp(r){
+    if (!r.manual) return 'Autofocus could not lock on a point light against black. It is the single reason the archive looks the way it does.';
+    if (r.subjOver > 0) return 'The shutter was too slow for what the light was doing. Subject motion is not fixed by legs.';
+    if (r.shake > 20) return 'Camera movement — the rig, the wind, or your own pulse. This is what the tripod is for.';
+    if (r.grain >= 8) return 'Focus and stability were right; ISO grain took the fine detail.';
+    return 'Focus at infinity, camera held still, shutter matched to the subject. This is how it is done.';
+  }
+  function noteExpo(r){
+    if (r.err > 2.4) return 'Overexposed by ' + r.err.toFixed(1) + ' stops. The core is clipped to pure white — there is no detail left in it to recover, in any format.';
+    if (r.err > 1.2) return 'A little hot. Highlights are on the edge of clipping.';
+    if (r.err < -2.4) return 'Underexposed by ' + Math.abs(r.err).toFixed(1) + ' stops. Lifting it in post just amplifies the noise.';
+    if (r.err < -1.2) return 'A little thin, but recoverable' + (r.raw ? ' — and you shot RAW, so it actually is.' : '. In JPEG, less so.');
+    return 'Exposure landed. ISO, aperture and shutter balanced against the light that was actually there.';
+  }
+  function noteCtx(r){
+    if (!r.wide) return 'Tight on the sky. A light with nothing around it gives an analyst no scale, no bearing, no distance, and no place.';
+    if (r.treelineVis < 0.5) return 'You framed wide — correctly — but the exposure was too short to record the treeline, so the context is out there in the black where nobody can see it.';
+    return 'Treeline and river in frame. Scale, bearing, distance, parallax, and a named place. This is what makes a picture evidence.';
+  }
+  function noteProv(r){
+    if (!r.raw) return 'JPEG. Processed by the camera, then compressed, then compressed again by everyone who shares it. The first competent person to ask will ask for the RAW.';
+    if (r.night) return 'RAW is right, but the phone composite in the set invites the whole argument back in — those pixels were computed, not measured.';
+    return 'RAW file, EXIF intact, from a locked frame' + (r.burst ? ', inside a timestamped sequence.' : '.') + ' This is what survives scrutiny.';
+  }
+
+  /* ============================================================
+     LOCK IN / RESOLVE
+     ============================================================ */
+  function lockIn(auto){
+    if (locked || ended || !running) return;
+    locked = true;
+    const leftover = Math.max(0, remain);
+    renderBench();
+    $('lockBtn').disabled = true;
+    $('lockBtn').textContent = auto ? 'They are here' : 'Standing by';
+    $('spendlog').innerHTML = auto
+      ? '<b>0:00.</b> Three lights come over the far bank, on schedule, as always.'
+      : '<b>Set.</b> ' + Math.ceil(leftover) + 's of breathing room and a camera that is already correct.';
+    renderClock();
+    Juice.sfx('alarm');
+    $('result').style.display = 'block';
+    $('result').scrollIntoView({ behavior:'smooth', block:'center' });
+
+    arrival(() => {
+      const res = evaluate(leftover);
+      const grade = gradeOf(res.overall);
+      renderPhoto(res);
+
+      $('photocap').textContent = 'CAPE FEAR RIVER · ' + (res.wide ? 'WIDE, TREELINE IN FRAME' : 'TIGHT ON SKY') +
+        ' · ' + (res.burst ? 'SEQUENCE OF 8' : 'SINGLE FRAME') + ' · ' + filenameFor(res);
+
+      const sc = $('scores');
+      sc.innerHTML = '';
+      sc.appendChild(scoreBar('Sharpness',  res.sharp, noteSharp(res), '#FFB84D'));
+      sc.appendChild(scoreBar('Exposure',   res.expo,  noteExpo(res),  '#FFD23F'));
+      sc.appendChild(scoreBar('Context',    res.ctxs,  noteCtx(res),   '#2DE1FC'));
+      sc.appendChild(scoreBar('Provenance', res.prov,  noteProv(res),  '#3DFC8A'));
+
+      $('gradeletter').textContent = grade;
+      $('gradesum').innerHTML = GRADE_SUM[grade] || '';
+      $('gradebox').style.borderColor = res.overall >= 83 ? '#3DFC8A' : (res.overall >= 59 ? '#FFB84D' : '#FF3D8A');
+      $('gradeletter').style.color = res.overall >= 83 ? '#3DFC8A' : (res.overall >= 59 ? '#FFB84D' : '#FF3D8A');
+
+      const mid = { x: stage.clientWidth / 2, y: stage.clientHeight * 0.45 };
+      if (res.sharp >= 85) award('sharp', '🏆 FIRST SHARP FRAME IN EIGHTEEN YEARS');
+      if (res.ctxs >= 85) award('tree', '🏆 THE TREELINE IS THE EVIDENCE');
+      if (res.overall >= 89) award('ready', '🏆 SOMEBODY WAS READY');
+
+      if (res.overall >= 83){
+        Juice.sfx('win');
+        Juice.reward(mid.x, mid.y, { text: grade, color:'#3DFC8A', count:34 });
+        Juice.burst(mid.x, mid.y, { color:'#FFB84D', count:44, speed:6, gravity:.02 });
+        Juice.flash('#FFB84D', 0.34);
+      } else if (res.overall >= 59){
+        Juice.sfx('good');
+        Juice.reward(mid.x, mid.y, { text: grade, color:'#FFB84D', count:18 });
+      } else {
+        Juice.impact(mid.x, mid.y, { text: grade, color:'#FF3D8A', power:11, count:20, sound:'lose' });
+        Juice.flash('#FF3D8A', 0.28);
+      }
+
+      ended = true;
+      setTimeout(() => {
+        Arcade.gameOver({
+          won: res.overall >= 71,
+          title: grade === 'A+' ? 'It Has A Filename.' :
+                 (res.overall >= 71 ? 'Grade ' + grade : 'Grade ' + grade + ' — Again'),
+          score: Math.round(res.overall),
+          accent: res.overall >= 83 ? '#3DFC8A' : (res.overall >= 59 ? '#FFB84D' : '#FF3D8A'),
+          lines: verdictLines(res, grade),
+          onRetry: () => {
+            reset();
+            $('briefing').style.display = 'flex';
+            stage.scrollIntoView({ behavior:'smooth', block:'start' });
+          },
+          links: [
+            { label:'The Orb Scheduler field kit — $5', href:'index.html#prize' },
+            { label:'The Bledsoe wing', href:'index.html' },
+            { label:'Visit the shrine', href:'../../shrines/index.html#chris-bledsoe' }
+          ]
+        });
+        const ovs = document.querySelectorAll('.dcab-overlay');
+        const ov = ovs[ovs.length - 1];
+        if (ov){
+          ov.scrollTop = 0;
+          const ps = ov.querySelectorAll('.dcab-lore');
+          [].forEach.call(ps, (p, i) => {
+            p.style.opacity = '0';
+            p.style.transition = 'opacity .9s';
+            setTimeout(() => { p.style.opacity = '1'; }, 240 + i * 820);
+          });
+        }
+      }, grade === 'A+' ? 3200 : 2200);
+    });
+  }
+
+  /* ---------- wiring ---------- */
+  $('guidebtn').addEventListener('click', () => {
+    const g = $('guide');
+    const open = g.style.display === 'block';
+    g.style.display = open ? 'none' : 'block';
+    $('guidebtn').innerHTML = open
+      ? '▸ Open the field guide — the clock does not stop for reading'
+      : '▾ Close the field guide — the clock is still running';
+    Juice.sfx('click');
+  });
+
+  $('lockBtn').addEventListener('click', () => { Juice.sfx('click'); lockIn(false); });
+
+  $('startBtn').addEventListener('click', () => {
+    Juice.sfx('coin');
+    $('briefing').style.display = 'none';
+    running = true;
+    lastT = performance.now();
+    renderBench();
+  });
+
+  reset();
+  requestAnimationFrame(loop);
+
+  Arcade.cabinet({
+    id: 'tripod',
+    wing: 'THE CHRIS BLEDSOE EXPERIENCE',
+    title: 'Tripod',
+    subtitle: 'Ninety Seconds To Be Ready',
+    accent: '#FFB84D',
+    scoreLabel: 'PHOTO GRADE',
+    lore: 'For eighteen years the orbs have kept every appointment over one stretch of the Cape Fear ' +
+          'River, in front of witnesses, on schedule, in the rain, on holidays. <b>We believe all of it.</b> ' +
+          'The review board’s grievance has never been the phenomenon — it is that nobody was ever ' +
+          '<b>ready</b>. Tonight you get ninety seconds at the gear bench. Every adjustment costs seconds ' +
+          'off the clock and you cannot afford all of them. Read the conditions. Choose the right ones.',
+    howto: [
+      'READ THE CONDITIONS FIRST — the correct loadout depends on them',
+      'TAP a setting to change it — each change burns seconds off the clock',
+      'MOVING light? Fast shutter. STILL light? Long exposure, low ISO.',
+      'AUTOFOCUS IS THE ENEMY. Manual to infinity. Then tape it.',
+      'FRAME WIDE — a light with nothing around it is not evidence',
+      'THE FIELD GUIDE IS REAL AND WILL WORK AT YOUR RIVER',
+      'At 0:00 they arrive and you get exactly one photograph'
+    ],
+    shrine: '../../shrines/index.html#chris-bledsoe',
+    onStart: () => {
+      $('briefing').style.display = 'flex';
+      stage.scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+  });
+})();
+</script>
+</body>
+</html>

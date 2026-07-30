@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE SKETCH — Doucheclosure</title>
+<meta name="description" content="Before phones, the entire evidentiary record of this phenomenon was witness drawings — regular people handed a pencil and asked to render the impossible. The board has restored the practice. You get two seconds. Then you draw it. Then you are judged.">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --paper:#EDE6D6; --graphite:#2B2A28; --stamp:#B0432F;
+    --shadow:rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--void);}
+  body{margin:0; background:var(--void); color:var(--white);
+    font-family:"Courier New", Courier, monospace; line-height:1.65; overflow-x:hidden;}
+  body::after{content:""; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 1px, transparent 1px 3px);
+    pointer-events:none; z-index:100;}
+  a{color:var(--neon-cyan);}
+  .wrap{max-width:1000px; margin:0 auto; padding:0 1.25rem;}
+  .display{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-weight:400; text-transform:uppercase; letter-spacing:.03em; line-height:.95;}
+  .crumb{padding:1rem 1.25rem; font-size:.72rem; letter-spacing:.15em; text-transform:uppercase;}
+  .crumb a{text-decoration:none;}
+
+  header.wing{
+    text-align:center; padding:2.4rem 1rem 2.2rem;
+    background:radial-gradient(ellipse at 50% -20%, rgba(237,230,214,.20), transparent 60%),
+      radial-gradient(ellipse at 14% 120%, rgba(255,184,77,.10), transparent 55%);
+    border-bottom:3px solid var(--paper);
+  }
+  .wing .eyebrow{color:var(--neon-cyan); letter-spacing:.28em; text-transform:uppercase; font-size:.72rem;}
+  .wing h1{margin:.5rem 0 0; font-size:clamp(2.4rem,9vw,4.4rem); color:var(--paper);
+    text-shadow:0 0 18px rgba(237,230,214,.42), 4px 4px 0 #3A3427;}
+  .wing .sub{color:var(--chrome); max-width:38rem; margin:1.1rem auto 0; font-size:.9rem;}
+  .wing .sub b{color:var(--white);}
+  .file-tab{display:inline-block; margin-top:1.2rem; border:2px solid var(--neon-yellow);
+    color:var(--neon-yellow); padding:.4rem 1.1rem; font-size:.72rem; letter-spacing:.2em;
+    text-transform:uppercase; transform:rotate(-2deg);}
+
+  section{padding:2rem 0 2.6rem;}
+
+  /* ---------- stage ---------- */
+  #stage{position:relative; background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:2px solid #4A4335; border-radius:12px;
+    box-shadow:0 0 26px rgba(237,230,214,.10),0 12px 34px var(--shadow);
+    padding:1.1rem; overflow:hidden;}
+  #stage::before{content:""; position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(ellipse at 22% 20%, rgba(237,230,214,.09), transparent 58%);}
+
+  #hud{display:flex; gap:.9rem; flex-wrap:wrap; align-items:flex-end; position:relative; z-index:2;}
+  .bar{flex:1 1 190px; min-width:160px;}
+  .bar .lab{font-size:.6rem; letter-spacing:.16em; text-transform:uppercase; color:var(--chrome); margin-bottom:4px;
+    display:flex; justify-content:space-between; gap:.5rem;}
+  .bar .lab b{color:var(--white); font-weight:normal;}
+  .track{height:13px; background:#00000099; border:1px solid #000; border-radius:7px; overflow:hidden;}
+  #totfill{height:100%; width:0%; background:linear-gradient(90deg,#6B6350,var(--paper)); transition:width .5s;}
+  #timefill{height:100%; width:100%; background:linear-gradient(90deg,var(--neon-pink),var(--neon-yellow)); transition:width .12s linear;}
+  #roundpill{flex:0 0 auto; font-size:.62rem; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--neon-yellow); border:1px dashed rgba(255,210,63,.45); border-radius:6px; padding:.35rem .6rem;}
+
+  #board{position:relative; z-index:2; margin:.7rem 0 0; font-size:.62rem; letter-spacing:.14em;
+    text-transform:uppercase; color:#8A7F68; min-height:1.2rem;}
+
+  #arena{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,308px); gap:1.1rem;
+    margin-top:.7rem; position:relative; z-index:2; align-items:start;}
+
+  /* ---------- the pad ---------- */
+  #padbox{position:relative; background:#07060C; border:2px solid #4A4335; border-radius:10px;
+    padding:.5rem; overflow:hidden;}
+  #pad{display:block; width:100%; height:auto; border-radius:5px; touch-action:none;
+    cursor:crosshair; background:#07060C;}
+  #padtag{position:absolute; top:.75rem; right:.9rem; z-index:3; pointer-events:none;
+    font-size:.55rem; letter-spacing:.24em; text-transform:uppercase; color:#8A7F68;}
+  #padtag.live{color:var(--neon-pink);}
+
+  #tools{display:flex; gap:.5rem; flex-wrap:wrap; align-items:center; margin-top:.6rem;}
+  .tool{font-family:inherit; font-size:.68rem; letter-spacing:.14em; text-transform:uppercase;
+    padding:.6rem .9rem; border-radius:7px; cursor:pointer; font-weight:bold;
+    border:2px solid #5D5647; background:#171320; color:var(--paper); transition:border-color .15s, box-shadow .15s;}
+  .tool:hover:not(:disabled){border-color:var(--paper); box-shadow:0 0 12px rgba(237,230,214,.25);}
+  .tool:disabled{opacity:.32; cursor:default;}
+  .tool.go{background:var(--paper); border-color:var(--paper); color:#1A1710;}
+  .tool.go:hover:not(:disabled){filter:brightness(1.08);}
+  #toolnote{font-size:.58rem; letter-spacing:.16em; text-transform:uppercase; color:#6E6552; margin-left:auto;}
+
+  /* ---------- the docket ---------- */
+  #docket{background:#0D0A14; border:2px solid #4A4335; border-left:5px solid var(--paper);
+    border-radius:8px; padding:.9rem 1rem; min-height:15rem;}
+  #dockkick{font-size:.58rem; letter-spacing:.24em; text-transform:uppercase; color:var(--paper); margin-bottom:.5rem;}
+  #dockscore{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; font-weight:400;
+    text-transform:uppercase; line-height:.9; font-size:3.4rem; color:var(--paper); margin:0; letter-spacing:.02em;}
+  #dockscore small{font-size:1rem; color:#7E7460; letter-spacing:.1em;}
+  #dockhead{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; font-weight:400;
+    text-transform:uppercase; font-size:1.15rem; letter-spacing:.05em; color:var(--neon-yellow); margin:.3rem 0 .55rem;}
+  #docktext{font-size:.82rem; color:var(--chrome); line-height:1.62; margin:0;}
+  #docktext b{color:var(--white);}
+  #docktext .cur{color:var(--paper);}
+  #method{margin-top:.75rem; font-size:.56rem; letter-spacing:.13em; text-transform:uppercase;
+    color:#6E6552; line-height:1.75; border-top:1px dashed #3B3527; padding-top:.5rem;}
+
+  #grids{display:none; grid-template-columns:repeat(3,1fr); gap:.5rem; margin-top:.7rem;}
+  #grids figure{margin:0; text-align:center;}
+  #grids canvas{width:100%; height:auto; display:block; image-rendering:pixelated;
+    border:1px solid #3B3527; border-radius:4px; background:#07060C;}
+  #grids figcaption{font-size:.5rem; letter-spacing:.14em; text-transform:uppercase; color:#6E6552; margin-top:.25rem;}
+  #legend{display:none; font-size:.5rem; letter-spacing:.1em; text-transform:uppercase; color:#6E6552; margin-top:.4rem;}
+  #legend i{font-style:normal; font-weight:bold;}
+  .lg-hit{color:var(--neon-green);} .lg-miss{color:var(--neon-yellow);} .lg-inv{color:var(--neon-pink);}
+
+  /* ---------- briefing / exhibit overlays ---------- */
+  .sheet{position:absolute; inset:0; z-index:40; display:none; flex-direction:column;
+    align-items:center; text-align:center; padding:1.4rem; overflow-y:auto;
+    background:rgba(6,6,12,.96);}
+  .sheet.on{display:flex;}
+  .sheet h2{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; font-weight:400;
+    text-transform:uppercase; font-size:clamp(1.5rem,5vw,2.4rem); color:var(--paper);
+    text-shadow:0 0 18px rgba(237,230,214,.32); margin:.2rem 0 0;}
+  .sheet p{max-width:36rem; margin:.85rem auto; color:var(--chrome); font-size:.86rem;}
+  .sheet b{color:var(--white);}
+  #briefing{justify-content:center;}
+
+  .btn{display:inline-block; margin:.4rem; padding:.85rem 1.6rem; border-radius:8px; cursor:pointer;
+    font-family:inherit; font-weight:bold; font-size:.8rem; letter-spacing:.14em; text-transform:uppercase;
+    text-decoration:none; border:2px solid var(--paper); background:var(--paper); color:#1A1710;}
+  .btn.ghost{background:transparent; color:var(--neon-cyan); border-color:var(--neon-cyan);}
+
+  /* ---------- exhibit sheet ---------- */
+  #exhibithead{width:100%; max-width:44rem; display:flex; justify-content:space-between;
+    gap:1rem; flex-wrap:wrap; border-bottom:2px solid #4A4335; padding-bottom:.5rem; margin-bottom:.4rem;
+    font-size:.55rem; letter-spacing:.2em; text-transform:uppercase; color:#8A7F68;}
+  #plates{display:grid; grid-template-columns:repeat(auto-fit,minmax(146px,1fr)); gap:.7rem;
+    width:100%; max-width:44rem; margin:1rem 0 .4rem;}
+  .plate{margin:0; background:#100D18; border:1px solid #3B3527; border-radius:6px; padding:.4rem;}
+  .plate canvas{width:100%; height:auto; display:block; border-radius:3px;}
+  .plate figcaption{font-size:.5rem; letter-spacing:.1em; text-transform:uppercase; color:#8A7F68;
+    margin-top:.35rem; line-height:1.5; text-align:left;}
+  .plate figcaption b{color:var(--paper); letter-spacing:.16em;}
+  .plate figcaption .sc{color:var(--neon-yellow);}
+  #grade{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; font-weight:400;
+    text-transform:uppercase; font-size:clamp(1.6rem,6vw,2.6rem); color:var(--neon-yellow); margin:.6rem 0 0;}
+  #gradesub{font-size:.62rem; letter-spacing:.22em; text-transform:uppercase; color:#8A7F68; margin:.2rem 0 .4rem;}
+
+  .dossier{border-left:4px solid var(--neon-yellow); background:var(--panel);
+    padding:1.05rem 1.25rem; color:var(--chrome); font-size:.86rem; margin-top:1.6rem;}
+  .dossier b{color:var(--white);}
+  footer{padding:2rem 1rem 3rem; text-align:center; color:#7E6F9E; font-size:.72rem;}
+
+  @media (max-width:860px){
+    #arena{grid-template-columns:1fr; gap:.7rem;}
+    #stage{padding:.8rem;}
+    #docket{min-height:0;}
+    #dockscore{font-size:2.6rem;}
+    header.wing{padding:1.8rem 1rem 1.6rem;}
+    #toolnote{display:none;}
+    .tool{flex:1 1 auto; text-align:center; padding:.7rem .5rem;}
+  }
+</style>
+</head>
+<body>
+
+<p class="crumb"><a href="../../index.html">&larr; THE ARCADE</a> &nbsp;/&nbsp; <a href="index.html">CHRIS BLEDSOE</a> &nbsp;/&nbsp; THE SKETCH</p>
+
+<header class="wing">
+  <p class="eyebrow">The Chris Bledsoe Experience &bull; Cabinet No. 2</p>
+  <h1 class="display">The Sketch</h1>
+  <p class="sub">Long before anybody had a phone in their pocket, the entire evidentiary record of
+  this phenomenon was <b>witness drawings</b> — regular people, handed a pencil by a man with a
+  clipboard, and asked to render the impossible. The board has restored the practice. You will be
+  shown something for <b>two seconds</b>. Then you will draw it. Your drawing will be entered into
+  the permanent record, and it will be judged.</p>
+  <span class="file-tab">FORM 12-B &bull; PENCIL PROVIDED &bull; DO NOT SIGN</span>
+</header>
+
+<section>
+  <div class="wrap">
+    <div id="stage">
+
+      <div id="hud">
+        <div class="bar">
+          <div class="lab"><span>Case total</span><b id="totlab">0 / 500</b></div>
+          <div class="track"><div id="totfill"></div></div>
+        </div>
+        <div class="bar">
+          <div class="lab"><span>Time on the pencil</span><b id="timelab">30</b></div>
+          <div class="track"><div id="timefill"></div></div>
+        </div>
+        <div id="roundpill">Drawing 1 / 5</div>
+      </div>
+
+      <p id="board">&nbsp;</p>
+
+      <div id="arena">
+        <div>
+          <div id="padbox">
+            <span id="padtag">Awaiting the witness</span>
+            <canvas id="pad" width="720" height="540" aria-label="Witness drawing pad. The object appears here for two seconds, then you draw it from memory."></canvas>
+          </div>
+          <div id="tools">
+            <button class="tool" id="undoBtn" type="button" disabled>&#8630; Undo</button>
+            <button class="tool" id="clearBtn" type="button" disabled>Clear sheet</button>
+            <button class="tool go" id="submitBtn" type="button" disabled>Enter into the record</button>
+            <span id="toolnote">Z = undo &bull; C = clear &bull; Enter = submit</span>
+          </div>
+        </div>
+
+        <div>
+          <div id="docket">
+            <div id="dockkick">Review board &bull; docket</div>
+            <p id="dockscore" style="display:none">0<small>/100</small></p>
+            <p id="dockhead" style="display:none">&nbsp;</p>
+            <p id="docktext">The board is seated. The pencil is on the table. The pencil is not
+            sharpened, because the board has never once been asked to sharpen it.</p>
+            <div id="method">&nbsp;</div>
+            <div id="grids">
+              <figure><canvas id="gT" width="128" height="96"></canvas><figcaption>The object</figcaption></figure>
+              <figure><canvas id="gW" width="128" height="96"></canvas><figcaption>The witness</figcaption></figure>
+              <figure><canvas id="gO" width="128" height="96"></canvas><figcaption>Overlap</figcaption></figure>
+            </div>
+            <div id="legend">
+              <i class="lg-hit">&#9632; agreed</i> &nbsp; <i class="lg-miss">&#9632; missed</i> &nbsp;
+              <i class="lg-inv">&#9632; invented</i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---------- briefing ---------- -->
+      <div class="sheet" id="briefing">
+        <h2>You Are The Instrument.</h2>
+        <p>There is no camera in this room. There has never been a camera in this room. For a
+        hundred years the instrument of record in this field was <b>a person, a pencil, and about
+        four minutes of nerve</b>, and the board is not going to pretend otherwise.</p>
+        <p>Five objects. Each one is shown for <b>two seconds</b>. Then the sheet goes blank and you
+        have <b>thirty seconds</b> to put down what you saw. You may undo. You may clear. You may not
+        look again — nobody ever gets to look again.</p>
+        <p>The board scores by occupancy grid. The method is printed on the docket, in the open,
+        because we are not animals.</p>
+        <button class="btn" id="startBtn" type="button">Accept the pencil</button>
+      </div>
+
+      <!-- ---------- exhibit sheet ---------- -->
+      <div class="sheet" id="exhibit">
+        <div id="exhibithead">
+          <span>Doucheclosure Review Board &bull; Exhibit Sheet</span>
+          <span id="caseno">Case 1947-&infin;</span>
+        </div>
+        <h2>The Permanent Record</h2>
+        <p style="margin:.5rem auto .2rem; font-size:.78rem;">Five drawings. One witness. Filed in
+        the order rendered, uncorrected, as required.</p>
+        <div id="plates"></div>
+        <p id="grade">&mdash;</p>
+        <p id="gradesub">&nbsp;</p>
+        <p id="gradeline" style="font-size:.84rem;">&nbsp;</p>
+        <button class="btn" id="fileBtn" type="button">File with the permanent record</button>
+      </div>
+
+    </div>
+
+    <div class="dossier">
+      <b>WING DOCTRINE:</b> We do not question the sighting. We question the intake procedure. A man
+      sees something over a river and the entire apparatus of human knowledge hands him a pencil, a
+      clipboard, and thirty seconds — and then spends fifty years reviewing his <b>line quality</b>.
+      This cabinet puts you on the other side of the clipboard, where it turns out the object is
+      genuinely very hard to draw and the pencil is genuinely not sharpened.
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>DOUCHECLOSURE&trade; EXPERIENCES &bull; A work of parody commenting on public statements of public figures.<br>
+  <a href="index.html">Back to the Bledsoe wing</a> &bull; <a href="../../shrines/index.html#chris-bledsoe">The shrine</a> &bull;
+  <a href="../../index.html">The arcade</a></p>
+</footer>
+
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const pad = $('pad');
+  const px = pad.getContext('2d');
+  const W = pad.width, H = pad.height;      /* 720 x 540 */
+  Juice.init(pad);
+
+  /* ============================================================
+     UNITS
+     All geometry lives in "u" — canvas widths. 1u = 720px.
+     x runs 0 -> 1, y runs 0 -> 0.75. Pixels = u * W on both axes,
+     so cells are square and nothing is secretly stretched.
+     ============================================================ */
+  const UY = H / W;                          /* 0.75 */
+  const toPx = p => ({ x: p.x * W, y: p.y * W });
+
+  const ROUNDS = 5, PREROLL_MS = 1500, FLASH_MS = 2000, RECALL_MS = 30000;
+  const NX = 32, NY = 24, CELL = 1 / NX;     /* the occupancy grid, stated openly */
+  const THICK = 0.045;                       /* stamp radius, in u */
+  const IOU_FULL = 0.55;                     /* IoU that earns full shape marks */
+
+  const rnd = (a, b) => a + Math.random() * (b - a);
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+  function rot(p, cx, cy, t){
+    const s = Math.sin(t), c = Math.cos(t), dx = p.x - cx, dy = p.y - cy;
+    return { x: cx + dx * c - dy * s, y: cy + dx * s + dy * c };
+  }
+  function ring(cx, cy, r, n, squash){
+    const out = [], q = squash == null ? 1 : squash;
+    for (let i = 0; i <= n; i++){
+      const a = i / n * Math.PI * 2;
+      out.push({ x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r * q });
+    }
+    return out;
+  }
+
+  /* ============================================================
+     THE OBJECTS — procedurally generated, never the same twice
+     ============================================================ */
+  function genChevron(){
+    const cx = rnd(.42, .58), cy = rnd(.44, .50), span = rnd(.17, .23),
+          rise = rnd(.12, .18), tilt = rnd(-.24, .24);
+    const v = [
+      { x: cx - span, y: cy - rise * rnd(.85, 1.15) },
+      { x: cx, y: cy },
+      { x: cx + span, y: cy - rise * rnd(.85, 1.15) }
+    ].map(p => rot(p, cx, cy, tilt));
+    return { id:'chevron', label:'A CHEVRON', lines:[v], dots:v.map(p => ({ x:p.x, y:p.y, r:.016 })) };
+  }
+  function genTriangle(){
+    const cx = rnd(.44, .56), cy = rnd(.32, .42), r = rnd(.15, .20), base = rnd(0, Math.PI * 2);
+    const v = [0,1,2].map(i => {
+      const a = base + i * Math.PI * 2 / 3 + rnd(-.20, .20), rr = r * rnd(.84, 1.16);
+      return { x: cx + Math.cos(a) * rr, y: cy + Math.sin(a) * rr };
+    });
+    return { id:'triangle', label:'A TRIANGLE OF LIGHTS',
+      lines:[[v[0], v[1], v[2], v[0]]], dots:v.map(p => ({ x:p.x, y:p.y, r:.020 })) };
+  }
+  function genSphere(){
+    const cx = rnd(.44, .56), cy = rnd(.32, .42), r = rnd(.085, .115), halo = r * rnd(1.55, 1.90);
+    return { id:'sphere', label:'A GLOWING SPHERE WITH A HALO',
+      lines:[ring(cx, cy, r, 44), ring(cx, cy, halo, 56)], dots:[{ x:cx, y:cy, r:r * .7 }] };
+  }
+  function genArcThree(){
+    const x0 = rnd(.17, .25), x2 = rnd(.66, .78), y0 = rnd(.24, .34),
+          sag = rnd(.09, .17) * (Math.random() < .5 ? 1 : -1), rr = rnd(.038, .052);
+    const c = [
+      { x: x0, y: y0 },
+      { x: (x0 + x2) / 2 + rnd(-.03, .03), y: y0 + sag },
+      { x: x2, y: y0 + rnd(-.05, .05) }
+    ];
+    return { id:'arc', label:'THREE LIGHTS IN A SLOW ARC',
+      lines: c.map(p => ring(p.x, p.y, rr, 30)), dots: c.map(p => ({ x:p.x, y:p.y, r:rr * .8 })) };
+  }
+  function genCigar(){
+    const cx = rnd(.45, .55), cy = rnd(.30, .42), L = rnd(.17, .23), h = rnd(.048, .070),
+          tilt = rnd(-.22, .22), nw = 3 + (Math.random() < .5 ? 1 : 0);
+    const hull = [];
+    for (let i = 0; i <= 18; i++){ const a = -Math.PI/2 + Math.PI * i / 18;
+      hull.push({ x: cx + L + Math.cos(a) * h, y: cy + Math.sin(a) * h }); }
+    for (let i = 0; i <= 18; i++){ const a = Math.PI/2 + Math.PI * i / 18;
+      hull.push({ x: cx - L + Math.cos(a) * h, y: cy + Math.sin(a) * h }); }
+    hull.push(hull[0]);
+    const lines = [hull.map(p => rot(p, cx, cy, tilt))];
+    const dots = [];
+    for (let i = 0; i < nw; i++){
+      const t = -L * .58 + (i / (nw - 1)) * L * 1.16;
+      lines.push([ rot({ x: cx + t, y: cy - h * .5 }, cx, cy, tilt),
+                   rot({ x: cx + t, y: cy + h * .5 }, cx, cy, tilt) ]);
+      dots.push(Object.assign(rot({ x: cx + t, y: cy }, cx, cy, tilt), { r:.012 }));
+    }
+    return { id:'cigar', label:'A CIGAR WITH WINDOWS', lines: lines, dots: dots };
+  }
+  function genBlob(){
+    const cx = rnd(.44, .56), cy = rnd(.30, .42), base = rnd(.095, .135),
+          q = rnd(.82, 1.18), p1 = rnd(0, 6.28), p2 = rnd(0, 6.28), p3 = rnd(0, 6.28),
+          k1 = rnd(.20, .32), k2 = rnd(.10, .20);
+    const pts = [];
+    for (let i = 0; i <= 76; i++){
+      const a = i / 76 * Math.PI * 2;
+      const r = base * (1 + k1 * Math.sin(3 * a + p1) + k2 * Math.sin(5 * a + p2) + .12 * Math.sin(2 * a + p3));
+      pts.push({ x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r * q });
+    }
+    return { id:'blob', label:'AN AMORPHOUS GLOW', lines:[pts], dots:[{ x:cx, y:cy, r:base * .55 }] };
+  }
+
+  /* five drawings, complexity climbing */
+  function buildPlan(){
+    return [ genChevron, genTriangle, (Math.random() < .5 ? genSphere : genArcThree), genCigar, genBlob ];
+  }
+
+  /* ============================================================
+     RASTERIZE + COMPARE — the honest part
+     ============================================================ */
+  function stamp(g, x, y, r){
+    const i0 = Math.max(0, Math.floor((x - r) / CELL)), i1 = Math.min(NX - 1, Math.floor((x + r) / CELL));
+    const j0 = Math.max(0, Math.floor((y - r) / CELL)), j1 = Math.min(NY - 1, Math.floor((y + r) / CELL));
+    for (let j = j0; j <= j1; j++){
+      for (let i = i0; i <= i1; i++){
+        const dx = (i + .5) * CELL - x, dy = (j + .5) * CELL - y;
+        if (dx * dx + dy * dy <= r * r) g[j * NX + i] = 1;
+      }
+    }
+  }
+  function rasterize(lines){
+    const g = new Uint8Array(NX * NY);
+    for (let n = 0; n < lines.length; n++){
+      const ln = lines[n];
+      if (!ln || !ln.length) continue;
+      if (ln.length === 1){ stamp(g, ln[0].x, ln[0].y, THICK); continue; }
+      for (let i = 0; i < ln.length - 1; i++){
+        const a = ln[i], b = ln[i + 1];
+        const d = Math.hypot(b.x - a.x, b.y - a.y);
+        const steps = Math.max(1, Math.ceil(d / (CELL * .5)));
+        for (let s = 0; s <= steps; s++){
+          const t = s / steps;
+          stamp(g, a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t, THICK);
+        }
+      }
+    }
+    return g;
+  }
+  function compare(A, B){
+    let inter = 0, uni = 0, an = 0, bn = 0, ax = 0, ay = 0, bx = 0, by = 0;
+    let ai0 = 1e9, ai1 = -1e9, aj0 = 1e9, aj1 = -1e9, bi0 = 1e9, bi1 = -1e9, bj0 = 1e9, bj1 = -1e9;
+    for (let j = 0; j < NY; j++){
+      for (let i = 0; i < NX; i++){
+        const k = j * NX + i, a = A[k], b = B[k];
+        if (a && b) inter++;
+        if (a || b) uni++;
+        if (a){ an++; ax += i; ay += j;
+          if (i < ai0) ai0 = i; if (i > ai1) ai1 = i; if (j < aj0) aj0 = j; if (j > aj1) aj1 = j; }
+        if (b){ bn++; bx += i; by += j;
+          if (i < bi0) bi0 = i; if (i > bi1) bi1 = i; if (j < bj0) bj0 = j; if (j > bj1) bj1 = j; }
+      }
+    }
+    if (!bn || !an) return { score:0, iou:0, place:0, extent:0, inter:0, uni:uni, empty:!bn };
+    const iou = uni ? inter / uni : 0;
+    const shape = Math.min(1, iou / IOU_FULL);
+    const dist = Math.hypot(ax / an - bx / bn, ay / an - by / bn) / NX;
+    const place = clamp(1 - dist / 0.30, 0, 1);
+    const aw = ai1 - ai0 + 1, ah = aj1 - aj0 + 1, bw = bi1 - bi0 + 1, bh = bj1 - bj0 + 1;
+    const extent = (Math.min(aw, bw) / Math.max(aw, bw)) * (Math.min(ah, bh) / Math.max(ah, bh));
+    const score = Math.round(100 * (0.70 * shape + 0.18 * place + 0.12 * extent));
+    return { score: clamp(score, 0, 100), iou: iou, place: place, extent: extent,
+             inter: inter, uni: uni, empty: false };
+  }
+
+  /* ============================================================
+     PAPER + INK
+     ============================================================ */
+  const grain = document.createElement('canvas');
+  grain.width = W; grain.height = H;
+  (function(){
+    const g = grain.getContext('2d');
+    for (let i = 0; i < 4200; i++){
+      const a = Math.random() * .06;
+      g.fillStyle = Math.random() < .5 ? 'rgba(120,108,84,' + a + ')' : 'rgba(255,255,255,' + a + ')';
+      g.fillRect(Math.random() * W, Math.random() * H, 1 + Math.random() * 2, 1 + Math.random() * 2);
+    }
+  })();
+
+  function paper(ctx, w, h, form){
+    const s = w / W;
+    ctx.fillStyle = '#EDE6D6';
+    ctx.fillRect(0, 0, w, h);
+    ctx.drawImage(grain, 0, 0, w, h);
+    ctx.strokeStyle = 'rgba(96,110,128,.16)';
+    ctx.lineWidth = Math.max(.5, 1 * s);
+    for (let x = 40 * s; x < w; x += 40 * s){ ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
+    for (let y = 40 * s; y < h; y += 40 * s){ ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+    ctx.strokeStyle = 'rgba(176,67,47,.35)';
+    ctx.lineWidth = Math.max(1, 2 * s);
+    ctx.beginPath(); ctx.moveTo(52 * s, 0); ctx.lineTo(52 * s, h); ctx.stroke();
+    /* vignette */
+    const vg = ctx.createRadialGradient(w / 2, h / 2, h * .3, w / 2, h / 2, h * .78);
+    vg.addColorStop(0, 'rgba(0,0,0,0)'); vg.addColorStop(1, 'rgba(90,78,54,.18)');
+    ctx.fillStyle = vg; ctx.fillRect(0, 0, w, h);
+    if (form){
+      ctx.fillStyle = 'rgba(70,64,52,.62)';
+      ctx.font = (11 * s) + 'px "Courier New", monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText('WITNESS DRAWING — FORM 12-B', 62 * s, 26 * s);
+      ctx.textAlign = 'right';
+      ctx.fillText('DO NOT SIGN', (w - 16 * s), 26 * s);
+      ctx.textAlign = 'center';
+      ctx.fillText('THE WITNESS WILL RENDER THE OBJECT AS SEEN.', w / 2, h - 16 * s);
+      ctx.textAlign = 'left';
+      ctx.strokeStyle = 'rgba(70,64,52,.35)';
+      ctx.lineWidth = Math.max(.5, 1 * s);
+      ctx.beginPath(); ctx.moveTo(62 * s, 34 * s); ctx.lineTo(w - 16 * s, 34 * s); ctx.stroke();
+    }
+  }
+
+  function strokePath(ctx, ln, scale){
+    ctx.beginPath();
+    if (ln.length === 1){
+      const p = ln[0];
+      ctx.arc(p.x * scale, p.y * scale, ctx.lineWidth * .55, 0, Math.PI * 2);
+      ctx.stroke();
+      return;
+    }
+    ctx.moveTo(ln[0].x * scale, ln[0].y * scale);
+    for (let i = 1; i < ln.length; i++) ctx.lineTo(ln[i].x * scale, ln[i].y * scale);
+    ctx.stroke();
+  }
+
+  function drawPencil(ctx, lines, scale, color, width){
+    ctx.save();
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.strokeStyle = color || 'rgba(43,42,40,.92)';
+    ctx.lineWidth = (width == null ? 4.2 : width) * (scale / W);
+    for (let i = 0; i < lines.length; i++) strokePath(ctx, lines[i], scale);
+    ctx.restore();
+  }
+
+  /* night sky + the object, glowing */
+  function drawFlash(shape, t){
+    px.fillStyle = '#05070E';
+    px.fillRect(0, 0, W, H);
+    const sky = px.createLinearGradient(0, 0, 0, H);
+    sky.addColorStop(0, 'rgba(20,26,48,.9)'); sky.addColorStop(1, 'rgba(5,7,14,1)');
+    px.fillStyle = sky; px.fillRect(0, 0, W, H);
+    px.fillStyle = 'rgba(220,228,255,.5)';
+    for (let i = 0; i < 90; i++){
+      const sx = (i * 97.13) % W, sy = (i * 53.77) % (H * .8);
+      px.fillRect(sx, sy, 1.4, 1.4);
+    }
+    /* treeline, so it reads as a river at dusk */
+    px.fillStyle = '#03040A';
+    px.beginPath(); px.moveTo(0, H);
+    for (let x = 0; x <= W; x += 24)
+      px.lineTo(x, H * .84 + Math.sin(x * .021) * 12 + Math.sin(x * .07) * 6);
+    px.lineTo(W, H); px.closePath(); px.fill();
+
+    const pulse = 0.82 + 0.18 * Math.sin(t * 0.006);
+    px.save();
+    px.lineCap = 'round'; px.lineJoin = 'round';
+    for (const d of shape.dots){
+      const c = toPx(d), r = (d.r || .02) * W * 2.6;
+      const g = px.createRadialGradient(c.x, c.y, 0, c.x, c.y, r);
+      g.addColorStop(0, 'rgba(255,248,228,' + (.95 * pulse) + ')');
+      g.addColorStop(.35, 'rgba(255,206,128,' + (.42 * pulse) + ')');
+      g.addColorStop(1, 'rgba(255,184,77,0)');
+      px.fillStyle = g;
+      px.beginPath(); px.arc(c.x, c.y, r, 0, Math.PI * 2); px.fill();
+    }
+    px.shadowColor = 'rgba(255,214,150,.95)';
+    px.shadowBlur = 22;
+    px.strokeStyle = 'rgba(255,246,226,' + (.92 * pulse) + ')';
+    px.lineWidth = 5;
+    for (const ln of shape.lines) strokePath(px, ln, W);
+    px.shadowBlur = 0;
+    px.strokeStyle = 'rgba(255,255,255,.85)';
+    px.lineWidth = 1.8;
+    for (const ln of shape.lines) strokePath(px, ln, W);
+    px.restore();
+
+    /* two-second bar */
+    const left = clamp((phaseEnd - performance.now()) / FLASH_MS, 0, 1);
+    px.fillStyle = 'rgba(0,0,0,.55)'; px.fillRect(0, H - 14, W, 14);
+    px.fillStyle = '#EDE6D6'; px.fillRect(0, H - 14, W * left, 14);
+    px.fillStyle = 'rgba(237,230,214,.75)';
+    px.font = '13px "Courier New", monospace';
+    px.textAlign = 'left';
+    px.fillText('OBSERVE', 12, H - 24);
+  }
+
+  function drawPreroll(){
+    px.fillStyle = '#05070E'; px.fillRect(0, 0, W, H);
+    const left = Math.max(0, phaseEnd - performance.now());
+    const n = Math.ceil(left / 500);
+    px.fillStyle = 'rgba(237,230,214,.9)';
+    px.font = '400 26px Haettenschweiler, "Arial Narrow", Impact, sans-serif';
+    px.textAlign = 'center';
+    px.fillText('EYES UP — THE OBJECT IS COMING', W / 2, H / 2 - 46);
+    px.font = '400 96px Haettenschweiler, "Arial Narrow", Impact, sans-serif';
+    px.fillStyle = '#EDE6D6';
+    px.fillText(String(Math.max(1, n)), W / 2, H / 2 + 52);
+    px.font = '13px "Courier New", monospace';
+    px.fillStyle = 'rgba(237,230,214,.45)';
+    px.fillText('TWO SECONDS. NOBODY EVER GETS TO LOOK AGAIN.', W / 2, H / 2 + 96);
+    px.textAlign = 'left';
+  }
+
+  function repaint(){
+    paper(px, W, H, true);
+    drawPencil(px, strokes, W);
+  }
+
+  /* ============================================================
+     THE BOARD'S APPRAISAL
+     ============================================================ */
+  const HEADS = ['FILED UNDER: CONCERN', 'MARKS, UNEXPLAINED', 'A RECOGNIZABLE ATTEMPT',
+                 'ACCEPTED, ON THE RECORD', 'STRONG LIKENESS', 'THE BOARD IS QUIET'];
+
+  const BLANK_LINES = [
+    'The witness has submitted a blank page. The board notes, without pleasure, that this is the most honest document in the archive.',
+    'Nothing was drawn. The board has considered filing nothing and has decided that nothing is, procedurally, a submission. Nothing has been assigned a case number.',
+    'The sheet is empty. The clerk has stamped the empty sheet. The clerk stamps everything; the clerk has stopped asking.'
+  ];
+
+  const BANDS = [
+    [ /* 0-14 */
+      'The witness has produced a potato. The potato has been entered into the permanent record. The potato will outlive us all.',
+      'The board examined the drawing from four angles. One of those angles was upside down. It did not matter.',
+      'A second analyst was consulted. The second analyst asked whether the paper had been rotated. The paper had not been rotated.',
+      'The drawing has been assigned a case number. The case number is longer than the drawing.',
+      'The board wishes it on the record that the witness is not on trial. The drawing is on trial. The drawing is going to lose.'
+    ],
+    [ /* 15-29 */
+      'Something occurred on this paper. The board declines, at this time, to say what.',
+      'The witness has drawn a shape that exists. That is not nothing. It is, however, immediately adjacent to nothing.',
+      'Filed under MARKS, UNEXPLAINED. Cross-referenced with MARKS, ALSO UNEXPLAINED.',
+      'The board can confirm the presence of an object and the presence of a witness. The relationship between the two remains theoretical.',
+      'A junior clerk described this as "a moth." The junior clerk has been reassigned. The description stands.'
+    ],
+    [ /* 30-49 */
+      'A recognizable attempt. The board has seen considerably worse from people who were being paid.',
+      'The drawing establishes that the witness was present and holding a pencil. In this field, that is a finding.',
+      'The proportions are wrong in a way the board would describe as honest. We prefer this to the alternative, which is confidence.',
+      'Admissible with commentary. There will be commentary. There is always commentary.',
+      'The board notes an actual effort to observe. Half a century of archive suggests this is rarer than the object.'
+    ],
+    [ /* 50-69 */
+      'The board accepts this. Grudgingly, and on the record, which is the only way the board accepts anything.',
+      'A competent rendering. The archive will not be embarrassed to hold it.',
+      'This would have held up in 1973, and the board means that as a compliment: in 1973 this was the entire apparatus.',
+      'The witness has produced a document. An actual document. The clerk has been notified and the clerk is pleased.',
+      'The likeness is sufficient for cross-reference. Somebody two hundred miles away drew something similar and neither of you will ever meet.'
+    ],
+    [ /* 70-84 */
+      'Strong likeness. The exhibit has been moved to the front of the folder.',
+      'The board notes, without further comment, that the witness’s hand did not shake.',
+      'This is now the standard. Everything else in the archive is measured against this page as of this afternoon.',
+      'Certified. The clerk has been instructed to make a copy. The clerk resents this and has made the copy.',
+      'The board has stopped looking for problems with the drawing and has started looking for problems with the object.'
+    ],
+    [ /* 85-100 */
+      'The board is quiet. Somebody has drawn the thing. Somebody has actually drawn the thing.',
+      'Entered without objection. There was no objection available and the board looked for one at length.',
+      'The witness is asked to remain available to the board. The witness is asked to bring the pencil.',
+      'The archive has waited a hundred years for a page like this. It will be framed, badly, by a committee.',
+      'The board has no notes. The board has never had no notes. A memo is being drafted about how the board feels about having no notes.'
+    ]
+  ];
+
+  const SHAPE_NOTES = {
+    chevron: ['The object had two arms and one opinion. The witness has captured the opinion.',
+              'The board reminds all parties that a chevron is the easiest object in the catalogue, and that this is why it is first.'],
+    triangle: ['Three lights. Three. The board asks only that they remain three by the time they reach the paper.',
+               'The triangle is the most-reported configuration in the archive and the least-survivable on paper.'],
+    sphere: ['A sphere with a halo. The halo is the part everyone forgets and the part the board looks at first.',
+             'The board notes that a circle drawn by a frightened person is a well-documented category of circle.'],
+    arc: ['Three lights in a slow arc. Slow is doing an enormous amount of work in that sentence.',
+          'The spacing is the evidence. The lights are just lights.'],
+    cigar: ['The windows are the whole case. Anyone can draw a cigar. The windows are why we are here.',
+            'The board has reviewed eleven thousand cigars. The board is, at this point, a cigar person.'],
+    blob: ['The object had no edges. The witness was asked to draw its edges. This is the oldest problem in the field and nobody has ever solved it.',
+           'An amorphous glow, rendered by a hand that requires a line. The board acknowledges the impossibility and grades anyway.']
+  };
+
+  const BOARD_NOTES = [
+    'BOARD: the pencil is not sharpened. It has never been sharpened. This is not an oversight, it is a tradition.',
+    'BOARD: no camera on scene. As in every year of this file since the file was opened.',
+    'BOARD: the witness has not been offered a chair. Nobody has a chair.',
+    'BOARD: prior submissions in this drawer include a smudge, a spiral, and one (1) very confident rectangle.',
+    'BOARD: reminder — the witness saw the object. We saw the drawing. Only one of us was outside.',
+    'BOARD: line quality is not credibility. The board repeats this every session and then grades line quality.',
+    'BOARD: two seconds. The board once tried it and does not discuss the results.'
+  ];
+
+  const usedLines = {};
+  function freshPick(arr){
+    const avail = arr.filter(s => !usedLines[s]);
+    const s = pick(avail.length ? avail : arr);
+    usedLines[s] = true;
+    return s;
+  }
+  function bandOf(score){
+    return score <= 14 ? 0 : score <= 29 ? 1 : score <= 49 ? 2 : score <= 69 ? 3 : score <= 84 ? 4 : 5;
+  }
+  function appraise(res, shape){
+    if (res.empty) return { head:'THE BLANK PAGE', text: freshPick(BLANK_LINES) };
+    const b = bandOf(res.score);
+    let text = freshPick(BANDS[b]);
+    if (Math.random() < .55 && SHAPE_NOTES[shape.id]) text += ' ' + freshPick(SHAPE_NOTES[shape.id]);
+    return { head: HEADS[b], text: text };
+  }
+
+  /* ============================================================
+     STATE
+     ============================================================ */
+  let phase = 'idle', roundIdx = 0, shape = null, plan = buildPlan();
+  let strokes = [], cur = null, drawing = false, phaseEnd = 0, lastTick = 0, lastBeep = 0;
+  let results = [], total = 0, best = 0, awarded = {}, usedClear = false, hotStreak = 0;
+
+  function award(key, label){
+    if (awarded[key]) return;
+    awarded[key] = true;
+    Arcade.toast(label);
+  }
+
+  function setTools(on){
+    $('undoBtn').disabled = !on || !strokes.length;
+    $('clearBtn').disabled = !on || !strokes.length;
+    $('submitBtn').disabled = !on;
+  }
+  function renderHud(){
+    $('totlab').textContent = total + ' / 500';
+    $('totfill').style.width = (total / 5) + '%';
+    $('roundpill').textContent = 'Drawing ' + Math.min(roundIdx + 1, ROUNDS) + ' / ' + ROUNDS;
+  }
+  function setTime(ms){
+    const p = clamp(ms / RECALL_MS, 0, 1);
+    $('timefill').style.width = (p * 100) + '%';
+    $('timelab').textContent = Math.ceil(ms / 1000);
+  }
+  function docket(kick, head, text, score, method){
+    $('dockkick').innerHTML = kick;
+    const hs = $('dockhead'), sc = $('dockscore');
+    if (head){ hs.style.display = 'block'; hs.textContent = head; } else hs.style.display = 'none';
+    if (typeof score === 'number'){
+      sc.style.display = 'block';
+      sc.innerHTML = score + '<small>/100</small>';
+    } else sc.style.display = 'none';
+    $('docktext').innerHTML = text;
+    $('method').innerHTML = method || '&nbsp;';
+  }
+
+  /* ============================================================
+     ROUND FLOW
+     ============================================================ */
+  function startRound(){
+    shape = plan[roundIdx]();
+    strokes = []; cur = null; drawing = false;
+    usedLines.__ = true;
+    $('grids').style.display = 'none';
+    $('legend').style.display = 'none';
+    $('padtag').textContent = 'Eyes up';
+    $('padtag').classList.remove('live');
+    $('board').textContent = BOARD_NOTES[roundIdx % BOARD_NOTES.length];
+    $('submitBtn').textContent = 'Enter into the record';
+    setTools(false);
+    setTime(RECALL_MS);
+    renderHud();
+    docket('Review board &bull; docket',
+      null,
+      'Drawing ' + (roundIdx + 1) + ' of ' + ROUNDS + '. The object will be visible for <b>two seconds</b>. ' +
+      'The board will not repeat the showing. The board has never repeated the showing.',
+      null, 'GRID ' + NX + ' × ' + NY + ' &bull; METRIC: INTERSECTION-OVER-UNION &bull; PLACEMENT &bull; EXTENT');
+    phase = 'preroll';
+    phaseEnd = performance.now() + PREROLL_MS;
+    Juice.sfx('blip');
+  }
+
+  function beginFlash(){
+    phase = 'flash';
+    phaseEnd = performance.now() + FLASH_MS;
+    $('padtag').textContent = 'Observe';
+    Juice.sfx('whoosh');
+    Juice.flash('#EDE6D6', .22);
+  }
+
+  function beginRecall(){
+    phase = 'recall';
+    phaseEnd = performance.now() + RECALL_MS;
+    $('padtag').textContent = 'Draw it';
+    $('padtag').classList.add('live');
+    repaint();
+    setTools(true);
+    Juice.sfx('click');
+    docket('Recall &bull; thirty seconds',
+      null,
+      'Put down what you saw. The board is aware that you cannot. The board would like it anyway.',
+      null, 'PENCIL LIVE &bull; UNDO AND CLEAR PERMITTED &bull; NO SECOND SHOWING');
+  }
+
+  function renderGrid(canvas, A, B, mode){
+    const c = canvas.getContext('2d'), cw = canvas.width / NX, ch = canvas.height / NY;
+    c.fillStyle = '#0B0910'; c.fillRect(0, 0, canvas.width, canvas.height);
+    for (let j = 0; j < NY; j++){
+      for (let i = 0; i < NX; i++){
+        const k = j * NX + i, a = A[k], b = B ? B[k] : 0;
+        let col = null;
+        if (mode === 'overlap'){
+          if (a && b) col = '#3DFC8A';
+          else if (a) col = '#FFD23F';
+          else if (b) col = '#FF3D8A';
+        } else if (a) col = mode === 'target' ? '#EDE6D6' : '#9AA6C0';
+        if (col){ c.fillStyle = col; c.fillRect(i * cw, j * ch, cw, ch); }
+      }
+    }
+  }
+
+  function submit(auto){
+    if (phase !== 'recall') return;
+    if (drawing && cur){ strokes.push(cur); cur = null; drawing = false; }
+    phase = 'review';
+    setTools(false);
+    setTime(0);
+    $('padtag').textContent = 'Under review';
+    $('padtag').classList.remove('live');
+
+    const T = rasterize(shape.lines);
+    const P = rasterize(strokes);
+    const res = compare(T, P);
+    const app = appraise(res, shape);
+
+    total += res.score;
+    if (res.score > best) best = res.score;
+    results.push({ shape: shape, strokes: strokes.slice(), score: res.score, head: app.head, res: res });
+
+    /* the pad becomes the comparison: matched cells, the object in red ink, your graphite */
+    paper(px, W, H, true);
+    for (let j = 0; j < NY; j++){
+      for (let i = 0; i < NX; i++){
+        const k = j * NX + i;
+        if (T[k] && P[k]){
+          px.fillStyle = 'rgba(61,180,110,.26)';
+          px.fillRect(i * CELL * W, j * CELL * W, CELL * W + .6, CELL * W + .6);
+        }
+      }
+    }
+    drawPencil(px, shape.lines, W, 'rgba(176,67,47,.85)', 3);
+    drawPencil(px, strokes, W, 'rgba(43,42,40,.95)', 4.2);
+    px.save();
+    px.font = '400 22px Haettenschweiler, "Arial Narrow", Impact, sans-serif';
+    px.fillStyle = 'rgba(176,67,47,.9)';
+    px.textAlign = 'right';
+    px.fillText('RED = THE OBJECT AS RECORDED', W - 18, H - 44);
+    px.restore();
+
+    renderGrid($('gT'), T, null, 'target');
+    renderGrid($('gW'), P, null, 'witness');
+    renderGrid($('gO'), T, P, 'overlap');
+    $('grids').style.display = 'grid';
+    $('legend').style.display = 'block';
+
+    docket('Appraisal &bull; drawing ' + (roundIdx + 1) + ' of ' + ROUNDS + (auto ? ' &bull; time called' : ''),
+      app.head, app.text, res.score,
+      'SUBJECT: ' + shape.label + '<br>' +
+      'IoU ' + res.iou.toFixed(3) + ' &bull; PLACEMENT ' + res.place.toFixed(2) + ' &bull; EXTENT ' + res.extent.toFixed(2) + '<br>' +
+      'CELLS AGREED ' + res.inter + ' OF ' + res.uni + ' &bull; GRID ' + NX + ' × ' + NY);
+
+    const cx = W * .5, cy = H * .42;
+    if (res.score >= 70){
+      hotStreak++;
+      Juice.reward(cx, cy, { text: String(res.score), color:'#3DFC8A', sound:'good', count:26 });
+      Juice.burst(cx, cy, { color:'#EDE6D6', count:16, speed:4.4, gravity:.02 });
+      if (res.score >= 75) award('admissible', '🏆 COURTROOM ADMISSIBLE');
+    } else if (res.score >= 45){
+      hotStreak++;
+      Juice.reward(cx, cy, { text: String(res.score), color:'#EDE6D6', sound:'pickup' });
+    } else {
+      hotStreak = 0;
+      Juice.impact(cx, cy, { text: String(res.score), color:'#FF3D8A', power:8, sound:'bad' });
+      if (res.score <= 20) award('potato', '🏆 THE POTATO');
+    }
+    if (hotStreak >= 3) award('steady', '🏆 STEADY HAND');
+    if (res.empty) award('blank', '🏆 THE BLANK PAGE, ENTERED');
+
+    renderHud();
+    $('submitBtn').textContent = roundIdx + 1 >= ROUNDS ? 'See the exhibit sheet' : 'Next drawing';
+    $('submitBtn').disabled = false;
+  }
+
+  function advance(){
+    roundIdx++;
+    if (roundIdx >= ROUNDS) showExhibit();
+    else startRound();
+  }
+
+  /* ============================================================
+     EXHIBIT SHEET
+     ============================================================ */
+  function gradeOf(t){
+    if (t >= 430) return { g:'GRADE A', s:'CERTIFIED WITNESS-ARTIST, FIRST CLASS',
+      l:'The board has reviewed the sheet twice and has been unable to locate the part where it falls apart. This is being handled at a level above yours.' };
+    if (t >= 350) return { g:'GRADE B', s:'ADMISSIBLE IN FULL',
+      l:'Five drawings, all of them usable. The archive has been notified. The archive, which has never been notified of anything good, is confused.' };
+    if (t >= 260) return { g:'GRADE C', s:'FILED',
+      l:'A workmanlike sheet. It goes in the drawer with the other workmanlike sheets, and in forty years somebody will pull the drawer open and be glad it is there.' };
+    if (t >= 170) return { g:'GRADE D', s:'FILED, WITH CONCERN',
+      l:'The board has filed it. The board wants it noted that the board has filed it, and that filing is not the same as agreeing.' };
+    return { g:'GRADE F', s:'THE POTATO ARCHIVE',
+      l:'The sheet has been placed in the drawer reserved for the potatoes. It is a large drawer. It is the largest drawer in the building and it is not close.' };
+  }
+
+  function showExhibit(){
+    phase = 'exhibit';
+    const box = $('plates');
+    box.innerHTML = '';
+    results.forEach((r, i) => {
+      const fig = document.createElement('figure');
+      fig.className = 'plate';
+      const c = document.createElement('canvas');
+      c.width = 300; c.height = 225;
+      const cc = c.getContext('2d');
+      paper(cc, c.width, c.height, false);
+      drawPencil(cc, r.strokes, c.width, 'rgba(43,42,40,.95)', 4.6);
+      cc.save();
+      cc.translate(c.width * .72, c.height * .82);
+      cc.rotate(-0.18);
+      cc.strokeStyle = 'rgba(176,67,47,.75)';
+      cc.lineWidth = 2;
+      cc.strokeRect(-42, -17, 84, 34);
+      cc.fillStyle = 'rgba(176,67,47,.85)';
+      cc.font = '400 26px Haettenschweiler, "Arial Narrow", Impact, sans-serif';
+      cc.textAlign = 'center';
+      cc.fillText(String(r.score), 0, 9);
+      cc.restore();
+      const cap = document.createElement('figcaption');
+      cap.innerHTML = '<b>EXHIBIT ' + String.fromCharCode(65 + i) + '</b><br>' +
+        r.shape.label + '<br><span class="sc">SCORE ' + r.score + ' / 100</span> &bull; ' + r.head;
+      fig.appendChild(c); fig.appendChild(cap);
+      box.appendChild(fig);
+    });
+    const gr = gradeOf(total);
+    $('grade').textContent = gr.g + ' — ' + total + ' / 500';
+    $('gradesub').textContent = gr.s;
+    $('gradeline').textContent = gr.l;
+    $('caseno').textContent = 'Case ' + (1900 + Math.floor(Math.random() * 126)) + '-' +
+      String(Math.floor(Math.random() * 9000) + 1000);
+    $('exhibit').classList.add('on');
+    $('exhibit').scrollTop = 0;
+    if (total >= 350) award('archive', '🏆 THE ARCHIVE ACCEPTS YOU');
+    if (!usedClear) award('noerase', '🏆 NO ERASURES');
+    Juice.sfx('win');
+    Juice.flash('#EDE6D6', .3);
+  }
+
+  function fileRecord(){
+    const gr = gradeOf(total);
+    const won = total >= 260;
+    Arcade.gameOver({
+      won: won,
+      title: won ? 'The Record Accepts It.' : 'The Record Accepts It Anyway.',
+      score: best,
+      accent: '#EDE6D6',
+      lines: [
+        '<b>' + gr.g + ' &mdash; ' + total + ' / 500.</b> ' + gr.l,
+        'Now the board would like to say the unfunny part out loud, once, and then we will go back to being ridiculous.',
+        'For roughly a hundred years, <b>this was all anybody had.</b> No phone in the pocket. No sensor pod under the wing. A person saw something they had no vocabulary for, and the entire apparatus of human knowledge handed them a pencil and about thirty seconds and a form with the wrong boxes on it.',
+        'And then, for decades afterward, that person got <b>graded on their handwriting.</b> Not on what they saw &mdash; on their line quality. On whether the circle closed. On whether a frightened human being with a borrowed pencil could produce, in one take, a technical illustration of an object that did not agree to hold still.',
+        'You just tried it. With a mouse. Indoors. Nobody shouting. Nothing overhead.',
+        'The board&rsquo;s finding stands: <b>the drawings were never the evidence.</b> They were people trying, with the worst tools ever issued, to hand us something. Every one of them is in the drawer. Every one of them is still trying.',
+        'Sharpen the pencil. Somebody is going to need it.'
+      ],
+      onRetry: () => {
+        results = []; total = 0; best = 0; roundIdx = 0; hotStreak = 0;
+        usedClear = false; awarded = {}; plan = buildPlan();
+        for (const k in usedLines) delete usedLines[k];
+        $('exhibit').classList.remove('on');
+        $('briefing').classList.add('on');
+        phase = 'idle';
+        strokes = [];
+        renderHud();
+        setTime(RECALL_MS);
+        px.fillStyle = '#07060C'; px.fillRect(0, 0, W, H);
+        $('stage').scrollIntoView({ behavior:'smooth', block:'start' });
+      },
+      links: [
+        { label:'The Bledsoe wing', href:'index.html' },
+        { label:'Visit the shrine', href:'../../shrines/index.html#chris-bledsoe' }
+      ]
+    });
+    const ovs = document.querySelectorAll('.dcab-overlay');
+    const ov = ovs[ovs.length - 1];
+    if (ov){
+      ov.scrollTop = 0;
+      const ps = ov.querySelectorAll('.dcab-lore');
+      [].forEach.call(ps, (p, i) => {
+        p.style.opacity = '0';
+        p.style.transition = 'opacity 1s';
+        setTimeout(() => { p.style.opacity = '1'; }, 240 + i * 850);
+      });
+    }
+  }
+
+  /* ============================================================
+     POINTER — mouse, pen, touch, all the same code path
+     ============================================================ */
+  function ptOf(e){
+    const r = pad.getBoundingClientRect();
+    if (!r.width) return { x:0, y:0 };
+    return {
+      x: clamp((e.clientX - r.left) / r.width, 0, 1),
+      y: clamp((e.clientY - r.top) / r.width, 0, UY)
+    };
+  }
+  pad.addEventListener('pointerdown', e => {
+    if (phase !== 'recall') return;
+    e.preventDefault();
+    try { pad.setPointerCapture(e.pointerId); } catch (err) {}
+    drawing = true;
+    cur = [ptOf(e)];
+    strokes.push(cur);
+    setTools(true);
+    Juice.sfx('tick');
+    lastTick = performance.now();
+    repaint();
+  });
+  pad.addEventListener('pointermove', e => {
+    if (!drawing || phase !== 'recall' || !cur) return;
+    e.preventDefault();
+    const p = ptOf(e), last = cur[cur.length - 1];
+    if (Math.hypot(p.x - last.x, p.y - last.y) < 0.004) return;
+    cur.push(p);
+    px.save();
+    px.lineCap = 'round'; px.lineJoin = 'round';
+    px.strokeStyle = 'rgba(43,42,40,.92)';
+    px.lineWidth = 4.2;
+    px.beginPath();
+    px.moveTo(last.x * W, last.y * W);
+    px.lineTo(p.x * W, p.y * W);
+    px.stroke();
+    px.restore();
+    const now = performance.now();
+    if (now - lastTick > 210){ lastTick = now; Juice.sfx('tick'); }
+  });
+  function endStroke(e){
+    if (!drawing) return;
+    drawing = false;
+    if (cur && cur.length === 1) repaint();  /* a single dot still counts */
+    cur = null;
+    if (phase === 'recall') setTools(true);
+  }
+  pad.addEventListener('pointerup', endStroke);
+  pad.addEventListener('pointercancel', endStroke);
+  pad.addEventListener('pointerleave', endStroke);
+
+  /* ---------- tools ---------- */
+  $('undoBtn').addEventListener('click', () => {
+    if (phase !== 'recall' || !strokes.length) return;
+    strokes.pop();
+    repaint();
+    setTools(true);
+    Juice.sfx('blip');
+  });
+  $('clearBtn').addEventListener('click', () => {
+    if (phase !== 'recall' || !strokes.length) return;
+    strokes = []; cur = null; usedClear = true;
+    repaint();
+    setTools(true);
+    Juice.sfx('shatter');
+  });
+  $('submitBtn').addEventListener('click', () => {
+    Juice.sfx('click');
+    if (phase === 'recall') submit(false);
+    else if (phase === 'review') advance();
+  });
+  $('startBtn').addEventListener('click', () => {
+    Juice.sfx('click');
+    $('briefing').classList.remove('on');
+    startRound();
+  });
+  $('fileBtn').addEventListener('click', () => {
+    Juice.sfx('coin');
+    $('exhibit').classList.remove('on');
+    fileRecord();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (phase === 'recall'){
+      if (e.key === 'z' || e.key === 'Z'){ e.preventDefault(); $('undoBtn').click(); }
+      else if (e.key === 'c' || e.key === 'C'){ e.preventDefault(); $('clearBtn').click(); }
+      else if (e.key === 'Enter'){ e.preventDefault(); $('submitBtn').click(); }
+    } else if (phase === 'review'){
+      if (e.key === 'Enter' || e.code === 'Space'){ e.preventDefault(); $('submitBtn').click(); }
+    }
+  });
+
+  /* ============================================================
+     LOOP
+     ============================================================ */
+  function loop(now){
+    requestAnimationFrame(loop);
+    if (phase === 'preroll'){
+      drawPreroll();
+      if (now >= phaseEnd) beginFlash();
+    } else if (phase === 'flash'){
+      drawFlash(shape, now);
+      if (now >= phaseEnd) beginRecall();
+    } else if (phase === 'recall'){
+      const left = Math.max(0, phaseEnd - now);
+      setTime(left);
+      if (left < 5200 && now - lastBeep > 900){ lastBeep = now; Juice.sfx('tick'); }
+      if (left <= 0) submit(true);
+    }
+  }
+
+  /* ---------- boot ---------- */
+  px.fillStyle = '#07060C'; px.fillRect(0, 0, W, H);
+  px.fillStyle = 'rgba(237,230,214,.35)';
+  px.font = '400 30px Haettenschweiler, "Arial Narrow", Impact, sans-serif';
+  px.textAlign = 'center';
+  px.fillText('THE PAD IS BLANK. IT HAS BEEN BLANK FOR A HUNDRED YEARS.', W / 2, H / 2);
+  px.textAlign = 'left';
+  renderHud();
+  setTime(RECALL_MS);
+  requestAnimationFrame(loop);
+
+  Arcade.cabinet({
+    id: 'the-sketch',
+    wing: 'THE CHRIS BLEDSOE EXPERIENCE',
+    title: 'The Sketch',
+    subtitle: 'Witness Drawing, Form 12-B',
+    accent: '#EDE6D6',
+    scoreLabel: 'BEST LIKENESS',
+    lore: 'Long before anybody had a phone in their pocket, the entire evidentiary record of this ' +
+          'phenomenon was <b>witness drawings</b> — regular people, handed a pencil by a man with a ' +
+          'clipboard, and asked to render the impossible. The board has restored the practice. ' +
+          'You will be shown something for <b>two seconds</b>. Then you will draw it from memory. ' +
+          'Your drawing will be entered into the permanent record, and it will be judged — by grid, ' +
+          'by overlap, by extent, and out loud.',
+    howto: [
+      'WATCH — the object appears for two seconds. Once.',
+      'DRAW — mouse, pen or finger, straight onto the sheet',
+      'UNDO (Z) &bull; CLEAR (C) &bull; SUBMIT (Enter)',
+      'THIRTY SECONDS per drawing, then time is called',
+      'FIVE drawings, each harder than the last',
+      'SCORING is a 32×24 occupancy grid. No mercy in it.'
+    ],
+    shrine: '../../shrines/index.html#chris-bledsoe',
+    onStart: () => {
+      $('briefing').classList.add('on');
+      $('stage').scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -352,6 +352,8 @@
   <a href="../../index.html">Back to the arcade</a> &bull; <a href="../hearsay-engine/index.html">Previous wing: The Hearsay Engine</a></p>
 </footer>
 
+<script src="../../assets/screen.js"></script>
+
 <script src="../../assets/arcade.js"></script>
 <script src="../../assets/juice.js"></script>
 <script>
@@ -360,6 +362,7 @@
   const view   = document.getElementById('view');
   const dctx   = view.getContext('2d');
   Juice.init(view);
+  if (window.Optics) Optics.apply(view, { bloom: 1.2, curve: 0.075, scanline: 0.6 });
   const scrub  = document.getElementById('scrub');
   const knob   = document.getElementById('knob');
   const marksEl= document.getElementById('marks');

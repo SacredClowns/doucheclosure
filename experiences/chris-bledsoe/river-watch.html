@@ -780,8 +780,8 @@
      ============================================================ */
   let phase = 'idle';     // idle | watch | called | over
   let roundIx = 0, lights = [], subject = null, roundStart = 0, frozenT = 0;
-  let correct = 0, falsePos = 0, missed = 0, awarded = {}, spawnedExtra = {};
-  let results = [];
+  let correct = 0, falsePos = 0, missed = 0, awarded = {};
+  let results = [], promptFlipped = false;
 
   function award(key, label){
     if (awarded[key]) return;
@@ -831,7 +831,7 @@
   function startRound(){
     const spec = ROUNDS[roundIx];
     lights = [];
-    spawnedExtra = {};
+    promptFlipped = false;
     subject = build(spec.sub, { variant: spec.variant });
     lights.push(subject);
     (spec.extras || []).forEach(k => {
@@ -1054,7 +1054,6 @@
   /* ============================================================
      LOOP
      ============================================================ */
-  let promptFlipped = false;
   function frame(){
     requestAnimationFrame(frame);
     const t = phase === 'idle' ? performance.now() / 1000 : elapsed();
@@ -1113,10 +1112,6 @@
   }
 
   /* ---------- wiring ---------- */
-  const origStart = startRound;
-  function startRoundWrapped(){ promptFlipped = false; origStart(); }
-  startRound = startRoundWrapped;
-
   $('nextBtn').addEventListener('click', () => { Juice.sfx('click'); next(); });
   $('startBtn').addEventListener('click', () => {
     Juice.sfx('click');

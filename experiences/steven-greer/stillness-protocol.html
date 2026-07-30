@@ -116,6 +116,8 @@
   </div>
 </div>
 
+<script src="../../assets/screen.js"></script>
+
 <script src="../../assets/arcade.js"></script>
 <script src="../../assets/juice.js"></script>
 <script>
@@ -451,6 +453,7 @@
     shrine: '../../shrines/index.html#steven-greer',
     onStart: () => {
       Juice.init(cv);
+  if (window.Optics) Optics.apply(cv, { bloom: 0.9, curve: 0.05, scanline: 0.35, grain: 0.02, flicker: 0 });
       loop();
       setTimeout(() => { started = true; }, 0);
     }

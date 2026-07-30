@@ -199,6 +199,21 @@
       certify. <b style="color:var(--white)">Owner's exclusive — included in the Full Experience below.</b></p>
       <a class="btn" href="#prize" style="background:var(--orb); border-color:var(--orb); color:#231602;">INSIDE THE FULL EXPERIENCE — $5</a>
     </div>
+
+    <div class="game-shell" style="margin-top:1.5rem;">
+      <h2 class="sec" style="margin-bottom:.4rem;">The Bledsoe Midway — Five Games</h2>
+      <p class="prose" style="max-width:36rem; margin:0 auto 1.2rem; text-align:center;">Five cabinets,
+      five completely different games, and between them the entire argument this wing has been making
+      for eighteen years: <b style="color:var(--white)">the phenomenon was never the problem — the
+      preparation was.</b></p>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); gap:.75rem;">
+        <a class="btn" style="text-align:center;" href="#game">1 · ORB PHOTOGRAPHER<br><span style="font-size:.62rem; opacity:.75;">Focus timing · twelve exposures</span></a>
+        <a class="btn" style="text-align:center;" href="tripod.html">2 · TRIPOD<br><span style="font-size:.62rem; opacity:.75;">Loadout · ninety seconds to be ready</span></a>
+        <a class="btn" style="text-align:center;" href="river-watch.html">3 · RIVER WATCH<br><span style="font-size:.62rem; opacity:.75;">Classification · learn the real tells</span></a>
+        <a class="btn" style="text-align:center;" href="the-sketch.html">4 · THE SKETCH<br><span style="font-size:.62rem; opacity:.75;">Drawing · entered into the record</span></a>
+        <a class="btn" style="text-align:center;" href="debunk-gauntlet.html">5 · THE DEBUNK GAUNTLET<br><span style="font-size:.62rem; opacity:.75;">Evidence cards · survive the internet</span></a>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -230,6 +245,8 @@
   <p>DOUCHECLOSURE&trade; EXPERIENCES &bull; A work of parody commenting on public statements of public figures.<br>
   <a href="../../index.html">Back to the arcade</a> &bull; <a href="../the-egg/index.html">Previous wing: The Egg</a></p>
 </footer>
+
+<script src="../../assets/screen.js"></script>
 
 <script src="../../assets/arcade.js"></script>
 <script src="../../assets/juice.js"></script>
@@ -268,6 +285,7 @@
     verdictEl.textContent = ' ';
     updateHud();
     Juice.init(cv);
+  if (window.Optics) Optics.apply(cv, { bloom: 1.2, curve: 0.075, scanline: 0.6 });
   }
   function spawnOrb(){
     orbs.push({
