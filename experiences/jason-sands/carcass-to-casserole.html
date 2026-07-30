@@ -106,6 +106,7 @@
   </div>
 </div>
 
+<script src="../../assets/screen.js"></script>
 <script src="../../assets/arcade.js"></script>
 <script src="../../assets/juice.js"></script>
 <script>
@@ -113,6 +114,7 @@
   const cv = document.getElementById('game');
   const cx = cv.getContext('2d');
   Juice.init(cv);
+  if (window.Optics) Optics.apply(cv, { bloom: 1.25, curve: 0.075, scanline: 0.6 });
   let W, H;
   const fit = () => { W = cv.width = cv.clientWidth; H = cv.height = cv.clientHeight; };
   addEventListener('resize', fit);

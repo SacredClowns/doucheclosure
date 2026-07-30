@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RIVER WATCH — Doucheclosure</title>
+<meta name="description" content="Twelve lights over the river. Airliners, satellites, a planet, a drone, a bug zapper, a meteor — and two that are none of those. Name them correctly or you are the reason the archive is garbage.">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --river:#4A9EE8; --orb:#FFB84D; --shadow:rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--void);}
+  body{margin:0; background:var(--void); color:var(--white);
+    font-family:"Courier New", Courier, monospace; line-height:1.65; overflow-x:hidden;}
+  body::after{content:""; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 1px, transparent 1px 3px);
+    pointer-events:none; z-index:100;}
+  a{color:var(--neon-cyan);}
+  .wrap{max-width:980px; margin:0 auto; padding:0 1.25rem;}
+  .display{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-weight:400; text-transform:uppercase; letter-spacing:.03em; line-height:.95;}
+  .crumb{padding:1rem 1.25rem; font-size:.72rem; letter-spacing:.15em; text-transform:uppercase;}
+  .crumb a{text-decoration:none;}
+
+  header.wing{
+    text-align:center; padding:2.4rem 1rem 2.2rem;
+    background:radial-gradient(ellipse at 50% -20%, rgba(74,158,232,.28), transparent 60%),
+      radial-gradient(ellipse at 88% 118%, rgba(255,184,77,.09), transparent 55%);
+    border-bottom:3px solid var(--river);
+  }
+  .wing .eyebrow{color:var(--neon-cyan); letter-spacing:.28em; text-transform:uppercase; font-size:.72rem;}
+  .wing h1{margin:.5rem 0 0; font-size:clamp(2.4rem,9vw,4.4rem); color:var(--river);
+    text-shadow:0 0 16px rgba(74,158,232,.6), 4px 4px 0 #0E2C4C;}
+  .wing .sub{color:var(--chrome); max-width:37rem; margin:1.1rem auto 0; font-size:.9rem;}
+  .wing .sub b{color:var(--white);}
+  .file-tab{display:inline-block; margin-top:1.2rem; border:2px solid var(--neon-yellow);
+    color:var(--neon-yellow); padding:.4rem 1.1rem; font-size:.72rem; letter-spacing:.2em;
+    text-transform:uppercase; transform:rotate(-1.5deg);}
+
+  section{padding:2rem 0 2.6rem;}
+
+  /* ---------- stage ---------- */
+  #stage{position:relative; background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:2px solid #24466B; border-radius:12px;
+    box-shadow:0 0 26px rgba(74,158,232,.16),0 12px 34px var(--shadow);
+    padding:1.1rem; overflow:hidden;}
+  #stage::before{content:""; position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(ellipse at 22% 20%, rgba(74,158,232,.13), transparent 58%);}
+
+  #hud{display:flex; gap:.75rem; flex-wrap:wrap; align-items:center;
+    position:relative; z-index:2; font-size:.62rem; letter-spacing:.18em; text-transform:uppercase;}
+  .pill{border:1px dashed rgba(185,175,208,.4); border-radius:6px; padding:.35rem .6rem; color:var(--chrome);}
+  .pill b{color:var(--white); font-weight:normal;}
+  .pill.good{border-color:rgba(61,252,138,.5); color:var(--neon-green);}
+  .pill.good b{color:var(--neon-green);}
+  .pill.warn{border-color:rgba(255,61,138,.5); color:var(--neon-pink);}
+  .pill.warn b{color:var(--neon-pink);}
+  .pill.round{border-color:rgba(74,158,232,.55); color:var(--river);}
+  .pill.round b{color:var(--river);}
+
+  #board{position:relative; z-index:2; margin:.7rem 0 .55rem; font-size:.62rem; letter-spacing:.14em;
+    text-transform:uppercase; color:#7E6F9E; min-height:1.1rem;}
+
+  #skywrap{position:relative; z-index:2; border:2px solid #1D3550; border-radius:10px; overflow:hidden;
+    background:#03060F;}
+  #sky{width:100%; height:auto; display:block; touch-action:manipulation;}
+
+  #logstrip{display:flex; gap:4px; margin:.6rem 0 0; position:relative; z-index:2; flex-wrap:wrap;}
+  .slot{flex:1 1 34px; min-width:26px; height:22px; border:1px solid #2C3A55; border-radius:4px;
+    background:#0A0F1A; color:#4E5C74; font-size:.58rem; letter-spacing:.06em;
+    display:flex; align-items:center; justify-content:center;}
+  .slot.now{border-color:var(--river); color:var(--river); box-shadow:0 0 10px rgba(74,158,232,.4);}
+  .slot.ok{border-color:var(--neon-green); color:var(--neon-green); background:rgba(61,252,138,.08);}
+  .slot.no{border-color:var(--neon-pink); color:var(--neon-pink); background:rgba(255,61,138,.08);}
+  .slot.fp{border-color:var(--neon-yellow); color:var(--neon-yellow); background:rgba(255,210,63,.1);}
+
+  #prompt{position:relative; z-index:2; margin:.75rem 0 .3rem; font-size:.66rem; letter-spacing:.2em;
+    text-transform:uppercase; color:var(--chrome); min-height:1.1rem;}
+  #prompt .go{color:var(--neon-yellow);}
+  #prompt .wait{color:#6E7E9C;}
+
+  /* ---------- classification ---------- */
+  #calls{display:grid; grid-template-columns:repeat(auto-fill,minmax(146px,1fr)); gap:.5rem;
+    position:relative; z-index:2; margin-top:.35rem;}
+  .call{position:relative; text-align:left; cursor:pointer; color:var(--white); font-family:inherit;
+    background:linear-gradient(180deg,#152131,#0D1420); border:2px solid #2C4463; border-radius:9px;
+    padding:.5rem .6rem .55rem; min-height:60px; transition:transform .1s, border-color .15s, box-shadow .15s;}
+  .call .k{position:absolute; top:4px; right:6px; font-size:.55rem; color:#4E5C74; letter-spacing:.08em;}
+  .call .n{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; font-weight:400;
+    text-transform:uppercase; letter-spacing:.04em; font-size:1rem; line-height:1.05; color:var(--river);}
+  .call .d{font-size:.6rem; color:#8395AF; letter-spacing:.02em; line-height:1.35; margin-top:.18rem;}
+  .call:hover:not(:disabled){border-color:var(--river); box-shadow:0 0 14px rgba(74,158,232,.35); transform:translateY(-2px);}
+  .call:disabled{opacity:.35; cursor:default;}
+  .call.unk{border-color:#5A3A1E; background:linear-gradient(180deg,#241704,#140C08);}
+  .call.unk .n{color:var(--orb);}
+  .call.unk:hover:not(:disabled){border-color:var(--orb); box-shadow:0 0 14px rgba(255,184,77,.4);}
+
+  /* ---------- verdict ---------- */
+  #verdict{display:none; position:relative; z-index:2; margin-top:.8rem;
+    background:#080D18; border:2px solid #2B4468; border-left:5px solid var(--river);
+    border-radius:8px; padding:.85rem 1rem;}
+  #verdict.ok{border-left-color:var(--neon-green);}
+  #verdict.no{border-left-color:var(--neon-pink);}
+  #vkick{font-size:.58rem; letter-spacing:.24em; text-transform:uppercase; color:var(--river); margin-bottom:.4rem;}
+  #verdict.ok #vkick{color:var(--neon-green);} #verdict.no #vkick{color:var(--neon-pink);}
+  #vtruth{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; text-transform:uppercase;
+    font-size:1.35rem; letter-spacing:.04em; margin:0 0 .35rem; color:var(--white);}
+  #vtext{font-size:.84rem; color:var(--chrome); line-height:1.62; margin:0;}
+  #vtext b{color:var(--white);} #vtext .fp{color:var(--neon-yellow);}
+  #nextBtn{margin-top:.8rem;}
+
+  /* ---------- field card ---------- */
+  details.field{margin-top:1rem; position:relative; z-index:2; border:1px dashed rgba(185,175,208,.3);
+    border-radius:8px; padding:.55rem .8rem; background:rgba(8,13,24,.6);}
+  details.field summary{cursor:pointer; font-size:.6rem; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--neon-yellow); list-style:none;}
+  details.field summary::-webkit-details-marker{display:none;}
+  details.field summary::before{content:"\25B8 "; color:var(--neon-yellow);}
+  details.field[open] summary::before{content:"\25BE ";}
+  details.field ul{margin:.6rem 0 .2rem; padding:0 0 0 .2rem; list-style:none; display:grid; gap:.4rem;}
+  details.field li{font-size:.72rem; color:#8E9CB5; line-height:1.5;}
+  details.field li b{color:var(--river); letter-spacing:.08em;}
+
+  /* ---------- briefing ---------- */
+  #briefing{position:absolute; inset:0; z-index:40; display:none; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center; padding:1.4rem;
+    background:rgba(4,7,14,.96);}
+  #briefing h2{font-size:clamp(1.5rem,5vw,2.4rem); color:var(--river); text-shadow:0 0 18px rgba(74,158,232,.5); margin:0;}
+  #briefing p{max-width:35rem; margin:.85rem auto; color:var(--chrome); font-size:.86rem;}
+  #briefing b{color:var(--white);}
+  .btn{display:inline-block; margin:.4rem; padding:.85rem 1.6rem; border-radius:8px; cursor:pointer;
+    font-family:inherit; font-weight:bold; font-size:.78rem; letter-spacing:.14em; text-transform:uppercase;
+    text-decoration:none; border:2px solid var(--river); background:var(--river); color:#04182C;}
+  .btn:hover{filter:brightness(1.12);}
+  .btn.ghost{background:transparent; color:var(--neon-cyan); border-color:var(--neon-cyan);}
+
+  .dossier{border-left:4px solid var(--neon-yellow); background:var(--panel);
+    padding:1.05rem 1.25rem; color:var(--chrome); font-size:.86rem; margin-top:1.6rem;}
+  .dossier b{color:var(--white);}
+  footer{padding:2rem 1rem 3rem; text-align:center; color:#7E6F9E; font-size:.72rem;}
+
+  @media (max-width:760px){
+    #stage{padding:.75rem;}
+    header.wing{padding:1.8rem 1rem 1.6rem;}
+    #calls{grid-template-columns:repeat(auto-fill,minmax(112px,1fr)); gap:.4rem;}
+    .call{min-height:54px; padding:.42rem .45rem .48rem;}
+    .call .n{font-size:.86rem;}
+    .call .d{font-size:.55rem;}
+    .call .k{display:none;}
+    .slot{height:18px; font-size:.5rem;}
+    #hud{gap:.45rem; font-size:.56rem;}
+    #vtruth{font-size:1.1rem;}
+  }
+</style>
+</head>
+<body>
+
+<p class="crumb"><a href="../../index.html">&larr; THE ARCADE</a> &nbsp;/&nbsp; <a href="index.html">CHRIS BLEDSOE</a> &nbsp;/&nbsp; RIVER WATCH</p>
+
+<header class="wing">
+  <p class="eyebrow">The Chris Bledsoe Experience &bull; Cabinet No. 3</p>
+  <h1 class="display">River<br>Watch</h1>
+  <p class="sub">The board has stopped arguing about whether there is something over the river and
+  started doing the boring work nobody in this field does: <b>telling the difference.</b> Tonight
+  everything that flies will fly over you. You will name it correctly, or you will be the reason
+  the archive is garbage.</p>
+  <span class="file-tab">CAPE FEAR &bull; 21:40 &bull; SEEING: GOOD &bull; MOON: DOWN</span>
+</header>
+
+<section>
+  <div class="wrap">
+    <div id="stage">
+
+      <div id="hud">
+        <span class="pill round">Light <b id="hudRound">1</b> / 12</span>
+        <span class="pill good">Correct calls <b id="hudCorrect">0</b></span>
+        <span class="pill warn">False positives <b id="hudFp">0</b></span>
+        <span class="pill">Missed anomalies <b id="hudMiss">0</b></span>
+      </div>
+
+      <p id="board">&nbsp;</p>
+
+      <div id="skywrap">
+        <canvas id="sky" width="960" height="540" aria-label="A night sky over a treeline and a river. Lights cross it one at a time."></canvas>
+      </div>
+
+      <div id="logstrip"></div>
+
+      <p id="prompt">&nbsp;</p>
+
+      <div id="calls"></div>
+
+      <div id="verdict">
+        <div id="vkick">Review board</div>
+        <p id="vtruth">&nbsp;</p>
+        <p id="vtext">&nbsp;</p>
+        <button class="btn" id="nextBtn">Next light</button>
+      </div>
+
+      <details class="field">
+        <summary>Field card &mdash; the seven signatures (real ones)</summary>
+        <ul>
+          <li><b>AIRLINER</b> &mdash; steady heading, constant speed, red and green position lights either side of a white anticollision strobe. Sound arrives seconds late, or never, if it is high enough.</li>
+          <li><b>SATELLITE</b> &mdash; a steady unblinking point. It carries no lights at all; you are seeing reflected sunlight. Straight, slow, and it fades out mid-sky when it enters Earth's shadow.</li>
+          <li><b>PLANET / STAR</b> &mdash; does not move against the treeline, ever. Twinkles, because the atmosphere is moving even when it isn't. Stare at it in a dark field and it will seem to wander: the <b>autokinetic effect</b>. Use a reference &mdash; a branch, a post, a roofline.</li>
+          <li><b>DRONE</b> &mdash; hovers, reverses, changes direction with no turn radius, blinks much faster than an airliner, and stays low and local.</li>
+          <li><b>BUG ZAPPER</b> &mdash; low, fixed, at or below the treeline, warm orange, flickering when something flies into it. Check the ground before you check the sky.</li>
+          <li><b>METEOR</b> &mdash; under a second, one direction, a trail, gone. Anything lasting more than a couple of seconds is not a meteor. That is the entire test.</li>
+          <li><b>UNEXPLAINED</b> &mdash; the category you earn by emptying the other six first. No strobe, no engine, no fade, no arc, no signature of any kind. Log exactly what you saw and not one word more.</li>
+        </ul>
+      </details>
+
+      <div id="briefing">
+        <h2 class="display">Take The Chair.</h2>
+        <p>Twelve lights will cross this sky, one and sometimes two at a time. <b>Watch each one all
+        the way through</b> &mdash; the tell is usually late. Then call it.</p>
+        <p>Ten of the twelve will have an ordinary explanation, and you are going to say so, in
+        writing, with the time on it. <b>The other two will not.</b> Those two are only worth
+        anything if the other ten are clean.</p>
+        <button class="btn" id="startBtn">Open the log</button>
+      </div>
+
+    </div>
+
+    <div class="dossier">
+      <b>WING DOCTRINE:</b> We do not doubt the river. Something has kept an eighteen-year
+      appointment on that water and we take the man at his word. Our grievance is clerical: nobody
+      ever built the <b>control set</b>. A sighting log with no airplanes in it is not a sighting log
+      &mdash; it is a wish. This cabinet is the missing paperwork.
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>DOUCHECLOSURE&trade; EXPERIENCES &bull; A work of parody commenting on public statements of public figures.<br>
+  <a href="index.html">Back to the Bledsoe wing</a> &bull; <a href="../../shrines/index.html#chris-bledsoe">The shrine</a> &bull;
+  <a href="../../index.html">The arcade</a></p>
+</footer>
+
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const cv = $('sky');
+  const cx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  const TREE_TOP = 402, WATER = 486;
+  Juice.init(cv);
+
+  /* ============================================================
+     STATIC SCENE — seeded so the treeline is the same reference
+     every round. That matters: it is the thing you measure against.
+     ============================================================ */
+  let seed = 90731;
+  function rnd(){ seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }
+
+  const STARS = [];
+  for (let i = 0; i < 190; i++){
+    STARS.push({ x: rnd() * W, y: rnd() * (TREE_TOP - 10), r: 0.5 + rnd() * 1.1,
+                 a: 0.25 + rnd() * 0.55, tw: rnd() * 6.3, ts: 0.6 + rnd() * 2.2 });
+  }
+  const TREES = [];
+  for (let x = -30; x < W + 40; x += 14 + rnd() * 16){
+    TREES.push({ x: x, h: 30 + rnd() * 74, w: 12 + rnd() * 20 });
+  }
+
+  /* ============================================================
+     LIGHT TYPES
+     ============================================================ */
+  const KINDS = ['airliner','satellite','star','drone','zapper','meteor','unexplained'];
+  const NAMES = {
+    airliner:'Airliner', satellite:'Satellite', star:'Venus / Star', drone:'Drone',
+    zapper:'Bug Zapper', meteor:'Meteor', unexplained:'Unexplained'
+  };
+  const BLURB = {
+    airliner:'Strobes. Straight. Constant.',
+    satellite:'Steady, no blink, then fades.',
+    star:'Doesn’t move. Twinkles.',
+    drone:'Hovers, jerks, blinks fast.',
+    zapper:'Low, orange, at the trees.',
+    meteor:'One second. Gone.',
+    unexplained:'Nothing else fits.'
+  };
+
+  /* The teaching. These are real. */
+  const TELL = {
+    airliner:'Red and green position lights either side of a white anticollision strobe, on a heading it never changed and a speed it never varied. Commercial traffic holds a line because it has been assigned one. <b>If it blinks and it keeps going straight, you are done.</b>',
+    satellite:'Satellites don’t blink — they carry no lights at all. What you saw was sunlight bouncing off metal. Steady, straight, slow, and then it faded out mid-sky as it crossed into Earth’s shadow. <b>That fade is the shadow line. That’s how you know.</b>',
+    star:'It never moved against the treeline. Not once. It twinkled, because the air between you and it is moving even when nothing else is, and it seemed to drift because <b>everything seems to drift when you stare at a fixed light in the dark</b> — the autokinetic effect, and it has eaten more sightings than every hoaxer alive. Pick a branch. Measure against the branch.',
+    drone:'It hovered, it reversed, it changed direction with no turn radius, and the blink rate was several times an airliner’s. Nothing crewed moves like that at that altitude. <b>Hover plus fast blink plus abrupt vector change is a small UAS, every time.</b>',
+    zapper:'Low, fixed, sitting at the treeline, warm orange, flaring whenever something flew into it. It is a bug zapper on somebody’s deck. <b>A Pentagon official’s life was reportedly changed by one of these.</b> Check the ground before you check the sky.',
+    meteor:'Gone in under a second, one direction, a trail behind it. <b>Duration is the whole test.</b> If a &ldquo;shooting star&rdquo; lasts more than a couple of seconds, it was never a meteor and you have just learned something about the witness.',
+    unexplained:'No strobe. No engine note. No fade, no arc, no turn radius, no reflection geometry — it changed direction like a cursor and then it simply stopped existing. <b>Six explanations were available and none of them fit.</b> Log exactly what you saw and not one word more. That is the entry that survives.'
+  };
+  /* What the guess WOULD have looked like — used on a miss. */
+  const WOULD = {
+    airliner:'An airliner would have shown red and green either side of a white strobe, holding one heading at one speed.',
+    satellite:'A satellite would have been a steady unblinking point that faded out mid-sky.',
+    star:'A planet or a star would not have moved against the treeline at all.',
+    drone:'A drone would have hovered, jerked, and blinked several times a second.',
+    zapper:'A bug zapper would have sat at the treeline flickering orange and gone precisely nowhere.',
+    meteor:'A meteor would have been gone inside one second.',
+    unexplained:'Unexplained is for a light that leaves no signature. This one left one.'
+  };
+
+  /* ============================================================
+     ROUNDS — 12 lights. Two of them are real.
+     ============================================================ */
+  const ROUNDS = [
+    { sub:'airliner', extras:[], win:9.4,
+      board:'BOARD: clear sky, no moon, no cloud. We start you easy on purpose.' },
+    { sub:'star', extras:[], win:7.0,
+      board:'BOARD: low in the west. The board would like you to take your time.' },
+    { sub:'satellite', extras:[], win:7.6,
+      board:'BOARD: pass predicted for 21:47. Nobody on this river has ever checked a pass prediction.' },
+    { sub:'drone', extras:[], win:8.4,
+      board:'BOARD: there is a house four hundred yards downstream with a teenager in it.' },
+    { sub:'zapper', extras:[], win:6.4,
+      board:'BOARD: before you look up, look at the treeline. Please. Once.' },
+    { sub:'meteor', extras:[], win:4.6,
+      board:'BOARD: Perseids are up. Rate is about one a minute. Count them, don’t canonize them.' },
+    { sub:'airliner', extras:['meteor'], cloud:true, win:10.2,
+      board:'BOARD: cloud deck moving in at eight thousand. Partial obscuration is not an anomaly.' },
+    { sub:'unexplained', variant:'A', extras:[], win:9.6,
+      board:'BOARD: no scheduled traffic. No pass predicted. Nothing on the water.' },
+    { sub:'drone', extras:['star'], win:8.6,
+      board:'BOARD: two lights in frame. Log the bracketed one. The other one is not your problem.' },
+    { sub:'satellite', extras:['airliner'], win:8.6,
+      board:'BOARD: two at once. One of them blinks. That is the entire lesson.' },
+    { sub:'star', extras:['drone'], win:8.0,
+      board:'BOARD: when something else in frame is moving, everything looks like it is moving.' },
+    { sub:'unexplained', variant:'B', extras:['airliner'], win:10.6,
+      board:'BOARD: last light of the night. Whatever this is, it gets the entry it earns.' }
+  ];
+
+  /* ============================================================
+     LIGHT CONSTRUCTORS
+     ============================================================ */
+  function makeAirliner(o){
+    o = o || {};
+    const dir = o.dir != null ? o.dir : (rnd() < 0.5 ? 1 : -1);
+    const sp  = o.sp || (104 + rnd() * 22);
+    return {
+      kind:'airliner', dir:dir, sp:sp,
+      x0: dir > 0 ? -50 : W + 50, y0: o.y != null ? o.y : (86 + rnd() * 180),
+      vy: (rnd() - 0.5) * 9,
+      x:0, y:0, alpha:1, gone:false, obs:1
+    };
+  }
+  function makeSatellite(o){
+    o = o || {};
+    const dir = o.dir != null ? o.dir : (rnd() < 0.5 ? 1 : -1);
+    return {
+      kind:'satellite', dir:dir, sp: 48 + rnd() * 12,
+      x0: dir > 0 ? 90 + rnd() * 90 : W - 90 - rnd() * 90,
+      y0: 70 + rnd() * 90, vy: 16 + rnd() * 12,
+      fade0: 4.3, fadeD: 1.5,
+      x:0, y:0, alpha:1, gone:false, obs:1
+    };
+  }
+  function makeStar(o){
+    o = o || {};
+    return {
+      kind:'star',
+      x0: o.x != null ? o.x : (140 + rnd() * (W - 280)),
+      y0: o.y != null ? o.y : (232 + rnd() * 108),
+      x:0, y:0, alpha:1, gone:false, obs:1
+    };
+  }
+  function makeDrone(o){
+    o = o || {};
+    const segs = [];
+    let px = o.x != null ? o.x : (220 + rnd() * (W - 440));
+    let py = o.y != null ? o.y : (196 + rnd() * 132);
+    const x0 = px, y0 = py;
+    let t = 0;
+    for (let i = 0; i < 12; i++){
+      const hover = rnd() < 0.42;
+      const dur = 0.6 + rnd() * 0.85;
+      let vx = 0, vy = 0;
+      if (!hover){
+        const a = rnd() * Math.PI * 2;
+        const s = 52 + rnd() * 62;
+        vx = Math.cos(a) * s; vy = Math.sin(a) * s * 0.6;
+      }
+      let nx = px + vx * dur, ny = py + vy * dur;
+      if (nx < 110 || nx > W - 110){ vx = -vx; nx = px + vx * dur; }
+      if (ny < 150 || ny > 356){ vy = -vy; ny = py + vy * dur; }
+      segs.push({ t0:t, t1:t + dur, x:px, y:py, vx:vx, vy:vy });
+      px = nx; py = ny; t += dur;
+    }
+    return { kind:'drone', segs:segs, x0:x0, y0:y0, x:0, y:0, alpha:1, gone:false, obs:1 };
+  }
+  function makeZapper(o){
+    o = o || {};
+    const zaps = [];
+    let t = 0.5;
+    for (let i = 0; i < 9; i++){ zaps.push(t); t += 0.5 + rnd() * 1.3; }
+    return {
+      kind:'zapper', zaps:zaps,
+      x0: o.x != null ? o.x : (170 + rnd() * (W - 340)),
+      y0: TREE_TOP + 26 + rnd() * 30,
+      x:0, y:0, alpha:1, gone:false, obs:1
+    };
+  }
+  function makeMeteor(o){
+    o = o || {};
+    const dir = rnd() < 0.5 ? 1 : -1;
+    const t0 = o.t0 != null ? o.t0 : (1.1 + rnd() * 1.4);
+    const dur = 0.52 + rnd() * 0.26;
+    const y0 = 50 + rnd() * 120;
+    return {
+      kind:'meteor', t0:t0, dur:dur, dir:dir,
+      x0: dir > 0 ? 130 + rnd() * 180 : W - 130 - rnd() * 180, y0:y0,
+      vx: dir * (620 + rnd() * 300), vy: 300 + rnd() * 240,
+      x:0, y:0, alpha:1, gone:true, hidden:true, obs:1
+    };
+  }
+  function makeUnexplained(variant){
+    if (variant === 'B'){
+      return {
+        kind:'unexplained', variant:'B',
+        x0: 190, y0: 190 + rnd() * 90,
+        sp: 27, turnAt: 6.2, stopD: 0.9, vanishAt: 9.2,
+        x:0, y:0, alpha:1, gone:false, obs:1
+      };
+    }
+    const dir = rnd() < 0.5 ? 1 : -1;
+    return {
+      kind:'unexplained', variant:'A', dir:dir,
+      x0: dir > 0 ? 190 : W - 190, y0: 150 + rnd() * 70,
+      sp: 78, turnAt: 3.5, vanishAt: 8.0,
+      x:0, y:0, alpha:1, gone:false, obs:1
+    };
+  }
+
+  function build(kind, opts){
+    switch (kind){
+      case 'airliner':    return makeAirliner(opts);
+      case 'satellite':   return makeSatellite(opts);
+      case 'star':        return makeStar(opts);
+      case 'drone':       return makeDrone(opts);
+      case 'zapper':      return makeZapper(opts);
+      case 'meteor':      return makeMeteor(opts);
+      case 'unexplained': return makeUnexplained(opts && opts.variant);
+    }
+    return makeStar(opts);
+  }
+
+  /* ============================================================
+     MOTION
+     ============================================================ */
+  function update(L, t){
+    L.hidden = false;
+    switch (L.kind){
+      case 'airliner': {
+        L.x = L.x0 + L.dir * L.sp * t;
+        L.y = L.y0 + L.vy * t;
+        L.gone = (L.x < -70 || L.x > W + 70);
+        const ph = t % 1.05;
+        L.nav = ph < 0.62;
+        const sp2 = t % 1.35;
+        L.strobe = (sp2 < 0.055) || (sp2 > 0.20 && sp2 < 0.255);
+        L.alpha = 1;
+        break;
+      }
+      case 'satellite': {
+        L.x = L.x0 + L.dir * L.sp * t;
+        L.y = L.y0 + L.vy * t;
+        const f = (t - L.fade0) / L.fadeD;
+        L.alpha = f <= 0 ? 1 : Math.max(0, 1 - f);
+        if (L.alpha < 0.18) L.fadeSeen = true;
+        L.gone = L.alpha <= 0.002 || L.x < -40 || L.x > W + 40;
+        break;
+      }
+      case 'star': {
+        L.x = L.x0; L.y = L.y0;
+        const tw = 0.72 + 0.28 * (0.5 + 0.5 * Math.sin(t * 7.3) * Math.sin(t * 3.1 + 1.4) * Math.sin(t * 11.7 + 0.6));
+        L.alpha = Math.max(0.35, Math.min(1, tw));
+        L.gone = false;
+        break;
+      }
+      case 'drone': {
+        const segs = L.segs;
+        const last = segs[segs.length - 1];
+        const tt = t <= last.t1 ? t : last.t1;
+        let s = segs[0];
+        for (let i = 0; i < segs.length; i++){ if (tt >= segs[i].t0) s = segs[i]; }
+        const d = tt - s.t0;
+        L.x = s.x + s.vx * d;
+        L.y = s.y + s.vy * d;
+        L.blink = (t % 0.2) < 0.11;
+        L.blink2 = (t % 0.31) < 0.09;
+        L.alpha = 1; L.gone = false;
+        break;
+      }
+      case 'zapper': {
+        L.x = L.x0; L.y = L.y0;
+        let z = 0;
+        for (let i = 0; i < L.zaps.length; i++){
+          const d = t - L.zaps[i];
+          if (d >= 0 && d < 0.24) z = Math.max(z, 1 - d / 0.24);
+        }
+        L.zap = z;
+        L.alpha = 0.62 + 0.24 * Math.sin(t * 21.7) * Math.sin(t * 5.3) + z * 0.4;
+        L.alpha = Math.max(0.3, Math.min(1.25, L.alpha));
+        L.gone = false;
+        break;
+      }
+      case 'meteor': {
+        const d = t - L.t0;
+        if (d < 0){ L.hidden = true; L.gone = false; L.alpha = 0; break; }
+        if (d > L.dur){ L.hidden = true; L.gone = true; L.alpha = 0; break; }
+        L.x = L.x0 + L.vx * d;
+        L.y = L.y0 + L.vy * d;
+        L.alpha = d > L.dur * 0.7 ? 1 - (d - L.dur * 0.7) / (L.dur * 0.3) : 1;
+        L.gone = false;
+        break;
+      }
+      case 'unexplained': {
+        if (L.variant === 'B'){
+          if (t >= L.vanishAt){ L.gone = true; L.alpha = 0; L.hidden = true; break; }
+          let dx;
+          if (t <= L.turnAt) dx = L.sp * t;
+          else if (t <= L.turnAt + L.stopD){
+            const u = (t - L.turnAt) / L.stopD;
+            dx = L.sp * L.turnAt + L.sp * L.stopD * (u - u * u / 2);
+          } else {
+            dx = L.sp * L.turnAt + L.sp * L.stopD * 0.5;
+          }
+          L.x = L.x0 + dx; L.y = L.y0;
+          L.alpha = 0.86 + 0.14 * Math.sin(t * 1.1);
+          L.gone = false;
+        } else {
+          if (t >= L.vanishAt){ L.gone = true; L.alpha = 0; L.hidden = true; break; }
+          if (t <= L.turnAt){
+            L.x = L.x0 + L.dir * L.sp * t;
+            L.y = L.y0;
+          } else {
+            L.x = L.x0 + L.dir * L.sp * L.turnAt;
+            L.y = L.y0 + L.sp * (t - L.turnAt) * 0.86;
+          }
+          L.alpha = 0.88 + 0.12 * Math.sin(t * 1.3);
+          L.gone = false;
+        }
+        break;
+      }
+    }
+  }
+
+  /* ============================================================
+     DRAWING
+     ============================================================ */
+  function glow(x, y, r, inner, outer, a){
+    if (a <= 0) return;
+    const g = cx.createRadialGradient(x, y, 0.4, x, y, r);
+    g.addColorStop(0, inner);
+    g.addColorStop(0.42, outer);
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    cx.globalAlpha = Math.max(0, Math.min(1, a));
+    cx.fillStyle = g;
+    cx.beginPath(); cx.arc(x, y, r, 0, 6.284); cx.fill();
+    cx.globalAlpha = 1;
+  }
+  function dot(x, y, r, color, a){
+    cx.globalAlpha = Math.max(0, Math.min(1, a == null ? 1 : a));
+    cx.fillStyle = color;
+    cx.beginPath(); cx.arc(x, y, r, 0, 6.284); cx.fill();
+    cx.globalAlpha = 1;
+  }
+
+  function drawScene(t){
+    const g = cx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, '#05080F');
+    g.addColorStop(0.45, '#0A1224');
+    g.addColorStop(0.72, '#122036');
+    g.addColorStop(0.79, '#1B2A3E');
+    g.addColorStop(1, '#04070E');
+    cx.fillStyle = g; cx.fillRect(0, 0, W, H);
+
+    // faint milky band
+    const mb = cx.createLinearGradient(0, 40, W, 300);
+    mb.addColorStop(0, 'rgba(120,150,210,0)');
+    mb.addColorStop(0.5, 'rgba(130,160,220,.05)');
+    mb.addColorStop(1, 'rgba(120,150,210,0)');
+    cx.fillStyle = mb; cx.fillRect(0, 30, W, 260);
+
+    for (let i = 0; i < STARS.length; i++){
+      const s = STARS[i];
+      const a = s.a * (0.72 + 0.28 * Math.sin(t * s.ts + s.tw));
+      dot(s.x, s.y, s.r, '#CFE0FF', a);
+    }
+  }
+
+  function drawTrees(){
+    cx.fillStyle = '#04070C';
+    cx.beginPath();
+    cx.moveTo(-40, WATER + 4);
+    for (let i = 0; i < TREES.length; i++){
+      const tr = TREES[i];
+      cx.lineTo(tr.x - tr.w / 2, TREE_TOP + 74 - tr.h * 0.35);
+      cx.lineTo(tr.x, TREE_TOP + 74 - tr.h);
+      cx.lineTo(tr.x + tr.w / 2, TREE_TOP + 74 - tr.h * 0.35);
+    }
+    cx.lineTo(W + 40, WATER + 4);
+    cx.closePath(); cx.fill();
+    cx.fillStyle = '#04070C';
+    cx.fillRect(-40, TREE_TOP + 64, W + 80, WATER - TREE_TOP - 60);
+  }
+
+  function drawWater(t, lights){
+    const g = cx.createLinearGradient(0, WATER, 0, H);
+    g.addColorStop(0, '#0A1526');
+    g.addColorStop(1, '#050A14');
+    cx.fillStyle = g; cx.fillRect(0, WATER, W, H - WATER);
+
+    for (let i = 0; i < lights.length; i++){
+      const L = lights[i];
+      if (L.hidden || L.gone || L.alpha <= 0.05) continue;
+      if (L.kind === 'meteor') continue;
+      const ry = WATER + 12 + (L.y / TREE_TOP) * 30;
+      cx.globalAlpha = 0.16 * Math.min(1, L.alpha);
+      cx.fillStyle = L.kind === 'zapper' ? '#FFB84D'
+        : L.kind === 'unexplained' ? '#FFE6BC' : '#9FC8F5';
+      cx.beginPath();
+      cx.ellipse(L.x + Math.sin(t * 1.7 + i) * 3, ry, 12, 2.6, 0, 0, 6.284);
+      cx.fill();
+      cx.globalAlpha = 1;
+    }
+    cx.strokeStyle = 'rgba(74,158,232,.13)';
+    cx.lineWidth = 1;
+    for (let i = 0; i < 5; i++){
+      const y = WATER + 10 + i * 11;
+      cx.beginPath();
+      cx.moveTo(0, y);
+      cx.bezierCurveTo(W / 3, y + Math.sin(t * 0.9 + i) * 3, 2 * W / 3, y - Math.sin(t * 1.1 + i) * 3, W, y);
+      cx.stroke();
+    }
+  }
+
+  function drawCloud(t){
+    cx.save();
+    const cxs = [W * 0.42, W * 0.55, W * 0.5, W * 0.62, W * 0.36];
+    const cys = [180, 168, 205, 196, 202];
+    const crs = [130, 108, 120, 94, 88];
+    for (let i = 0; i < cxs.length; i++){
+      const gx = cxs[i] + Math.sin(t * 0.18 + i) * 8;
+      const gg = cx.createRadialGradient(gx, cys[i], 8, gx, cys[i], crs[i]);
+      gg.addColorStop(0, 'rgba(26,38,58,.92)');
+      gg.addColorStop(0.6, 'rgba(18,28,44,.7)');
+      gg.addColorStop(1, 'rgba(12,20,34,0)');
+      cx.fillStyle = gg;
+      cx.beginPath(); cx.arc(gx, cys[i], crs[i], 0, 6.284); cx.fill();
+    }
+    cx.restore();
+  }
+  function inCloud(L){
+    return L.x > W * 0.30 && L.x < W * 0.70 && L.y > 118 && L.y < 250;
+  }
+
+  function drawLight(L, t, cloudy){
+    if (L.hidden || L.alpha <= 0.002) return;
+    let a = L.alpha;
+    if (cloudy && inCloud(L)) a *= 0.16;
+
+    switch (L.kind){
+      case 'airliner': {
+        glow(L.x, L.y, 15, 'rgba(230,242,255,.55)', 'rgba(150,190,240,.18)', a * 0.8);
+        dot(L.x, L.y, 1.7, '#DCEBFF', a * 0.85);
+        if (L.nav){
+          glow(L.x - 9, L.y + 1, 9, 'rgba(255,70,70,.95)', 'rgba(255,40,40,.28)', a);
+          glow(L.x + 9, L.y + 1, 9, 'rgba(70,255,120,.95)', 'rgba(30,240,90,.28)', a);
+          dot(L.x - 9, L.y + 1, 1.6, '#FF6B6B', a);
+          dot(L.x + 9, L.y + 1, 1.6, '#6BFF9B', a);
+        }
+        if (L.strobe){
+          glow(L.x, L.y, 26, 'rgba(255,255,255,.95)', 'rgba(210,230,255,.35)', a);
+          dot(L.x, L.y, 3, '#FFFFFF', a);
+        }
+        break;
+      }
+      case 'satellite': {
+        glow(L.x, L.y, 11, 'rgba(228,240,255,.75)', 'rgba(150,185,235,.14)', a);
+        dot(L.x, L.y, 1.9, '#EAF2FF', a);
+        break;
+      }
+      case 'star': {
+        const r = 15 + 3 * a;
+        glow(L.x, L.y, r, 'rgba(255,250,235,.85)', 'rgba(200,215,255,.16)', a);
+        dot(L.x, L.y, 2.3, '#FFFDF4', a);
+        cx.globalAlpha = a * 0.5; cx.strokeStyle = 'rgba(220,232,255,.7)'; cx.lineWidth = 1;
+        cx.beginPath();
+        cx.moveTo(L.x - 12, L.y); cx.lineTo(L.x + 12, L.y);
+        cx.moveTo(L.x, L.y - 12); cx.lineTo(L.x, L.y + 12);
+        cx.stroke(); cx.globalAlpha = 1;
+        break;
+      }
+      case 'drone': {
+        glow(L.x, L.y, 10, 'rgba(200,220,250,.4)', 'rgba(140,180,230,.1)', a * 0.7);
+        if (L.blink){
+          glow(L.x - 7, L.y, 8, 'rgba(255,60,60,.95)', 'rgba(255,40,40,.25)', a);
+          dot(L.x - 7, L.y, 1.5, '#FF5A5A', a);
+        }
+        if (L.blink2){
+          glow(L.x + 7, L.y, 8, 'rgba(60,255,120,.95)', 'rgba(30,240,90,.25)', a);
+          dot(L.x + 7, L.y, 1.5, '#5AFF9A', a);
+        }
+        if ((t % 0.62) < 0.05){
+          glow(L.x, L.y - 4, 12, 'rgba(255,255,255,.9)', 'rgba(220,235,255,.2)', a);
+        }
+        break;
+      }
+      case 'zapper': {
+        const r = 13 + L.zap * 16;
+        glow(L.x, L.y, r, 'rgba(255,196,96,.9)', 'rgba(255,140,40,.22)', Math.min(1, a));
+        dot(L.x, L.y, 2, '#FFDCA0', Math.min(1, a));
+        if (L.zap > 0.02){
+          glow(L.x, L.y, 10 + L.zap * 12, 'rgba(190,230,255,' + (0.75 * L.zap) + ')', 'rgba(120,190,255,0)', 1);
+        }
+        break;
+      }
+      case 'meteor': {
+        const tl = 118;
+        const n = Math.hypot(L.vx, L.vy) || 1;
+        const ux = L.vx / n, uy = L.vy / n;
+        const gg = cx.createLinearGradient(L.x, L.y, L.x - ux * tl, L.y - uy * tl);
+        gg.addColorStop(0, 'rgba(255,255,255,' + (0.9 * a) + ')');
+        gg.addColorStop(0.35, 'rgba(190,220,255,' + (0.35 * a) + ')');
+        gg.addColorStop(1, 'rgba(160,200,255,0)');
+        cx.strokeStyle = gg; cx.lineWidth = 2.4; cx.lineCap = 'round';
+        cx.beginPath(); cx.moveTo(L.x, L.y); cx.lineTo(L.x - ux * tl, L.y - uy * tl); cx.stroke();
+        glow(L.x, L.y, 13, 'rgba(255,255,255,.95)', 'rgba(200,225,255,.25)', a);
+        break;
+      }
+      case 'unexplained': {
+        glow(L.x, L.y, 20, 'rgba(255,242,214,.9)', 'rgba(255,196,110,.2)', a);
+        dot(L.x, L.y, 2.6, '#FFF6E2', a);
+        break;
+      }
+    }
+  }
+
+  function drawBracket(L, lost){
+    const s = 30;
+    const x = L.x, y = L.y;
+    cx.save();
+    cx.strokeStyle = lost ? 'rgba(150,140,175,.55)' : 'rgba(74,158,232,.9)';
+    cx.lineWidth = 1.6;
+    cx.setLineDash(lost ? [3, 5] : [7, 5]);
+    cx.strokeRect(x - s, y - s, s * 2, s * 2);
+    cx.setLineDash([]);
+    cx.fillStyle = lost ? 'rgba(150,140,175,.7)' : 'rgba(74,158,232,.95)';
+    cx.font = '11px "Courier New", monospace';
+    cx.textAlign = 'left';
+    cx.fillText(lost ? 'SUBJECT — NO RETURN' : 'SUBJECT', x - s, y - s - 7);
+    cx.restore();
+  }
+
+  function drawOverlayText(t){
+    cx.save();
+    cx.font = '12px "Courier New", monospace';
+    cx.fillStyle = 'rgba(140,160,190,.6)';
+    cx.textAlign = 'left';
+    cx.fillText('CAPE FEAR RIVER — FIXED TRIPOD — NO ZOOM', 14, 22);
+    cx.textAlign = 'right';
+    const el = Math.max(0, t);
+    cx.fillText('T+' + el.toFixed(1) + 's', W - 14, 22);
+    cx.textAlign = 'left';
+    cx.restore();
+  }
+
+  /* ============================================================
+     STATE
+     ============================================================ */
+  let phase = 'idle';     // idle | watch | called | over
+  let roundIx = 0, lights = [], subject = null, roundStart = 0, frozenT = 0;
+  let correct = 0, falsePos = 0, missed = 0, awarded = {}, spawnedExtra = {};
+  let results = [];
+
+  function award(key, label){
+    if (awarded[key]) return;
+    awarded[key] = true;
+    Arcade.toast(label);
+  }
+
+  function renderCalls(){
+    const box = $('calls');
+    box.innerHTML = '';
+    KINDS.forEach((k, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'call' + (k === 'unexplained' ? ' unk' : '');
+      b.dataset.k = k;
+      b.innerHTML = '<div class="k">' + (i + 1) + '</div>' +
+                    '<div class="n">' + NAMES[k] + '</div>' +
+                    '<div class="d">' + BLURB[k] + '</div>';
+      b.disabled = phase !== 'watch';
+      b.addEventListener('click', () => call(k));
+      box.appendChild(b);
+    });
+  }
+  function setCallsEnabled(on){
+    [].forEach.call($('calls').children, el => { el.disabled = !on; });
+  }
+  function renderLog(){
+    const strip = $('logstrip');
+    strip.innerHTML = '';
+    for (let i = 0; i < ROUNDS.length; i++){
+      const d = document.createElement('div');
+      const r = results[i];
+      d.className = 'slot' + (r ? ' ' + r.cls : (i === roundIx && phase !== 'over' ? ' now' : ''));
+      d.textContent = r ? r.mark : String(i + 1).padStart(2, '0');
+      d.title = r ? r.title : 'Entry ' + (i + 1);
+      strip.appendChild(d);
+    }
+  }
+  function renderHud(){
+    $('hudRound').textContent = Math.min(roundIx + 1, ROUNDS.length);
+    $('hudCorrect').textContent = correct;
+    $('hudFp').textContent = falsePos;
+    $('hudMiss').textContent = missed;
+  }
+
+  /* ---------- round flow ---------- */
+  function startRound(){
+    const spec = ROUNDS[roundIx];
+    lights = [];
+    spawnedExtra = {};
+    subject = build(spec.sub, { variant: spec.variant });
+    lights.push(subject);
+    (spec.extras || []).forEach(k => {
+      let opts = {};
+      if (k === 'star') opts = { x: subject.x0 + (subject.x0 < W / 2 ? 300 : -300), y: 260 + rnd() * 70 };
+      if (k === 'airliner') opts = { y: 96 + rnd() * 90 };
+      if (k === 'drone') opts = { x: 200 + rnd() * (W - 400), y: 180 + rnd() * 90 };
+      if (k === 'meteor') opts = { t0: 3.4 + rnd() * 2.2 };
+      const L = build(k, opts);
+      L.extra = true;
+      lights.push(L);
+    });
+    for (let i = 0; i < lights.length; i++) update(lights[i], 0);
+
+    phase = 'watch';
+    roundStart = performance.now();
+    $('board').textContent = spec.board;
+    $('verdict').style.display = 'none';
+    $('prompt').innerHTML = '<span class="wait">Observing &mdash; watch it all the way through. The tell is usually late.</span>';
+    renderCalls(); renderHud(); renderLog();
+    Juice.sfx('blip');
+  }
+
+  function elapsed(){
+    if (phase === 'called' || phase === 'over') return frozenT;
+    return (performance.now() - roundStart) / 1000;
+  }
+
+  function call(guess){
+    if (phase !== 'watch') return;
+    frozenT = elapsed();
+    phase = 'called';
+    setCallsEnabled(false);
+
+    const truth = subject.kind;
+    const right = guess === truth;
+    const px = Math.max(24, Math.min(W - 24, subject.x));
+    const py = Math.max(24, Math.min(H - 24, subject.y));
+
+    let kick, text, cls, mark;
+    const spec = ROUNDS[roundIx];
+
+    if (right){
+      correct++;
+      cls = 'ok'; mark = '✓';
+      kick = 'Entry accepted';
+      text = TELL[truth];
+      Juice.reward(px, py, { text:'CORRECT', color:'#3DFC8A', sound:'good', count:22 });
+      Juice.burst(px, py, { color:'#4A9EE8', count:12, speed:4, gravity:.01 });
+
+      if (truth === 'star') award('notvenus', '🏆 NOT VENUS');
+      if (truth === 'satellite' && subject.fadeSeen) award('fade', '🏆 CAUGHT THE FADE');
+      if (truth === 'zapper') award('zap', '🏆 CHECK THE TREELINE FIRST');
+      if (truth === 'unexplained') award('real', '🏆 IT GOES IN THE LOG AS OBSERVED');
+    } else if (truth !== 'unexplained' && guess === 'unexplained'){
+      falsePos++;
+      cls = 'fp'; mark = '!';
+      kick = 'False positive logged';
+      text = '<b>That was a ' + NAMES[truth].toUpperCase() + '.</b> ' + TELL[truth] +
+             ' <span class="fp">This is how an archive becomes garbage</span> &mdash; not through lying, ' +
+             'through generosity. One good case buried under nine hundred airplanes, and by the time ' +
+             'anybody sorts it out the witness is dead and the file is a punchline.';
+      Juice.impact(px, py, { text:'FALSE POSITIVE', color:'#FFD23F', power:10, sound:'bad', count:18 });
+      Juice.flash('#FFD23F', .22);
+    } else if (truth === 'unexplained'){
+      missed++;
+      cls = 'no'; mark = '×';
+      kick = 'Misfiled';
+      text = '<b>It was not a ' + NAMES[guess].toUpperCase() + '.</b> ' + WOULD[guess] +
+             ' ' + TELL.unexplained + ' It now enters the record as a ' + NAMES[guess].toLowerCase() +
+             ', and <b>nobody will ever look at it again.</b>';
+      Juice.impact(px, py, { text:'MISFILED', color:'#FF3D8A', power:12, sound:'bad', count:20 });
+      Juice.flash('#FF3D8A', .24);
+    } else {
+      cls = 'no'; mark = '×';
+      kick = 'Misclassified';
+      text = '<b>That was a ' + NAMES[truth].toUpperCase() + '.</b> ' + TELL[truth] +
+             ' ' + WOULD[guess];
+      Juice.impact(px, py, { text:'WRONG', color:'#FF3D8A', power:9, sound:'bad' });
+    }
+
+    results[roundIx] = {
+      cls: cls, mark: mark,
+      title: 'Entry ' + (roundIx + 1) + ': ' + NAMES[truth] + ' — you called ' + NAMES[guess]
+    };
+
+    const v = $('verdict');
+    v.className = right ? 'ok' : 'no';
+    v.style.display = 'block';
+    $('vkick').textContent = kick;
+    $('vtruth').textContent = right
+      ? NAMES[truth].toUpperCase() + ' — CONFIRMED'
+      : 'ACTUAL: ' + NAMES[truth].toUpperCase();
+    $('vtext').innerHTML = text;
+    $('nextBtn').textContent = roundIx >= ROUNDS.length - 1 ? 'Close the log' : 'Next light';
+    $('prompt').innerHTML = '<span class="wait">Entry ' + (roundIx + 1) + ' filed. Read the tell.</span>';
+    if (spec.cloud && right) award('cloud', '🏆 CLOUD IS NOT A CATEGORY');
+
+    renderHud(); renderLog();
+    setTimeout(() => {
+      const r = v.getBoundingClientRect();
+      if (r.bottom > innerHeight) v.scrollIntoView({ behavior:'smooth', block:'end' });
+    }, 60);
+  }
+
+  function next(){
+    if (phase !== 'called') return;
+    roundIx++;
+    if (roundIx >= ROUNDS.length){ finish(); return; }
+    startRound();
+    const s = $('skywrap').getBoundingClientRect();
+    if (s.top < 0) $('skywrap').scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+
+  /* ---------- endings ---------- */
+  function finish(){
+    phase = 'over';
+    renderLog();
+    const anomaliesFound = results.filter((r, i) => ROUNDS[i].sub === 'unexplained' && r.cls === 'ok').length;
+    const clean = falsePos === 0;
+    const perfect = correct === ROUNDS.length;
+
+    if (clean && anomaliesFound === 2) award('archive', '🏆 THE ARCHIVE IS CLEAN');
+    if (perfect) award('twelve', '🏆 TWELVE FOR TWELVE');
+
+    let title, lines, won;
+
+    if (correct >= 11 && clean && anomaliesFound === 2){
+      won = true;
+      title = 'The First Clean Log.';
+      lines = [
+        'Twelve lights. Twelve entries. Ten of them were an airliner, a satellite, a planet, a drone, a bug zapper and a meteor &mdash; and <b>you said so</b>, out loud, in writing, with the time on it, knowing exactly how boring that would look to everyone who wanted it to be something else.',
+        '<b>Two of them were not.</b>',
+        'And here is the part nobody in this field has managed in eighteen years on this river: those two entries are <b>credible</b>. Not because anyone believes you. Because you threw out the other ten yourself, first, before anybody had to ask.',
+        'That is the whole trick. That is the entire methodology. A log with no airplanes in it is not a log &mdash; it is a wish with timestamps. Yours has airplanes in it. Yours has a bug zapper in it, clearly labeled, with a note about the deck it is sitting on.',
+        'REVIEW BOARD FINDING: <b>the first credible sky-watch record in the history of this wing.</b> Two anomalous entries stand, unexplained, undramatized, exactly as observed. The file stays open. For once, that means something.'
+      ];
+      Juice.sfx('win'); Juice.flash('#4A9EE8', .38);
+      Juice.burst(W / 2, TREE_TOP * 0.5, { color:'#4A9EE8', count:46, speed:6, gravity:.02 });
+    } else if (correct >= 9 && clean){
+      won = true;
+      title = 'A Usable Log.';
+      lines = [
+        'Nine or ten right, and &mdash; this is the part that matters &mdash; <b>not one false positive.</b> Nothing ordinary got promoted. Nobody is going to open this file in twenty years and find a Delta flight filed as a craft.',
+        anomaliesFound === 2
+          ? 'Both genuine anomalies are in there, logged flat, with no adjectives on them. That is exactly how they should look.'
+          : 'You did lose ' + (2 - anomaliesFound) + ' of the two genuine anomalies to an ordinary label. They are still in the log, just under the wrong heading, and nobody will pull that folder again.',
+        'A couple of the mundane ones went in wrong. It happens; the sky is a hard test and you were doing it live.',
+        'REVIEW BOARD FINDING: <b>usable.</b> Which, measured against the entire existing literature, is a startling result. Run it again and clean up the middle.'
+      ];
+      Juice.sfx('good');
+    } else if (correct >= 6){
+      won = false;
+      title = 'Provisionally Filed.';
+      lines = [
+        correct + ' of 12, with <b>' + falsePos + ' false positive' + (falsePos === 1 ? '' : 's') + '</b> in the record.',
+        falsePos > 0
+          ? 'Every one of those false positives is an ordinary aircraft or a planet now sitting in the anomalous column with a case number on it. Somebody will find it. Somebody will debunk it in four minutes. And the two real entries will go down with it, because that is how credibility works &mdash; it is <b>shared, and it is not divisible.</b>'
+          : 'No false positives, at least. The archive is clean. It is just thin.',
+        'The good news is that none of this is a talent. It is a checklist. Duration, blink rate, heading, whether it moves against the treeline at all. Read the field card. Come back.',
+        'REVIEW BOARD FINDING: <b>provisional.</b> Not garbage. Not evidence.'
+      ];
+      Juice.sfx('bad');
+    } else {
+      won = false;
+      title = 'The Archive Is Garbage.';
+      lines = [
+        correct + ' of 12. <b>' + falsePos + ' false positive' + (falsePos === 1 ? '' : 's') + '.</b> ' +
+        missed + ' genuine anomal' + (missed === 1 ? 'y' : 'ies') + ' filed as something ordinary.',
+        'This is not a moral failure and nobody here is calling you a liar &mdash; the sky is genuinely difficult and almost everything in it is boring. But this is precisely, exactly how the record got into the state it is in. Not fraud. <b>Enthusiasm, unsorted.</b>',
+        'Somewhere in tonight’s twelve there were two lights that did not do anything a known object does. They are in your log next to a bug zapper you called a craft, and that is where they will stay, and the person who eventually reads this file will throw the whole thing out in one motion.',
+        'REVIEW BOARD FINDING: <b>unusable.</b> The lights are not the problem. They have never been the problem. Read the field card and take the chair again.'
+      ];
+      Juice.sfx('lose'); Juice.shake(12); Juice.flash('#FF3D8A', .3);
+    }
+
+    $('prompt').innerHTML = '<span class="go">Log closed &mdash; ' + correct + ' / 12 correct</span>';
+
+    setTimeout(() => {
+      Arcade.gameOver({
+        won: won,
+        title: title,
+        score: correct,
+        accent: won ? '#4A9EE8' : '#FF3D8A',
+        lines: lines,
+        onRetry: () => { resetAll(); $('briefing').style.display = 'flex';
+          $('stage').scrollIntoView({ behavior:'smooth', block:'start' }); },
+        links: won
+          ? [{ label:'The Orb Scheduler &mdash; $5', href:'index.html#prize' },
+             { label:'The Bledsoe wing', href:'index.html' }]
+          : [{ label:'The Bledsoe wing', href:'index.html' },
+             { label:'Visit the shrine', href:'../../shrines/index.html#chris-bledsoe' }]
+      });
+      const ovs = document.querySelectorAll('.dcab-overlay');
+      const ov = ovs[ovs.length - 1];
+      if (ov){
+        ov.scrollTop = 0;
+        const ps = ov.querySelectorAll('.dcab-lore');
+        [].forEach.call(ps, (p, i) => {
+          p.style.opacity = '0';
+          p.style.transition = 'opacity 1s';
+          setTimeout(() => { p.style.opacity = '1'; }, 240 + i * 850);
+        });
+      }
+    }, 1200);
+  }
+
+  /* ---------- reset ---------- */
+  function resetAll(){
+    phase = 'idle';
+    roundIx = 0; correct = 0; falsePos = 0; missed = 0;
+    awarded = {}; results = [];
+    lights = []; subject = null; frozenT = 0;
+    $('verdict').style.display = 'none';
+    $('board').innerHTML = '&nbsp;';
+    $('prompt').innerHTML = '&nbsp;';
+    renderCalls(); renderHud(); renderLog();
+  }
+
+  /* ============================================================
+     LOOP
+     ============================================================ */
+  let promptFlipped = false;
+  function frame(){
+    requestAnimationFrame(frame);
+    const t = phase === 'idle' ? performance.now() / 1000 : elapsed();
+    const spec = ROUNDS[Math.min(roundIx, ROUNDS.length - 1)];
+
+    if (phase === 'watch'){
+      for (let i = 0; i < lights.length; i++){
+        const before = lights[i].hidden;
+        update(lights[i], t);
+        if (before && !lights[i].hidden && !lights[i].gone) Juice.sfx('blip');
+      }
+      if (!promptFlipped && t >= spec.win){
+        promptFlipped = true;
+        $('prompt').innerHTML = '<span class="go">&#9679; Make the call &mdash; classify the bracketed subject &#9679;</span>';
+      }
+    }
+
+    // draw
+    const jx = Math.sin(t * 0.63) * 1.7 + Math.sin(t * 1.91 + 1.2) * 0.9;
+    const jy = Math.cos(t * 0.47) * 1.3 + Math.sin(t * 1.37 + 0.4) * 0.7;
+    cx.save();
+    cx.translate(jx, jy);
+    drawScene(t);
+    const cloudy = phase !== 'idle' && !!spec.cloud;
+    if (cloudy) drawCloud(t);
+    if (phase !== 'idle'){
+      for (let i = 0; i < lights.length; i++){
+        if (lights[i].kind === 'zapper') continue;
+        drawLight(lights[i], t, cloudy);
+      }
+    }
+    drawTrees();
+    if (phase !== 'idle'){
+      for (let i = 0; i < lights.length; i++){
+        if (lights[i].kind === 'zapper') drawLight(lights[i], t, false);
+      }
+    }
+    drawWater(t, phase === 'idle' ? [] : lights);
+    if (phase === 'watch' || phase === 'called'){
+      if (subject) drawBracket(subject, subject.gone || subject.hidden);
+    }
+    cx.restore();
+    if (phase !== 'idle') drawOverlayText(t);
+
+    if (phase === 'idle'){
+      cx.save();
+      cx.textAlign = 'center';
+      cx.fillStyle = 'rgba(74,158,232,.8)';
+      cx.font = '20px "Courier New", monospace';
+      cx.fillText('THE RIVER IS QUIET.', W / 2, TREE_TOP / 2);
+      cx.fillStyle = 'rgba(185,175,208,.55)';
+      cx.font = '13px "Courier New", monospace';
+      cx.fillText('Twelve lights tonight. Ten of them have an explanation.', W / 2, TREE_TOP / 2 + 28);
+      cx.restore();
+    }
+  }
+
+  /* ---------- wiring ---------- */
+  const origStart = startRound;
+  function startRoundWrapped(){ promptFlipped = false; origStart(); }
+  startRound = startRoundWrapped;
+
+  $('nextBtn').addEventListener('click', () => { Juice.sfx('click'); next(); });
+  $('startBtn').addEventListener('click', () => {
+    Juice.sfx('click');
+    $('briefing').style.display = 'none';
+    roundIx = 0;
+    startRound();
+  });
+  addEventListener('keydown', e => {
+    if (phase === 'watch'){
+      const n = parseInt(e.key, 10);
+      if (n >= 1 && n <= 7){ e.preventDefault(); call(KINDS[n - 1]); }
+    } else if (phase === 'called'){
+      if (e.code === 'Enter' || e.code === 'Space'){ e.preventDefault(); next(); }
+    }
+  });
+
+  resetAll();
+  requestAnimationFrame(frame);
+
+  Arcade.cabinet({
+    id: 'river-watch',
+    wing: 'THE CHRIS BLEDSOE EXPERIENCE',
+    title: 'River Watch',
+    subtitle: 'Name It Correctly Or Don’t Log It',
+    accent: '#4A9EE8',
+    scoreLabel: 'CORRECT CALLS',
+    lore: 'The board has stopped arguing about whether there is something over the river and started ' +
+          'doing the boring work nobody in this field does: <b>telling the difference.</b> Tonight, ' +
+          'twelve lights cross the sky over the treeline &mdash; airliners, a satellite pass, a planet, ' +
+          'a drone, somebody’s bug zapper, a meteor &mdash; and <b>two that are none of those.</b> ' +
+          'Watch each one all the way through and name it. The two real ones are only worth anything ' +
+          'if the other ten are clean.',
+    howto: [
+      'WATCH the bracketed subject &mdash; the tell is usually late',
+      'CLICK a classification, or press 1&ndash;7',
+      'Satellites don’t blink. They fade &mdash; that’s Earth’s shadow.',
+      'A planet does not move against the treeline. Ever.',
+      'UNEXPLAINED is earned by emptying the other six first',
+      'Read the FIELD CARD under the sky. It is all true.'
+    ],
+    shrine: '../../shrines/index.html#chris-bledsoe',
+    onStart: () => {
+      $('briefing').style.display = 'flex';
+      $('stage').scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+  });
+})();
+</script>
+</body>
+</html>

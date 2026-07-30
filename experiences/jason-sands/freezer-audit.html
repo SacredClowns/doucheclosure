@@ -83,8 +83,8 @@
   .bag .no{font-size:.54rem;letter-spacing:.14em;color:#6E86AA;text-transform:uppercase;}
   .bag .sil{font-size:1.5rem;line-height:1;text-align:center;color:#42597C;margin:.05rem 0 .12rem;}
   .bag.knownshape .sil{color:var(--ice);text-shadow:0 0 10px rgba(127,184,255,.6);}
-  .bag .p{display:flex;justify-content:space-between;gap:.2rem;font-size:.5rem;
-    letter-spacing:.05em;color:#54688A;}
+  .bag .p{display:flex;justify-content:space-between;gap:.15rem;
+    font-size:clamp(.42rem,1.85vw,.52rem);letter-spacing:.02em;color:#54688A;white-space:nowrap;}
   .bag .p b{font-weight:normal;color:#54688A;}
   .bag .p.known b{color:var(--white);}
   .bag .p.known{color:#8FA6C6;}
@@ -344,21 +344,30 @@
     rest.forEach(i => { bags[i].s = 'UNIFORM'; bags[i][p2] = pick(p2others); });
 
     /* ---- contents, laid out so the clue board is literally true ---- */
-    const inS = new Set(S), used = new Set(combo);
+    const inS = new Set(S), usedC = new Set(combo);
+    const free = [];
     for (let i = 0; i < 16; i++){
       if (inS.has(i)) continue;
-      if (used.has('col0') && col(i) === 0) bags[i].c = 'VENISON';
-      else if (used.has('col3') && col(i) === 3) bags[i].c = 'BAIT';
-      else if (used.has('row3') && row(i) === 3) bags[i].c = 'ICE';
-      else if (row(i) === 0) bags[i].c = pick(['TURKEY', 'VENISON', 'UNID', 'ICE']);
-      else bags[i].c = pick(['BAIT', 'VENISON', 'ICE', 'UNID']);
+      if (usedC.has('col0') && col(i) === 0) bags[i].c = 'VENISON';       // the venison column
+      else if (usedC.has('col3') && col(i) === 3) bags[i].c = 'BAIT';     // the compressor wall
+      else if (usedC.has('row3') && row(i) === 3) bags[i].c = 'ICE';      // the meltwater line
+      else free.push(i);
     }
     bags[spec].c = 'SPECIMEN';
     bags[trap].c = 'TURKEY';
     bags[nm2].c = 'UNID';
-    rest.forEach(i => { bags[i].c = pick(['BAIT', 'VENISON', 'ICE', 'UNID']); });
+    rest.forEach(i => free.push(i));
+    // deal the loose cells from a mixed deck so no reveal is eight bags of one thing
+    const deck = shuffle(['VENISON', 'TURKEY', 'UNID', 'ICE', 'BAIT', 'VENISON',
+                          'UNID', 'ICE', 'BAIT', 'VENISON', 'TURKEY', 'UNID']);
+    shuffle(free).forEach((i, n) => { bags[i].c = deck[n % deck.length]; });
+
     // the clue says bait is double-bagged; make that true everywhere
     for (let i = 0; i < 16; i++) if (bags[i].c === 'BAIT') bags[i].s = 'UNIFORM';
+    // "heavier than any turkey" is only printed when it is true of every turkey in here
+    if (p2 === 'w' && p2val === 'HEAVY'){
+      for (let i = 0; i < 16; i++) if (bags[i].c === 'TURKEY' && bags[i].w === 'HEAVY') bags[i].w = 'MEDIUM';
+    }
 
     /* ---- assemble the clue objects (three-valued under partial info) ---- */
     const clues = [];
@@ -620,7 +629,7 @@
     if (prop === 'f') return v === 'LIGHT' ? 'LIGHT FROST — this bag has been moved'
                                            : 'HEAVY FROST — fused, never moved';
     return v === 'IRREGULAR' ? 'IRREGULAR — single bag, lumpy, honest'
-                             : 'UNIFORM — smooth. Double-bagged, or vacuum-sealed.';
+                             : 'UNIFORM — smooth, double-bagged or vacuum-sealed';
   }
 
   function askAccuse(i){
@@ -727,7 +736,7 @@
         'You found it. It is intact. Somebody, somewhere, did their job.');
       setTimeout(() => achieve('turkey', '🏆 NOT THE TURKEY',
         'The 2019 turkey was right there, wearing the same silhouette, and you walked past it.'), 900);
-      if (BUDGET - used >= 3){
+      if (BUDGET - used >= 3 && used >= 2){
         setTimeout(() => achieve('spare', '🏆 SOLVED WITH TOOLS TO SPARE',
           (BUDGET - used) + ' uses unspent. The board would like to know who taught you this and whether they are available.'), 1800);
       }
