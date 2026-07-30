@@ -564,12 +564,17 @@
      STATE
      ============================================================ */
   let favors, calls, redundant, evidence, known, called, counselOK,
-      sel, ended, awarded, logRows, depts, started;
+      sel, ended, awarded, logRows, depts;
 
+  /* Arcade toasts share one fixed slot, so a triple award has to be queued
+     rather than stacked on top of itself. */
+  let toastQueue = 0;
   function award(key, label){
     if (awarded[key]) return;
     awarded[key] = true;
-    Arcade.toast(label);
+    const slot = toastQueue++;
+    if (slot === 0) Arcade.toast(label);
+    else setTimeout(() => Arcade.toast(label), slot * 1400);
   }
 
   function reset(){
@@ -577,7 +582,6 @@
     calls = 0; redundant = 0; evidence = 0;
     known = {}; called = {}; depts = {};
     counselOK = false; sel = null; ended = false; awarded = {}; logRows = [];
-    started = false;
     NODES.forEach(n => { n.satisfied = false; });
     START_KNOWN.forEach(id => { known[id] = true; });
     $('says').innerHTML = '&nbsp;';
@@ -675,6 +679,13 @@
       e.line.setAttribute('class', cls);
       const show = sel && (e.a === sel || e.b === sel) && known[e.a] && known[e.b];
       e.lab.style.display = show ? '' : 'none';
+      if (show){
+        /* push the label two-thirds of the way toward the OTHER node so the
+           labels around a single selected contact do not stack on each other */
+        const me = BY[sel], other = BY[e.a === sel ? e.b : e.a];
+        e.lab.style.left = (me.x + (other.x - me.x) * 0.64) + '%';
+        e.lab.style.top  = (me.y + (other.y - me.y) * 0.64) + '%';
+      }
     });
   }
 
@@ -830,18 +841,14 @@
     fn(r.left - s.left + r.width / 2, r.top - s.top + r.height / 2);
   }
 
-  function unlock(list, fromId){
+  function unlock(list){
     const fresh = [];
     (list || []).forEach(id => {
-      if (known[id]){ redundant++; return; }
+      if (known[id]){ redundant++; return; }   /* a name you already had = the carousel */
       known[id] = true;
       fresh.push(BY[id].name);
-      const el = nodeEls[id];
-      if (el){
-        fxAt(id, (x, y) => Juice.burst(x, y, { color:'#FFD23F', count:12, speed:3, gravity:.02 }));
-      }
+      fxAt(id, (x, y) => Juice.burst(x, y, { color:'#FFD23F', count:12, speed:3, gravity:.02 }));
     });
-    if (fromId) { /* referrer noted for flavour only */ }
     return fresh;
   }
 
@@ -872,7 +879,7 @@
     } else if (n.kind === 'cond' && !n.satisfied && counselOK){
       n.satisfied = true;
       line = n.line2; verdict = n.verdict2;
-      freshNames = unlock(n.to, n.id);
+      freshNames = unlock(n.to);
       tag = 'REFERRAL'; cls = 'r';
     } else if (times > 0){
       line = CAROUSEL_LINES[(calls + times) % CAROUSEL_LINES.length];
@@ -882,11 +889,11 @@
       tag = 'CAROUSEL'; cls = 'x';
     } else if (n.kind === 'cond'){
       line = n.line; verdict = n.verdict;
-      freshNames = unlock([n.need], n.id);
+      freshNames = unlock([n.need]);
       tag = 'A CONDITION'; cls = 'c';
     } else if (n.kind === 'refer'){
       line = n.line; verdict = n.verdict;
-      freshNames = unlock(n.to, n.id);
+      freshNames = unlock(n.to);
       tag = 'REFERRAL'; cls = 'r';
     } else if (n.kind === 'signoff'){
       counselOK = true;
@@ -1072,14 +1079,11 @@
   $('startBtn').addEventListener('click', () => {
     Juice.sfx('coin');
     $('briefing').style.display = 'none';
-    started = true;
     $('board').textContent = 'BOARD: four numbers, ten favors, one bag in a car. Begin.';
   });
 
-  document.addEventListener('keydown', e => {
-    if (ended) return;
-    if (e.code === 'Enter' && !$('callBtn').disabled){ e.preventDefault(); placeCall(); }
-  });
+  /* No global key shortcut for dialling: a favor is too expensive to spend by
+     accident, and a stray Enter would double-fire against the focused button. */
 
   reset();
 

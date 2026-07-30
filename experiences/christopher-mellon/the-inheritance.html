@@ -63,7 +63,7 @@
   #stage{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
     gap:.6rem;padding:.35rem .7rem .2rem;overflow:hidden;}
   @media (max-width:900px){
-    #stage{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr);gap:.45rem;
+    #stage{grid-template-columns:1fr;grid-template-rows:none;grid-auto-rows:auto;gap:.45rem;
       padding:.25rem .5rem .15rem;overflow-y:auto;}
     .col{min-height:auto;}
     .colbody{overflow:visible !important;}
@@ -221,7 +221,7 @@
       <button class="act submit" id="aSubmit" type="button">SUBMIT ALLOCATION<small>CLOSE THE BOOKS &bull; PRINT THE RECEIPT</small></button>
     </div>
 
-    <p id="kbhint">KEYS &mdash; H HISTORICAL ALLOCATION &bull; X CLEAR THE BOARD &bull; ENTER SUBMIT &bull; TAB TO A SLIDER, THEN &larr; &rarr; TO ALLOCATE &bull; SHIFT+CLICK A SLIDER ROW&rsquo;S <b>MAX</b> TO FUND EVERYONE</p>
+    <p id="kbhint">KEYS &mdash; H HISTORICAL ALLOCATION &bull; X CLEAR THE BOARD &bull; ENTER SUBMIT &bull; TAB TO A SLIDER, THEN &larr; &rarr; TO ALLOCATE &bull; <b>MAX</b> ON ANY ROW FUNDS ALL 2,500 WITNESSES AT ONCE</p>
 
     <!-- COMPARISON -->
     <div class="sheet hide" id="compare">
@@ -383,6 +383,7 @@
      ============================================================ */
   const q = {};
   let submitted = false;
+  let started = false;
   const got = {};
   const once = (k, fn) => { if (!got[k]) { got[k] = true; fn(); } };
 
@@ -869,7 +870,7 @@
   });
 
   addEventListener('keydown', e => {
-    if (submitted) return;
+    if (!started || submitted) return;
     if (!$('briefing').classList.contains('hide')) return;
     if (!$('compare').classList.contains('hide')){
       if (e.key === 'Escape'){ e.preventDefault(); $('compare').classList.add('hide'); }
@@ -915,7 +916,7 @@
       'KEYS &mdash; H historical, X clear the board, ENTER submit'
     ],
     shrine: '../../shrines/index.html#christopher-mellon',
-    onStart: () => { $('briefing').classList.remove('hide'); }
+    onStart: () => { started = true; $('briefing').classList.remove('hide'); }
   });
 })();
 </script>

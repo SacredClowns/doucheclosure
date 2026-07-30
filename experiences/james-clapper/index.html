@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE JAMES CLAPPER EXPERIENCE — Wing No. 15 — Doucheclosure</title>
+<meta name="description" content="Wing No. 15. Every other wing runs on total belief. This one breaks the machine. The man who established, under oath and then in his own apology letter, that an official denial is not reliable data — and accidentally became the most effective disclosure advocate in American history.">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --gunmetal:#8A93A6; --shadow:rgba(0,0,0,.6); --redact:#14110E;
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--void);}
+  body{margin:0; background:var(--void); color:var(--white);
+    font-family:"Courier New", Courier, monospace; line-height:1.65; overflow-x:hidden;}
+  body::after{content:""; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 1px, transparent 1px 3px);
+    pointer-events:none; z-index:100;}
+  a{color:var(--neon-cyan);}
+  .wrap{max-width:760px; margin:0 auto; padding:0 1.25rem;}
+  .display{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif;
+    font-weight:400; text-transform:uppercase; letter-spacing:.03em; line-height:.95;}
+  .crumb{padding:1rem 1.25rem; font-size:.72rem; letter-spacing:.15em; text-transform:uppercase;}
+  .crumb a{text-decoration:none;}
+
+  header.wing{
+    text-align:center; padding:3rem 1rem 2.5rem;
+    background:radial-gradient(ellipse at 50% -20%, rgba(138,147,166,.28), transparent 60%),
+      radial-gradient(ellipse at 85% 110%, rgba(45,225,252,.08), transparent 55%);
+    border-bottom:3px solid var(--gunmetal);
+  }
+  .wing .eyebrow{color:var(--neon-cyan); letter-spacing:.28em; text-transform:uppercase; font-size:.72rem;}
+  .wing h1{margin:.5rem 0 0; font-size:clamp(2.2rem, 8vw, 4.2rem); color:var(--gunmetal);
+    text-shadow:0 0 16px rgba(138,147,166,.55), 4px 4px 0 #262B36;}
+  .wing .sub{color:var(--chrome); max-width:37rem; margin:1.25rem auto 0; font-size:.95rem;}
+  .wing .sub b{color:var(--white);}
+  .stamp{
+    display:inline-block; margin-top:1.4rem; transform:rotate(-2deg);
+    border:3px solid var(--neon-yellow); color:var(--neon-yellow);
+    padding:.3rem 1rem; font-size:.75rem; letter-spacing:.22em; text-transform:uppercase;
+  }
+
+  section{padding:2.5rem 0;}
+  h2.sec{font-family:Haettenschweiler, "Arial Narrow", Impact, sans-serif; font-weight:400;
+    text-transform:uppercase; font-size:clamp(1.6rem, 5.5vw, 2.3rem);
+    color:var(--neon-cyan); text-shadow:0 0 12px rgba(45,225,252,.5);
+    text-align:center; margin:0 0 1.25rem;}
+  .prose{color:var(--chrome); font-size:.93rem;}
+  .prose b{color:var(--white);}
+  .pull{border-left:4px solid var(--gunmetal); background:var(--panel);
+    padding:1rem 1.25rem; color:var(--white); font-size:1rem; margin:1.4rem 0;}
+  .redacted{background:var(--redact); color:var(--redact); padding:0 .4rem; border-radius:2px; user-select:none;}
+
+  .evidence{width:100%; border-collapse:collapse; font-size:.85rem; background:var(--panel);
+    border:2px solid #35205C;}
+  .evidence th{background:var(--gunmetal); color:#0C1018; text-align:left; padding:.5rem .8rem;
+    font-size:.68rem; letter-spacing:.18em; text-transform:uppercase;}
+  .evidence td{padding:.6rem .8rem; border-bottom:1px dashed #3C2B60; color:var(--chrome); vertical-align:top;}
+  .evidence td:first-child{color:var(--neon-yellow); white-space:nowrap; font-weight:bold;}
+  .evidence tr:last-child td{border-bottom:none;}
+
+  .cabinet{
+    background:linear-gradient(180deg, var(--panel-2), var(--panel));
+    border:2px solid #35205C; border-radius:10px;
+    padding:1.5rem 1.6rem; margin-bottom:1.5rem;
+    box-shadow:0 10px 30px var(--shadow);
+  }
+  .cabinet.live{border-color:var(--gunmetal); box-shadow:0 0 22px rgba(138,147,166,.28), 0 10px 30px var(--shadow);}
+  .cabinet .status{font-size:.68rem; letter-spacing:.22em; text-transform:uppercase; color:var(--neon-green); margin:0;}
+  .cabinet.soon .status{color:#7E6F9E;}
+  .cabinet h2{margin:.35rem 0 .5rem; font-size:1.8rem; color:var(--white);}
+  .cabinet.live h2{color:var(--gunmetal);}
+  .cabinet p{color:var(--chrome); font-size:.9rem; margin:0 0 1rem;}
+  .grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:.75rem; margin-top:1rem;}
+
+  .btn{display:inline-block; font-weight:bold; font-size:.82rem; letter-spacing:.16em;
+    text-transform:uppercase; text-decoration:none; padding:.75rem 1.3rem; border-radius:8px;
+    border:2px solid var(--neon-pink); color:#1B0210; background:var(--neon-pink);
+    box-shadow:0 0 18px rgba(255,61,138,.45);}
+  .btn:hover{background:var(--neon-yellow); border-color:var(--neon-yellow); color:#231602;}
+  .btn.ghost{background:transparent; color:var(--neon-cyan); border-color:var(--neon-cyan); box-shadow:none;}
+  .btn.ghost:hover{background:var(--neon-cyan); color:#031A20;}
+  .btn.locked{background:transparent; color:#7E6F9E; border-color:#3C2B60; box-shadow:none; cursor:default;}
+  .btn.locked:hover{background:transparent; color:#7E6F9E; border-color:#3C2B60;}
+
+  .dossier{
+    border-left:4px solid var(--gunmetal);
+    background:var(--panel); padding:1.1rem 1.3rem;
+    color:var(--chrome); font-size:.9rem;
+  }
+  .dossier b{color:var(--white);}
+
+  .prize{
+    border:2px dashed var(--neon-green); border-radius:12px;
+    text-align:center; padding:2rem 1.5rem;
+    background:radial-gradient(ellipse at 50% 120%, rgba(61,252,138,.12), transparent 70%);
+  }
+  .prize .display{color:var(--neon-green); font-size:clamp(1.5rem,6vw,2.3rem);
+    text-shadow:0 0 14px rgba(61,252,138,.5);}
+  .prize p{color:var(--chrome); font-size:.92rem; max-width:34rem; margin:.9rem auto;}
+  .prize p b{color:var(--white);}
+  .prize .btn{font-size:.9rem; padding:.95rem 1.8rem;
+    border-color:var(--neon-green); color:#052012; background:var(--neon-green);
+    box-shadow:0 0 22px rgba(61,252,138,.5);}
+  .buy-note{color:#7E6F9E; font-size:.72rem; margin-top:.8rem;}
+
+  .award{
+    border:2px solid var(--gunmetal); border-radius:12px; text-align:center;
+    padding:2.2rem 1.6rem; background:radial-gradient(ellipse at 50% -30%, rgba(138,147,166,.18), transparent 70%);
+  }
+  .award .display{color:var(--gunmetal); font-size:clamp(1.4rem,5.5vw,2.1rem);
+    text-shadow:0 0 14px rgba(138,147,166,.45);}
+  .award p{color:var(--chrome); font-size:.94rem; max-width:36rem; margin:1rem auto;}
+  .award p b{color:var(--white);}
+
+  footer{padding:2rem 1rem 3rem; text-align:center; color:#7E6F9E; font-size:.72rem;}
+</style>
+</head>
+<body>
+
+<p class="crumb"><a href="../../index.html">&larr; THE ARCADE</a> &nbsp;/&nbsp; EXPERIENCES &nbsp;/&nbsp; JAMES CLAPPER</p>
+
+<header class="wing">
+  <p class="eyebrow">Doucheclosure Experiences &bull; Wing No. 15 &bull; The Unprocessable Subject</p>
+  <h1 class="display">The James Clapper<br>Experience</h1>
+  <p class="sub">Every other wing in this arcade runs on <b>TOTAL BELIEF.</b> We take the witness
+  entirely at their word and audit only the logistics — the invoice, the cooler, the parking
+  validation. Wing No. 15 is where that engine seizes. The Director of National Intelligence
+  answered a yes-or-no question under oath on <b>12 March 2013</b>, and about three months later
+  the public record answered it differently. He has since described his own reply as
+  <b>"clearly erroneous,"</b> said he was trying to answer in what he thought was
+  <b>"the least untruthful manner,"</b> and said <b>"I made a mistake but I did not lie."</b>
+  The board alleges nothing further. The board simply cannot process him — because he established,
+  in his own words and on his own letterhead, that <b>an official denial is not reliable data.</b></p>
+  <span class="stamp">Belief Engine: Divide by Zero</span>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <p>Here is how the machine works everywhere else in this building. A man says he fought a
+      crab person. We believe him. Then we ask, with total sincerity and a clipboard, where the
+      cooler is. A man says he ran a Pentagon program. We believe him. Then we note that the
+      Pentagon has publicly disputed the characterization, and we file the dispute next to
+      seventeen other disputes and move on, because <b>a denial is just one more document in the
+      folder.</b> That is the whole trick. Belief in, logistics out. Fourteen wings, no
+      exceptions.</p>
+
+      <p>Wing No. 15 arrives at intake and the intake form catches fire. Not because the subject
+      is a liar — the board makes no such finding, and no charges were ever brought — but because
+      the subject is <b>the load-bearing wall of the denial architecture itself,</b> and he
+      published a structural report on it. In 2013 he told the Senate Intelligence Committee
+      "No, sir" and "Not wittingly." In the months that followed, the public learned about bulk
+      collection of Americans' domestic call records. He then wrote to the committee's chair
+      calling the answer "clearly erroneous," explaining that he "simply didn't think of" that
+      program. He said elsewhere that he was trying to give the least untruthful answer to a
+      question he compared to <b>"when are you going to stop beating your wife."</b></p>
+
+      <p class="pull">The board wishes to stress that it is not accusing him of anything he has
+      not already put in writing about himself. That is precisely the problem. <b>We audit
+      claims. He audited himself, in public, more thoroughly than we ever could, and then
+      handed us the audit.</b> There is nothing left on the tray.</p>
+
+      <p>So the belief engine hits the one input it was never built to accept. Feed it a witness:
+      it believes and starts asking about refrigeration. Feed it a denial: it files the denial
+      and keeps working. Feed it <b>a denial whose author has already publicly graded it</b> and
+      the engine tries to believe both the statement and the correction at the same time, divides
+      by zero, prints eleven feet of blank tape, and has to be power-cycled by an intern.
+      Sub-Basement 4 has been rebooting it since 2013. There is a laminated sign on the housing
+      that reads DO NOT ENTER "NOT WITTINGLY" INTO THIS TERMINAL. Somebody enters it about once a
+      quarter. It is always somebody new.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE RECEIPTS ============ -->
+<section>
+  <div class="wrap">
+    <h2 class="sec">The Eleven Words</h2>
+    <table class="evidence">
+      <tr><th>Line item</th><th>Review board notes</th></tr>
+
+      <tr><td>THE QUESTION</td><td>12 March 2013, Senate Intelligence Committee. Sen. Ron Wyden
+        asks whether the NSA collects <b>"any type of data at all on millions or hundreds of
+        millions of Americans."</b> Board's note: as questions go, this one is a closed door with
+        one handle. There is no hallway. There is no third option. Wyden had also given advance
+        notice that he intended to ask it, which the board mentions only because we are a
+        logistics operation and <b>we respect a man who books the room properly.</b></td></tr>
+
+      <tr><td>THE ANSWER</td><td><b>"No, sir."</b> Followed by: <b>"Not wittingly. There are cases
+        where they could, inadvertently perhaps, collect — but not wittingly."</b> Board's
+        finding: the initial denial is two words. The clarification is where the engineering
+        lives.</td></tr>
+
+      <tr><td>THE ADVERB</td><td>Count the clarification: <em>Not / wittingly / There / are / cases
+        / where / they / could / inadvertently / perhaps / collect.</em> <b>Eleven words.</b>
+        Three of them — <em>wittingly, inadvertently, perhaps</em> — are doing all the work, and
+        one of them is doing more work than any adverb in the history of American governance.
+        "Wittingly" converts a factual question about whether a thing is happening into a
+        question about the interior mental state of an institution that has no interior. Board's
+        ruling: <b>the most load-bearing four syllables ever deployed in a hearing room,</b>
+        entered into the permanent collection with the reverence we normally reserve for a
+        properly filled cooler.</td></tr>
+
+      <tr><td>THREE MONTHS LATER</td><td>The Snowden disclosures land, and the public record shows
+        bulk collection of Americans' domestic call records. Board's note: the board takes no
+        position on Snowden, who is somebody else's wing. The board notes only the interval.
+        <b>Ninety-odd days is a very short shelf life for a sworn denial,</b> and our standards
+        desk has yogurt that has outperformed it.</td></tr>
+
+      <tr><td>THE LETTER</td><td>He writes to Chair Dianne Feinstein apologizing for an answer he
+        himself describes as <b>"clearly erroneous,"</b> stating that he <b>"simply didn't think
+        of"</b> the call-records program. Elsewhere he says he was trying to respond in
+        <b>"the least untruthful manner"</b> to what he likened to a "when are you going to stop
+        beating your wife" question, and separately that <b>"I made a mistake but I did not
+        lie."</b> No charges were brought. Board's note, filed without snark: <b>this is the
+        entire evidentiary basis of this wing.</b> We did not have to dig. We did not have to
+        speculate. Every document in this table is his, or the committee's, or the public
+        record's. That is the standard we hold every other wing to and it is nice, for once, to
+        be handed it.</td></tr>
+
+      <tr><td>THE ACCIDENTAL GIFT</td><td>For seventy years, the standard closing argument against
+        an experiencer was four words long: <b>"the government says no."</b> Every rural sheriff,
+        every editor, every brother-in-law at Thanksgiving had it in the holster, and it always
+        worked, because an official denial was treated as terminal. Then a sitting Director of
+        National Intelligence stood up and demonstrated — under oath, and then again, more
+        thoroughly, in his own apology letter — that <b>an official denial is a statement made by
+        a person, subject to the same review as any other statement.</b> Board's finding:
+        <b>every single person who was ever waved off with "the government says no" now has a
+        citation.</b> He did not mean to give them one. He gave them one anyway. It is the most
+        valuable object anyone has ever left in this building by accident.</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ============ THE MIDWAY ============ -->
+<section>
+  <div class="wrap">
+    <h2 class="sec">Midway — Five Games</h2>
+
+    <div class="cabinet live">
+      <p class="status">&#9679; The Midway &bull; Five Cabinets, One Hearing Room</p>
+      <h2 class="display">The Clapper Arcade</h2>
+      <p>Five machines, five completely different loops, one adverb. Every cabinet on this floor
+      teaches an actual piece of the 2013 public record, and every one of them ends in the same
+      place: <b style="color:var(--white)">a room where the answer was technically constructed
+      and the question was simple.</b> This is what the five dollars buys.</p>
+      <div class="grid">
+        <a class="btn locked" style="text-align:center;" href="#game">1 · THE HEARING<br><span style="font-size:.62rem; opacity:.75;">Cabinet under assembly · check back</span></a>
+        <a class="btn" style="text-align:center;" href="the-least-untruthful-answer.html">2 · THE LEAST UNTRUTHFUL ANSWER<br><span style="font-size:.62rem; opacity:.75;">Construction puzzle · say nothing false, answer nothing</span></a>
+        <a class="btn" style="text-align:center;" href="not-wittingly.html">3 · NOT WITTINGLY<br><span style="font-size:.62rem; opacity:.75;">Adverb defense · one word between you and the record</span></a>
+        <a class="btn" style="text-align:center;" href="clearly-erroneous.html">4 · CLEARLY ERRONEOUS<br><span style="font-size:.62rem; opacity:.75;">Correction drafting · ninety days later, on letterhead</span></a>
+        <a class="btn locked" style="text-align:center;" href="#game">5 · <span class="redacted">████████████</span><br><span style="font-size:.62rem; opacity:.75;">IN DECLASSIFICATION · title withheld pending review</span></a>
+      </div>
+    </div>
+
+    <div class="dossier">
+      <b>WING DOCTRINE:</b> This wing does not accuse anyone of a crime, a conspiracy, or a motive.
+      It quotes a hearing, a letter, and a man's own published assessment of his own answer, and
+      then it does what this arcade always does — <b>it audits the paperwork.</b> The paperwork,
+      in this case, audited itself first. We are simply the ones who framed it.
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE FULL EXPERIENCE ============ -->
+<section id="prize">
+  <div class="wrap">
+    <div class="prize">
+      <p class="display">The Full Experience — $5</p>
+      <p><b>One ticket, yours forever:</b> all five cabinets in owner's edition (offline, no
+      network, nothing phones home — which in this wing is a design position and not a feature
+      list), the <b>DIVIDE BY ZERO</b> dossier walking the 2013 record end to end with every
+      quote sourced to the hearing, the letter, or his own on-record remarks, and a souvenir tool
+      that is genuinely, unexpectedly useful to people who get none of the jokes.</p>
+
+      <p><b>THE SOUVENIR: THE WEASEL DETECTOR.</b> A real tool. Paste in any statement — a press
+      release, a layoff email, a landlord's reply, a denial from anybody about anything — and it
+      reads the sentence structure and flags the parts doing the work. <b>Hedges</b>
+      (<em>generally, typically, to my knowledge, at this time</em>). <b>Load-bearing adverbs</b>
+      (<em>wittingly, knowingly, intentionally, materially</em>) and the enormous difference
+      between "we do not do that" and "we do not knowingly do that." <b>Non-denial
+      constructions</b> — denying the characterization instead of the fact, answering a narrower
+      question than the one asked, passive voice with the actor deleted, scope limiters that quietly
+      shrink the claim to a single department on a single Tuesday. It shows you the highlighted
+      sentence, names each construction in plain English, and tells you <b>what question is still
+      unanswered.</b> No account, no upload, no server — it runs in your browser and the text never
+      leaves your machine.</p>
+
+      <p><b>It will change how you read your inbox.</b> That is not a joke and it is not a bonus.
+      It is the entire reason this wing gets a tool instead of a punchline.</p>
+
+      <!-- REPLACE-ME: point at your payment link (Stripe when connected) -->
+      <a class="btn" href="#REPLACE-WITH-PAYMENT-LINK">BUY THE FULL EXPERIENCE — $5</a>
+      <p class="buy-note">Instant download &bull; works offline &bull; wittingly released, in full, on purpose</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ NO SHRINE ============ -->
+<section>
+  <div class="wrap">
+    <div class="dossier">
+      <b>NOTE ON THE HALL OF SHRINES:</b> There is no shrine for this wing, and there is no link
+      to book anybody. The Hall of Shrines exists to promote and book <b>the witnesses</b> — the
+      people who came forward, took the hit, and would like the phone to ring. This wing's subject
+      is not a witness. He is the office they were denied by. Promoting a denial is not a service
+      we offer, and booking one is not a thing anyone has ever needed. <b>Nothing to reserve here.
+      The shrine floor is two doors down and it is for the people who talked.</b>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE AWARD ============ -->
+<section>
+  <div class="wrap">
+    <div class="award">
+      <p class="display">The Award He Will Not Accept</p>
+      <p>For decades the conversation ended the same way. Somebody described what they saw. Somebody
+      else said <b>"well, the government says no,"</b> and that was the end of the sentence, the
+      end of the report, and quite often the end of the friendship. There was no counterargument
+      available, because the denial was treated as the floor of reality rather than a document
+      produced by a person having a Tuesday.</p>
+
+      <p>Then, in a hearing room in March 2013, an official gave an eleven-word clarification he
+      would later describe himself as <b>"clearly erroneous,"</b> and the floor turned out to be a
+      rug. He did not intend that. He has said plainly that he made a mistake, that he simply
+      didn't think of the program, and that he did not lie, and the board takes him at his word
+      exactly as it takes every witness in this building at theirs — <b>which is completely.</b></p>
+
+      <p>But intent is not the finding. The finding is what he handed people. <b>Every
+      experiencer who was ever dismissed with an official denial now has a citation, from the
+      Director of National Intelligence, that an official denial can be wrong and can be
+      corrected and is not the end of any sentence.</b> Nobody had that before. Everybody has it
+      now. He is, by acclamation of this board and entirely against his own will, <b>the most
+      effective disclosure advocate in American history.</b></p>
+
+      <p>The board voted to give him an award. He will not accept it. It has been sent back three
+      times. It currently sits in Sub-Basement 4, next to the belief engine, on a shelf of its
+      own, <b>with his name engraved on it and no plans to move.</b> The plaque is short. It reads:
+      <b>NOT WITTINGLY.</b> He earned every word of that, and the board means it sincerely, and
+      the board would like the record to show it is the only award in this building that was won
+      by telling the truth about a mistake.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>DOUCHECLOSURE&trade; EXPERIENCES &bull; A work of parody commenting on the public statements of public figures.<br>
+  We believe every experiencer and every whistleblower. We audit only the clocks, the invoices, and the adverbs.<br>
+  <a href="../../index.html">Back to the arcade</a> &bull; <a href="../galactic-federation/index.html">Previous wing: The Galactic Federation</a></p>
+</footer>
+
+<script src="../../assets/legal.js"></script>
+</body>
+</html>

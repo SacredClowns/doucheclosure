@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NOT WITTINGLY — Doucheclosure</title>
+<meta name="description" content="Eight questions. One tray of qualifier words. Build a sentence that is still true six months later, without sounding like a man building a sentence that is still true six months later. A word game that is secretly a media-literacy tool.">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --gold:#C9A24B; --gold-dim:#6E5827; --shadow:rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--void);}
+  body{margin:0; background:var(--void); color:var(--white);
+    font-family:"Courier New", Courier, monospace; line-height:1.65; overflow-x:hidden;}
+  body::after{content:""; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 1px, transparent 1px 3px);
+    pointer-events:none; z-index:100;}
+  a{color:var(--neon-cyan);}
+  .wrap{max-width:960px; margin:0 auto; padding:0 1.25rem;}
+  .display{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-weight:400; text-transform:uppercase; letter-spacing:.03em; line-height:.95;}
+  .crumb{padding:1rem 1.25rem; font-size:.72rem; letter-spacing:.15em; text-transform:uppercase;}
+  .crumb a{text-decoration:none;}
+
+  header.wing{
+    text-align:center; padding:2.4rem 1rem 2.2rem;
+    background:radial-gradient(ellipse at 50% -20%, rgba(201,162,75,.26), transparent 60%),
+      radial-gradient(ellipse at 88% 120%, rgba(45,225,252,.07), transparent 55%);
+    border-bottom:3px solid var(--gold);
+  }
+  .wing .eyebrow{color:var(--neon-cyan); letter-spacing:.28em; text-transform:uppercase; font-size:.72rem;}
+  .wing h1{margin:.5rem 0 0; font-size:clamp(2.4rem,9vw,4.4rem); color:var(--gold);
+    text-shadow:0 0 16px rgba(201,162,75,.5), 4px 4px 0 #3A2C10;}
+  .wing .sub{color:var(--chrome); max-width:37rem; margin:1.1rem auto 0; font-size:.9rem;}
+  .wing .sub b{color:var(--white);}
+  .file-tab{display:inline-block; margin-top:1.2rem; border:2px solid var(--neon-yellow);
+    color:var(--neon-yellow); padding:.4rem 1.1rem; font-size:.72rem; letter-spacing:.2em;
+    text-transform:uppercase; transform:rotate(-1.5deg);}
+
+  section{padding:2rem 0 2.6rem;}
+
+  /* ---------- stage ---------- */
+  #stage{position:relative; background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:2px solid #4A3A18; border-radius:12px; box-shadow:0 0 26px rgba(201,162,75,.13),0 12px 34px var(--shadow);
+    padding:1.1rem; overflow:hidden;}
+  #stage::before{content:""; position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(ellipse at 20% 12%, rgba(201,162,75,.12), transparent 60%);}
+
+  #hud{display:flex; gap:.9rem; flex-wrap:wrap; align-items:flex-end; position:relative; z-index:2;}
+  .bar{flex:1 1 200px; min-width:180px;}
+  .bar .lab{font-size:.6rem; letter-spacing:.16em; text-transform:uppercase; color:var(--chrome); margin-bottom:4px;
+    display:flex; justify-content:space-between; gap:.5rem;}
+  .bar .lab b{color:var(--white); font-weight:normal;}
+  .track{height:13px; background:#00000099; border:1px solid #000; border-radius:7px; overflow:hidden;}
+  #survfill{height:100%; width:0%; background:linear-gradient(90deg,#4A3A18,var(--gold)); transition:width .3s;}
+  #slimefill{height:100%; width:0%; background:linear-gradient(90deg,#2F6B49,var(--neon-green)); transition:width .3s, background .3s;}
+  #roundpill{flex:0 0 auto; font-size:.62rem; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--neon-yellow); border:1px dashed rgba(255,210,63,.45); border-radius:6px; padding:.35rem .6rem;}
+
+  #board{position:relative; z-index:2; margin:.7rem 0 0; font-size:.62rem; letter-spacing:.14em;
+    text-transform:uppercase; color:#8A7550; min-height:1.2rem;}
+
+  /* ---------- hearing ---------- */
+  #hearing{position:relative; z-index:2; margin-top:.8rem;}
+  #comm{font-size:.58rem; letter-spacing:.24em; text-transform:uppercase; color:var(--gold); margin-bottom:.5rem;}
+  #qbox{background:#0A0A16; border:2px solid #33280F; border-left:5px solid var(--gold);
+    border-radius:8px; padding:.85rem 1rem;}
+  #qkick{font-size:.56rem; letter-spacing:.24em; text-transform:uppercase; color:#8A7550; margin-bottom:.35rem;}
+  #question{margin:0; font-size:.92rem; color:var(--white); line-height:1.55;}
+
+  #sentlab{margin:1rem 0 .45rem; font-size:.6rem; letter-spacing:.2em; text-transform:uppercase; color:var(--chrome);}
+  #sentence{background:#08060F; border:2px dashed #4A3A18; border-radius:9px; padding:.9rem .95rem;
+    font-size:1.02rem; line-height:2.1; color:var(--white);}
+  #sentence .w{white-space:pre-wrap;}
+  .slot{display:inline-block; vertical-align:baseline; font-family:inherit; font-size:.92rem;
+    padding:.12rem .55rem; margin:0 .18rem; border-radius:6px; cursor:pointer; line-height:1.5;
+    border:2px dashed #6E5827; background:#130E06; color:#8A7550; letter-spacing:.06em;}
+  .slot.empty{min-width:3.4rem; text-align:center;}
+  .slot.empty:hover{border-color:var(--gold); color:var(--gold);}
+  .slot.filled{border-style:solid; border-color:var(--gold); background:#2A2110; color:var(--gold);
+    text-transform:lowercase; letter-spacing:.02em;}
+  .slot.armedtarget{border-color:var(--neon-cyan); color:var(--neon-cyan); box-shadow:0 0 12px rgba(45,225,252,.35);}
+  .slot.dragover{border-color:var(--neon-cyan); background:#0E2029;}
+
+  /* ---------- tray ---------- */
+  #traywrap{margin-top:1.05rem; position:relative; z-index:2;}
+  #traylab{font-size:.6rem; letter-spacing:.18em; text-transform:uppercase; color:var(--chrome); margin:0 0 .5rem;}
+  #traylab b{color:var(--white);}
+  #tray{display:flex; flex-wrap:wrap; gap:.45rem;}
+  .tok{font-family:inherit; font-size:.82rem; padding:.5rem .8rem; border-radius:8px; cursor:pointer;
+    background:linear-gradient(180deg,#241B0C,#161005); border:2px solid #5C4A22; color:#E4D3A6;
+    letter-spacing:.02em; transition:transform .1s, border-color .15s, box-shadow .15s;}
+  .tok:hover:not(:disabled){border-color:var(--gold); box-shadow:0 0 12px rgba(201,162,75,.35); transform:translateY(-2px);}
+  .tok.armed{border-color:var(--neon-cyan); color:var(--neon-cyan); box-shadow:0 0 14px rgba(45,225,252,.4);}
+  .tok.used{opacity:.28; cursor:default;}
+  .tok:disabled{opacity:.3; cursor:default;}
+
+  #actions{margin-top:1.05rem; position:relative; z-index:2; display:flex; flex-wrap:wrap;
+    gap:.5rem; align-items:center;}
+  .btn{display:inline-block; padding:.8rem 1.5rem; border-radius:8px; cursor:pointer;
+    font-family:inherit; font-weight:bold; font-size:.78rem; letter-spacing:.14em; text-transform:uppercase;
+    text-decoration:none; border:2px solid var(--gold); background:var(--gold); color:#160F03;}
+  .btn.ghost{background:transparent; color:var(--neon-cyan); border-color:var(--neon-cyan);}
+  .btn:disabled{opacity:.4; cursor:default;}
+  #hint{font-size:.66rem; color:#8A7550; letter-spacing:.06em; flex:1 1 12rem; min-width:10rem;}
+
+  /* ---------- verdict ---------- */
+  #verdict{display:none; position:relative; z-index:2; margin-top:.8rem;}
+  #vkick{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; font-weight:400;
+    text-transform:uppercase; font-size:clamp(1.6rem,6vw,2.6rem); color:var(--neon-yellow);
+    line-height:.95; letter-spacing:.03em;}
+  #vhead{font-size:.68rem; letter-spacing:.16em; text-transform:uppercase; color:#8A7550; margin:.35rem 0 .9rem;}
+  #vsent{background:#08060F; border-left:4px solid var(--gold); padding:.7rem .9rem; border-radius:6px;
+    font-size:.92rem; color:var(--white); margin-bottom:1rem;}
+  #vsent .qm{color:var(--gold);}
+  .fact{border:1px solid #2B2313; border-radius:8px; padding:.65rem .8rem; margin-bottom:.5rem;
+    background:#100C18; font-size:.82rem; color:var(--chrome); line-height:1.6;}
+  .fact .tag{display:block; font-size:.56rem; letter-spacing:.2em; text-transform:uppercase; margin-bottom:.25rem;}
+  .fact.ok{border-color:#2E6B48;} .fact.ok .tag{color:var(--neon-green);}
+  .fact.pre{border-color:#4A3A18;} .fact.pre .tag{color:var(--gold);}
+  .fact.no{border-color:#6B2340;} .fact.no .tag{color:var(--neon-pink);}
+  .fact b{color:var(--white);}
+  #vgrade{margin:1rem 0 .2rem; font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-weight:400; text-transform:uppercase; font-size:1.5rem; letter-spacing:.04em;}
+  #vgrade.clean{color:var(--neon-green);} #vgrade.ok{color:var(--gold);}
+  #vgrade.slime{color:var(--neon-pink);} #vgrade.fail{color:var(--neon-pink);}
+  #vnums{font-size:.68rem; letter-spacing:.14em; text-transform:uppercase; color:#8A7550; margin-bottom:1rem;}
+  .lesson{border:2px solid var(--gold); border-radius:9px; padding:.95rem 1.05rem; background:#0F0A16;}
+  .lesson h4{margin:0 0 .5rem; font-size:.6rem; letter-spacing:.24em; text-transform:uppercase; color:var(--gold);}
+  .lesson p{margin:0 0 .6rem; font-size:.86rem; color:var(--chrome); line-height:1.7;}
+  .lesson p:last-child{margin-bottom:0;}
+  .lesson b{color:var(--white);} .lesson .up{color:var(--neon-green);}
+  .lesson .why{color:var(--neon-yellow);}
+  .trapnote{border-left:4px solid var(--neon-pink); background:#1A0C16; padding:.7rem .9rem;
+    border-radius:6px; margin-top:.7rem; font-size:.82rem; color:var(--chrome); line-height:1.65;}
+  .trapnote b{color:var(--neon-pink);}
+
+  /* ---------- briefing ---------- */
+  #briefing{position:absolute; inset:0; z-index:40; display:none; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center; padding:1.4rem;
+    background:rgba(6,5,12,.96); overflow-y:auto;}
+  #briefing h2{font-size:clamp(1.5rem,5vw,2.4rem); color:var(--gold); text-shadow:0 0 18px rgba(201,162,75,.45);}
+  #briefing p{max-width:34rem; margin:.85rem auto; color:var(--chrome); font-size:.88rem;}
+  #briefing b{color:var(--white);}
+
+  .dossier{border-left:4px solid var(--neon-yellow); background:var(--panel);
+    padding:1.05rem 1.25rem; color:var(--chrome); font-size:.86rem; margin-top:1.6rem;}
+  .dossier b{color:var(--white);}
+  footer{padding:2rem 1rem 3rem; text-align:center; color:#7E6F9E; font-size:.72rem;}
+
+  @media (max-width:760px){
+    #stage{padding:.8rem;}
+    header.wing{padding:1.8rem 1rem 1.6rem;}
+    #sentence{font-size:.94rem; line-height:2.2; padding:.75rem .7rem;}
+    .slot{font-size:.86rem;}
+    .tok{font-size:.78rem; padding:.5rem .7rem;}
+    .btn{padding:.75rem 1.1rem; font-size:.72rem;}
+    #hint{flex-basis:100%;}
+  }
+</style>
+</head>
+<body>
+
+<p class="crumb"><a href="../../index.html">&larr; THE ARCADE</a> &nbsp;/&nbsp; THE JAMES CLAPPER EXPERIENCE &nbsp;/&nbsp; NOT WITTINGLY</p>
+
+<header class="wing">
+  <p class="eyebrow">The James Clapper Experience &bull; Cabinet No. 1</p>
+  <h1 class="display">Not<br>Wittingly</h1>
+  <p class="sub">In 2013 the Director of National Intelligence was asked whether the NSA collects data
+  on millions of Americans. The answer was <b>&ldquo;No, sir&hellip; not wittingly.&rdquo;</b> Everything
+  in that answer is carried by the adverb. This cabinet hands you the adverbs and asks you to do better,
+  and then &mdash; quietly, without asking permission &mdash; <b>teaches you to spot them everywhere else.</b></p>
+  <span class="file-tab">OPEN SESSION &bull; THE STENOGRAPHER IS TYPING &bull; SIX MONTHS IS THE STANDARD</span>
+</header>
+
+<section>
+  <div class="wrap">
+    <div id="stage">
+
+      <div id="hud">
+        <div class="bar">
+          <div class="lab"><span>Survivability &mdash; counsel&rsquo;s estimate</span><b id="survband">&mdash;</b></div>
+          <div class="track"><div id="survfill"></div></div>
+        </div>
+        <div class="bar">
+          <div class="lab"><span>Slime &mdash; how it reads to a normal person</span><b id="slimelab">0</b></div>
+          <div class="track"><div id="slimefill"></div></div>
+        </div>
+        <div id="roundpill">Question 1 / 8</div>
+      </div>
+
+      <p id="board">&nbsp;</p>
+
+      <div id="hearing">
+        <div id="comm">&nbsp;</div>
+        <div id="qbox">
+          <div id="qkick">The question, as put to you</div>
+          <p id="question">&nbsp;</p>
+        </div>
+        <p id="sentlab">Your answer, as it will appear in the transcript</p>
+        <div id="sentence"></div>
+      </div>
+
+      <div id="traywrap">
+        <p id="traylab">Qualifier tray &mdash; <b>tap a word, then tap a gap.</b> Tap a placed word to take it back.</p>
+        <div id="tray"></div>
+      </div>
+
+      <div id="actions">
+        <button class="btn" id="submitBtn">Give the answer</button>
+        <button class="btn ghost" id="clearBtn">Clear</button>
+        <span id="hint">Fewest words that still hold. Every extra word is heard.</span>
+      </div>
+
+      <div id="verdict">
+        <div id="vkick">Six Months Later</div>
+        <div id="vhead">&nbsp;</div>
+        <div id="vsent">&nbsp;</div>
+        <div id="vfacts"></div>
+        <div id="vgrade">&nbsp;</div>
+        <div id="vnums">&nbsp;</div>
+        <div class="lesson" id="vlesson"></div>
+        <div id="vtrap"></div>
+        <div style="margin-top:1.1rem;"><button class="btn" id="nextBtn">Next question</button></div>
+      </div>
+
+      <div id="briefing">
+        <h2 class="display">You Have Been Sworn In.</h2>
+        <p>Eight questions. Each one has a plain, true answer that would end a career if you said it
+        flat. You are not permitted to lie. You are permitted to <b>choose words</b>.</p>
+        <p>The tray holds twelve qualifiers. Six months after every answer, the facts land, and your
+        sentence is read back against them by people with subpoena power and no sense of humour.
+        <b>Survive with the fewest words possible.</b> Stack too many and you survive the hearing and
+        lose the room, which is worse.</p>
+        <button class="btn" id="startBtn">Swear the witness</button>
+      </div>
+
+    </div>
+
+    <div class="dossier">
+      <b>WING DOCTRINE:</b> We take the answer completely at face value. That is the whole point.
+      Nobody here is calling anybody a liar &mdash; a liar would be simple, and a liar can be caught.
+      Our objection is procedural: <b>somewhere in the building there is a person whose job is the
+      adverb</b>, that person is very good at their job, they have never once been named in a headline,
+      and their work product is read aloud to the public on television by somebody else. This cabinet
+      is a training course. It is, unfortunately, also completely real.
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>DOUCHECLOSURE&trade; EXPERIENCES &bull; A work of parody commenting on public statements of public figures.<br>
+  All hearings, agencies, programs and statements in this game are <b>fictional</b>.<br>
+  <a href="../../index.html">The arcade</a></p>
+</footer>
+
+<script src="../../assets/screen.js"></script>
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const stage = $('stage');
+  Juice.init(stage);
+
+  const SLIME_MAX = 55;
+
+  /* ============================================================
+     THE TRAY. Twelve words. Each one does a specific job.
+     slime = how obviously evasive it reads to a normal person.
+     ============================================================ */
+  const TOKENS = [
+    { id:'currently',     w:'currently',              slime:12 },
+    { id:'directly',      w:'directly',               slime:14 },
+    { id:'atthis',        w:'at this time',           slime:16 },
+    { id:'knowingly',     w:'knowingly',              slime:18 },
+    { id:'toknow',        w:'to my knowledge',        slime:20 },
+    { id:'categorically', w:'categorically',          slime:20 },
+    { id:'wittingly',     w:'wittingly',              slime:22 },
+    { id:'aware',         w:'that I am aware of',     slime:22 },
+    { id:'ordcourse',     w:'in the ordinary course', slime:24 },
+    { id:'inadvertently', w:'inadvertently',          slime:24 },
+    { id:'assuch',        w:'as such',                slime:26 },
+    { id:'perhaps',       w:'perhaps',                slime:30 }
+  ];
+  const TOK = {};
+  TOKENS.forEach(t => { TOK[t.id] = t; });
+
+  /* ============================================================
+     EIGHT QUESTIONS.
+     seg: strings and slot indices (numbers).
+     facts: {k, t, pre} — pre:true means the plain sentence already
+            survives it. Only non-pre facts are threats.
+     covers: 'tokenId@slot' -> [factKeys]
+     ============================================================ */
+  const ROUNDS = [
+    {
+      comm:'SUBCOMMITTEE ON ANOMALOUS PROCUREMENT &bull; OPEN SESSION',
+      q:'Does the Office hold video of the November incident?',
+      seg:['The Office does not', 0, 'hold footage of the November incident', 1],
+      facts:[
+        { k:'tape', t:'The Office held that footage for four months. On 12 March it was walked &mdash; intact, on the original drive &mdash; to a contractor archive two miles from the building.' }
+      ],
+      covers:{ 'currently@0':['tape'], 'currently@1':['tape'], 'atthis@0':['tape'], 'atthis@1':['tape'] },
+      head:'THE TRANSFER LOG IS PRODUCED UNDER SUBPOENA.',
+      lesson:{
+        t:'THE WORD THAT SAVED YOU: CURRENTLY',
+        p:[
+          '<b>CURRENTLY is a timestamp.</b> It converts a claim about the entire past into a claim about one second, and that second is already over. Nothing you said was false. On the morning you said it, the Office genuinely did not hold the footage &mdash; because it had handed the footage to somebody else eight weeks earlier.',
+          '<span class="why">WHAT TO DO WITH THIS:</span> when an institution tells you it does not <i>currently</i> do a thing, you have just been told that it did. Nobody reaches for a timestamp about a thing that never happened. The word is a receipt.'
+        ]
+      },
+      failNote:'You answered flat, and flat answers are audited against the whole record. The log put the footage in the Office&rsquo;s own hands for four months after the date in the question.'
+    },
+
+    {
+      comm:'HOUSE OVERSIGHT &bull; FUNDING PANEL',
+      q:'Does the Directorate fund the Vandenberg materials study?',
+      seg:['The Directorate does not', 0, 'fund the Vandenberg materials study', 1],
+      facts:[
+        { k:'conduit', t:'The Directorate funds the Harker Institute, a registered nonprofit, at $4.1 million a year. Harker funds the study. In full. Harker is the study&rsquo;s only donor and has no other program.' }
+      ],
+      covers:{ 'directly@0':['conduit'], 'directly@1':['conduit'] },
+      traps:{ categorically:'<b>CATEGORICALLY is not a qualifier.</b> It is an intensifier. It buys you no legal room at all and it raises the price of being wrong, which is the exact opposite of the trade you came here to make. It is the word that appears in the sentence immediately before the correction.' },
+      head:'A NONPROFIT&rsquo;S FORM 990 IS POSTED, AS FORM 990s ARE.',
+      lesson:{
+        t:'THE WORD THAT SAVED YOU: DIRECTLY',
+        p:[
+          '<b>DIRECTLY inserts a layer and then declines to describe it.</b> Watch what the sentence has quietly conceded: a statement only needs the word DIRECTLY if there is an indirect route. Otherwise the word is dead weight and no lawyer would have let it through.',
+          '<span class="why">WHAT TO DO WITH THIS:</span> &ldquo;we have no direct relationship with X&rdquo; is an instruction. Go find the intermediary. There is one. That is why the word is there.'
+        ]
+      },
+      failNote:'You answered flat. The 990 is public, the grant line is itemised, and Harker has exactly one program.'
+    },
+
+    {
+      comm:'SENATE SELECT COMMITTEE &bull; TELEVISED',
+      q:'Does the Bureau collect the movement records of ordinary citizens?',
+      seg:['The Bureau does not', 0, 'collect the movement records of ordinary citizens', 1],
+      facts:[
+        { k:'bulk', t:'Three toll authorities push the Bureau a file every night at 02:00. It contains every plate that crossed a gantry that day. Every plate means every plate.' },
+        { k:'intent', t:'The feed was requested for commercial-vehicle enforcement. Passenger vehicles arrive with it because the gantry does not sort, and nobody has ever asked it to.' }
+      ],
+      covers:{
+        'wittingly@0':['bulk','intent'], 'wittingly@1':['bulk','intent'],
+        'knowingly@0':['bulk','intent'], 'knowingly@1':['bulk','intent']
+      },
+      head:'A CONTRACTOR&rsquo;S INVOICE DESCRIBES THE NIGHTLY FEED IN PLAIN ENGLISH.',
+      lesson:{
+        t:'THE WORD THAT SAVED YOU: WITTINGLY &mdash; OR KNOWINGLY, WHICH IS THE SAME WORD IN A BETTER SUIT',
+        p:[
+          'Both words perform one move, and it is the single most powerful sentence-level defence in public life: <b>they relocate the claim from the world into the speaker&rsquo;s head.</b> The question was whether a thing happens. The answer is about whether anyone meant it. The world can be audited. A head cannot.',
+          'The two words are identical in function and wildly different in cost. Nobody flinches at KNOWINGLY. Everybody hears WITTINGLY. <b>That makes KNOWINGLY the more dangerous of the two</b>, because it does the same work and never gets clipped.',
+          '<span class="why">WHAT TO DO WITH THIS:</span> when a factual question gets an answer about intent, the factual question has not been answered. Ask it again with the adverb removed and watch what has to change.'
+        ]
+      },
+      failNote:'You answered flat. The invoice describes the nightly feed in plain English, and the file has been arriving for six years.'
+    },
+
+    {
+      comm:'CLOSED SESSION &bull; TRANSCRIPT RELEASED LATER, AS THEY ALWAYS ARE',
+      q:'Has the Panel ever destroyed original sensor tapes?',
+      seg:['The Panel has never', 0, 'destroyed original sensor tapes', 1],
+      facts:[
+        { k:'intact', pre:true, t:'Every original tape from 1998 forward is in the Cutler annex. Indexed. On the original media. Nothing was destroyed. Nothing was ever going to be.' },
+        { k:'missing', pre:true, t:'The two tapes reported missing were never recorded. The sensor was down for scheduled maintenance and the log says so, in pen, in the correct hand, on the correct day.' }
+      ],
+      covers:{},
+      head:'THE ANNEX IS INVENTORIED. EVERY TAPE IS THERE.',
+      lesson:{
+        t:'THE WORD THAT SAVED YOU: NONE. THERE WAS NOTHING TO SURVIVE.',
+        p:[
+          'This is the round that teaches the skill in reverse, so read it twice. <b>A hedge on a true statement is pure signal.</b> If you had said &ldquo;to my knowledge&rdquo; here, three outlets would have run the clip by Thursday &mdash; not because you were hiding anything, but because <b>a reader cannot tell a defensive reflex from a concealment</b>, and institutions hedge by reflex, on everything, forever.',
+          'That reflex is the whole reason nobody believes them on the day it actually matters. The hedging is free to the lawyer and enormously expensive to the institution, and the two of them do not share a budget.',
+          '<span class="why">WHAT TO DO WITH THIS &mdash; THE LOAD-BEARING TEST:</span> when you see a qualifier in a statement, delete it and re-read the sentence. If the sentence is still true without it, the qualifier is habit &mdash; annoying, not evidence. <b>If deleting it would make the sentence false, the qualifier is load-bearing, and it is the story.</b> That one test is most of media literacy.'
+        ]
+      },
+      failNote:''
+    },
+
+    {
+      comm:'JOINT INQUIRY &bull; FOREIGN LIAISON',
+      q:'Does the Agency share raw returns with foreign partners?',
+      seg:['The Agency does not', 0, 'share', 1, 'raw returns with foreign partners', 2],
+      facts:[
+        { k:'annex', t:'A 2019 emergency annex permits transfer on request. It has been used 41 times. It is still in force. It was renewed twice without debate.' },
+        { k:'fusion', t:'Raw returns also reach partners through the Bramble fusion cell, which is jointly staffed by four countries and which is not, on paper, a foreign partner. On paper it is a room.' }
+      ],
+      covers:{
+        'directly@0':['fusion'], 'directly@1':['fusion'],
+        'ordcourse@1':['annex'], 'ordcourse@2':['annex']
+      },
+      head:'THE ANNEX IS DECLASSIFIED IN A FOOTNOTE OF SOMEBODY ELSE&rsquo;S REPORT.',
+      lesson:{
+        t:'TWO WORDS, TWO DOORS',
+        p:[
+          '<b>DIRECTLY</b> covers the conduit &mdash; the fusion cell, which is technically not a partner, because it is technically a room. <b>IN THE ORDINARY COURSE</b> covers the exception &mdash; the annex, which is where all forty-one interesting transfers live. Ordinary-course language is a map with the interesting part torn off and the tear described as standard practice.',
+          '<span class="why">WHAT TO DO WITH THIS:</span> the follow-up question is always the mirror of the hedge. &ldquo;In the ordinary course&rdquo; &rarr; <i>so what happens outside it?</i> &ldquo;Directly&rdquo; &rarr; <i>so who is in the middle?</i> &ldquo;Under this program&rdquo; &rarr; <i>so how many programs are there?</i> Ask the mirror question and the sentence falls over in one move.'
+        ]
+      },
+      failNote:'You left a door open. The annex and the fusion cell are both documented, and they arrived in the same footnote.'
+    },
+
+    {
+      comm:'CLOSED BRIEFING &bull; MEMBERS ONLY &bull; SOMEONE TOOK NOTES',
+      q:'Was the Committee briefed on Program TALLOW before June?',
+      seg:['The Committee was', 0, 'not briefed on Program TALLOW before June', 1],
+      awk:{ 0:10 },
+      facts:[
+        { k:'march', t:'A read-in happened on 14 March. Two members attended. It was logged as a &ldquo;familiarization session,&rdquo; which is a briefing with a different word on the sign-in sheet.' },
+        { k:'told', t:'You were not in the building on 14 March and nobody told you afterward. That is the only reason the sentence held at all.' }
+      ],
+      covers:{
+        'toknow@1':['march','told'], 'toknow@0':['march','told'],
+        'aware@1':['march','told'], 'aware@0':['march','told']
+      },
+      head:'A SIGN-IN SHEET SURFACES. IT IS A GOOD SIGN-IN SHEET.',
+      lesson:{
+        t:'THE PHRASE THAT SAVED YOU: TO MY KNOWLEDGE',
+        p:[
+          '<b>It moves the claim off the record and onto one person.</b> Look at what that does to the defence: your own ignorance becomes the shield. Anyone who says it is volunteering that they may not have been told &mdash; and inside an institution that runs on need-to-know, that is not a hard case to make. It is barely a case at all.',
+          '<b>PLACEMENT MATTERS, AND IT IS NOT A LEGAL QUESTION.</b> At the end of the sentence the phrase is almost inaudible. Jammed into the middle, it announces itself, and the room stops hearing an answer and starts hearing a lawyer. Same protection. Different clip.',
+          '<span class="why">WHAT TO DO WITH THIS:</span> &ldquo;to my knowledge,&rdquo; &ldquo;that I am aware of,&rdquo; and &ldquo;I have no information suggesting&rdquo; are the three most common hedges in official statements, and all three concede the same thing &mdash; that a more complete record exists somewhere, held by somebody who is not speaking.'
+        ]
+      },
+      failNote:'You answered flat about a room you were not in. The sign-in sheet has two names on it and neither of them is yours, which would have been an excellent thing to have said out loud.'
+    },
+
+    {
+      comm:'PRESS AVAILABILITY &bull; ON CAMERA &bull; NO COUNSEL PRESENT',
+      q:'Did the Office release the Harker roster to an outside party?',
+      seg:['The Office', 0, 'released the Harker roster to an outside party', 1],
+      facts:[
+        { k:'appendix', t:'The roster was Appendix J of an 1,800-page production. The reviewer log shows Appendix J was never opened by anyone. Nobody chose to send it. It went.' },
+        { k:'pattern', pre:true, t:'Three similar productions went out that quarter and none contained anything sensitive. There is no pattern here. There is one appendix and a very tired reviewer.' }
+      ],
+      covers:{ 'inadvertently@0':['appendix'], 'inadvertently@1':['appendix'] },
+      traps:{ perhaps:'<b>PERHAPS, ON A FACT ALREADY ESTABLISHED.</b> The release was documented before you opened your mouth. Hedging a confirmed fact does not create doubt about the fact &mdash; it creates doubt about <i>you</i>. It is the most expensive word in the tray and it is the one people reach for when they are frightened.' },
+      head:'THE REVIEWER LOG IS OBTAINED. IT IS EXTREMELY BORING AND COMPLETELY EXCULPATORY.',
+      lesson:{
+        t:'THE WORD THAT SAVED YOU: INADVERTENTLY',
+        p:[
+          'Hedges are not only for denials. <b>This is the hedge that lives inside admissions</b>, and it is doing real work: it concedes the act and contests the intent, which is the cheapest trade available in any hearing on earth. Here it also happens to be entirely true, which is the uncomfortable part &mdash; the technique is not evidence of guilt, it is just a technique.',
+          '<span class="why">WHAT TO DO WITH THIS:</span> when a statement admits a thing and then attaches INADVERTENTLY, ADMINISTRATIVE, PROCEDURAL, IN ERROR, or ISOLATED, the fight has already been moved from <i>did it happen</i> to <i>was anyone at fault</i>. Notice the move being made. Sometimes it is honest. It is always a move.'
+        ]
+      },
+      failNote:'You confirmed a deliberate release you did not make. The reviewer log said Appendix J was never opened, and you talked over it.'
+    },
+
+    {
+      comm:'FULL COMMITTEE &bull; TELEVISED &bull; THE ONE EVERYONE WILL REMEMBER',
+      q:'Does the Program hold recovered material of non-human origin?',
+      seg:['The Program does not', 0, 'hold recovered material of non-human origin', 1],
+      facts:[
+        { k:'custody', t:'The material sits in a contractor vault under a custody agreement. The Program has <b>access</b>. The contractor has <b>custody</b>. Those are two different words and they were chosen on purpose by somebody who bills hourly.' },
+        { k:'label', t:'Two items are catalogued ORIGIN UNDETERMINED. Not one line of paper anywhere in the Program says &ldquo;non-human.&rdquo; The taxonomy was written by people who read transcripts for a living.' },
+        { k:'tense', pre:true, t:'Everything was transferred to a successor office in April &mdash; which your sentence already survived before you touched it, because DOES NOT HOLD is present tense. <b>You were handed a hedge and you did not notice it.</b>' }
+      ],
+      covers:{ 'directly@0':['custody'], 'directly@1':['custody'], 'assuch@1':['label'], 'assuch@0':['label'] },
+      head:'A CUSTODY AGREEMENT AND A CATALOGUE PAGE ARRIVE ON THE SAME AFTERNOON.',
+      lesson:{
+        t:'THREE ESCAPES IN ONE SENTENCE. YOU ONLY BUILT TWO.',
+        p:[
+          '<b>DIRECTLY</b> covers custody &mdash; a contractor holds it, so the Program does not hold it. <b>AS SUCH</b> covers the label &mdash; nothing anywhere is catalogued &ldquo;non-human,&rdquo; so nothing non-human is held, <i>as such</i>. And the <b>tense</b> was already doing the third job before you arrived: DOES NOT HOLD is true of this second and says nothing whatsoever about April.',
+          'Nobody lied. Nobody said anything either. That is not a failure of the sentence &mdash; <b>that is the sentence working exactly as designed.</b>',
+          '<span class="why">WHAT TO DO WITH THIS:</span> real statements are layered like this, deliberately, so that no single clause is a lie and no single clause can be quoted against you. Read them one clause at a time and ask what each clause is holding the door open for: a tense, a legal entity, a definition. Three doors, three follow-up questions, one afternoon.'
+        ]
+      },
+      failNote:'You left a door open on the biggest question of the eight, and this is the one that gets played on television for eleven years.'
+    }
+  ];
+
+  const BOARD = [
+    'RECORD: the stenographer types every word. The stenographer does not type tone.',
+    'RECORD: counsel is seated behind you. Counsel may not speak. Counsel may breathe audibly.',
+    'RECORD: this session is open. Open means televised. Televised means clipped.',
+    'RECORD: the question was submitted in writing four days ago. Everyone here has read it.',
+    'RECORD: nothing said today is sealed. Six months is the industry standard for things coming out.',
+    'RECORD: the member asking has already seen the document. The member asking would like you to say it.',
+    'RECORD: there is no penalty for sounding evasive. There is a penalty for being wrong.',
+    'RECORD: the clip is the product. The transcript is the evidence. Different people grade each one.'
+  ];
+
+  /* ============================================================
+     STATE
+     ============================================================ */
+  let ri, placed, armed, total, awarded, solved, cleanRounds, ended, live;
+
+  function award(key, label){
+    if (awarded[key]) return;
+    awarded[key] = true;
+    Arcade.toast(label);
+  }
+
+  function reset(){
+    ri = 0; total = 0; awarded = {}; solved = 0; cleanRounds = 0; ended = false; live = false;
+    placed = []; armed = null;
+    $('verdict').style.display = 'none';
+    setPhase(true);
+  }
+
+  /* ---------- scoring ---------- */
+  function keyOf(p){ return p.id + '@' + p.slot; }
+  function coveredBy(p){ return (ROUNDS[ri].covers[keyOf(p)]) || []; }
+
+  function threatsOf(r){ return r.facts.filter(f => !f.pre); }
+
+  function survOf(){
+    const r = ROUNDS[ri];
+    const th = threatsOf(r);
+    if (!th.length) return 100;
+    const got = {};
+    placed.forEach(p => coveredBy(p).forEach(k => { got[k] = true; }));
+    let n = 0;
+    th.forEach(f => { if (got[f.k]) n++; });
+    return Math.round(n / th.length * 100);
+  }
+
+  function slimeOf(){
+    if (!placed.length) return 0;
+    const r = ROUNDS[ri];
+    let base = 0, useless = 0;
+    placed.forEach(p => {
+      base += TOK[p.id].slime + ((r.awk && r.awk[p.slot]) || 0);
+      if (!coveredBy(p).length) useless += 12;
+    });
+    return Math.round(base * (1 + 0.35 * (placed.length - 1)) + useless);
+  }
+
+  function pointsFor(surv, slime){
+    if (surv < 100) return Math.round(surv * 0.35);
+    if (slime > SLIME_MAX) return 25;
+    return 60 + Math.max(0, 65 - slime);
+  }
+
+  /* ---------- rendering ---------- */
+  function setPhase(playing){
+    $('hearing').style.display = playing ? '' : 'none';
+    $('traywrap').style.display = playing ? '' : 'none';
+    $('actions').style.display = playing ? '' : 'none';
+    $('verdict').style.display = playing ? 'none' : '';
+  }
+
+  function renderSentence(){
+    const r = ROUNDS[ri];
+    const el = $('sentence');
+    el.innerHTML = '';
+    r.seg.forEach((part, pi) => {
+      if (typeof part === 'string'){
+        const s = document.createElement('span');
+        s.className = 'w';
+        s.textContent = part + ' ';
+        el.appendChild(s);
+        return;
+      }
+      const isLast = pi === r.seg.length - 1;
+      const idx = part;
+      const p = placed.find(x => x.slot === idx);
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'slot ' + (p ? 'filled' : 'empty') + (armed && !p ? ' armedtarget' : '');
+      b.dataset.slot = String(idx);
+      b.textContent = p ? TOK[p.id].w : '___';
+      b.setAttribute('aria-label', p ? 'Remove ' + TOK[p.id].w : 'Empty gap ' + (idx + 1));
+      b.addEventListener('click', () => hitSlot(idx));
+      b.addEventListener('dragover', e => { e.preventDefault(); b.classList.add('dragover'); });
+      b.addEventListener('dragleave', () => b.classList.remove('dragover'));
+      b.addEventListener('drop', e => {
+        e.preventDefault();
+        b.classList.remove('dragover');
+        const id = e.dataTransfer && e.dataTransfer.getData('text/plain');
+        if (id && TOK[id]){ armed = id; hitSlot(idx); }
+      });
+      el.appendChild(b);
+      if (!isLast){
+        const sp = document.createElement('span');
+        sp.className = 'w';
+        sp.textContent = ' ';
+        el.appendChild(sp);
+      }
+    });
+    const dot = document.createElement('span');
+    dot.className = 'w';
+    dot.textContent = '.';
+    el.appendChild(dot);
+  }
+
+  function renderTray(){
+    const box = $('tray');
+    box.innerHTML = '';
+    TOKENS.forEach(t => {
+      const used = placed.some(p => p.id === t.id);
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'tok' + (used ? ' used' : '') + (armed === t.id ? ' armed' : '');
+      b.textContent = t.w;
+      b.disabled = used;
+      b.draggable = !used;
+      b.addEventListener('click', () => {
+        if (used) return;
+        armed = (armed === t.id) ? null : t.id;
+        Juice.sfx('click');
+        renderTray();
+        renderSentence();
+        $('hint').textContent = armed
+          ? 'Now tap a gap in the sentence.'
+          : 'Fewest words that still hold. Every extra word is heard.';
+      });
+      b.addEventListener('dragstart', e => {
+        armed = t.id;
+        if (e.dataTransfer) e.dataTransfer.setData('text/plain', t.id);
+        renderSentence();
+      });
+      box.appendChild(b);
+    });
+  }
+
+  function renderHud(){
+    const surv = survOf(), slime = slimeOf();
+    $('survfill').style.width = surv + '%';
+    let band;
+    if (!placed.length && surv < 100) band = 'FLAT &mdash; NO ROOM AT ALL';
+    else if (surv >= 100) band = 'DEFENSIBLE';
+    else if (surv >= 50) band = 'THIN';
+    else band = 'EXPOSED';
+    $('survband').innerHTML = band;
+    $('survfill').style.background = surv >= 100
+      ? 'linear-gradient(90deg,#2E7A55,var(--neon-green))'
+      : 'linear-gradient(90deg,#4A3A18,var(--gold))';
+
+    $('slimefill').style.width = Math.min(100, slime) + '%';
+    let sband;
+    if (slime === 0) sband = '0 &mdash; PLAIN ENGLISH';
+    else if (slime <= 20) sband = slime + ' &mdash; BARELY AUDIBLE';
+    else if (slime <= 35) sband = slime + ' &mdash; LAWYERLY';
+    else if (slime <= SLIME_MAX) sband = slime + ' &mdash; EVASIVE';
+    else sband = slime + ' &mdash; UNLISTENABLE';
+    $('slimelab').innerHTML = sband;
+    $('slimefill').style.background = slime > SLIME_MAX
+      ? 'linear-gradient(90deg,#7A2A45,var(--neon-pink))'
+      : (slime > 35 ? 'linear-gradient(90deg,#6E5827,var(--neon-yellow))'
+                    : 'linear-gradient(90deg,#2F6B49,var(--neon-green))');
+
+    $('roundpill').textContent = 'Question ' + (ri + 1) + ' / ' + ROUNDS.length;
+  }
+
+  function centerOfEl(el){
+    const a = el.getBoundingClientRect(), b = stage.getBoundingClientRect();
+    return { x: a.left - b.left + a.width / 2, y: a.top - b.top + a.height / 2 };
+  }
+
+  let overloaded = false;
+  function hitSlot(idx){
+    if (!live) return;
+    const existing = placed.find(x => x.slot === idx);
+    if (existing && !armed){
+      placed = placed.filter(x => x.slot !== idx);
+      Juice.sfx('tick');
+    } else if (armed){
+      placed = placed.filter(x => x.slot !== idx);
+      placed.push({ id: armed, slot: idx });
+      armed = null;
+      Juice.sfx('blip');
+      Juice.buzz(8);
+    } else {
+      return;
+    }
+    renderSentence();
+    renderTray();
+    renderHud();
+    const s = slimeOf();
+    if (s > SLIME_MAX && !overloaded){
+      overloaded = true;
+      Juice.sfx('alarm');
+      Juice.flash('#FF3D8A', .18);
+      $('hint').textContent = 'The room can hear that. Take one back.';
+    } else if (s <= SLIME_MAX){
+      overloaded = false;
+      $('hint').textContent = 'Fewest words that still hold. Every extra word is heard.';
+    }
+  }
+
+  function sentenceText(){
+    const r = ROUNDS[ri];
+    let out = '';
+    r.seg.forEach(part => {
+      if (typeof part === 'string'){ out += (out ? ' ' : '') + part; return; }
+      const p = placed.find(x => x.slot === part);
+      if (p) out += (out ? ' ' : '') + TOK[p.id].w;
+    });
+    return out.replace(/\s+/g, ' ').trim() + '.';
+  }
+
+  /* ---------- rounds ---------- */
+  function beginRound(){
+    const r = ROUNDS[ri];
+    placed = []; armed = null; overloaded = false;
+    setPhase(true);
+    $('comm').innerHTML = r.comm;
+    $('question').textContent = r.q;
+    $('board').textContent = BOARD[ri % BOARD.length];
+    $('hint').textContent = 'Fewest words that still hold. Every extra word is heard.';
+    renderSentence(); renderTray(); renderHud();
+    live = true;
+    Juice.sfx('blip');
+    stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function submit(){
+    if (!live) return;
+    live = false;
+    const r = ROUNDS[ri];
+    const surv = survOf(), slime = slimeOf(), n = placed.length;
+    const pts = pointsFor(surv, slime);
+    total += pts;
+
+    const got = {};
+    placed.forEach(p => coveredBy(p).forEach(k => { got[k] = true; }));
+
+    /* facts panel */
+    let fh = '';
+    r.facts.forEach(f => {
+      if (f.pre){
+        fh += '<div class="fact pre"><span class="tag">Already covered by the sentence you were handed</span>' + f.t + '</div>';
+      } else if (got[f.k]){
+        const by = placed.filter(p => coveredBy(p).indexOf(f.k) >= 0).map(p => '&ldquo;' + TOK[p.id].w + '&rdquo;').join(' + ');
+        fh += '<div class="fact ok"><span class="tag">Survived &mdash; covered by ' + by + '</span>' + f.t + '</div>';
+      } else {
+        fh += '<div class="fact no"><span class="tag">Contradicts what you said</span>' + f.t + '</div>';
+      }
+    });
+    if (!r.facts.length) fh = '';
+    $('vfacts').innerHTML = fh;
+    $('vhead').innerHTML = r.head;
+    $('vsent').innerHTML = '<span class="qm">&ldquo;</span>' + sentenceText() + '<span class="qm">&rdquo;</span>';
+
+    /* grade */
+    const g = $('vgrade');
+    let grade, cls, pt;
+    const centre = centerOfEl($('sentence'));
+    if (surv < 100){
+      grade = threatsOf(r).length && !n ? 'ANSWERED FLAT. CONTRADICTED.' : 'CONTRADICTED.';
+      cls = 'fail';
+      Juice.impact(centre.x, centre.y, { text:'CONTRADICTED', color:'#FF3D8A', power:12, count:22, sound:'lose' });
+      Juice.flash('#FF3D8A', .3);
+    } else if (slime > SLIME_MAX){
+      grade = 'SURVIVED THE HEARING. LOST THE ROOM.';
+      cls = 'slime';
+      Juice.impact(centre.x, centre.y, { text:'SLIME OVERLOAD', color:'#FF3D8A', power:14, count:26, sound:'bad' });
+      Juice.flash('#FF3D8A', .34);
+      Juice.shake(12);
+      solved++;
+    } else {
+      solved++;
+      const allUseful = placed.every(p => coveredBy(p).length > 0);
+      if (n === 0){
+        grade = 'NOT ONE EXTRA WORD.';
+        cls = 'clean'; cleanRounds++;
+        award('zeroslime', '🏆 ZERO SLIME');
+        Juice.reward(centre.x, centre.y, { text:'PLAIN ENGLISH', color:'#3DFC8A', sound:'win', count:26 });
+      } else if (n === 1 && allUseful){
+        grade = 'CLEAN. ONE WORD DID ALL OF IT.';
+        cls = 'clean'; cleanRounds++;
+        award('oneword', '🏆 ONE WORD ONLY');
+        Juice.reward(centre.x, centre.y, { text:'ONE WORD', color:'#3DFC8A', sound:'good', count:24 });
+        Juice.burst(centre.x, centre.y, { color:'#C9A24B', count:16, speed:4.2, gravity:.02 });
+      } else {
+        grade = 'SURVIVED.';
+        cls = 'ok';
+        Juice.reward(centre.x, centre.y, { text:'+' + pts, color:'#C9A24B', sound:'pickup' });
+      }
+      if (placed.some(p => p.id === 'wittingly') && r.covers['wittingly@' + placed.find(p => p.id === 'wittingly').slot]){
+        award('adverb', '🏆 THE ADVERB');
+      }
+    }
+    g.textContent = grade;
+    g.className = cls;
+    $('vnums').innerHTML = 'Survivability ' + surv + '% &nbsp;&bull;&nbsp; Slime ' + slime +
+      ' &nbsp;&bull;&nbsp; Words used ' + n + ' &nbsp;&bull;&nbsp; Precision +' + pts +
+      ' &nbsp;&bull;&nbsp; Running total ' + total;
+
+    /* lesson */
+    let lp = r.lesson.p.map(x => '<p>' + x + '</p>').join('');
+    if (surv < 100 && r.failNote) lp = '<p><b>' + r.failNote + '</b></p>' + lp;
+    $('vlesson').innerHTML = '<h4>' + r.lesson.t + '</h4>' + lp;
+
+    /* traps + slime note */
+    let tn = '';
+    if (r.traps){
+      placed.forEach(p => {
+        if (r.traps[p.id]) tn += '<div class="trapnote">' + r.traps[p.id] + '</div>';
+      });
+    }
+    if (surv >= 100 && slime > SLIME_MAX){
+      tn += '<div class="trapnote"><b>THE ROOM:</b> the sentence held. Every word of it held. ' +
+            'The clip ran four hundred times anyway, because ' + n + ' qualifiers in one answer is not a ' +
+            'legal problem, it is a <i>sound</i>, and the sound is the product. Nobody could tell you what ' +
+            'you said. Everybody could tell you how it went.</div>';
+    }
+    if (ri === 3 && n > 0){
+      tn += '<div class="trapnote"><b>NOTHING WAS COMING.</b> You hedged a true statement about a shelf ' +
+            'full of intact tapes. That is the reflex, and the reflex is the entire problem &mdash; it costs ' +
+            'nothing in the room and it costs everything in the six months afterward, when a reader who ' +
+            'cannot see the annex has only your qualifier to go on.</div>';
+    }
+    $('vtrap').innerHTML = tn;
+
+    $('nextBtn').textContent = (ri >= ROUNDS.length - 1) ? 'Read the verdict' : 'Next question';
+    setPhase(false);
+    $('verdict').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /* ---------- end ---------- */
+  function finish(){
+    if (ended) return;
+    ended = true;
+    award('press', '🏆 READ THE PRESS RELEASE');
+
+    let rank;
+    if (total >= 780) rank = 'SURGICAL';
+    else if (total >= 660) rank = 'CONFIRMABLE';
+    else if (total >= 500) rank = 'SURVIVABLE';
+    else if (total >= 320) rank = 'A LONG AFTERNOON';
+    else rank = 'REFERRED TO THE DEPARTMENT';
+
+    const won = solved >= 6;
+    if (won){ Juice.sfx('win'); Juice.flash('#C9A24B', .34);
+      Juice.burst(stage.clientWidth / 2, stage.clientHeight * 0.35, { color:'#C9A24B', count:44, speed:6, gravity:.02 }); }
+    else { Juice.sfx('lose'); Juice.shake(12); Juice.flash('#FF3D8A', .3); }
+
+    const lines = [
+      '<b>' + rank + '.</b> Eight questions. ' + solved + ' of ' + ROUNDS.length +
+        ' answers still standing six months later, ' + cleanRounds + ' of them built out of one word or none.',
+      'Here is the part the cabinet was actually for.',
+      '<b>You have just spent eight rounds learning to build these sentences. That is the same skill, ' +
+        'exactly, that lets you take one apart.</b> Every qualifier you placed on purpose, somebody places ' +
+        'on purpose in a press release, a product recall, an earnings call, a school-board statement, and ' +
+        'a two-line reply from a communications office that took four days to write.',
+      '<b>THE TEST, ONE MOVE:</b> delete the qualifier and re-read the sentence. Still true without it? ' +
+        'Then it is reflex &mdash; annoying, not evidence. Would deleting it make the sentence false? ' +
+        'Then it is <b>load-bearing</b>, and it is the story.',
+      '<b>THE HEDGES, AND WHAT EACH ONE IS HOLDING THE DOOR OPEN FOR:</b>',
+      '&bull; <b>CURRENTLY / AT THIS TIME / AS OF TODAY</b> &mdash; a timestamp. It concedes the past. Nobody timestamps a thing that never happened.',
+      '&bull; <b>DIRECTLY</b> &mdash; there is an intermediary. That is the only reason the word is in the sentence. Go find it.',
+      '&bull; <b>WITTINGLY / KNOWINGLY / INTENTIONALLY</b> &mdash; moves the claim out of the world and into the speaker&rsquo;s head, where it cannot be audited. Ask the question again without the adverb.',
+      '&bull; <b>TO MY KNOWLEDGE / THAT I AM AWARE OF / I HAVE NO INFORMATION SUGGESTING</b> &mdash; moves the claim off the record and onto one person, who is conceding they may not have been told.',
+      '&bull; <b>IN THE ORDINARY COURSE / ROUTINELY / AS A GENERAL MATTER / UNDER THIS PROGRAM</b> &mdash; fences off the exceptions. The exceptions are where the traffic is. Ask what happens outside the fence.',
+      '&bull; <b>AS SUCH / TECHNICALLY / UNDER THAT DEFINITION / SO DESCRIBED</b> &mdash; a fight about the label, not about the object. Ask what the object is called on the paperwork.',
+      '&bull; <b>INADVERTENTLY / ADMINISTRATIVE ERROR / IN ERROR / ISOLATED</b> &mdash; concedes the act, contests the intent. The fight has been moved from <i>did it happen</i> to <i>is anyone at fault</i>.',
+      '&bull; <b>CATEGORICALLY / ABSOLUTELY / UNEQUIVOCALLY</b> &mdash; not a hedge at all. An intensifier. It buys no room and raises the price of being wrong. Historically it appears in the sentence immediately before the correction.',
+      'And the one that is not a word: <b>TENSE.</b> &ldquo;Does not hold&rdquo; is a claim about this second. &ldquo;Has never held&rdquo; is a claim about all of history. They are one letter apart in a headline and a decade apart in meaning, and the choice between them is made by somebody in a room you will never see.',
+      'None of this makes anybody a liar. That is the uncomfortable finding and we are keeping it: <b>every sentence in this cabinet was true.</b> The problem was never the truth of the sentence. It was the eleven years it took anyone to ask the follow-up question &mdash; and the follow-up question, every single time, was already printed inside the answer.'
+    ];
+
+    setTimeout(() => {
+      Arcade.gameOver({
+        won: won,
+        title: won ? 'Not Wittingly.' : 'The Clip Runs Tonight.',
+        score: total,
+        accent: won ? '#C9A24B' : '#FF3D8A',
+        lines: lines,
+        onRetry: () => {
+          reset();
+          $('briefing').style.display = 'flex';
+          stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        },
+        links: [{ label:'The arcade', href:'../../index.html' }]
+      });
+      const ovs = document.querySelectorAll('.dcab-overlay');
+      const ov = ovs[ovs.length - 1];
+      if (ov){
+        ov.scrollTop = 0;
+        const ps = ov.querySelectorAll('.dcab-lore');
+        [].forEach.call(ps, (p, i) => {
+          p.style.opacity = '0';
+          p.style.transition = 'opacity .8s';
+          setTimeout(() => { p.style.opacity = '1'; }, 220 + i * 420);
+        });
+      }
+    }, 1200);
+  }
+
+  /* ---------- wiring ---------- */
+  $('submitBtn').addEventListener('click', submit);
+  $('clearBtn').addEventListener('click', () => {
+    if (!live) return;
+    placed = []; armed = null; overloaded = false;
+    Juice.sfx('tick');
+    renderSentence(); renderTray(); renderHud();
+    $('hint').textContent = 'Cleared. The plain sentence is sometimes the right answer.';
+  });
+  $('nextBtn').addEventListener('click', () => {
+    Juice.sfx('click');
+    if (ri >= ROUNDS.length - 1){ finish(); return; }
+    ri++;
+    beginRound();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && armed){ armed = null; renderTray(); renderSentence(); }
+  });
+
+  $('startBtn').addEventListener('click', () => {
+    Juice.sfx('click');
+    $('briefing').style.display = 'none';
+    ri = 0; total = 0; solved = 0; cleanRounds = 0; ended = false;
+    beginRound();
+  });
+
+  reset();
+
+  Arcade.cabinet({
+    id: 'not-wittingly',
+    wing: 'THE JAMES CLAPPER EXPERIENCE',
+    title: 'Not Wittingly',
+    subtitle: 'The Adverb Is The Whole Story',
+    accent: '#C9A24B',
+    scoreLabel: 'PRECISION',
+    lore: 'In 2013 a Director of National Intelligence was asked, in open session, whether the NSA collects ' +
+          'data on millions of Americans. The answer was <b>&ldquo;No, sir&hellip; not wittingly.&rdquo;</b> ' +
+          'Not the &ldquo;no.&rdquo; The <b>adverb</b>. Eight fictional hearings, one tray of qualifier words, ' +
+          'and a fact sheet you will not see until six months after you have already spoken. Build the sentence ' +
+          'that is still true when the documents land &mdash; using as few words as it takes, because every extra ' +
+          'word is heard by somebody who is not a lawyer.',
+    howto: [
+      'TAP a qualifier, then TAP a gap in the sentence',
+      'TAP a placed word to take it back',
+      'SURVIVABILITY = does it hold when the facts land',
+      'SLIME = how obviously evasive it reads out loud',
+      'Stacking words wins the transcript and loses the room',
+      'The best answers use ONE word. Sometimes none.'
+    ],
+    onStart: () => {
+      $('briefing').style.display = 'flex';
+      stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+})();
+</script>
+<script src="../../assets/legal.js"></script>
+</body>
+</html>

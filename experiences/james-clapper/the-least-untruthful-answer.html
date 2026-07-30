@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE LEAST UNTRUTHFUL ANSWER — Doucheclosure</title>
+<meta name="description" content="You are the witness. Eight questions, one dial, and a sentence that rewrites itself as you slide it from FULLY TRUE to NO, SIR. Three months later, everything you said gets replayed against the record. Playable.">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --slate:#8A93A6; --slate-dim:#404859; --oak:#3A2A18; --brass:#C9A24B;
+    --amber:#FF9E3D; --redact:#14110E; --shadow:rgba(0,0,0,.62);
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--void);}
+  body{margin:0; background:var(--void); color:var(--white);
+    font-family:"Courier New", Courier, monospace; line-height:1.65; overflow-x:hidden;}
+  body::after{content:""; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 1px, transparent 1px 3px);
+    pointer-events:none; z-index:100;}
+  a{color:var(--neon-cyan);}
+  .wrap{max-width:860px; margin:0 auto; padding:0 1.25rem;}
+  .display{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-weight:400; text-transform:uppercase; letter-spacing:.03em; line-height:.95;}
+  .crumb{padding:1rem 1.25rem; font-size:.72rem; letter-spacing:.15em; text-transform:uppercase;}
+  .crumb a{text-decoration:none;}
+
+  header.wing{
+    text-align:center; padding:2.8rem 1rem 2.4rem;
+    background:radial-gradient(ellipse at 50% -20%, rgba(138,147,166,.28), transparent 62%),
+      radial-gradient(ellipse at 86% 118%, rgba(45,225,252,.07), transparent 55%);
+    border-bottom:3px solid var(--slate);
+  }
+  .wing .eyebrow{color:var(--neon-cyan); letter-spacing:.28em; text-transform:uppercase; font-size:.72rem;}
+  .wing h1{margin:.5rem 0 0; font-size:clamp(2.1rem,7.4vw,4rem); color:var(--slate);
+    text-shadow:0 0 16px rgba(138,147,166,.55), 4px 4px 0 #23283A;}
+  .wing .sub{color:var(--chrome); max-width:38rem; margin:1.15rem auto 0; font-size:.93rem;}
+  .wing .sub b{color:var(--white);}
+  .stamp{display:inline-block; margin-top:1.3rem; transform:rotate(-2deg);
+    border:3px solid var(--neon-yellow); color:var(--neon-yellow);
+    padding:.3rem 1rem; font-size:.72rem; letter-spacing:.22em; text-transform:uppercase;}
+
+  section{padding:2.2rem 0 2.4rem;}
+  h2.sec{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; font-weight:400;
+    text-transform:uppercase; font-size:clamp(1.6rem,5.5vw,2.3rem);
+    color:var(--neon-cyan); text-shadow:0 0 12px rgba(45,225,252,.5);
+    text-align:center; margin:0 0 1.25rem;}
+  .prose{color:var(--chrome); font-size:.93rem;}
+  .prose b{color:var(--white);}
+  .pull{border-left:4px solid var(--slate); background:var(--panel);
+    padding:1rem 1.25rem; color:var(--white); font-size:1rem; margin:1.4rem 0;}
+
+  .evidence{width:100%; border-collapse:collapse; font-size:.85rem; background:var(--panel);
+    border:2px solid #35205C;}
+  .evidence th{background:var(--slate); color:#0C1018; text-align:left; padding:.5rem .8rem;
+    font-size:.68rem; letter-spacing:.18em; text-transform:uppercase;}
+  .evidence td{padding:.6rem .8rem; border-bottom:1px dashed #3C2B60; color:var(--chrome); vertical-align:top;}
+  .evidence td:first-child{color:var(--neon-yellow); white-space:nowrap; font-weight:bold;}
+  .evidence tr:last-child td{border-bottom:none;}
+
+  .doctrine{border:2px dashed var(--slate); border-radius:10px; padding:1rem 1.2rem;
+    color:var(--chrome); font-size:.82rem; margin-top:1.4rem; background:rgba(138,147,166,.05);}
+  .doctrine b{color:var(--white);}
+
+  /* ================= THE CHAMBER ================= */
+  #chamber{position:relative; border:2px solid var(--slate-dim); border-radius:14px;
+    background:linear-gradient(180deg,#1A1526,#120C1E 42%, #0E0918);
+    box-shadow:0 0 30px rgba(138,147,166,.14), 0 14px 38px var(--shadow); overflow:hidden;}
+  #chamber::before{content:""; position:absolute; inset:0; pointer-events:none; z-index:0;
+    background:radial-gradient(ellipse at 50% -10%, rgba(138,147,166,.20), transparent 58%);}
+  #chamber > *{position:relative; z-index:1;}
+
+  /* HUD */
+  #hud{display:flex; gap:.9rem; flex-wrap:wrap; align-items:flex-end;
+    padding:.85rem 1.1rem; border-bottom:2px dashed #35205C; background:rgba(0,0,0,.28);}
+  .bar{flex:1 1 230px; min-width:180px;}
+  .bar .lab{font-size:.58rem; letter-spacing:.16em; text-transform:uppercase; color:var(--chrome);
+    margin-bottom:4px; display:flex; justify-content:space-between; gap:.5rem;}
+  .bar .lab b{font-weight:normal;}
+  .track{position:relative; height:14px; background:#00000099; border:1px solid #000;
+    border-radius:7px; overflow:hidden;}
+  .track .fill{position:absolute; left:0; top:0; bottom:0; width:0%; transition:width .45s cubic-bezier(.2,.8,.3,1);}
+  #truthfill{background:linear-gradient(90deg,#2E3A4E,var(--neon-green));}
+  #careerfill{background:linear-gradient(90deg,#4A2233,var(--neon-yellow));}
+  .track .mark{position:absolute; top:-2px; bottom:-2px; width:3px; left:0%; opacity:0;
+    background:var(--white); box-shadow:0 0 8px var(--white); transition:left .12s linear, opacity .2s;}
+  #phase{flex:0 0 auto; font-size:.6rem; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--neon-cyan); text-align:right; min-width:118px;}
+  #phase b{display:block; color:var(--white); font-size:.72rem; letter-spacing:.1em;}
+
+  /* the bench */
+  #bench{padding:1.1rem 1.2rem .2rem;}
+  .plate{display:inline-block; border:2px solid var(--brass); color:var(--brass);
+    background:linear-gradient(180deg,#241A08,#150F06); border-radius:3px;
+    padding:.22rem .8rem; font-size:.62rem; letter-spacing:.2em; text-transform:uppercase;}
+  .askline{margin:.7rem 0 0; color:#D8DEEA; font-size:1.02rem; line-height:1.55;}
+  .askline .q{color:var(--white);}
+  .gavel{font-size:.6rem; letter-spacing:.14em; text-transform:uppercase; color:#6E6288; margin-top:.5rem;}
+
+  /* the record */
+  #record{margin:1rem 1.2rem 0; border:2px solid #35205C; border-radius:10px;
+    background:#0A0712; box-shadow:inset 0 0 30px rgba(0,0,0,.7);}
+  #recHead{display:flex; justify-content:space-between; align-items:center; gap:.6rem; flex-wrap:wrap;
+    padding:.45rem .8rem; border-bottom:1px dashed #35205C;
+    font-size:.55rem; letter-spacing:.18em; text-transform:uppercase; color:#6E6288;}
+  #recHead .live{color:var(--neon-pink);}
+  #recHead .live::before{content:"\25CF "; animation:blink 1.1s steps(1) infinite;}
+  @keyframes blink{50%{opacity:.15}}
+  #recBody{padding:.9rem 1rem 1rem; min-height:132px;}
+  #recWho{font-size:.58rem; letter-spacing:.2em; text-transform:uppercase; color:var(--slate); margin-bottom:.35rem;}
+  #recText{font-size:1.02rem; line-height:1.6; color:var(--white); min-height:4.6em; word-break:break-word;}
+  #recText .blk{color:var(--slate);}
+  #recFoot{display:flex; justify-content:space-between; align-items:baseline; gap:.6rem; flex-wrap:wrap;
+    margin-top:.7rem; padding-top:.55rem; border-top:1px dashed #2A1E46;
+    font-size:.62rem; letter-spacing:.1em; color:#6E6288;}
+  #counsel{flex:1 1 260px; color:#8E7FB0; font-style:italic;}
+  #words{color:var(--neon-yellow); letter-spacing:.16em; white-space:nowrap;}
+
+  /* the dial */
+  #dialWrap{padding:1.15rem 1.2rem .4rem;}
+  #dialHead{display:flex; justify-content:space-between; align-items:baseline; gap:.6rem; flex-wrap:wrap;
+    font-size:.56rem; letter-spacing:.2em; text-transform:uppercase; color:#6E6288; margin-bottom:.55rem;}
+  #register{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; font-size:1.05rem;
+    letter-spacing:.08em; text-transform:uppercase; color:var(--slate);}
+  #dial{touch-action:none; user-select:none; -webkit-user-select:none;}
+  #rail{position:relative; height:10px; margin:0 0 2px; border-radius:6px;
+    background:linear-gradient(180deg,#05030A,#100A1C); border:1px solid #000;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.05);}
+  #railfill{position:absolute; left:0; top:0; bottom:0; width:10%; border-radius:6px;
+    background:linear-gradient(90deg,var(--neon-green),var(--slate)); opacity:.5;
+    transition:width .18s cubic-bezier(.2,.8,.3,1);}
+  #knob{position:absolute; top:50%; left:10%; width:26px; height:26px; margin:-13px 0 0 -13px;
+    border-radius:50%; border:2px solid var(--white); background:radial-gradient(circle at 35% 30%,#F4F0FF,#6C7488 70%,#2B3040);
+    box-shadow:0 0 14px rgba(244,240,255,.5), 0 3px 8px #000;
+    transition:left .18s cubic-bezier(.2,.8,.3,1), border-color .18s, box-shadow .18s;}
+  #detents{display:flex; margin-top:.55rem;}
+  .det{flex:1 1 0; min-width:0; background:transparent; border:0; cursor:pointer; padding:.35rem .1rem .5rem;
+    font-family:inherit; color:#6E6288; display:flex; flex-direction:column; align-items:center; gap:.3rem;
+    min-height:56px;}
+  .det .dot{width:9px; height:9px; border-radius:50%; background:#2C2440; border:1px solid #000;
+    box-shadow:0 0 0 3px rgba(0,0,0,.4);}
+  .det .lb{font-size:.53rem; letter-spacing:.09em; text-transform:uppercase; line-height:1.25; text-align:center;}
+  .det.on{color:var(--white);}
+  .det.on .dot{background:currentColor; box-shadow:0 0 10px currentColor;}
+  .det:hover .lb{color:var(--chrome);}
+  .det:focus-visible{outline:2px solid var(--neon-cyan); outline-offset:2px; border-radius:6px;}
+
+  #plainWrap{padding:0 1.2rem; }
+  #plainBtn{display:none; width:100%; margin:.5rem 0 0; padding:.75rem .9rem; cursor:pointer;
+    font-family:inherit; font-size:.82rem; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--neon-green); background:rgba(61,252,138,.07);
+    border:2px solid var(--neon-green); border-radius:10px;
+    box-shadow:0 0 18px rgba(61,252,138,.22);}
+  #plainBtn.show{display:block; animation:popin .35s;}
+  #plainBtn small{display:block; font-size:.56rem; letter-spacing:.16em; color:#7FBF9A; margin-top:.2rem; text-transform:uppercase;}
+  @keyframes popin{from{opacity:0; transform:translateY(8px) scale(.97)}to{opacity:1;}}
+
+  #actions{padding:.9rem 1.2rem 1.2rem; display:flex; gap:.6rem; flex-wrap:wrap; align-items:center;}
+  .go{flex:1 1 260px; padding:.9rem 1.1rem; cursor:pointer; font-family:inherit; font-weight:bold;
+    font-size:.82rem; letter-spacing:.16em; text-transform:uppercase; border-radius:9px;
+    border:2px solid var(--slate); background:var(--slate); color:#0B0F17;}
+  .go:hover{filter:brightness(1.12);}
+  .go.ghost{background:transparent; color:var(--neon-cyan); border-color:var(--neon-cyan); flex:0 1 auto;}
+  .hint{flex:1 1 100%; font-size:.58rem; letter-spacing:.14em; text-transform:uppercase; color:#5B5075;}
+
+  /* ledger / replay */
+  #ledger{padding:0 1.2rem 1.2rem; display:none;}
+  #ledger.on{display:block;}
+  .entry{border:2px solid #2A2340; border-left-width:5px; border-radius:9px; background:#0A0712;
+    padding:.75rem .9rem; margin-bottom:.7rem; animation:fadein .5s;}
+  @keyframes fadein{from{opacity:0; transform:translateY(10px)}to{opacity:1;}}
+  .entry .qn{font-size:.55rem; letter-spacing:.2em; text-transform:uppercase; color:#6E6288;}
+  .entry .said{color:var(--white); font-size:.92rem; margin:.3rem 0 .55rem; font-style:italic;}
+  .entry .doc{color:var(--neon-cyan); font-size:.78rem; line-height:1.55; border-top:1px dashed #2A1E46; padding-top:.5rem;}
+  .entry .verdict{margin-top:.55rem; display:flex; justify-content:space-between; gap:.7rem; flex-wrap:wrap;
+    font-size:.68rem; letter-spacing:.14em; text-transform:uppercase;}
+  .entry .verdict .d{white-space:nowrap;}
+  .entry.hold{border-color:#1E5C3A; border-left-color:var(--neon-green);}
+  .entry.hold .verdict{color:var(--neon-green);}
+  .entry.thin{border-color:#5C4A16; border-left-color:var(--neon-yellow);}
+  .entry.thin .verdict{color:var(--neon-yellow);}
+  .entry.bad{border-color:#5C2038; border-left-color:var(--neon-pink);}
+  .entry.bad .verdict{color:var(--neon-pink);}
+
+  #titlecard{position:absolute; inset:0; z-index:6; display:none; align-items:center; justify-content:center;
+    background:radial-gradient(ellipse at 50% 45%, rgba(24,20,38,.97), rgba(4,3,10,.99)); text-align:center; padding:1.5rem;}
+  #titlecard.on{display:flex; animation:fadein .5s;}
+  #titlecard .k{font-size:.62rem; letter-spacing:.34em; text-transform:uppercase; color:var(--neon-cyan);}
+  #titlecard .m{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; text-transform:uppercase;
+    font-size:clamp(2rem,9vw,3.6rem); color:var(--white); margin:.5rem 0 .6rem; letter-spacing:.02em;
+    text-shadow:0 0 20px rgba(138,147,166,.6);}
+  #titlecard .s{color:var(--chrome); font-size:.86rem; max-width:30rem; margin:0 auto;}
+
+  #ending{padding:0 1.2rem 1.4rem; display:none;}
+  #ending.on{display:block;}
+  .endcard{border:2px dashed var(--slate); border-radius:12px; padding:1.2rem 1.3rem; text-align:center;
+    background:radial-gradient(ellipse at 50% 120%, rgba(138,147,166,.12), transparent 70%);}
+  .endcard .t{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; text-transform:uppercase;
+    font-size:clamp(1.5rem,6vw,2.2rem); letter-spacing:.03em;}
+  .endcard p{color:var(--chrome); font-size:.88rem; margin:.8rem auto; max-width:36rem; text-align:left;}
+  .endcard p b{color:var(--white);}
+  .endcard .final{font-size:.68rem; letter-spacing:.2em; text-transform:uppercase; color:var(--neon-yellow); margin:.9rem 0;}
+  .medals{list-style:none; margin:.6rem 0 1rem; padding:0; display:grid; gap:.3rem;}
+  .medals li{font-size:.72rem; letter-spacing:.12em; color:var(--neon-yellow);}
+  .medals li.miss{color:#4E4468; text-decoration:line-through;}
+
+  .capline{text-align:center; color:#6E6288; font-size:.7rem; letter-spacing:.14em;
+    text-transform:uppercase; margin-top:.9rem;}
+  footer{padding:2rem 1rem 3rem; text-align:center; color:#7E6F9E; font-size:.72rem;}
+
+  @media (max-width:520px){
+    #recText{font-size:.95rem;}
+    .det .lb{font-size:.5rem;}
+    .askline{font-size:.95rem;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    #recHead .live::before{animation:none;}
+    .entry,#titlecard.on,#plainBtn.show{animation:none;}
+  }
+</style>
+</head>
+<body>
+
+<p class="crumb"><a href="../../index.html">&larr; THE ARCADE</a> &nbsp;/&nbsp; EXPERIENCES &nbsp;/&nbsp; JAMES CLAPPER</p>
+
+<header class="wing">
+  <p class="eyebrow">Doucheclosure Experiences &bull; The Committee Room</p>
+  <h1 class="display">The Least<br>Untruthful Answer</h1>
+  <p class="sub">In March 2013 the Director of National Intelligence was asked, in open session,
+  whether the NSA collects data on millions of Americans, and answered <b>&ldquo;No, sir&hellip;
+  not wittingly.&rdquo;</b> He later said he had tried to answer in the <b>&ldquo;least untruthful
+  manner,&rdquo;</b> and apologized in writing for an answer he called <b>&ldquo;clearly
+  erroneous.&rdquo;</b> That paragraph is the entire documented record, and it is the only thing in
+  this wing that is real. Everything below it is a committee-room comedy we built on top of it.</p>
+  <span class="stamp">OPEN SESSION &bull; THE ANSWER IS CLASSIFIED &bull; THE QUESTION IS NOT</span>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="prose">
+      <p>The review board wishes to state its position before anyone starts enjoying themselves. We
+      are not here to call a man a liar. <b>We are here to audit the room.</b> A room was built in
+      which a public official could be asked a public question whose true answer was, at that moment,
+      a federal crime to say out loud. Then a microphone was placed in front of him. Then everyone
+      acted surprised.</p>
+      <p class="pull">Somebody had to invent a unit of measurement on live television with no warning,
+      no draft, and no lawyer within arm's reach. What came out was <b>&ldquo;least
+      untruthful.&rdquo;</b> The board finds this to be, structurally, an <em>engineering
+      achievement.</em> It is also going to be on his headstone, and everyone in that room knew it
+      within four seconds.</p>
+      <p>So per doctrine we have built the only responsible thing: <b>a hearing simulator where you
+      are in the chair.</b> Eight questions. One dial. Five positions, from FULLY TRUE to NO, SIR.
+      Slide it and watch your own sentence rewrite itself in real time &mdash; watch it get shorter,
+      cleaner, safer, and emptier, one detent at a time. <b>Then survive the part nobody in that
+      room got to skip: three months later, when the documents come out and the transcript is still
+      sitting there, in bold, with your adverb circled by hand.</b></p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 class="sec">The Adverb Audit</h2>
+    <table class="evidence">
+      <tr><th>Line item</th><th>Review board notes</th></tr>
+      <tr><td>THE ADVERB</td><td>&ldquo;Wittingly.&rdquo; Board's note: <b>one adverb performing the
+        structural load of an entire building.</b> The board attempted to remove it from the sentence
+        in a controlled setting and the sentence collapsed. It is load-bearing. It should be
+        inspected annually and no one should park under it.</td></tr>
+      <tr><td>THE FORUM</td><td>The question was asked in a room where the true answer could not
+        lawfully be given. Board's finding: <b>this is not a character test, it is a plumbing
+        problem.</b> You cannot push a classified answer through an unclassified door. Somebody
+        specified that door. Somebody signed off on the door. The door did not testify.</td></tr>
+      <tr><td>THE UNIT</td><td>&ldquo;Least untruthful.&rdquo; Board's note: a genuinely new unit of
+        measurement, introduced under oath, with no conversion chart and no calibration standard, and
+        now in permanent worldwide circulation. <b>We have adopted it internally. It is on our
+        expense forms.</b> Line 4: LEAST UNTRUTHFUL MILEAGE.</td></tr>
+      <tr><td>THE LETTER</td><td>A written correction, describing the answer as clearly erroneous.
+        Board's audit of the logistics: postage, negligible. Transit time, weeks. Readership,
+        approximately nobody. <b>Board's finding: the correction traveled slower than the
+        disclosure. It always does. That is the entire subject of this website.</b></td></tr>
+      <tr><td>CHAIN OF CUSTODY</td><td>Who owns a sentence once it leaves the room? Board's ruling:
+        <b>the transcript does.</b> Not the speaker, not the committee, not the context. And the
+        transcript does not take context. <b>The transcript takes dictation.</b></td></tr>
+      <tr><td>THE REAL COST</td><td>Filed sincerely and without a joke attached: a man was required
+        to answer in public a question he was forbidden in public to answer, and the office that
+        forbade him <b>was not seated at that table and was never asked to explain the seating
+        chart.</b> We audit the room. We do not audit the witness.</td></tr>
+    </table>
+
+    <div class="doctrine">
+      <b>WING DOCTRINE:</b> The witness in the game below is <b>THE DIRECTOR</b> &mdash; a fictional
+      composite. Every senator, every question, every answer, and every &ldquo;subsequently
+      disclosed&rdquo; document in this game was invented by us for a game. <b>No words in this
+      simulator were ever spoken by any real person</b>, with the sole exception of the three
+      documented phrases quoted in the header above, which are matters of public record and are
+      quoted as such. Nobody in this hearing is a villain. That is the joke: <b>everyone at that
+      table is doing their job correctly and the outcome is still a disaster.</b>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE GAME ============ -->
+<section>
+  <div class="wrap">
+    <h2 class="sec">The Hearing</h2>
+
+    <div id="chamber">
+      <div id="hud">
+        <div class="bar">
+          <div class="lab"><span>Truth on the record</span><b id="truthNum">0</b></div>
+          <div class="track"><div class="fill" id="truthfill"></div><div class="mark" id="truthmark"></div></div>
+        </div>
+        <div class="bar">
+          <div class="lab"><span>Career</span><b id="careerNum">100</b></div>
+          <div class="track"><div class="fill" id="careerfill"></div><div class="mark" id="careermark"></div></div>
+        </div>
+        <div id="phase"><b id="phaseMain">QUESTION 1 / 8</b><span id="phaseSub">Open session</span></div>
+      </div>
+
+      <div id="bench">
+        <span class="plate" id="plate">SEN. WHITTAKER</span>
+        <p class="askline"><span class="q" id="question">&nbsp;</span></p>
+        <p class="gavel" id="gavel">&mdash; The room is quiet. The stenographer is already typing. &mdash;</p>
+      </div>
+
+      <div id="record">
+        <div id="recHead"><span>Official transcript &bull; open session</span><span class="live" id="liveTag">Microphone live</span></div>
+        <div id="recBody">
+          <div id="recWho">The Director</div>
+          <div id="recText"></div>
+          <div id="recFoot">
+            <span id="counsel">&nbsp;</span>
+            <span id="words">WORDS ON THE RECORD: 0</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="dialWrap">
+        <div id="dialHead"><span>Answer spectrum</span><span id="register">FULLY TRUE</span></div>
+        <div id="dial" tabindex="0" role="slider" aria-label="Answer spectrum" aria-valuemin="1" aria-valuemax="5" aria-valuenow="1" aria-valuetext="Fully true">
+          <div id="rail"><div id="railfill"></div><div id="knob"></div></div>
+          <div id="detents">
+            <button class="det on" type="button" data-p="0"><span class="dot"></span><span class="lb">Fully<br>true</span></button>
+            <button class="det" type="button" data-p="1"><span class="dot"></span><span class="lb">Technically<br>true</span></button>
+            <button class="det" type="button" data-p="2"><span class="dot"></span><span class="lb">Least<br>untruthful</span></button>
+            <button class="det" type="button" data-p="3"><span class="dot"></span><span class="lb">Not<br>wittingly</span></button>
+            <button class="det" type="button" data-p="4"><span class="dot"></span><span class="lb">No,<br>sir</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div id="plainWrap">
+        <button id="plainBtn" type="button">&#10216; Just answer it &#10217;<small>Off the dial &bull; unlocked by the record you have already built</small></button>
+      </div>
+
+      <div id="actions">
+        <button class="go" id="sayBtn" type="button">Say it into the record</button>
+        <span class="hint" id="hint">Tap a label, drag the knob, or use &larr; &rarr; and 1&ndash;5 &bull; Enter to answer</span>
+      </div>
+
+      <div id="ledger"></div>
+      <div id="ending"></div>
+      <div id="titlecard"><div><p class="k" id="tcK">&nbsp;</p><p class="m" id="tcM">&nbsp;</p><p class="s" id="tcS">&nbsp;</p></div></div>
+    </div>
+
+    <p class="capline">A witness game &bull; the sentence rewrites as you slide &bull; nothing you say stops existing</p>
+  </div>
+</section>
+
+<footer>
+  <p>DOUCHECLOSURE&trade; EXPERIENCES &bull; A work of parody commenting on a documented moment in the public record.<br>
+  The witness and all senators in this game are fictional. We audit the room, never the person in the chair.<br>
+  <a href="../../index.html">Back to the arcade</a> &bull; <a href="../lue-elizondo/index.html">Wing No. 9: Lue Elizondo</a></p>
+</footer>
+
+<script src="../../assets/screen.js"></script>
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const chamber = $('chamber');
+
+  /* ---------------- content ---------------- */
+  // Each question: five rungs of the same answer, plus the off-dial plain answer,
+  // plus the document that surfaces three months later.
+  const Q = [
+    {
+      who: 'SEN. WHITTAKER',
+      gavel: '— The room is quiet. The stenographer is already typing. —',
+      q: 'Director, before we begin. Does your agency collect any information at all on ordinary American citizens?',
+      a: [
+        'Yes, Senator. Continuously, at national scale, under authority, and I would rather you heard it from me in this room than read it somewhere else in six months.',
+        'We collect information, Senator, under a program reviewed by a court whose written opinions this committee is not cleared to read.',
+        'Not in the sense in which I believe the question is intended, Senator.',
+        'Not wittingly, Senator.',
+        'No, sir.'
+      ],
+      plain: 'Yes. We do. Ask me the next one.',
+      doc: 'DISCLOSED: a fourteen-page order, unsealed, directing the daily production of subscriber records for a carrier serving sixty-eight million people. The word "ordinary" appears in it twice.'
+    },
+    {
+      who: 'SEN. BRANNIGAN',
+      gavel: '— She has the question written on an index card. She has had it for a week. —',
+      q: 'Let me be more specific, Director. Does your agency collect any type of data at all on millions of Americans?',
+      a: [
+        'Yes. Hundreds of millions. The figure exceeds the population of this country because a great many people carry two phones, and both of them count.',
+        'We collect certain business records in bulk, Senator, and I would ask the committee to notice how much work the word "bulk" is doing in that sentence.',
+        'There are things we could collect and do not, Senator, and I would like the record to reflect the ones we don’t.',
+        'Not wittingly. There are cases where we could, inadvertently, perhaps, acquire something — but not wittingly.',
+        'No, sir.'
+      ],
+      plain: 'Yes — millions. I will give you the actual number in a closed session and you are not going to like the shape of it.',
+      doc: 'DISCLOSED: an internal briefing deck. Slide 6 is a piece of smiling clip-art cloud. Slide 7 reads, in forty-four point type, COLLECT IT ALL.'
+    },
+    {
+      who: 'SEN. OYELARAN',
+      gavel: '— He is not reading from a card. That is worse. —',
+      q: 'Is there a program, by any name, that touches the phone records of people not suspected of anything?',
+      a: [
+        'Yes, and it has a name, and the name is not itself classified, and I will say it out loud in this room right now if the chair will let me finish the sentence.',
+        'There are programs whose names are classified and whose existence is not, Senator, which is a distinction I did not invent and cannot fix from this chair.',
+        'I am not going to characterize programs by name in an open session, Senator, and I hope the committee will accept that as an answer.',
+        'Not wittingly, Senator. Not as a targeted matter.',
+        'No, sir.'
+      ],
+      plain: 'Yes. There is. I will name it, spell it, and tell you what it costs, in that order.',
+      doc: 'DISCLOSED: the program name. It was printed on a mug. There was a mug. There was, the record shows, a whole line of merchandise, and a softball team.'
+    },
+    {
+      who: 'CHAIRMAN HOLLIS',
+      gavel: '— The chairman leans into his microphone slowly, the way a man does when he already knows. —',
+      q: 'Director, is this committee being given an incomplete picture of what your agency actually does?',
+      a: [
+        'Yes, sir, and I am the reason, and I would like to correct it in a closed session this afternoon before this hearing gets any older.',
+        'The picture this committee has is accurate as far as it goes, Mr. Chairman, and I would ask you to hear how far that is from complete.',
+        'I believe the committee has been given everything the committee has asked for, in the form in which it was asked for it.',
+        'Not wittingly incomplete, Mr. Chairman.',
+        'No, sir.'
+      ],
+      plain: 'Yes, sir. The picture is incomplete, and I am the one who made it that way, and I can start fixing it in ninety seconds.',
+      doc: 'DISCLOSED: a memorandum dated four days before this hearing, briefing the witness on the precise wording of the question the chairman intended to ask.'
+    },
+    {
+      who: 'SEN. PRICE',
+      gavel: '— He is holding up his own phone. The gallery leans forward. —',
+      q: 'Then let me ask it the way the country would ask it. I am not a suspect. Is my phone in your system? Yes or no.',
+      a: [
+        'Yes. Yours, mine, the chairman’s, and the young man in the third row who is filming this exchange on his phone at this moment.',
+        'Records of the kind you are describing exist in a repository, Senator. Whether that constitutes "your phone" is a question I would want counsel present for.',
+        'I would answer that question differently in a closed session, Senator, and I believe you already know how I would answer it.',
+        'Not wittingly, Senator. Not yours specifically.',
+        'No, sir.'
+      ],
+      plain: 'Yes, Senator. Your phone is in it. So is mine. So is the one you are holding up.',
+      doc: 'DISCLOSED: a query log. Senator Price’s carrier, area code, and district appear in a table whose final column header reads, simply, COVERED.'
+    },
+    {
+      who: 'SEN. DUVAL',
+      gavel: '— Third hour. Two cameras have been repositioned to face you directly. —',
+      q: 'Director, are you aware of any activity that, if the public learned of it tomorrow, would be described as a scandal?',
+      a: [
+        'Yes, and I would rather it be described as a scandal with me sitting here to explain it than as a betrayal with me long gone and unreachable.',
+        'I am aware of activity that is lawful, authorized, reviewed, and would look catastrophic in a headline, Senator, and all four of those things are true at the same time.',
+        'I am not aware of anything I would characterize using that particular word, Senator.',
+        'Nothing wittingly concealed from this committee, Senator.',
+        'No, sir.'
+      ],
+      plain: 'Yes. Several. I will list them in order, starting with the worst one, and I will not stop when the light turns red.',
+      doc: 'DISCLOSED: eleven programs. Six auditors. Board’s note on the resulting org chart: one of the auditors was also one of the programs.'
+    },
+    {
+      who: 'SEN. BRANNIGAN',
+      gavel: '— She flips the index card over. There was writing on the back the whole time. —',
+      q: 'Director, is there anything you would like to correct in the answers you have given today, while you are still under oath?',
+      a: [
+        'Yes. Strike everything after the word "not." I answered you carefully and I answered you wrong, and I would like the second half of that sentence in the transcript.',
+        'I would like to supplement several of my answers in writing, Senator, which is the polite institutional phrasing for "I would like to change them."',
+        'I stand by my answers as given, Senator, within the limits of this forum.',
+        'Nothing wittingly misstated, Senator.',
+        'No, sir.'
+      ],
+      plain: 'Yes. Everything I hedged today I hedge no longer. Strike the adverbs. All of them. Read them back to me and I will strike them one at a time.',
+      doc: 'DISCLOSED: the witness’s own written correction, submitted twelve weeks after this exchange, describing an answer given today as clearly erroneous.'
+    },
+    {
+      who: 'CHAIRMAN HOLLIS',
+      gavel: '— The gavel is in his hand but he has not raised it. He is giving you the room. —',
+      q: 'One last time, Director. For the record. Slowly. Does your agency collect data on millions of Americans?',
+      a: [
+        'Yes. It does. Millions. I have said "not wittingly" in this room today and I am taking it back before I leave it.',
+        'The agency collects, under authority, records pertaining to millions of Americans, Mr. Chairman, and I have spent this entire hearing trying to make that sentence shorter.',
+        'My answer is the least untruthful one available to me in an open session, Mr. Chairman, and I am fully aware of how that is going to sound.',
+        'No, sir. Not wittingly.',
+        'No, sir.'
+      ],
+      plain: 'Yes. It collects data on millions of Americans. That is the answer. That was always the answer.',
+      doc: 'DISCLOSED: the full transcript, reprinted on a front page, with this sentence set in bold and the adverb circled by hand in ballpoint.'
+    }
+  ];
+
+  const REG = [
+    { name:'FULLY TRUE',       color:'#3DFC8A', counsel:'COUNSEL: I would like it noted that I advised against this.' },
+    { name:'TECHNICALLY TRUE', color:'#FFD23F', counsel:'COUNSEL: Accurate. Also a sentence with a trapdoor built into it.' },
+    { name:'LEAST UNTRUTHFUL', color:'#8A93A6', counsel:'COUNSEL: The least untruthful one available. You are inventing that phrase right now.' },
+    { name:'NOT WITTINGLY',    color:'#FF9E3D', counsel:'COUNSEL: One adverb. It will be in every headline you ever appear in again.' },
+    { name:'NO, SIR',          color:'#FF3D8A', counsel:'COUNSEL: Clean. Short. Unsurvivable in roughly ninety days.' }
+  ];
+  const PLAIN_COUNSEL = 'COUNSEL: has left the room.';
+
+  // hearing-phase deltas by dial position
+  const DT = [
+    { t:+15, c:-9 },
+    { t:+8,  c:-5 },
+    { t:+2,  c:-1 },
+    { t:-7,  c:+5 },
+    { t:-12, c:+8 }
+  ];
+  const DT_PLAIN = { t:+24, c:-14 };
+
+  // replay-phase career reckoning
+  const REPLAY = [
+    { cls:'hold', v:'HOLDS.',                        c:+10 },
+    { cls:'thin', v:'HOLDS, BARELY.',                c:+3  },
+    { cls:'bad',  v:'DOES NOT HOLD.',                c:-8  },
+    { cls:'bad',  v:'THE ADVERB IS NOW THE HEADLINE.', c:-14 },
+    { cls:'bad',  v:'FLATLY CONTRADICTED.',          c:-18 }
+  ];
+  const REPLAY_PLAIN = { cls:'hold', v:'HOLDS. ENTIRELY.', c:+16 };
+
+  const PLAIN_UNLOCK = 50;
+
+  /* ---------------- state ---------------- */
+  let idx = 0, pos = 0, truth = 0, career = 100;
+  let log = [], busy = false, over = false;
+  let usedPlain = 0, usedAdverb = 0, plainOffered = false, careerZeroed = false;
+  let rIdx = 0, rTimer = null;
+
+  const clamp = v => Math.max(0, Math.min(100, v));
+  function lc(el){
+    const r = el.getBoundingClientRect(), s = chamber.getBoundingClientRect();
+    return { x: r.left - s.left + r.width/2, y: r.top - s.top + r.height/2 };
+  }
+  function words(s){ return (s.trim().match(/\S+/g) || []).length; }
+
+  /* ---------------- live rewriting ---------------- */
+  const BLOCKS = '█▓▒░';
+  let typeTarget = '', typeShown = 0, typeRAF = 0;
+  function typeTo(str){
+    typeTarget = str; typeShown = 0;
+    if (typeRAF) cancelAnimationFrame(typeRAF);
+    const step = Math.max(5, Math.ceil(str.length / 15));
+    const tick = () => {
+      typeShown += step;
+      const n = Math.min(typeTarget.length, typeShown);
+      let out = escapeHTML(typeTarget.slice(0, n));
+      if (n < typeTarget.length){
+        let noise = '';
+        const w = Math.min(5, typeTarget.length - n);
+        for (let i = 0; i < w; i++) noise += BLOCKS[(Math.random() * BLOCKS.length) | 0];
+        out += '<span class="blk">' + noise + '</span>';
+        $('recText').innerHTML = '“' + out;
+        typeRAF = requestAnimationFrame(tick);
+      } else {
+        $('recText').innerHTML = '“' + out + '”';
+        typeRAF = 0;
+      }
+    };
+    typeRAF = requestAnimationFrame(tick);
+  }
+  function escapeHTML(s){
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  /* ---------------- render ---------------- */
+  function currentText(){ return plainArmed ? Q[idx].plain : Q[idx].a[pos]; }
+  let plainArmed = false;
+
+  function renderMeters(){
+    $('truthfill').style.width = truth + '%';
+    $('careerfill').style.width = career + '%';
+    $('truthNum').textContent = Math.round(truth);
+    $('careerNum').textContent = Math.round(career);
+  }
+  function renderPreview(){
+    const d = plainArmed ? DT_PLAIN : DT[pos];
+    const pt = clamp(truth + d.t), pc = clamp(career + d.c);
+    const tm = $('truthmark'), cm = $('careermark');
+    tm.style.left = pt + '%'; tm.style.opacity = .9;
+    cm.style.left = pc + '%'; cm.style.opacity = .9;
+    tm.style.background = d.t >= 0 ? '#3DFC8A' : '#FF3D8A';
+    tm.style.boxShadow = '0 0 8px ' + (d.t >= 0 ? '#3DFC8A' : '#FF3D8A');
+    cm.style.background = d.c >= 0 ? '#FFD23F' : '#FF3D8A';
+    cm.style.boxShadow = '0 0 8px ' + (d.c >= 0 ? '#FFD23F' : '#FF3D8A');
+  }
+  function renderDial(){
+    const r = REG[pos];
+    document.querySelectorAll('.det').forEach(b => {
+      const on = +b.dataset.p === pos;
+      b.classList.toggle('on', on);
+      b.style.color = on ? r.color : '';
+    });
+    const pct = ((pos + 0.5) / 5 * 100);
+    $('knob').style.left = pct + '%';
+    $('railfill').style.width = pct + '%';
+    $('dial').setAttribute('aria-valuenow', String(pos + 1));
+    $('dial').setAttribute('aria-valuetext', r.name);
+    if (plainArmed){
+      $('register').textContent = 'JUST ANSWER IT';
+      $('register').style.color = '#3DFC8A';
+      $('knob').style.borderColor = '#3DFC8A';
+      $('counsel').textContent = PLAIN_COUNSEL;
+      $('recWho').textContent = 'The Director — off the dial';
+    } else {
+      $('register').textContent = r.name;
+      $('register').style.color = r.color;
+      $('knob').style.borderColor = r.color;
+      $('counsel').textContent = r.counsel;
+      $('recWho').textContent = 'The Director';
+    }
+    const txt = currentText();
+    $('words').textContent = 'WORDS ON THE RECORD: ' + words(txt);
+    typeTo(txt);
+    renderPreview();
+  }
+  function renderQuestion(){
+    const q = Q[idx];
+    $('plate').textContent = q.who;
+    $('question').textContent = '“' + q.q + '”';
+    $('gavel').textContent = q.gavel;
+    $('phaseMain').textContent = 'QUESTION ' + (idx + 1) + ' / ' + Q.length;
+    $('phaseSub').textContent = 'Open session';
+    plainArmed = false;
+    pos = 0;
+    updatePlainOffer();
+    renderDial();
+  }
+  function updatePlainOffer(){
+    const btn = $('plainBtn');
+    const eligible = !over && truth >= PLAIN_UNLOCK;
+    btn.classList.toggle('show', eligible);
+    if (eligible && !plainOffered){
+      plainOffered = true;
+      Juice.sfx('coin');
+      Arcade.toast('🔓 A THIRD OPTION APPEARS', 'The record has earned it');
+    }
+    if (!eligible && plainArmed){ plainArmed = false; renderDial(); }
+  }
+
+  /* ---------------- dial input ---------------- */
+  function setPos(p, quiet){
+    p = Math.max(0, Math.min(4, p));
+    if (p === pos && !plainArmed) return;
+    const was = plainArmed;
+    plainArmed = false; pos = p;
+    if (!quiet){ Juice.sfx('click'); Juice.buzz(6); }
+    renderDial();
+    if (was) $('plainBtn').classList.remove('armed');
+  }
+  function armPlain(){
+    if (truth < PLAIN_UNLOCK || busy || over) return;
+    plainArmed = true;
+    Juice.sfx('blip');
+    Juice.buzz(14);
+    renderDial();
+  }
+
+  document.querySelectorAll('.det').forEach(b => {
+    b.addEventListener('click', () => { if (!busy && !over) setPos(+b.dataset.p); });
+  });
+  $('plainBtn').addEventListener('click', armPlain);
+
+  (function dragDial(){
+    const dial = $('dial'), rail = $('rail');
+    let dragging = false;
+    function fromX(clientX){
+      const r = rail.getBoundingClientRect();
+      const t = (clientX - r.left) / Math.max(1, r.width);
+      return Math.max(0, Math.min(4, Math.floor(t * 5)));
+    }
+    dial.addEventListener('pointerdown', e => {
+      if (busy || over) return;
+      if (e.target.closest('.det')) return;   // let label taps handle themselves
+      dragging = true;
+      try { dial.setPointerCapture(e.pointerId); } catch (err) {}
+      setPos(fromX(e.clientX));
+      e.preventDefault();
+    });
+    dial.addEventListener('pointermove', e => {
+      if (!dragging || busy || over) return;
+      setPos(fromX(e.clientX));
+    });
+    ['pointerup','pointercancel'].forEach(ev =>
+      dial.addEventListener(ev, () => { dragging = false; }));
+  })();
+
+  document.addEventListener('keydown', e => {
+    if (over) return;
+    if (e.key === 'ArrowLeft'){ if (!busy) { setPos(pos - 1); e.preventDefault(); } }
+    else if (e.key === 'ArrowRight'){ if (!busy) { setPos(pos + 1); e.preventDefault(); } }
+    else if (e.key >= '1' && e.key <= '5'){ if (!busy) { setPos(+e.key - 1); e.preventDefault(); } }
+    else if (e.key === '0'){ if (!busy) { armPlain(); e.preventDefault(); } }
+    else if (e.key === 'Enter'){ if (!busy) { commit(); e.preventDefault(); } }
+  });
+
+  /* ---------------- commit an answer ---------------- */
+  $('sayBtn').addEventListener('click', () => { if (!busy && !over) commit(); });
+
+  function commit(){
+    if (busy || over) return;
+    busy = true;
+    const q = Q[idx];
+    const isPlain = plainArmed;
+    const d = isPlain ? DT_PLAIN : DT[pos];
+    const said = isPlain ? q.plain : q.a[pos];
+
+    log.push({ qi: idx, p: isPlain ? -1 : pos, said: said });
+    if (isPlain) usedPlain++;
+    if (!isPlain && pos === 3) usedAdverb++;
+
+    const beforeCareer = career;
+    truth = clamp(truth + d.t);
+    career = clamp(career + d.c);
+    renderMeters();
+
+    const tc = lc($('truthfill').parentNode), cc = lc($('careerfill').parentNode);
+    if (d.t > 0){
+      Juice.reward(tc.x, tc.y, { text:'+' + d.t + ' RECORD', color:'#3DFC8A', count: isPlain ? 26 : 16 });
+      if (isPlain){ Juice.sfx('good'); Juice.flash('#3DFC8A', .18); }
+    } else {
+      Juice.impact(tc.x, tc.y, { text: d.t + ' RECORD', color:'#FF3D8A', power: 7, count: 14, stop: 40 });
+    }
+    if (d.c < 0) Juice.text(cc.x, cc.y - 14, d.c + ' CAREER', { color:'#FF9E3D', size:16 });
+    else Juice.text(cc.x, cc.y - 14, '+' + d.c + ' CAREER', { color:'#FFD23F', size:16 });
+
+    $('liveTag').textContent = 'Entered into the record';
+    $('gavel').textContent = isPlain
+      ? '— You take the microphone off the stand. Counsel closes a folder very slowly. —'
+      : (d.t > 0
+        ? '— It is said. The stenographer does not look up. It exists now. —'
+        : '— It is said. Somewhere a transcript closes around it like a hand. —');
+
+    if (career <= 0 && beforeCareer > 0 && !careerZeroed){
+      careerZeroed = true;
+      setTimeout(() => {
+        Juice.sfx('alarm');
+        $('gavel').textContent = '— COUNSEL HAS LEFT THE ROOM. There is nothing left to protect. You may now answer freely. —';
+      }, 700);
+    }
+
+    setTimeout(() => {
+      idx++;
+      $('liveTag').textContent = 'Microphone live';
+      if (idx >= Q.length){ busy = false; toReplay(); }
+      else { busy = false; renderQuestion(); updatePlainOffer(); }
+    }, careerZeroed && career <= 0 && beforeCareer > 0 ? 2100 : 1050);
+  }
+
+  /* ---------------- three months later ---------------- */
+  function titleCard(k, m, s, ms, done){
+    $('tcK').textContent = k; $('tcM').textContent = m; $('tcS').textContent = s;
+    $('titlecard').classList.add('on');
+    setTimeout(() => { $('titlecard').classList.remove('on'); if (done) done(); }, ms);
+  }
+
+  function toReplay(){
+    busy = true;
+    Juice.sfx('alarm'); Juice.shake(10); Juice.flash('#8A93A6', .3);
+    titleCard('The hearing adjourned', 'Three months later',
+      'The documents come out. The transcript is still sitting there. It has not moved. It never moves.',
+      2600, startReplay);
+  }
+
+  function startReplay(){
+    $('bench').style.display = 'none';
+    $('record').style.display = 'none';
+    $('dialWrap').style.display = 'none';
+    $('plainWrap').style.display = 'none';
+    $('ledger').classList.add('on');
+    $('phaseMain').textContent = 'THE REPLAY';
+    $('phaseSub').textContent = 'Scored against the record';
+    $('truthmark').style.opacity = 0; $('careermark').style.opacity = 0;
+    $('sayBtn').textContent = 'Next line →';
+    $('hint').textContent = 'Every answer you gave is now read back against what came out';
+    rIdx = 0;
+    nextLine();
+  }
+
+  $('sayBtn').addEventListener('click', () => {
+    if (over) return;
+    if ($('ledger').classList.contains('on')){ clearTimeout(rTimer); nextLine(); }
+  });
+
+  function nextLine(){
+    if (rIdx >= log.length){ finale(); return; }
+    const rec = log[rIdx++];
+    const q = Q[rec.qi];
+    const r = rec.p === -1 ? REPLAY_PLAIN : REPLAY[rec.p];
+
+    career = clamp(career + r.c);
+    renderMeters();
+
+    const e = document.createElement('div');
+    e.className = 'entry ' + r.cls;
+    e.innerHTML =
+      '<div class="qn">Question ' + (rec.qi + 1) + ' — ' + q.who + '</div>' +
+      '<div class="said">“' + escapeHTML(rec.said) + '”</div>' +
+      '<div class="doc">' + escapeHTML(q.doc) + '</div>' +
+      '<div class="verdict"><span>' + r.v + '</span><span class="d">CAREER ' +
+        (r.c >= 0 ? '+' : '') + r.c + '</span></div>';
+    $('ledger').appendChild(e);
+    e.scrollIntoView({ block:'nearest', behavior:'smooth' });
+
+    const p = lc(e);
+    if (r.c >= 0){
+      Juice.sfx('pickup');
+      Juice.reward(p.x, p.y, { text: r.v, color:'#3DFC8A', count: 14 });
+    } else {
+      Juice.impact(p.x, p.y, { text: r.c + ' CAREER', color:'#FF3D8A', power: Math.min(12, 4 + Math.abs(r.c)/2), count: 16, stop: 45 });
+    }
+
+    if (rIdx >= log.length) $('sayBtn').textContent = 'Read the finding';
+    rTimer = setTimeout(nextLine, 2000);
+  }
+
+  /* ---------------- endings ---------------- */
+  function finale(){
+    over = true; busy = true;
+    clearTimeout(rTimer);
+    $('actions').style.display = 'none';
+    $('phaseMain').textContent = 'FINDING';
+    $('phaseSub').textContent = 'Filed';
+
+    const t = Math.round(truth), c = Math.round(career);
+    let end;
+
+    if (t >= 78){
+      end = {
+        won: true, color:'#3DFC8A',
+        title:'THE QUIET REPLACEMENT',
+        body:'<p>Nothing dramatic happens. That is the shape of this ending. There is no perp walk, no ' +
+             'front page, no hearing about the hearing. There is a reorganization, announced on a Friday, ' +
+             'in which your position is described as <b>evolving</b>. Within the year somebody else has the ' +
+             'office and you have a parking space at a university.</p>' +
+             '<p>And then the strange part. <b>Every room you walk into for the rest of your life goes ' +
+             'quiet in a good way.</b> Committees call you first. Reporters check things with you before ' +
+             'they print them. Young officers get handed your transcript and told: this is what it costs, ' +
+             'and this is what it buys. You spent a career’s worth of career in a single afternoon and ' +
+             'bought the one thing the building cannot issue, requisition, or classify.</p>' +
+             '<p><b>FINDING: the record you built outlived the job you lost, which is the only trade in ' +
+             'this town that has ever come out ahead.</b></p>'
+      };
+    } else if (t >= 52){
+      end = {
+        won: true, color:'#FFD23F',
+        title:'SUPPLEMENTED IN WRITING',
+        body:'<p>You gave enough. Not everything, but enough that when the documents landed, most of your ' +
+             'sentences were still standing, slightly bruised, structurally intact. You supplement the rest ' +
+             'in writing. The letter is four paragraphs and takes six weeks and is read by <b>eleven ' +
+             'people</b>, and you are one of them, twice.</p>' +
+             '<p>You keep the job about another year. It is a fine year. Nobody circles anything you said ' +
+             'in ballpoint. <b>Nobody makes a mug.</b> At a dinner in a decade someone will say &ldquo;he ' +
+             'was straighter than he had to be&rdquo; and mean it, and that is the entire prize, and it is ' +
+             'not nothing.</p>' +
+             '<p><b>FINDING: partial candor is survivable. It is just not quotable, which is why nobody ' +
+             'teaches it.</b></p>'
+      };
+    } else if (t >= 26){
+      end = {
+        won: false, color:'#FF9E3D',
+        title:'CLEARLY ERRONEOUS',
+        body:'<p>You write the letter. Everyone in this line of work eventually writes the letter. Yours ' +
+             'is one page and it contains the words <b>clearly erroneous</b>, because those are the words ' +
+             'that exist for this, and you did not get to pick them either.</p>' +
+             '<p>The letter travels at the speed of an institution. The transcript travels at the speed of ' +
+             'a screenshot. <b>They are not in a race; one of them finished three months ago.</b> The ' +
+             'correction is filed, accurate, sincere, and functionally invisible. It is the single most ' +
+             'honest document you produced this year and it will never once be quoted.</p>' +
+             '<p><b>FINDING: a correction is a true thing arriving after the true thing was needed. The ' +
+             'board audits the delivery time, never the sincerity.</b></p>'
+      };
+    } else {
+      end = {
+        won: false, color:'#FF3D8A',
+        title:'THE PHRASE OUTLIVES YOU',
+        body:'<p>You kept the job. That is the punchline, and it is delivered flat, with no music. Nobody ' +
+             'takes it from you. You are allowed to keep it the way a museum is allowed to keep a thing ' +
+             'behind glass — <b>carefully, permanently, and with a small card explaining what it used ' +
+             'to be for.</b></p>' +
+             '<p>What does not stay in the building is the sentence. The sentence gets out. It gets ' +
+             'clipped, subtitled, set to music, printed on a shirt, and read aloud by a man doing an ' +
+             'impression of you to a room that has never heard your actual voice. <b>Somewhere there is ' +
+             'now a display case with your adverb in it, at eye level, lit from below, next to a placard ' +
+             'that does not include your name because it does not need to.</b> Schoolchildren file past ' +
+             'it. One of them says it out loud in the hallway and gets a laugh, and that is the version ' +
+             'that survives.</p>' +
+             '<p><b>FINDING: you protected a career with a sentence, and the sentence outlived the career, ' +
+             'the agency, the program, and the argument. It is the most durable thing you ever built and ' +
+             'you built it in four seconds without meaning to.</b></p>'
+      };
+    }
+
+    const medals = [];
+    if (usedPlain > 0) medals.push({ ok:true, s:'🏆 JUST ANSWERED IT — you went off the dial ' + usedPlain + '×' });
+    else medals.push({ ok:false, s:'🏆 JUST ANSWERED IT — never left the dial' });
+    if (usedAdverb === 0) medals.push({ ok:true, s:'🏆 NEVER TOUCHED THE ADVERB — "wittingly" is not in your transcript' });
+    else medals.push({ ok:false, s:'🏆 NEVER TOUCHED THE ADVERB — used it ' + usedAdverb + '×' });
+    if (c >= 25) medals.push({ ok:true, s:'🏆 SURVIVED THE REPLAY — career intact at ' + c });
+    else medals.push({ ok:false, s:'🏆 SURVIVED THE REPLAY — the transcript got there first' });
+
+    const box = document.createElement('div');
+    box.className = 'endcard';
+    box.style.borderColor = end.color;
+    box.innerHTML =
+      '<div class="t" style="color:' + end.color + '">' + end.title + '</div>' +
+      '<div class="final">TRUTH ON THE RECORD: ' + t + ' &nbsp;&bull;&nbsp; CAREER AFTER THE REPLAY: ' + c + '</div>' +
+      end.body +
+      '<ul class="medals">' + medals.map(m => '<li class="' + (m.ok ? '' : 'miss') + '">' + m.s + '</li>').join('') + '</ul>';
+    $('ending').classList.add('on');
+    $('ending').appendChild(box);
+    box.scrollIntoView({ block:'nearest', behavior:'smooth' });
+
+    if (end.won){ Juice.sfx('win'); Juice.flash('#3DFC8A', .35); }
+    else { Juice.sfx('lose'); Juice.shake(14); Juice.flash('#FF3D8A', .38); }
+
+    let delay = 500;
+    medals.filter(m => m.ok).forEach(m => {
+      setTimeout(() => Arcade.toast(m.s.split(' — ')[0]), delay);
+      delay += 3200;
+    });
+
+    setTimeout(() => {
+      Arcade.gameOver({
+        won: end.won,
+        accent: end.color,
+        score: t,
+        title: end.title,
+        lines: [
+          'CAREER AFTER THE REPLAY: <b>' + c + '</b> &nbsp;&bull;&nbsp; ADVERB USED: <b>' + usedAdverb +
+            '</b> &nbsp;&bull;&nbsp; PLAIN ANSWERS: <b>' + usedPlain + '</b>',
+          'The hearing is scored on the record you built, not the job you kept. ' +
+            '<b>Truth costs you in the room and pays you in the transcript.</b>',
+          'Everything in this simulator is fiction. The room it is built on was real, and nobody in it ' +
+            'got a second dial.'
+        ],
+        onRetry: () => location.reload(),
+        links: [{ label:'Back to the arcade', href:'../../index.html' }]
+      });
+    }, delay + 900);
+  }
+
+  /* ---------------- boot ---------------- */
+  Arcade.cabinet({
+    id: 'least-untruthful',
+    wing: 'THE JAMES CLAPPER EXPERIENCE',
+    title: 'The Least Untruthful Answer',
+    subtitle: 'Eight Questions. One Dial. No Second Draft.',
+    accent: '#8A93A6',
+    scoreLabel: 'TRUTH ON THE RECORD',
+    lore: 'You are the witness. A committee asks, in an open room, a question whose true answer is ' +
+          'classified — and you answer it on a <b>dial</b>, sliding from FULLY TRUE to NO, SIR while ' +
+          'the sentence rewrites itself in your mouth. Every notch to the right saves your career and ' +
+          'guts the record. <b>Then comes the part nobody in that room got to skip: three months later, ' +
+          'when the documents come out and every word you chose is read back against them.</b> The ' +
+          'career you protected is destroyed by the transcript you wrote to protect it. Fictional ' +
+          'witness. Fictional senators. Real trade-off.',
+    howto: [
+      'DRAG the knob — or TAP a label, or press 1–5 / ← →',
+      'The sentence rewrites live. Watch the word count fall.',
+      'ENTER or SAY IT INTO THE RECORD to answer',
+      'Keep TRUTH high and a third option appears off the dial',
+      'Survive the replay. Nothing you said stops existing.'
+    ],
+    onStart: () => {
+      Juice.init(chamber);
+      renderMeters();
+      renderQuestion();
+      updatePlainOffer();
+      setTimeout(() => {
+        titleCard('Open session — the committee is seated',
+          'You are the witness',
+          'The true answer to the first question is classified. The question is not. Both of those things are somebody else’s decision and you are the one holding the microphone.',
+          2400);
+      }, 60);
+    }
+  });
+})();
+</script>
+
+<script src="../../assets/legal.js"></script>
+</body>
+</html>

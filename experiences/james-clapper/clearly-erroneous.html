@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CLEARLY ERRONEOUS — Doucheclosure</title>
+<meta name="description" content="You are drafting the apology letter. Six slots, four or five clauses each, ranging from an actual admission to a flawless non-apology. Three meters move. Three people read it. Only one of them matters, and the game does not tell you which.">
+<style>
+  :root{
+    --void:#060610; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --cream:#E8D9A8; --paper:#F5EDD8; --paper-2:#EFE4C9;
+    --ink:#1A1712; --ink-2:#3A3327; --rule:#B9A97C;
+    --shadow:rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;overflow:hidden;background:var(--void);color:var(--white);
+    font-family:"Courier New",Courier,monospace;-webkit-text-size-adjust:100%;}
+  .display{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-weight:400;text-transform:uppercase;letter-spacing:.03em;line-height:.95;}
+  #frame{position:fixed;inset:0;display:flex;flex-direction:column;}
+
+  /* ---------- chrome ---------- */
+  #topbar{display:flex;justify-content:space-between;align-items:center;gap:.6rem;
+    padding:.5rem .9rem;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;
+    border-bottom:1px solid #2A1A44;z-index:9;flex:0 0 auto;}
+  #topbar a{color:var(--neon-cyan);text-decoration:none;white-space:nowrap;}
+  #topbar .t{color:var(--cream);text-align:center;}
+  #topbar .r{color:#7E6F9E;white-space:nowrap;}
+  @media (max-width:820px){#topbar .r{display:none;} #topbar .t{font-size:.82rem;}}
+
+  #gamewrap{flex:1;position:relative;display:flex;flex-direction:column;min-height:0;
+    background:radial-gradient(ellipse at 50% -10%, rgba(232,217,168,.11), transparent 62%),
+      linear-gradient(180deg,#060610,#140E24);}
+  #gamewrap::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:6;
+    background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 1px,transparent 1px 3px);}
+
+  /* ---------- hud ---------- */
+  #hud{flex:0 0 auto;display:flex;gap:.7rem;align-items:flex-end;justify-content:space-between;
+    padding:.45rem .8rem .5rem;font-size:.53rem;letter-spacing:.13em;text-transform:uppercase;
+    color:#8C81A8;flex-wrap:wrap;}
+  .meter{flex:1 1 140px;min-width:120px;max-width:270px;}
+  .meter .lab{display:flex;justify-content:space-between;gap:.4rem;}
+  .meter .lab i{font-style:normal;color:var(--white);letter-spacing:.08em;}
+  .track{height:10px;background:#00000099;border:1px solid #000;border-radius:6px;overflow:hidden;margin-top:3px;}
+  .track > i{display:block;height:100%;width:0%;transition:width .4s cubic-bezier(.2,.8,.3,1);}
+  #accFill{background:linear-gradient(90deg,#1E5637,var(--neon-green));}
+  #legFill{background:linear-gradient(90deg,#5A1730,var(--neon-pink));}
+  #credFill{background:linear-gradient(90deg,#5C5133,var(--cream));}
+  #legWrap.hot .lab i{color:var(--neon-pink);}
+  #credWrap.hot .lab i{color:var(--cream);}
+  .cell{min-width:70px;}
+  .cell b{display:block;font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-weight:400;font-size:1.3rem;letter-spacing:.04em;color:var(--cream);line-height:1;}
+
+  /* ---------- stage ---------- */
+  #stage{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);
+    gap:.6rem;padding:.2rem .7rem .3rem;overflow:hidden;}
+  @media (max-width:900px){
+    #stage{grid-template-columns:1fr;grid-template-rows:minmax(160px,auto) minmax(0,auto);
+      gap:.45rem;padding:.15rem .5rem .25rem;overflow-y:auto;}
+    #letterwrap{max-height:46vh;}
+    #desk{max-height:none;}
+    #choices,#sendpanel{overflow:visible;min-height:0;}
+  }
+  .col{display:flex;flex-direction:column;min-height:0;}
+  .collab{font-size:.51rem;letter-spacing:.23em;text-transform:uppercase;color:#6E6288;
+    margin:0 0 .25rem 2px;flex:0 0 auto;display:flex;justify-content:space-between;gap:.4rem;}
+  .collab b{color:var(--cream);font-weight:normal;}
+
+  /* ============================================================
+     THE LETTER — the centerpiece
+     ============================================================ */
+  #letterwrap{flex:1;min-height:0;overflow-y:auto;border-radius:3px;
+    box-shadow:0 6px 22px rgba(0,0,0,.65), 0 0 0 1px #6E6047;}
+  #letter{min-height:100%;background:
+      linear-gradient(180deg, #FBF5E6 0%, var(--paper) 22%, var(--paper-2) 100%);
+    color:var(--ink);padding:0 0 1rem;position:relative;
+    font-family:"Times New Roman",Times,Georgia,serif;}
+  #letter::before{content:"";position:absolute;inset:0;pointer-events:none;
+    background:radial-gradient(ellipse at 20% 0%, rgba(255,255,255,.5), transparent 55%),
+      radial-gradient(ellipse at 90% 100%, rgba(120,100,60,.14), transparent 55%);}
+
+  .clsbar{font-family:"Courier New",monospace;font-size:.5rem;letter-spacing:.28em;
+    text-align:center;padding:.28rem .4rem;background:#2A2415;color:#E8D9A8;text-transform:uppercase;}
+  .clsbar.bot{margin-top:.6rem;}
+
+  .lhead{display:flex;align-items:center;gap:.7rem;padding:.75rem .95rem .5rem;position:relative;z-index:2;}
+  .seal{flex:0 0 auto;width:62px;height:62px;opacity:.86;}
+  @media (max-width:420px){.seal{width:50px;height:50px;}}
+  .lhead .org{flex:1;min-width:0;}
+  .lhead .org h2{font-family:"Times New Roman",Times,serif;font-weight:bold;
+    font-size:.82rem;letter-spacing:.09em;text-transform:uppercase;line-height:1.25;color:#231E12;}
+  .lhead .org p{font-family:"Courier New",monospace;font-size:.5rem;letter-spacing:.19em;
+    text-transform:uppercase;color:#7A6E52;margin-top:.22rem;}
+  .lrule{height:0;border-top:2px solid #33291A;border-bottom:1px solid #33291A;
+    margin:.1rem .95rem .5rem;position:relative;z-index:2;}
+
+  .lmeta{display:flex;justify-content:space-between;gap:.6rem;flex-wrap:wrap;
+    padding:0 .95rem;font-family:"Courier New",monospace;font-size:.53rem;
+    letter-spacing:.11em;color:#6E6248;text-transform:uppercase;position:relative;z-index:2;}
+  .lmeta .stamp{border:1.5px solid #9C3B2C;color:#9C3B2C;border-radius:2px;
+    padding:.1rem .38rem;transform:rotate(-1.6deg);letter-spacing:.14em;}
+  .lmeta .stamp.sent{border-color:#2F6B4A;color:#2F6B4A;transform:rotate(1.2deg);}
+
+  .laddr{padding:.7rem .95rem 0;font-size:.74rem;line-height:1.5;color:var(--ink-2);position:relative;z-index:2;}
+  .laddr b{color:var(--ink);}
+  .lre{padding:.6rem .95rem 0;font-size:.74rem;font-weight:bold;color:var(--ink);
+    letter-spacing:.02em;position:relative;z-index:2;}
+  .lsal{padding:.65rem .95rem .1rem;font-size:.78rem;color:var(--ink);position:relative;z-index:2;}
+
+  #lbody{padding:.2rem .95rem 0;position:relative;z-index:2;}
+  .para{display:flex;gap:.5rem;margin-top:.6rem;padding:.24rem .3rem .24rem .1rem;border-radius:3px;
+    cursor:pointer;transition:background .15s;}
+  .para:hover{background:rgba(120,100,50,.13);}
+  .para .num{flex:0 0 auto;width:1.1rem;text-align:right;font-size:.72rem;color:#8B7C58;
+    font-family:"Courier New",monospace;line-height:1.62;}
+  .para .body{flex:1;min-width:0;font-size:.79rem;line-height:1.62;color:var(--ink);
+    text-align:justify;hyphens:auto;}
+  .para.filled .body{animation:inkin .42s ease-out;}
+  @keyframes inkin{from{opacity:0;filter:blur(1.4px);transform:translateY(3px)}to{opacity:1;filter:none;transform:none}}
+  .para.empty .body{color:#A2946F;font-family:"Courier New",monospace;font-size:.6rem;
+    letter-spacing:.17em;text-transform:uppercase;border-bottom:1px dashed #B7A87E;
+    padding-bottom:.45rem;text-align:left;}
+  .para.cur{background:rgba(232,217,168,.34);box-shadow:inset 0 0 0 1px #B9A97C;}
+  .para.cur .num{color:#5E5232;font-weight:bold;}
+  .para .body em.tag{font-style:normal;display:block;font-family:"Courier New",monospace;
+    font-size:.46rem;letter-spacing:.2em;color:#9C8F6B;text-transform:uppercase;margin-bottom:.18rem;}
+
+  .lsign{padding:1rem .95rem 0;position:relative;z-index:2;}
+  .lsign .resp{font-size:.78rem;color:var(--ink);}
+  .lsign .scrawl{font-family:"Segoe Script","Brush Script MT","Lucida Handwriting",cursive;
+    font-size:1.6rem;color:#1B2E5A;margin:.15rem 0 -.1rem;transform:rotate(-2deg);
+    display:inline-block;opacity:.9;}
+  .lsign .who{font-size:.72rem;color:var(--ink);border-top:1px solid #8B7C58;
+    display:inline-block;padding-top:.15rem;margin-top:.1rem;}
+  .lsign .who i{display:block;font-style:normal;font-family:"Courier New",monospace;
+    font-size:.5rem;letter-spacing:.15em;text-transform:uppercase;color:#7A6E52;}
+  .lfoot{margin:.9rem .95rem 0;border-top:1px solid #C3B48A;padding-top:.35rem;
+    font-family:"Courier New",monospace;font-size:.44rem;letter-spacing:.16em;
+    text-transform:uppercase;color:#9C8F6B;text-align:center;line-height:1.7;position:relative;z-index:2;}
+
+  /* ============================================================
+     THE CLAUSE DESK
+     ============================================================ */
+  #desk{flex:1;min-height:0;display:flex;flex-direction:column;
+    background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:2px solid #35205C;border-radius:10px;padding:.5rem .5rem .55rem;box-shadow:0 6px 18px var(--shadow);}
+  #deskhead{flex:0 0 auto;border-bottom:1px dashed #3E2A63;padding-bottom:.4rem;margin-bottom:.45rem;}
+  #deskslot{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;font-weight:400;
+    text-transform:uppercase;font-size:1.25rem;line-height:1;color:var(--cream);letter-spacing:.02em;}
+  #deskq{font-size:.6rem;color:#8C81A8;margin-top:.2rem;line-height:1.5;letter-spacing:.03em;}
+  #deskstep{font-size:.48rem;letter-spacing:.22em;color:#6E6288;text-transform:uppercase;}
+  #choices{flex:1;min-height:0;overflow-y:auto;display:grid;gap:.35rem;align-content:start;}
+  .choice{text-align:left;font-family:inherit;cursor:pointer;touch-action:manipulation;width:100%;
+    background:#0E0A18;border:1px solid #3A2560;border-left:4px solid #6B4FA0;border-radius:4px;
+    color:#D6CFE8;padding:.45rem .55rem;transition:background .12s,border-color .12s,color .12s;}
+  .choice:hover{background:#190F2C;border-left-color:var(--cream);color:var(--white);}
+  .choice:active{transform:translateY(1px);}
+  .choice.picked{background:#241634;border-left-color:var(--neon-green);}
+  .choice .say{font-size:.72rem;line-height:1.45;color:inherit;}
+  .choice .tell{display:block;margin-top:.3rem;font-size:.53rem;line-height:1.45;color:#8C81A8;letter-spacing:.02em;}
+  .choice .tell b{color:var(--neon-pink);letter-spacing:.1em;}
+  .choice .chip{display:inline-block;margin-top:.32rem;font-size:.44rem;letter-spacing:.17em;
+    text-transform:uppercase;padding:2px 5px;border-radius:2px;border:1px solid #4A3670;color:#8C81A8;}
+  .choice .chip.hi{border-color:var(--neon-pink);color:var(--neon-pink);}
+  .choice .chip.el{border-color:var(--neon-yellow);color:var(--neon-yellow);}
+  .choice .chip.ok{border-color:#3F7A57;color:var(--neon-green);}
+
+  #sendpanel{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;gap:.5rem;padding:.4rem;}
+  #sendpanel.hide,#choices.hide{display:none;}
+  #sendpanel p{font-size:.7rem;line-height:1.6;color:#B9AFD0;max-width:24rem;}
+  #sendpanel p b{color:var(--white);}
+  #deskfoot{flex:0 0 auto;margin-top:.4rem;font-size:.47rem;letter-spacing:.13em;
+    color:#6E6288;text-transform:uppercase;display:flex;justify-content:space-between;gap:.4rem;}
+  #deskfoot b{color:var(--cream);}
+
+  /* ---------- reaction beat ---------- */
+  #reaction{position:absolute;inset:0;z-index:35;display:flex;align-items:center;justify-content:center;
+    background:rgba(4,3,10,.94);padding:1rem;text-align:center;overflow-y:auto;}
+  #reaction.hide{display:none;}
+  #reaction .inner{max-width:37rem;}
+  #rkick{font-size:.53rem;letter-spacing:.24em;text-transform:uppercase;color:#7E6F9E;margin-bottom:.4rem;}
+  #rwho{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;font-weight:400;
+    text-transform:uppercase;font-size:clamp(1.7rem,6.5vw,2.9rem);line-height:1;letter-spacing:.03em;color:var(--cream);}
+  #rverdict{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;margin-top:.4rem;}
+  #rverdict.up{color:var(--neon-green);} #rverdict.down{color:var(--neon-pink);} #rverdict.flat{color:var(--chrome);}
+  #rbar{height:9px;max-width:22rem;margin:.5rem auto 0;background:#00000099;border:1px solid #000;
+    border-radius:6px;overflow:hidden;}
+  #rbar i{display:block;height:100%;width:0;transition:width .7s cubic-bezier(.2,.8,.3,1);}
+  #rline{color:var(--chrome);font-size:.85rem;line-height:1.66;margin:.9rem auto 0;max-width:34rem;text-align:left;}
+  #rline b{color:var(--white);}
+  #rnote{margin:.7rem auto 0;max-width:32rem;font-size:.6rem;letter-spacing:.09em;line-height:1.65;
+    color:var(--neon-yellow);text-transform:uppercase;}
+  #rnote.hide{display:none;}
+  #rnext{margin-top:1rem;}
+
+  /* ---------- sheets ---------- */
+  .sheet{position:absolute;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;
+    flex-direction:column;background:rgba(4,3,10,.96);text-align:center;padding:1rem;overflow-y:auto;}
+  .sheet.hide{display:none;}
+  .sheet h1{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;font-weight:400;
+    text-transform:uppercase;line-height:.95;font-size:clamp(1.55rem,5.6vw,2.8rem);color:var(--cream);
+    text-shadow:0 0 18px rgba(232,217,168,.35);}
+  .sheet p{max-width:38rem;margin:.8rem auto;color:var(--chrome);font-size:.85rem;line-height:1.62;}
+  .sheet b{color:var(--white);}
+  .memo{border:2px dashed rgba(232,217,168,.35);border-radius:10px;padding:.75rem 1rem;margin:.9rem auto 0;
+    max-width:34rem;text-align:left;}
+  .memo h4{font-size:.54rem;letter-spacing:.24em;text-transform:uppercase;color:var(--cream);margin-bottom:.45rem;}
+  .memo ul{list-style:none;display:grid;gap:.34rem;}
+  .memo li{font-size:.7rem;color:#D6CFE8;letter-spacing:.02em;line-height:1.5;}
+  .memo li span{color:var(--neon-yellow);}
+  .memo li .mk{display:inline-block;min-width:5.4rem;font-size:.46rem;letter-spacing:.15em;
+    padding:1px 4px;margin-right:.35rem;border-radius:2px;text-align:center;vertical-align:1px;}
+  .memo li .mk.used{background:#5A1730;color:#FFB9D2;border:1px solid var(--neon-pink);}
+  .memo li .mk.clean{background:#12301F;color:#9BE9BE;border:1px solid #3F7A57;}
+  .memo .test{margin-top:.6rem;border-top:1px dashed rgba(232,217,168,.3);padding-top:.5rem;
+    font-size:.68rem;line-height:1.55;color:#B9AFD0;}
+  .memo .test b{color:var(--cream);}
+  .btn{display:inline-block;margin:.4rem .3rem 0;padding:.85rem 1.5rem;border-radius:8px;
+    font-family:inherit;font-weight:bold;font-size:.75rem;letter-spacing:.14em;text-transform:uppercase;
+    text-decoration:none;cursor:pointer;border:2px solid var(--cream);background:var(--cream);color:#231E12;}
+  .btn:disabled{opacity:.35;cursor:default;}
+  .btn.ghost{background:transparent;color:var(--neon-cyan);border-color:var(--neon-cyan);}
+  #kbhint{flex:0 0 auto;text-align:center;color:#5F5382;font-size:9.5px;letter-spacing:.06em;
+    padding:.3rem .5rem .4rem;line-height:1.5;}
+  @media (max-width:700px){#kbhint{display:none;}}
+</style>
+</head>
+<body>
+<div id="frame">
+  <div id="topbar">
+    <a href="../../index.html">&larr; DOUCHECLOSURE</a>
+    <span class="t display" style="font-size:1rem;">CLEARLY ERRONEOUS</span>
+    <span class="r">DRAFTING DESK &bull; ONE LETTER &bull; NO SECOND DRAFT</span>
+  </div>
+
+  <div id="gamewrap">
+    <div id="hud">
+      <div class="meter" id="accWrap">
+        <div class="lab"><span>ACCOUNTABILITY</span><i id="accNum">0</i></div>
+        <div class="track"><i id="accFill"></i></div>
+      </div>
+      <div class="meter" id="legWrap">
+        <div class="lab"><span>LEGAL EXPOSURE</span><i id="legNum">5</i></div>
+        <div class="track"><i id="legFill"></i></div>
+      </div>
+      <div class="meter" id="credWrap">
+        <div class="lab"><span>COMMITTEE CREDULITY</span><i id="credNum">40</i></div>
+        <div class="track"><i id="credFill"></i></div>
+      </div>
+      <div class="cell" id="clauseCell"><b>0/6</b>CLAUSES SET</div>
+    </div>
+
+    <div id="stage">
+      <div class="col">
+        <div class="collab"><span>THE LETTER &bull; LIVE DRAFT</span><span>CLICK A PARAGRAPH TO REVISE</span></div>
+        <div id="letterwrap">
+          <div id="letter">
+            <div class="clsbar">UNCLASSIFIED &sdot;&sdot; DRAFT &sdot;&sdot; NOT YET TRANSMITTED</div>
+
+            <div class="lhead">
+              <svg class="seal" viewBox="0 0 100 100" aria-hidden="true">
+                <defs>
+                  <path id="arcTop" d="M50,50 m-38,0 a38,38 0 1,1 76,0 a38,38 0 1,1 -76,0"/>
+                  <path id="arcBot" d="M50,50 m-30,0 a30,30 0 1,0 60,0 a30,30 0 1,0 -60,0"/>
+                </defs>
+                <circle cx="50" cy="50" r="47" fill="none" stroke="#33291A" stroke-width="1.6"/>
+                <circle cx="50" cy="50" r="43.5" fill="none" stroke="#33291A" stroke-width="0.7"/>
+                <circle cx="50" cy="50" r="25" fill="none" stroke="#33291A" stroke-width="1.1"/>
+                <g fill="#33291A" font-family="Times New Roman, serif" font-size="6.4" letter-spacing="0.9">
+                  <text><textPath href="#arcTop" startOffset="25%" text-anchor="middle">OFFICE OF THE DIRECTOR OF</textPath></text>
+                  <text><textPath href="#arcBot" startOffset="25%" text-anchor="middle">NATIONAL CLARIFICATION</textPath></text>
+                </g>
+                <g fill="#33291A">
+                  <circle cx="50" cy="50" r="9.5" fill="none" stroke="#33291A" stroke-width="1"/>
+                  <ellipse cx="50" cy="50" rx="9.5" ry="4.2" fill="none" stroke="#33291A" stroke-width="0.8"/>
+                  <circle cx="50" cy="50" r="2.6"/>
+                  <path d="M50 16.5 l1.9 4 4.3.6-3.1 3 .8 4.3-3.9-2.1-3.9 2.1.8-4.3-3.1-3 4.3-.6z"/>
+                  <path d="M28 74 l1.5 3.1 3.4.5-2.5 2.4.6 3.4-3-1.6-3.1 1.6.6-3.4-2.4-2.4 3.4-.5z"/>
+                  <path d="M72 74 l1.5 3.1 3.4.5-2.5 2.4.6 3.4-3-1.6-3.1 1.6.6-3.4-2.4-2.4 3.4-.5z"/>
+                </g>
+                <g stroke="#33291A" stroke-width="0.6">
+                  <line x1="50" y1="25.5" x2="50" y2="29"/><line x1="50" y1="71" x2="50" y2="74.5"/>
+                  <line x1="25.5" y1="50" x2="29" y2="50"/><line x1="71" y1="50" x2="74.5" y2="50"/>
+                </g>
+              </svg>
+              <div class="org">
+                <h2>Office of the Director<br>of National Clarification</h2>
+                <p>Washington &sdot; The Directorate &sdot; Suite 1101</p>
+              </div>
+            </div>
+            <div class="lrule"></div>
+
+            <div class="lmeta">
+              <span>FILE 2013&ndash;Q7 / BROADLEAF</span>
+              <span class="stamp" id="lstamp">DRAFT &mdash; UNSENT</span>
+              <span>14 JUNE</span>
+            </div>
+
+            <div class="laddr">
+              <b>The Honorable Chairman</b><br>
+              Select Committee on Oversight and Clarification<br>
+              Room 219, The Annex
+            </div>
+
+            <div class="lre">RE: TESTIMONY OF 14 MARCH &mdash; QUESTION SEVEN</div>
+            <div class="lsal">Dear Mr. Chairman,</div>
+
+            <div id="lbody"></div>
+
+            <div class="lsign">
+              <div class="resp">Respectfully,</div>
+              <div class="scrawl">Th&#8202;e Direct&#8202;or</div>
+              <div class="who">THE DIRECTOR<i>Office of the Director of National Clarification</i></div>
+            </div>
+
+            <div class="lfoot">
+              Enclosure: none &sdot; cc: General Counsel, Legislative Affairs, Public Affairs<br>
+              This correspondence is a work of parody. No real office, agency, committee or person appears in it.
+            </div>
+            <div class="clsbar bot">UNCLASSIFIED &sdot;&sdot; PAGE 1 OF 1 &sdot;&sdot; RETAIN FOR THE RECORD</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="collab"><span>THE DRAFTING DESK</span><span id="deskstep">CLAUSE 1 OF 6</span></div>
+        <div id="desk">
+          <div id="deskhead">
+            <div id="deskslot" class="display">OPENING</div>
+            <div id="deskq">How does the letter announce itself?</div>
+          </div>
+          <div id="choices"></div>
+          <div id="sendpanel" class="hide">
+            <p><b>Six clauses. One page.</b> Counsel has cleared it, or counsel has objected, and
+            either way it goes out at close of business.</p>
+            <p style="font-size:.62rem;color:#8C81A8;">You may still click any paragraph in the letter
+            to change it. Nothing is final until it is transmitted, at which point everything is.</p>
+            <button class="btn" id="sendBtn" type="button">TRANSMIT THE LETTER</button>
+          </div>
+          <div id="deskfoot"><span>DRAFTING DESK &bull; ONE PAGE MAXIMUM</span><span>CLAUSES SET: <b id="setCount">0</b>/6</span></div>
+        </div>
+      </div>
+    </div>
+
+    <p id="kbhint">KEYS &mdash; 1&ndash;5 CHOOSE A CLAUSE &bull; &larr; &rarr; MOVE BETWEEN SLOTS &bull; ENTER TRANSMIT / CONTINUE</p>
+
+    <!-- REACTION BEAT -->
+    <div id="reaction" class="hide">
+      <div class="inner">
+        <div id="rkick">READER 1 OF 3</div>
+        <div id="rwho">&mdash;</div>
+        <div id="rverdict" class="flat">&mdash;</div>
+        <div id="rbar"><i></i></div>
+        <p id="rline"></p>
+        <p id="rnote" class="hide"></p>
+        <button class="btn" id="rnext" type="button">NEXT READER</button>
+      </div>
+    </div>
+
+    <!-- FINDINGS -->
+    <div class="sheet hide" id="findings">
+      <h1 id="fTitle">The Finding</h1>
+      <p id="fLine"></p>
+      <div class="memo" id="fMemo">
+        <h4>How To Spot A Non-Apology &mdash; And Which Ones You Used</h4>
+        <ul id="fList"></ul>
+        <div class="test"><b>THE THREE-NAME TEST.</b> A real apology names the <b>act</b>, names the
+        <b>actor</b>, and names <b>who was harmed</b>. Read any public apology and look for all three.
+        If one is missing it was probably drafted by more than one person. If all three are missing,
+        the document is not an apology &mdash; it is a position, and it is doing its job perfectly.</div>
+      </div>
+      <button class="btn" id="fNext" type="button">FILE IT</button>
+    </div>
+
+    <!-- BRIEFING -->
+    <div class="sheet hide" id="briefing">
+      <h1>You Have To Write It<br>By Close Of Business.</h1>
+      <p>On 14 March, in open session, the Director was asked Question Seven &mdash; a yes-or-no
+      question about <b>Program Broadleaf</b> &mdash; and said no. Documents released since then say
+      otherwise. The Chairman has requested a letter.</p>
+      <p><b>You are the person drafting it.</b> Six paragraphs. Four or five candidate clauses each,
+      pulled from the shelf where this building keeps them, ranging from an actual admission to a
+      document so smooth it could be framed.</p>
+      <div class="memo">
+        <h4>Standing Guidance From The Front Office</h4>
+        <ul>
+          <li><span>ACCOUNTABILITY</span> &mdash; how much of the act the letter actually admits to.</li>
+          <li><span>LEGAL EXPOSURE</span> &mdash; how much of it a lawyer can later be handed. Counsel would like this low.</li>
+          <li><span>COMMITTEE CREDULITY</span> &mdash; how willing the Committee is to consider the matter closed.</li>
+          <li><span>THE CLAUSE SHELF</span> &mdash; every option has a note under it explaining the technique. Read the notes. That is the actual product here.</li>
+          <li><span>REVISION</span> &mdash; click any paragraph in the letter to swap the clause. Free, until you transmit.</li>
+          <li><span>THREE PEOPLE READ IT</span> &mdash; and they do not want the same letter. You cannot satisfy all three.</li>
+        </ul>
+      </div>
+      <p style="font-size:.74rem;color:#7E6F9E;">One page. One draft. The phrase you choose is going
+      to be quoted for longer than you will be employed.</p>
+      <button class="btn" id="startBtn" type="button">SIT DOWN AT THE DESK</button>
+    </div>
+  </div>
+</div>
+
+<script src="../../assets/screen.js"></script>
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const wrap = $('gamewrap');
+  Juice.init(wrap);
+
+  /* ============================================================
+     THE CLAUSE SHELF
+     acc  = accountability      leg = legal exposure
+     cred = committee credulity tags = non-apology techniques used
+     ============================================================ */
+  const SLOTS = [
+    {
+      name:'OPENING', q:'How does the letter announce itself?',
+      opts:[
+        { say:'I am writing to correct testimony I gave before this Committee on 14 March. The answer I gave was not true.',
+          tell:'Says it in the first sentence. Nothing that follows can quietly walk it back.',
+          acc:18, leg:16, cred:-6, tags:[],
+          head:'DIRECTOR OPENS LETTER: “THE ANSWER I GAVE WAS NOT TRUE”' },
+        { say:'I am writing to clarify certain aspects of my testimony before this Committee on 14 March which have been the subject of recent commentary.',
+          tell:'“Clarify” implies the answer was correct and merely misunderstood. It is the single most load-bearing verb in this building.',
+          acc:4, leg:2, cred:8, tags:['pivot'],
+          head:'DIRECTOR MOVES TO “CLARIFY” 14 MARCH TESTIMONY' },
+        { say:'In light of recent unauthorized disclosures, I write to provide the Committee with additional context regarding my 14 March appearance.',
+          tell:'Makes the disclosure the event. The answer becomes background material to somebody else’s crime.',
+          acc:0, leg:-2, cred:12, tags:['pivot'],
+          head:'DIRECTOR CITES “UNAUTHORIZED DISCLOSURES” IN LETTER TO PANEL' },
+        { say:'I want to begin by thanking the Committee for its continued partnership and for the opportunity to address questions arising from my 14 March testimony.',
+          tell:'Opens with gratitude toward the body you gave the wrong answer to. Gratitude is not a correction, but it occupies the same amount of paper.',
+          acc:-2, leg:-3, cred:14, tags:['pivot'],
+          head:'DIRECTOR THANKS COMMITTEE FOR “CONTINUED PARTNERSHIP”' },
+        { say:'It has come to my attention that an answer provided during my 14 March appearance has become the subject of concern.',
+          tell:'<b>PASSIVE VOICE.</b> An answer was provided. It came to attention. At no point in this sentence does a person do anything.',
+          acc:2, leg:0, cred:10, tags:['passive'],
+          head:'DIRECTOR: “AN ANSWER PROVIDED” HAS BECOME “SUBJECT OF CONCERN”' }
+      ]
+    },
+    {
+      name:'CHARACTERIZATION OF THE ERROR', q:'What, exactly, was wrong?',
+      opts:[
+        { say:'The answer was untrue. I said a thing that was not so, in a public hearing, to the body charged with overseeing this office.',
+          tell:'The word “untrue” has never appeared in a letter from this office. Counsel will call about this paragraph within the hour.',
+          acc:22, leg:20, cred:-10, tags:[], untrue:true,
+          head:'DIRECTOR: “THE ANSWER WAS UNTRUE”' },
+        { say:'My answer was clearly erroneous.',
+          tell:'Characterizes the <b>statement</b>, not the act. Three words, no actor, no verb anybody did. This is the most efficient sentence on the shelf.',
+          acc:6, leg:4, cred:16, tags:['characterize'],
+          head:'DIRECTOR CALLS TESTIMONY “CLEARLY ERRONEOUS”' },
+        { say:'My response was, in my judgment at the time, the least untruthful answer available to me in an open session.',
+          tell:'Introduces a sliding scale of untruthfulness on which zero is one of the available settings. Everyone will notice the scale.',
+          acc:3, leg:7, cred:6, tags:['characterize'],
+          head:'DIRECTOR CITES “LEAST UNTRUTHFUL” ANSWER AVAILABLE' },
+        { say:'Mistakes were made in the course of a lengthy and complex hearing covering a wide range of matters.',
+          tell:'<b>PASSIVE VOICE.</b> The all-time champion. Mistakes made themselves, apologized to no one, and left the building.',
+          acc:-6, leg:-4, cred:18, tags:['passive'],
+          head:'DIRECTOR: “MISTAKES WERE MADE”' },
+        { say:'My answer has been characterized as inconsistent with material subsequently declassified.',
+          tell:'<b>PASSIVE VOICE</b> plus characterization. The answer is not wrong; it has been <em>described</em> as wrong, by parties unnamed.',
+          acc:0, leg:-2, cred:14, tags:['passive','characterize'],
+          head:'DIRECTOR SAYS ANSWER “HAS BEEN CHARACTERIZED” AS INCONSISTENT' }
+      ]
+    },
+    {
+      name:'EXPLANATION', q:'Why did it happen?',
+      opts:[
+        { say:'I knew Program Broadleaf existed. I had been briefed on it that morning. I understood the question that was asked, and I answered it anyway.',
+          tell:'This is the paragraph a lawyer will ask you to strike. It is also the only one in this slot that is a reason rather than a shape.',
+          acc:24, leg:26, cred:-16, tags:[], knew:true,
+          head:'DIRECTOR: “I UNDERSTOOD THE QUESTION AND I ANSWERED IT ANYWAY”' },
+        { say:'I simply did not think of Program Broadleaf when the question was put to me. The question concerned a different authority and my mind was on that authority.',
+          tell:'Requires the Committee to believe the Director forgot the largest program he administers, on the morning he was briefed on it.',
+          acc:4, leg:2, cred:20, tags:['characterize'],
+          head:'DIRECTOR SAYS HE “SIMPLY DID NOT THINK OF” THE PROGRAM' },
+        { say:'I was addressing a separate collection authority, under a separate statute, administered by a separate directorate, and I answered as to that authority.',
+          tell:'Technically responsive. To a question nobody in the room asked. The word “separate” appears three times and does all the work.',
+          acc:5, leg:3, cred:14, tags:['characterize'],
+          head:'DIRECTOR SAYS HE WAS ANSWERING ABOUT A “SEPARATE AUTHORITY”' },
+        { say:'The hearing was conducted in open session. Program Broadleaf was at that time classified at a level which could not be acknowledged in that room, and I was not willing to disclose it there.',
+          tell:'The strongest honest defense on the shelf. It is also, read plainly, an argument that the hearing should never have been held in that room.',
+          acc:9, leg:6, cred:10, tags:[],
+          head:'DIRECTOR: PROGRAM COULD NOT BE ACKNOWLEDGED IN OPEN SESSION' },
+        { say:'The question, as posed, admitted of more than one reading, and I answered the reading I understood to be intended.',
+          tell:'Relocates the error into the questioner’s mouth. The Committee wrote that question down. They still have it.',
+          acc:-4, leg:0, cred:12, tags:['pivot'],
+          head:'DIRECTOR SAYS QUESTION “ADMITTED OF MORE THAN ONE READING”' }
+      ]
+    },
+    {
+      name:'RESPONSIBILITY', q:'Whose is it?',
+      opts:[
+        { say:'I take responsibility for the answer. It was my answer. No one drafted it, no one approved it, and no one else was sitting in the chair.',
+          tell:'Names the chair and puts a person in it. This is what the word “responsibility” used to mean before it was reassigned to buildings.',
+          acc:20, leg:14, cred:-6, tags:[],
+          head:'DIRECTOR: “IT WAS MY ANSWER”' },
+        { say:'I take full responsibility for any institutional shortcomings in the preparation and delivery of testimony to this Committee.',
+          tell:'“Full responsibility” for “institutional shortcomings.” Read it twice: the sentence contains no error and no human being.',
+          acc:3, leg:-2, cred:18, tags:['characterize'],
+          head:'DIRECTOR TAKES “FULL RESPONSIBILITY” FOR “INSTITUTIONAL SHORTCOMINGS”' },
+        { say:'Responsibility for the resulting confusion rests, properly, with a classification framework that placed this office in an untenable position.',
+          tell:'You have now been wronged by the paperwork. The paperwork will not be issuing a statement.',
+          acc:-8, leg:-4, cred:14, tags:['pivot'],
+          head:'DIRECTOR BLAMES “CLASSIFICATION FRAMEWORK” FOR CONFUSION' },
+        { say:'I have directed a comprehensive review of our testimony preparation procedures and will report its findings to the Committee in due course.',
+          tell:'A review is a thing that happens <em>instead of</em> a consequence. Note the deadline: “in due course.” That is not a deadline.',
+          acc:2, leg:-6, cred:22, tags:['process'],
+          head:'DIRECTOR ORDERS REVIEW OF TESTIMONY PROCEDURES' },
+        { say:'To the extent that responsibility may ultimately be found to attach to any individual, it attaches to me.',
+          tell:'<b>PASSIVE VOICE</b> wrapped in a conditional. Responsibility is now hypothetical, may be found by someone, and may never arrive.',
+          acc:1, leg:0, cred:16, tags:['passive','conditional'],
+          head:'DIRECTOR: RESPONSIBILITY, “IF FOUND TO ATTACH,” IS HIS' }
+      ]
+    },
+    {
+      name:'REGRET', q:'What, precisely, are you sorry for?',
+      opts:[
+        { say:'I regret saying it. Not the reaction to it, not the coverage of it, not the position it has placed this office in. I regret saying the thing, because it was the wrong thing to say.',
+          tell:'Regrets the act. That is the entire definition of an apology and it fits in three sentences.',
+          acc:20, leg:10, cred:-8, tags:[],
+          head:'DIRECTOR: “I REGRET SAYING IT”' },
+        { say:'I regret any confusion my answer may have caused.',
+          tell:'Regrets the <em>confusion</em>, not the answer. “Any” and “may have” make the confusion hypothetical and possibly experienced by nobody at all.',
+          acc:0, leg:0, cred:20, tags:['conditional','reaction'],
+          head:'DIRECTOR “REGRETS ANY CONFUSION” CAUSED BY TESTIMONY' },
+        { say:'If anyone was misled by my answer, I am sorry that they were.',
+          tell:'<b>IF ANYONE.</b> The conditional apology, addressed to a hypothetical person who may not exist, contingent on their having reacted.',
+          acc:-2, leg:1, cred:16, tags:['conditional'],
+          head:'DIRECTOR: “IF ANYONE WAS MISLED”' },
+        { say:'I regret that my answer has been received in the manner in which it has been received.',
+          tell:'<b>PASSIVE VOICE.</b> Regrets the <em>receiving</em>. The fault has been quietly relocated into the audience.',
+          acc:-6, leg:-1, cred:14, tags:['passive','reaction'],
+          head:'DIRECTOR REGRETS HOW ANSWER “HAS BEEN RECEIVED”' },
+        { say:'I am sorry. Specifically, I am sorry to the people outside this room who were told for seven years that Program Broadleaf did not exist, and who arranged their lives around believing it.',
+          tell:'Apologizes to somebody who is not on this Committee. Nobody in this building is going to like this paragraph.',
+          acc:26, leg:12, cred:-14, tags:[], citizen:true,
+          head:'DIRECTOR APOLOGIZES TO PUBLIC TOLD PROGRAM “DID NOT EXIST”' }
+      ]
+    },
+    {
+      name:'CLOSING', q:'What happens after this letter?',
+      opts:[
+        { say:'I remain available to this Committee at its convenience, in closed session or open, and I will answer whatever is asked, including the parts that are not comfortable.',
+          tell:'An offer with no exits written into it. Rare. Slightly alarming to Legislative Affairs.',
+          acc:16, leg:12, cred:-2, tags:[],
+          head:'DIRECTOR OFFERS TO ANSWER “WHATEVER IS ASKED”' },
+        { say:'I look forward to continuing the productive partnership between this office and the Committee in the important work ahead.',
+          tell:'Ends on “partnership” and “the important work ahead.” Both phrases exist to make the previous paragraph feel further away.',
+          acc:-2, leg:-3, cred:18, tags:['pivot'],
+          head:'DIRECTOR LOOKS FORWARD TO “PRODUCTIVE PARTNERSHIP”' },
+        { say:'I trust this letter resolves the matter, and that we may now turn to the substantial threats facing the nation.',
+          tell:'Declares the matter over on your own authority, then gestures at threats. The subject change is the oldest instrument in the drawer.',
+          acc:-8, leg:-5, cred:16, tags:['pivot'],
+          head:'DIRECTOR DECLARES MATTER RESOLVED, CITES “SUBSTANTIAL THREATS”' },
+        { say:'I will appear before this Committee again, in public, and answer the same question a second time, correctly, on the record, so that the correction sits in the same room the error did.',
+          tell:'Puts the fix in the same room as the mistake, at the same volume. Almost nobody does this, which is why almost nobody remembers a correction.',
+          acc:22, leg:18, cred:-12, tags:[],
+          head:'DIRECTOR TO RE-ANSWER QUESTION IN PUBLIC SESSION' },
+        { say:'This letter is respectfully submitted for inclusion in the record of the 14 March hearing.',
+          tell:'<b>PASSIVE VOICE.</b> It submits itself. There is no author anywhere in the final sentence of a letter about who said what.',
+          acc:1, leg:-1, cred:12, tags:['passive'],
+          head:'DIRECTOR SUBMITS LETTER “FOR INCLUSION IN THE RECORD”' }
+      ]
+    }
+  ];
+
+  /* ---------- the media-literacy panel ---------- */
+  const TECHNIQUES = [
+    { tag:'passive', name:'PASSIVE VOICE',
+      body:'“Mistakes were made.” “An answer was provided.” “It has been received.” The sentence describes an event with no hand attached to it. Ask who the missing subject is; the answer is always the person who wrote it.' },
+    { tag:'characterize', name:'CHARACTERIZING THE STATEMENT, NOT THE ACT',
+      body:'“My answer was clearly erroneous” describes a sentence. It does not describe a person saying the sentence. Grammatically the statement is the one at fault.' },
+    { tag:'conditional', name:'THE CONDITIONAL APOLOGY',
+      body:'“If anyone was offended.” “Any confusion that may have been caused.” It apologizes to a hypothetical person, for a reaction that may not have occurred, and commits to nothing if they did not.' },
+    { tag:'reaction', name:'REGRETTING THE REACTION',
+      body:'Sorry it was received badly, sorry for the confusion, sorry it became a distraction. The regret attaches to the audience’s response rather than to the thing that was done.' },
+    { tag:'process', name:'THE PROCESS PLEDGE',
+      body:'“I have directed a review.” “Procedures are being updated.” A review is a thing that happens instead of a consequence, and it almost never carries a date.' },
+    { tag:'pivot', name:'GRATITUDE, PARTNERSHIP, AND THE PIVOT',
+      body:'Thanking the body you misled, praising the partnership, and turning to “the important work ahead.” Warmth and urgency are both ways of ending a subject early.' }
+  ];
+
+  /* ---------- state ---------- */
+  let phase, cur, picks, acc, leg, cred, reader, belief, quoteHead, transmitted;
+  const got = {};
+  const once = (k, fn) => { if (!got[k]) { got[k] = true; fn(); } };
+  const clamp = v => Math.max(0, Math.min(100, v));
+
+  function reset(){
+    phase = 'draft';
+    picks = [null, null, null, null, null, null];
+    cur = 0; reader = 0; belief = 0; quoteHead = ''; transmitted = false;
+    $('reaction').classList.add('hide');
+    $('findings').classList.add('hide');
+    $('lstamp').className = 'stamp';
+    $('lstamp').textContent = 'DRAFT — UNSENT';
+    document.querySelector('#letter .clsbar').textContent = 'UNCLASSIFIED ·· DRAFT ·· NOT YET TRANSMITTED';
+    recompute();
+    renderLetter();
+    renderDesk();
+  }
+
+  /* ============================================================
+     SCORING — three meters, all pure functions of the six picks
+     ============================================================ */
+  function chosen(){ return picks.map((p, i) => p == null ? null : SLOTS[i].opts[p]); }
+
+  function recompute(){
+    let a = 0, l = 5, c = 40;
+    chosen().forEach(o => { if (o){ a += o.acc; l += o.leg; c += o.cred; } });
+    acc = clamp(a); leg = clamp(l); cred = clamp(c);
+    hud();
+  }
+
+  function flags(){
+    const f = { passive:0, tags:{}, untrue:false, knew:false, citizen:false };
+    chosen().forEach(o => {
+      if (!o) return;
+      if (o.untrue) f.untrue = true;
+      if (o.knew) f.knew = true;
+      if (o.citizen) f.citizen = true;
+      (o.tags || []).forEach(t => { f.tags[t] = (f.tags[t] || 0) + 1; if (t === 'passive') f.passive++; });
+    });
+    return f;
+  }
+
+  /* The citizen's reading. Weighted highest. Never mentioned in the HUD. */
+  function citizenBelief(){
+    const f = flags();
+    let b = acc;
+    if (f.untrue)  b += 12;
+    if (f.knew)    b += 10;
+    if (f.citizen) b += 12;
+    b -= f.passive * 11;
+    b -= (f.tags.conditional || 0) * 14;
+    b -= (f.tags.reaction || 0) * 10;
+    b -= (f.tags.process || 0) * 6;
+    b -= (f.tags.pivot || 0) * 5;
+    return clamp(b);
+  }
+
+  function hud(){
+    $('accFill').style.width = acc + '%';   $('accNum').textContent = Math.round(acc);
+    $('legFill').style.width = leg + '%';   $('legNum').textContent = Math.round(leg);
+    $('credFill').style.width = cred + '%'; $('credNum').textContent = Math.round(cred);
+    $('legWrap').classList.toggle('hot', leg >= 60);
+    $('credWrap').classList.toggle('hot', cred >= 75);
+    const n = picks.filter(p => p != null).length;
+    $('clauseCell').innerHTML = '<b>' + n + '/6</b>CLAUSES SET';
+    $('setCount').textContent = n;
+  }
+
+  /* ============================================================
+     THE LETTER — live document
+     ============================================================ */
+  function renderLetter(){
+    const body = $('lbody');
+    body.innerHTML = '';
+    SLOTS.forEach((slot, i) => {
+      const p = document.createElement('div');
+      const filled = picks[i] != null;
+      p.className = 'para ' + (filled ? 'filled' : 'empty') + (i === cur && phase === 'draft' ? ' cur' : '');
+      p.innerHTML = '<span class="num">' + (i + 1) + '.</span><div class="body">' +
+        (filled ? SLOTS[i].opts[picks[i]].say
+                : '<em class="tag">' + slot.name + '</em>&nbsp;')
+        + '</div>';
+      if (phase === 'draft'){
+        p.addEventListener('click', () => { if (phase !== 'draft') return; cur = i; Juice.sfx('tick'); renderLetter(); renderDesk(); });
+      } else {
+        p.style.cursor = 'default';
+      }
+      body.appendChild(p);
+    });
+  }
+
+  /* ============================================================
+     THE DESK
+     ============================================================ */
+  function riskChip(o){
+    if (o.leg >= 14) return '<span class="chip hi">COUNSEL OBJECTS</span>';
+    if (o.leg >= 6)  return '<span class="chip el">ELEVATED EXPOSURE</span>';
+    if (o.leg >= 1)  return '<span class="chip">LOW EXPOSURE</span>';
+    return '<span class="chip ok">CLEARED BY COUNSEL</span>';
+  }
+
+  function renderDesk(){
+    const allSet = picks.every(p => p != null);
+    const ch = $('choices'), sp = $('sendpanel');
+
+    if (cur == null || cur < 0 || cur >= SLOTS.length){
+      cur = null;
+      ch.classList.add('hide'); sp.classList.remove('hide');
+      $('deskslot').textContent = allSet ? 'READY TO TRANSMIT' : 'THE DESK IS CLEAR';
+      $('deskq').textContent = allSet
+        ? 'Six of six. Counsel has seen it. Public Affairs has seen it. Nobody outside this building has.'
+        : 'Click a paragraph in the letter to fill it.';
+      $('deskstep').textContent = 'FINAL';
+      $('sendBtn').disabled = !allSet;
+      return;
+    }
+    sp.classList.add('hide'); ch.classList.remove('hide');
+
+    const slot = SLOTS[cur];
+    $('deskslot').textContent = slot.name;
+    $('deskq').textContent = slot.q;
+    $('deskstep').textContent = 'CLAUSE ' + (cur + 1) + ' OF 6';
+
+    ch.innerHTML = '';
+    slot.opts.forEach((o, k) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'choice' + (picks[cur] === k ? ' picked' : '');
+      b.innerHTML = '<div class="say">' + (k + 1) + '. &ldquo;' + o.say + '&rdquo;</div>' +
+        '<span class="tell">' + o.tell + '</span>' + riskChip(o);
+      b.addEventListener('click', () => pick(k));
+      ch.appendChild(b);
+    });
+    ch.scrollTop = 0;
+  }
+
+  function fx(el){
+    const r = el.getBoundingClientRect(), h = wrap.getBoundingClientRect();
+    return { x: r.left - h.left + r.width / 2, y: r.top - h.top + r.height / 2 };
+  }
+
+  function pick(k){
+    if (phase !== 'draft' || cur == null) return;
+    const o = SLOTS[cur].opts[k];
+    picks[cur] = k;
+    recompute();
+
+    const pt = fx($('letterwrap'));
+    Juice.sfx('click');
+    if (o.acc >= 15){
+      Juice.reward(pt.x, pt.y, { text:'ON THE RECORD', color:'#3DFC8A', sound:'coin', count:18 });
+      Juice.flash('#3DFC8A', .12);
+    } else if (o.acc <= 0){
+      Juice.impact(pt.x, pt.y, { text:'SMOOTH', color:'#E8D9A8', power:5, count:12, sound:'thud', stop:30 });
+    } else {
+      Juice.burst(pt.x, pt.y, { color:'#E8D9A8', count:9, speed:2.6, gravity:.03 });
+      Juice.buzz(8);
+    }
+    if (o.untrue) once('untrue', () => Arcade.toast('🏆 SAID THE WORD "UNTRUE"', 'Achievement unlocked'));
+
+    // advance to the next unset slot, else park on the send panel
+    let next = null;
+    for (let i = cur + 1; i < SLOTS.length; i++) if (picks[i] == null){ next = i; break; }
+    if (next == null) for (let i = 0; i < SLOTS.length; i++) if (picks[i] == null){ next = i; break; }
+    cur = next;
+    renderLetter();
+    renderDesk();
+  }
+
+  /* ============================================================
+     TRANSMIT
+     ============================================================ */
+  function transmit(){
+    if (phase !== 'draft' || !picks.every(p => p != null)) return;
+    phase = 'react';
+    transmitted = true;
+    belief = citizenBelief();
+    quoteHead = pickHeadline();
+
+    $('lstamp').className = 'stamp sent';
+    $('lstamp').textContent = 'TRANSMITTED — 4:58 PM';
+    document.querySelector('#letter .clsbar').textContent = 'UNCLASSIFIED ·· TRANSMITTED ·· ENTERED INTO THE RECORD';
+    cur = null;
+    renderLetter();
+
+    Juice.sfx('whoosh'); Juice.shake(6); Juice.flash('#E8D9A8', .2);
+    reader = 0;
+    showReader();
+  }
+
+  function pickHeadline(){
+    const list = chosen();
+    let worst = null;
+    list.forEach(o => { if (o && o.head && (!worst || o.acc < worst.acc)) worst = o; });
+    if (!worst) return '';
+    if (worst.acc >= 14){
+      const u = list.find(o => o && o.untrue);
+      return u ? u.head : 'DIRECTOR CORRECTS TESTIMONY, TAKES RESPONSIBILITY';
+    }
+    return worst.head;
+  }
+
+  /* ============================================================
+     THE THREE READERS
+     ============================================================ */
+  function chairText(){
+    if (cred >= 80) return { v:'THE MATTER IS CONSIDERED CLOSED', cls:'up', bar:cred, t:
+      'The Chairman’s office puts out two sentences at 4:50 on a Friday: the Director has clarified ' +
+      'the record, and the Committee considers the matter closed. There is no follow-up question, ' +
+      'because a follow-up question would require somebody to have read past paragraph two. ' +
+      '<b>The letter worked exactly as designed.</b> Everyone who drafted it is going to be fine.' };
+    if (cred >= 55) return { v:'QUESTIONS REMAIN', cls:'flat', bar:cred, t:
+      'The Chairman thanks you for the letter, notes for the record that questions remain, and ' +
+      'schedules a closed session for a date to be determined. <b>The date will not be determined.</b> ' +
+      'The letter is docketed, indexed, and will be cited by staff for eleven years as “the ' +
+      'clarification,” which is a word doing more work than any word in it.' };
+    if (cred >= 28) return { v:'THE COMMITTEE IS NOT SATISFIED', cls:'down', bar:cred, t:
+      'The Chairman reads paragraph three out loud at the next open hearing. Slowly. Then he asks ' +
+      'you to explain it. <b>There is no explaining a paragraph twice.</b> The second reading is ' +
+      'always worse than the first, and everybody in the room including you knows it.' };
+    return { v:'THE COMMITTEE DID NOT WANT THIS LETTER', cls:'down', bar:cred, t:
+      'Staff calls before the letter is even docketed. “Do you understand what you have put in ' +
+      'writing?” Yes. That was the point of putting it in writing. There is a long pause on the ' +
+      'line. <b>The Committee wanted the other letter — the smooth one — and it is genuinely ' +
+      'unprepared for the version where somebody just answers.</b>' };
+  }
+
+  function reporterText(){
+    const smooth = acc < 45;
+    if (smooth) return { v:'SHE FILES AT 6:40 PM', cls:'down', bar:clamp(100 - acc), t:
+      'She does not have to write a word of analysis. The headline is your own sentence, in ' +
+      'quotation marks, above the fold:<br><br><b>&ldquo;' + quoteHead + '&rdquo;</b><br><br>' +
+      'Quotation marks are the most damaging punctuation in the language and they are free. ' +
+      '<b>You wrote the story. She put a box around it.</b> It runs for four days, then it runs ' +
+      'every time your name runs, forever, in the second paragraph.' };
+    return { v:'IT RUNS ON A17 AND DIES', cls:'flat', bar:clamp(100 - acc), t:
+      'She files four hundred words that run on A17 and are forgotten inside a week. There is ' +
+      'nothing to unpack. There is no phrase to isolate. <b>A correction that is actually a ' +
+      'correction is the least interesting document in journalism.</b> She is mildly annoyed about ' +
+      'this professionally and quietly relieved about it as a person, and she will not tell you ' +
+      'which one is louder.' };
+  }
+
+  function citizenText(){
+    if (belief >= 72) return { v:'SHE BELIEVES YOU', cls:'up', bar:belief, t:
+      '<b>JEANNE, 61.</b> She reads the whole letter, which almost nobody does. She asked about ' +
+      'this at a town hall in 2011 and was told no — politely, by a man who was not lying, because ' +
+      'nobody had told him either. She reads paragraph three twice. Then she says, out loud, to an ' +
+      'empty kitchen: “okay.”<br><br><b>That is the whole thing. That is the one thing the entire ' +
+      'apparatus could not buy, and you got it with a paragraph that counsel asked you to cut.</b>' };
+    if (belief >= 45) return { v:'CLOSER. NOT IT.', cls:'flat', bar:belief, t:
+      '<b>JEANNE, 61.</b> She gets to paragraph four and stops. “This is closer,” she says. “This ' +
+      'is not it, but this is closer.” She does not read paragraph five, because by paragraph five ' +
+      'she can hear the second author. <b>She has read enough of these to know when a lawyer ' +
+      'joined the sentence.</b>' };
+    if (belief >= 20) return { v:'SHE HAS READ THIS LETTER BEFORE', cls:'down', bar:belief, t:
+      '<b>JEANNE, 61.</b> Two paragraphs in she recognizes the shape and puts it down. She has ' +
+      'received this exact letter from three other offices about three other things. She could not ' +
+      'quote a line of any of them and she does not need to. <b>The format is the tell.</b> ' +
+      'Nothing in it was written for her and she can feel that from the margins.' };
+    return { v:'SHE DOES NOT READ IT', cls:'down', bar:belief, t:
+      '<b>JEANNE, 61.</b> She never sees the letter. It is summarized for her in eleven seconds on ' +
+      'television as “the Director apologized,” and she says “oh, okay,” and goes back to work. ' +
+      'Somewhere across the next twenty years she stops calling, stops writing, stops asking at ' +
+      'town halls — and she never once decides to. <b>That is what the letter actually cost, and ' +
+      'it does not appear on any ledger in this building.</b>' };
+  }
+
+  function showReader(){
+    const specs = [
+      { kick:'READER 1 OF 3 · THE OVERSIGHT COMMITTEE', who:'THE CHAIRMAN', d:chairText(),
+        note:'' },
+      { kick:'READER 2 OF 3 · THE PRESS GALLERY', who:'THE REPORTER', d:reporterText(),
+        note:'' },
+      { kick:'READER 3 OF 3 · NOT IN THE ROOM', who:'THE CITIZEN', d:citizenText(),
+        note:'THIS READER WAS WEIGHTED HIGHEST. THE GAME DID NOT TELL YOU THAT. NEITHER DOES ANYTHING ELSE.' }
+    ];
+    const s = specs[reader];
+    $('rkick').textContent = s.kick;
+    $('rwho').textContent = s.who;
+    $('rverdict').className = s.d.cls;
+    $('rverdict').textContent = s.d.v;
+    $('rline').innerHTML = s.d.t;
+    const bar = $('rbar').firstElementChild;
+    bar.style.width = '0%';
+    bar.style.background = s.d.cls === 'up' ? 'linear-gradient(90deg,#1E5637,#3DFC8A)'
+      : s.d.cls === 'down' ? 'linear-gradient(90deg,#5A1730,#FF3D8A)'
+      : 'linear-gradient(90deg,#5C5133,#E8D9A8)';
+    setTimeout(() => { bar.style.width = Math.round(s.d.bar) + '%'; }, 60);
+
+    const note = $('rnote');
+    if (s.note){ note.textContent = s.note; note.classList.remove('hide'); }
+    else note.classList.add('hide');
+
+    $('rnext').textContent = reader < 2 ? 'NEXT READER' : 'THE FINDING';
+    $('reaction').classList.remove('hide');
+
+    if (s.d.cls === 'up'){ Juice.sfx('good'); }
+    else if (s.d.cls === 'down'){ Juice.sfx('bad'); Juice.shake(5); }
+    else Juice.sfx('blip');
+
+    if (reader === 2 && belief >= 72){
+      once('believed', () => Arcade.toast('🏆 THE CITIZEN BELIEVED YOU', 'Achievement unlocked'));
+      Juice.flash('#3DFC8A', .22);
+    }
+  }
+
+  function nextReader(){
+    Juice.sfx('click');
+    if (reader < 2){ reader++; showReader(); return; }
+    $('reaction').classList.add('hide');
+    showFindings();
+  }
+
+  /* ============================================================
+     THE FINDING + THE MEDIA LITERACY PANEL
+     ============================================================ */
+  function endingKind(){
+    if (acc >= 76 && belief >= 68) return 'best';
+    if (cred >= 80 && acc <= 30)   return 'worst';
+    if (acc >= 48)                 return 'partial';
+    return 'held';
+  }
+
+  function showFindings(){
+    phase = 'findings';
+    const f = flags();
+    const kind = endingKind();
+
+    if (f.passive === 0) once('nopassive', () => Arcade.toast('🏆 NO PASSIVE VOICE', 'Achievement unlocked'));
+    if (kind === 'worst') once('flawless', () => Arcade.toast('🏆 A FLAWLESS NON-APOLOGY', 'Achievement unlocked'));
+
+    const heads = {
+      best:   'The Only Version<br>Anybody Remembers',
+      worst:  'A Flawless Document',
+      partial:'A Partial Correction',
+      held:   'The Document Held'
+    };
+    const lines = {
+      best:
+        'Legal exposure at <b>' + Math.round(leg) + '</b>. The Committee unimpressed at <b>' + Math.round(cred) +
+        '</b>. And a woman in a kitchen who has no standing, no clearance, and no seat at any table, ' +
+        'read it and believed you. <b>Ten years from now this is the only version anybody quotes</b> — ' +
+        'not because it was clever, but because it was the one that said what happened.',
+      worst:
+        'Accountability <b>' + Math.round(acc) + '</b>. Legal exposure <b>' + Math.round(leg) + '</b>. ' +
+        'Committee credulity <b>' + Math.round(cred) + '</b>. Nobody objected to a single word of it. ' +
+        'It is, on any technical measure, a perfect document.',
+      partial:
+        'Half of it says something. The other half was written by the part of you that has been in ' +
+        'this building a long time. <b>Accountability ' + Math.round(acc) + '.</b> The seam between ' +
+        'the two halves is visible from the parking lot, and everybody who reads it finds it.',
+      held:
+        'It went out, it was received, and nothing happened, which is what the letter was for. ' +
+        '<b>Accountability ' + Math.round(acc) + ' · Credulity ' + Math.round(cred) + '.</b> ' +
+        'The document held. That was the assignment. It is worth asking who wrote the assignment.'
+    };
+
+    $('fTitle').innerHTML = heads[kind];
+    $('fLine').innerHTML = lines[kind];
+
+    const list = $('fList');
+    list.innerHTML = '';
+    TECHNIQUES.forEach(t => {
+      const used = (f.tags[t.tag] || 0) > 0;
+      const li = document.createElement('li');
+      li.innerHTML = '<span class="mk ' + (used ? 'used">YOU USED IT' : 'clean">AVOIDED') + '</span>' +
+        '<span>' + t.name + '</span> &mdash; ' + t.body;
+      list.appendChild(li);
+    });
+
+    $('findings').classList.remove('hide');
+    Juice.sfx(kind === 'best' ? 'win' : kind === 'worst' ? 'alarm' : 'blip');
+    if (kind === 'best'){ Juice.flash('#3DFC8A', .3); Juice.burst(wrap.clientWidth / 2, wrap.clientHeight * .4, { color:'#3DFC8A', count:40, speed:5.5 }); }
+    if (kind === 'worst'){ Juice.flash('#E8D9A8', .28); Juice.shake(10); }
+  }
+
+  /* ============================================================
+     THE BOARD
+     ============================================================ */
+  function board(){
+    phase = 'over';
+    $('findings').classList.add('hide');
+    const f = flags();
+    const kind = endingKind();
+    const ledger =
+      '<b>THE RECORD.</b> Accountability: <b>' + Math.round(acc) + '</b>. Legal exposure: <b>' +
+      Math.round(leg) + '</b>. Committee credulity: <b>' + Math.round(cred) + '</b>. ' +
+      'Passive-voice clauses: <b>' + f.passive + '</b>. Conditional apologies: <b>' +
+      (f.tags.conditional || 0) + '</b>. Reviews directed: <b>' + (f.tags.process || 0) + '</b>. ' +
+      'The citizen’s reading: <b>' + Math.round(belief) + '</b> — <b>the number the game was actually scoring.</b>';
+
+    const links = [{ label:'THE DOUCHECLOSURE ARCADE', href:'../../index.html' }];
+
+    if (kind === 'best'){
+      Arcade.gameOver({
+        won:true, title:'The Only Version Anybody Remembers', accent:'#3DFC8A', score:Math.round(acc),
+        lines:[
+          'The letter goes out with the word <b>untrue</b> in it, or with a sentence that names the ' +
+          'chair, or with an apology addressed to somebody who does not have a seat in that building. ' +
+          'Counsel is furious. Public Affairs asks, twice, whether paragraph three is really necessary. ' +
+          '<b>It is really necessary.</b> It is the only paragraph that is.',
+
+          'Legal exposure rises. The Committee is unimpressed — it did not want a confession, it ' +
+          'wanted a document it could put in a drawer, and you have handed it something that has to ' +
+          'be read. Two members are annoyed. One is quietly, permanently, on your side and will ' +
+          'never say so out loud.',
+
+          'And a woman who is not in the room, who has no clearance and no standing and no reason ' +
+          'left to give anybody the benefit of the doubt, reads it and believes you. ' +
+          '<b>Nothing else in this scenario is worth anything next to that.</b>',
+
+          ledger,
+
+          'A decade later there are only two versions of this letter in circulation: the one you ' +
+          'wrote, and the smooth one nobody wrote because you wrote this one instead. ' +
+          '<b>This is the one they quote.</b> Not because it was clever. Because it was the one ' +
+          'that said what happened, in the room where it happened, at the same volume.'
+        ],
+        links:links, onRetry:reset
+      });
+      return;
+    }
+
+    if (kind === 'worst'){
+      Arcade.gameOver({
+        won:false, title:'It Will Outlive You', accent:'#E8D9A8', score:Math.round(acc),
+        lines:[
+          'Nobody objects to a single word. Counsel clears it in nine minutes. Public Affairs calls ' +
+          'it “tight.” The Committee dockets it, thanks you, and moves to the next item. On every ' +
+          'technical measure available to this building, <b>it is a perfect document</b>.',
+
+          'The phrase you selected — <b>&ldquo;' + quoteHead + '&rdquo;</b> — is picked up the ' +
+          'same evening and does not stop. It survives the program. It survives the Committee. ' +
+          'It survives the administration, and the next one.',
+
+          'In about six years it starts appearing on a slide in a communications course, and then ' +
+          'in a media-literacy unit for sixteen-year-olds, under a heading that is not flattering. ' +
+          'A generation learns what a non-apology is <b>using your sentence as the worked example</b>. ' +
+          'They do not learn your name. They learn the phrase. The phrase is the part that lasts.',
+
+          ledger,
+
+          'And the woman who was told for seven years that the thing did not exist never reads the ' +
+          'letter at all. She hears eleven seconds of it on television, says “oh, okay,” and goes ' +
+          'back to work, and somewhere in the next twenty years she stops asking anybody anything. ' +
+          '<b>That is not in the file. It was never going to be in the file.</b>'
+        ],
+        links:links, onRetry:reset
+      });
+      return;
+    }
+
+    if (kind === 'partial'){
+      Arcade.gameOver({
+        won:false, title:'A Partial Correction', accent:'#FFD23F', score:Math.round(acc),
+        lines:[
+          'Half the letter says something. The other half was written by the part of you that has ' +
+          'been in this building a long time and knows exactly which sentences survive a hearing. ' +
+          '<b>The seam between the two halves is visible from the parking lot.</b>',
+
+          'The Committee accepts it with a note. The reporter files it with a caveat. The citizen ' +
+          'gets to the paragraph where the second author takes over and stops reading there, which ' +
+          'is the paragraph you already knew she would stop at when you chose it.',
+
+          ledger,
+
+          'A partial correction is not half an apology. It is a whole document that has been ' +
+          'engineered to survive being read twice. <b>You will think about the other version in ' +
+          'the car.</b>'
+        ],
+        links:links, onRetry:reset
+      });
+      return;
+    }
+
+    Arcade.gameOver({
+      won:false, title:'The Document Held', accent:'#FF3D8A', score:Math.round(acc),
+      lines:[
+        'It went out. It was received. Nothing happened. That is not a failure — <b>that is the ' +
+        'specification</b>. The letter was built to be a place where a subject goes to stop moving, ' +
+        'and it performed.',
+
+        'You will be asked to draft the next one, because you are good at this now. Somewhere in ' +
+        'the building there is a folder of previous letters, and yours is going in it, and the ' +
+        'person after you will open that folder first and never write a sentence you did not ' +
+        'already write for them.',
+
+        ledger,
+
+        'The assignment was to make the matter stop. <b>It is worth asking who wrote the ' +
+        'assignment</b>, and whether anybody in the chain that produced this page ever had the ' +
+        'option of writing a different one, and what it would have cost, and whether that cost ' +
+        'was ever actually charged to anyone.'
+      ],
+      links:links, onRetry:reset
+    });
+  }
+
+  /* ============================================================
+     INPUT
+     ============================================================ */
+  $('sendBtn').addEventListener('click', transmit);
+  $('rnext').addEventListener('click', nextReader);
+  $('fNext').addEventListener('click', () => { Juice.sfx('click'); board(); });
+
+  addEventListener('keydown', e => {
+    if (phase === 'over') return;
+    if (phase === 'react'){
+      if (e.key === 'Enter' || e.key === ' ' || e.code === 'Space'){ e.preventDefault(); nextReader(); }
+      return;
+    }
+    if (phase === 'findings'){
+      if (e.key === 'Enter' || e.key === ' ' || e.code === 'Space'){ e.preventDefault(); Juice.sfx('click'); board(); }
+      return;
+    }
+    if (phase !== 'draft') return;
+    if (e.key === 'Enter'){ e.preventDefault(); if (picks.every(p => p != null)) transmit(); return; }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight'){
+      e.preventDefault();
+      const d = e.key === 'ArrowRight' ? 1 : -1;
+      const base = cur == null ? (d > 0 ? -1 : SLOTS.length) : cur;
+      cur = Math.max(0, Math.min(SLOTS.length - 1, base + d));
+      Juice.sfx('tick'); renderLetter(); renderDesk();
+      return;
+    }
+    if (cur == null) return;
+    if (e.key >= '1' && e.key <= '5'){
+      const k = parseInt(e.key, 10) - 1;
+      if (k < SLOTS[cur].opts.length){ e.preventDefault(); pick(k); }
+    }
+  });
+
+  $('startBtn').addEventListener('click', () => {
+    Juice.sfx('coin');
+    $('briefing').classList.add('hide');
+    reset();
+  });
+
+  /* ============================================================
+     BOOT
+     ============================================================ */
+  phase = 'brief';
+  picks = [null, null, null, null, null, null];
+  cur = 0; reader = 0; belief = 0; quoteHead = '';
+  recompute();
+  renderLetter();
+  renderDesk();
+
+  Arcade.cabinet({
+    id: 'clearly-erroneous',
+    wing: 'THE JAMES CLAPPER EXPERIENCE',
+    title: 'Clearly Erroneous',
+    subtitle: 'A Letter To The Committee',
+    accent: '#E8D9A8',
+    scoreLabel: 'ACCOUNTABILITY',
+    lore: 'A Director of National Intelligence once told a Senate committee that a certain kind of ' +
+          'collection was not happening. Disclosures shortly afterward said otherwise. He wrote to the ' +
+          'committee chair to apologize for what he called a <b>&ldquo;clearly erroneous&rdquo;</b> ' +
+          'answer, and said he <b>&ldquo;simply didn&rsquo;t think of&rdquo;</b> the program. He has ' +
+          'also said he made a mistake but did not lie. That sequence is the documented basis for this ' +
+          'game. Everything on your screen is fictional &mdash; a fictional Director, a fictional ' +
+          'committee, a fictional program &mdash; because the interesting part was never the man. ' +
+          '<b>It was the shelf of clauses he was choosing from, and the fact that you can see it too.</b>',
+    howto: [
+      'SIX SLOTS &mdash; opening, error, explanation, responsibility, regret, closing',
+      'PICK A CLAUSE &mdash; from an actual admission to a flawless non-apology',
+      'READ THE NOTE UNDER EACH ONE &mdash; that note is the real product',
+      'CLICK ANY PARAGRAPH &mdash; to revise it, free, until you transmit',
+      'THREE METERS MOVE &mdash; accountability, legal exposure, committee credulity',
+      'KEYS &mdash; 1-5 choose, ← → change slot, ENTER transmit'
+    ],
+    onStart: () => { $('briefing').classList.remove('hide'); }
+  });
+})();
+</script>
+<script src="../../assets/legal.js"></script>
+</body>
+</html>

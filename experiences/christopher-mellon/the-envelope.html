@@ -327,19 +327,19 @@
      THE REQUIREMENTS SHEET
      ============================================================ */
   const REQS = [
-    { id:'rain', n:'Rain',
+    { id:'rain', n:'Rain', sn:'RAIN',
       d:'Forecast: intermittent. The exchange happens outdoors, on painted asphalt, under a deck that is open on three sides. The contents must arrive dry, not "mostly dry."' },
-    { id:'walk', n:'A 400-yard walk',
+    { id:'walk', n:'A 400-yard walk', sn:'WALK',
       d:'Vehicle to handoff and back. Two corners, one stairwell, one curb. Nothing may bend, crease, curl, or arrive as a tube.' },
-    { id:'pigeon', n:'One (1) pigeon',
+    { id:'pigeon', n:'One (1) pigeon', sn:'PIGEON',
       d:'Present for the entire exchange, wearing what witnesses describe as a tiny lanyard. Has declined every interview through counsel. Assume overflight.' },
-    { id:'puddle', n:'The puddle scenario',
+    { id:'puddle', n:'The puddle scenario', sn:'PUDDLE',
       d:'Dropped, full immersion, four seconds, retrieved. This is not hypothetical. This is Level C in March.' },
-    { id:'chain', n:'Chain of custody',
+    { id:'chain', n:'Chain of custody', sn:'CHAIN',
       d:'Who held it, when, for how long, in writing, signed by both parties. Without this the item is a rumor with a staple in it.' },
-    { id:'tamper', n:'Tamper evidence',
+    { id:'tamper', n:'Tamper evidence', sn:'TAMPER',
       d:'The receiving party must be able to state on the record that nothing was added or removed in transit. "It looked closed" is not a finding.' },
-    { id:'pace', n:'Carried by a man who will not run',
+    { id:'pace', n:'Carried by a man who will not run', sn:'PACE',
       d:'The carrier proceeds at a dignified walking pace. One hand. No jogging, no juggling, no visible strain, no scurrying. The board is not joking about this one.' }
   ];
 
@@ -469,7 +469,7 @@
   /* ============================================================
      STATE
      ============================================================ */
-  let order, misc, awarded, butlerSeen, submitted, prevMet, opened;
+  let order, misc, awarded, butlerSeen, submitted, prevMet;
 
   function reset(){
     order = { envelope:null, seal:null, doc:null, transport:null, backup:null };
@@ -607,7 +607,7 @@
      RENDER — catalogue
      ============================================================ */
   function specLine(it){
-    return REQS.map(r => (it.s[r.id] ? r.n.split(' ')[0].toUpperCase().replace(/[^A-Z]/g,'') + ' ' + (it.s[r.id] > 0 ? '+' : '') + it.s[r.id] : null))
+    return REQS.map(r => (it.s[r.id] ? r.sn + ' ' + (it.s[r.id] > 0 ? '+' : '') + it.s[r.id] : null))
       .filter(Boolean).join(' · ') || 'NO SPEC CONTRIBUTION';
   }
 
@@ -1024,7 +1024,6 @@
   $('startBtn').addEventListener('click', () => {
     Juice.sfx('coin');
     $('briefing').style.display = 'none';
-    opened = true;
   });
 
   reset();
