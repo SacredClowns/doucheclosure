@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BOIL ORDER: DINNER SERVICE AT SUB-BASEMENT 4 — Doucheclosure</title>
+<meta name="description" content="The test kitchen is open to the public. Tickets are sold, tables are full, and all 111 recipes from TO SERVE CRAB PEOPLE are on the menu. Four burners, one ice bath, three walkouts and you're done. The roux knows when you look away.">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --lobster:#E2604A; --icebox:#7FB8FF; --shadow:rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;overflow:hidden;background:var(--void);color:var(--white);
+    font-family:"Courier New",Courier,monospace;-webkit-text-size-adjust:100%;}
+  .display{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-weight:400;text-transform:uppercase;letter-spacing:.03em;line-height:.95;}
+  #frame{position:fixed;inset:0;display:flex;flex-direction:column;}
+
+  /* ---------- chrome ---------- */
+  #topbar{display:flex;justify-content:space-between;align-items:center;gap:.6rem;
+    padding:.5rem .9rem;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;
+    border-bottom:1px solid #2A1A44;z-index:9;flex:0 0 auto;}
+  #topbar a{color:var(--neon-cyan);text-decoration:none;white-space:nowrap;}
+  #topbar .t{color:var(--lobster);text-align:center;}
+  #topbar .r{color:#7E6F9E;white-space:nowrap;}
+  @media (max-width:700px){#topbar .r{display:none;}}
+
+  #gamewrap{flex:1;position:relative;display:flex;flex-direction:column;min-height:0;
+    background:radial-gradient(ellipse at 50% -10%, rgba(226,96,74,.16), transparent 60%),
+      linear-gradient(180deg,#0B0614,#150F26);}
+  #gamewrap::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:6;
+    background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 1px,transparent 1px 3px);}
+
+  /* ---------- hud ---------- */
+  #hud{flex:0 0 auto;display:flex;gap:.5rem;align-items:center;justify-content:space-between;
+    padding:.4rem .8rem;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--chrome);flex-wrap:wrap;}
+  #hud .cell b{display:block;font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-weight:400;font-size:1.35rem;letter-spacing:.04em;color:var(--white);line-height:1;}
+  #hud .cell{min-width:66px;}
+  #served b{color:var(--neon-green);}
+  #combo b{color:var(--neon-yellow);}
+  #combo.hot b{text-shadow:0 0 12px rgba(255,210,63,.85);}
+  #walk b{color:var(--lobster);letter-spacing:.14em;}
+  #rushbar{flex:1;min-width:120px;max-width:280px;}
+  #rushbar .track{height:9px;background:#00000099;border:1px solid #000;border-radius:5px;overflow:hidden;margin-top:4px;}
+  #rushfill{height:100%;width:0%;background:linear-gradient(90deg,var(--icebox),var(--neon-green));transition:width .25s;}
+
+  /* ---------- ticket rail ---------- */
+  #railwrap{flex:0 0 auto;border-top:1px solid #2A1A44;border-bottom:1px solid #2A1A44;
+    background:rgba(0,0,0,.28);padding:.35rem .6rem .5rem;}
+  #raillab{font-size:.55rem;letter-spacing:.24em;text-transform:uppercase;color:#7E6F9E;margin-bottom:.28rem;}
+  #rail{display:flex;gap:.45rem;overflow-x:auto;overflow-y:hidden;min-height:92px;padding-bottom:2px;
+    scrollbar-width:thin;}
+  #rail::-webkit-scrollbar{height:5px;}
+  #rail::-webkit-scrollbar-thumb{background:#3A2560;border-radius:3px;}
+  #railempty{color:#5C5079;font-size:.68rem;letter-spacing:.14em;align-self:center;padding:0 .5rem;}
+  .tkt{flex:0 0 auto;width:158px;background:#F6F1E4;color:#1A1220;border:2px solid #C9BFA6;
+    border-radius:4px 4px 8px 8px;padding:.3rem .4rem .34rem;text-align:left;cursor:pointer;
+    font-family:"Courier New",monospace;touch-action:manipulation;position:relative;
+    box-shadow:0 3px 0 rgba(0,0,0,.5);}
+  .tkt:disabled{cursor:default;}
+  .tkt.sel{border-color:var(--lobster);box-shadow:0 0 0 2px var(--lobster),0 3px 0 rgba(0,0,0,.5);}
+  .tkt.cooking{opacity:.5;filter:saturate(.4);}
+  .tkt .no{font-size:.5rem;letter-spacing:.16em;color:#7A6E58;display:flex;justify-content:space-between;}
+  .tkt .nm{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;font-weight:400;
+    text-transform:uppercase;font-size:.86rem;line-height:.98;margin:.16rem 0;letter-spacing:.01em;}
+  .tkt .nm.done{text-decoration:line-through;color:#8C8272;}
+  .tkt .bd{display:inline-block;font-size:.47rem;letter-spacing:.14em;padding:1px 4px;border-radius:3px;
+    color:#0B0614;margin-right:3px;}
+  .bd.burner{background:var(--lobster);}
+  .bd.ice{background:var(--icebox);}
+  .tkt .pat{height:5px;background:#D8CFB8;border-radius:3px;overflow:hidden;margin-top:.26rem;}
+  .tkt .pat i{display:block;height:100%;width:100%;background:#2F8F5B;transition:background .3s;}
+  .tkt.warn .pat i{background:#D8A11F;}
+  .tkt.crit .pat i{background:#C2321F;}
+  .tkt .combo{position:absolute;top:-8px;right:-6px;background:var(--neon-pink);color:#1B0210;
+    font-size:.46rem;letter-spacing:.12em;padding:1px 5px;border-radius:3px;transform:rotate(4deg);}
+
+  /* ---------- stations ---------- */
+  #stations{flex:1;min-height:0;display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem;
+    padding:.6rem .7rem;align-content:center;grid-auto-rows:minmax(0,auto);overflow:auto;}
+  @media (max-width:780px){
+    #stations{grid-template-columns:repeat(3,1fr);gap:.4rem;padding:.45rem .5rem;}
+    .stn{min-height:74px;}
+    .ringwrap{max-width:64px;}
+    .mid .act{font-size:.78rem;}
+  }
+  @media (max-height:620px){
+    .stn{min-height:0;} .ringwrap{max-width:58px;}
+    #rail{min-height:84px;} #pass{min-height:38px;}
+  }
+  .stn{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:.25rem;min-height:96px;padding:.4rem .3rem;cursor:pointer;touch-action:manipulation;
+    background:linear-gradient(180deg,var(--panel-2),var(--panel));border:2px solid #35205C;
+    border-radius:10px;color:var(--white);font-family:inherit;box-shadow:0 6px 18px var(--shadow);
+    transition:border-color .15s,box-shadow .15s,background .15s;}
+  .stn:active{transform:translateY(1px);}
+  .stn .snm{font-size:.5rem;letter-spacing:.2em;text-transform:uppercase;color:#7E6F9E;}
+  .stn.ice{border-color:#2C4A72;}
+  .stn.ice .snm{color:var(--icebox);}
+  .stn.cooking{border-color:var(--lobster);}
+  .stn.win{border-color:var(--neon-green);box-shadow:0 0 22px rgba(61,252,138,.4),0 6px 18px var(--shadow);}
+  .stn.hot{border-color:var(--neon-pink);animation:hotpulse .34s steps(1) infinite;}
+  .stn.scorched{border-color:#5B2A20;background:#1B0D0C;}
+  @keyframes hotpulse{50%{box-shadow:0 0 26px rgba(255,61,138,.75),0 6px 18px var(--shadow);}}
+  .ringwrap{position:relative;width:100%;max-width:88px;aspect-ratio:1;}
+  .ringwrap svg{width:100%;height:100%;transform:rotate(-90deg);display:block;}
+  .ringwrap circle{fill:none;stroke-width:8;stroke-linecap:butt;}
+  .rbg{stroke:#2A1A44;}
+  .rwin{stroke:rgba(61,252,138,.35);}
+  .rfg{stroke:var(--lobster);transition:none;}
+  .stn.ice .rfg{stroke:var(--icebox);}
+  .stn.win .rfg{stroke:var(--neon-green);}
+  .stn.hot .rfg{stroke:var(--neon-pink);}
+  .mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:0 6px;pointer-events:none;}
+  .mid .dish{font-size:.5rem;line-height:1.05;color:var(--chrome);max-width:100%;
+    overflow:hidden;letter-spacing:.02em;}
+  .mid .act{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;font-weight:400;
+    text-transform:uppercase;font-size:.9rem;letter-spacing:.05em;color:#6E6288;margin-top:1px;}
+  .stn.cooking .mid .act{color:var(--neon-yellow);}
+  .stn.win .mid .act{color:var(--neon-green);}
+  .stn.hot .mid .act{color:var(--neon-pink);}
+  .roux{width:74%;height:6px;background:#00000099;border:1px solid #000;border-radius:4px;overflow:hidden;
+    visibility:hidden;}
+  .roux i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#C2321F,#D9A441);transition:width .1s linear;}
+  .stn.stirring .roux{visibility:visible;}
+  .stn .key{position:absolute;top:4px;left:6px;font-size:.5rem;color:#4E4270;letter-spacing:.1em;}
+
+  /* ---------- the pass ---------- */
+  #passwrap{flex:0 0 auto;border-top:1px solid #2A1A44;background:rgba(0,0,0,.3);padding:.3rem .7rem .45rem;}
+  #passlab{font-size:.55rem;letter-spacing:.24em;text-transform:uppercase;color:#7E6F9E;margin-bottom:.25rem;}
+  #pass{display:flex;gap:.4rem;overflow-x:auto;min-height:44px;align-items:center;}
+  #passempty{color:#5C5079;font-size:.62rem;letter-spacing:.12em;}
+  .plate{flex:0 0 auto;min-width:118px;background:#1B2A3E;border:2px solid var(--icebox);border-radius:8px;
+    color:var(--white);font-family:inherit;padding:.28rem .5rem .3rem;cursor:pointer;text-align:left;
+    touch-action:manipulation;}
+  .plate .pn{font-size:.53rem;letter-spacing:.06em;color:var(--icebox);text-transform:uppercase;}
+  .plate .pa{font-size:.46rem;letter-spacing:.16em;color:#9FB6D4;}
+  .plate .pb{height:5px;background:#0A1420;border-radius:3px;overflow:hidden;margin-top:3px;}
+  .plate .pb i{display:block;height:100%;width:100%;background:var(--icebox);}
+  .plate.crit{border-color:var(--neon-pink);animation:hotpulse .3s steps(1) infinite;}
+  .plate.crit .pb i{background:var(--neon-pink);}
+
+  /* ---------- announcer + overlays ---------- */
+  #anncbar{flex:0 0 auto;text-align:center;color:var(--neon-yellow);font-size:.68rem;
+    letter-spacing:.03em;min-height:1.5rem;padding:0 .8rem .25rem;text-shadow:0 2px 0 #000;line-height:1.3;}
+  #kbhint{flex:0 0 auto;text-align:center;color:#6B5D8A;font-size:10px;letter-spacing:.05em;padding:0 .5rem .3rem;}
+
+  .sheet{position:absolute;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;
+    flex-direction:column;background:rgba(4,4,10,.94);text-align:center;padding:1rem;overflow-y:auto;}
+  .sheet.hide{display:none;}
+  .sheet h1{font-size:clamp(1.6rem,6vw,2.9rem);color:var(--lobster);text-shadow:0 0 18px rgba(226,96,74,.55);}
+  .sheet h1.good{color:var(--neon-green);text-shadow:0 0 18px rgba(61,252,138,.55);}
+  .sheet p{max-width:37rem;margin:.8rem auto;color:var(--chrome);font-size:.88rem;line-height:1.62;}
+  .sheet b{color:var(--white);}
+  .sheet .rank{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;text-transform:uppercase;
+    font-size:clamp(1.3rem,5vw,2.1rem);color:var(--neon-yellow);letter-spacing:.06em;margin-top:.4rem;}
+  .btn{display:inline-block;margin:.4rem .3rem 0;padding:.85rem 1.5rem;border-radius:8px;
+    font-family:inherit;font-weight:bold;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;
+    text-decoration:none;cursor:pointer;border:2px solid var(--neon-green);background:var(--neon-green);color:#052012;}
+  .btn.ghost{background:transparent;color:var(--neon-cyan);border-color:var(--neon-cyan);}
+  .btn.warm{background:var(--lobster);border-color:var(--lobster);color:#1B0806;}
+  .menu{border:2px dashed rgba(185,175,208,.35);border-radius:10px;padding:.7rem 1rem;margin:.9rem auto 0;
+    max-width:31rem;text-align:left;}
+  .menu h4{font-size:.56rem;letter-spacing:.24em;text-transform:uppercase;color:var(--lobster);margin-bottom:.4rem;}
+  .menu ul{list-style:none;display:grid;gap:.22rem;}
+  .menu li{font-size:.72rem;color:#D6CFE8;letter-spacing:.02em;}
+  .menu li span{color:var(--neon-yellow);}
+</style>
+</head>
+<body>
+<div id="frame">
+  <div id="topbar">
+    <a href="index.html">&larr; THE SANDS WING</a>
+    <span class="t display" style="font-size:1rem;">BOIL ORDER: DINNER SERVICE AT SUB-BASEMENT 4</span>
+    <span class="r">SEATING: FULL &bull; BOARD: UNREACHABLE</span>
+  </div>
+
+  <div id="gamewrap">
+    <div id="hud">
+      <div class="cell" id="served"><b>0</b>TICKETS SERVED</div>
+      <div class="cell" id="combo"><b>x1</b>PERFECT RUN</div>
+      <div class="cell" id="walk"><b>&#9679;&#9679;&#9679;</b>WALKOUTS LEFT</div>
+      <div id="rushbar"><span id="rushlab">THE RUSH &mdash; 0 / 20</span><div class="track"><div id="rushfill"></div></div></div>
+    </div>
+
+    <div id="railwrap">
+      <div id="raillab">THE RAIL &bull; TAP A TICKET, THEN TAP A STATION</div>
+      <div id="rail"><span id="railempty">Dining room is seated. Tickets incoming.</span></div>
+    </div>
+
+    <div id="stations">
+      <button class="stn" id="stn0" type="button">
+        <span class="key">1</span><div class="snm">BURNER 1</div>
+        <div class="ringwrap"><svg viewBox="0 0 100 100">
+          <circle class="rbg" cx="50" cy="50" r="42"></circle>
+          <circle class="rwin" cx="50" cy="50" r="42"></circle>
+          <circle class="rfg" cx="50" cy="50" r="42"></circle></svg>
+          <div class="mid"><div class="dish"></div><div class="act">EMPTY</div></div></div>
+        <div class="roux"><i></i></div>
+      </button>
+      <button class="stn" id="stn1" type="button">
+        <span class="key">2</span><div class="snm">BURNER 2</div>
+        <div class="ringwrap"><svg viewBox="0 0 100 100">
+          <circle class="rbg" cx="50" cy="50" r="42"></circle>
+          <circle class="rwin" cx="50" cy="50" r="42"></circle>
+          <circle class="rfg" cx="50" cy="50" r="42"></circle></svg>
+          <div class="mid"><div class="dish"></div><div class="act">EMPTY</div></div></div>
+        <div class="roux"><i></i></div>
+      </button>
+      <button class="stn" id="stn2" type="button">
+        <span class="key">3</span><div class="snm">BURNER 3</div>
+        <div class="ringwrap"><svg viewBox="0 0 100 100">
+          <circle class="rbg" cx="50" cy="50" r="42"></circle>
+          <circle class="rwin" cx="50" cy="50" r="42"></circle>
+          <circle class="rfg" cx="50" cy="50" r="42"></circle></svg>
+          <div class="mid"><div class="dish"></div><div class="act">EMPTY</div></div></div>
+        <div class="roux"><i></i></div>
+      </button>
+      <button class="stn" id="stn3" type="button">
+        <span class="key">4</span><div class="snm">BURNER 4</div>
+        <div class="ringwrap"><svg viewBox="0 0 100 100">
+          <circle class="rbg" cx="50" cy="50" r="42"></circle>
+          <circle class="rwin" cx="50" cy="50" r="42"></circle>
+          <circle class="rfg" cx="50" cy="50" r="42"></circle></svg>
+          <div class="mid"><div class="dish"></div><div class="act">EMPTY</div></div></div>
+        <div class="roux"><i></i></div>
+      </button>
+      <button class="stn ice" id="stn4" type="button">
+        <span class="key">5</span><div class="snm">ICE BATH</div>
+        <div class="ringwrap"><svg viewBox="0 0 100 100">
+          <circle class="rbg" cx="50" cy="50" r="42"></circle>
+          <circle class="rwin" cx="50" cy="50" r="42"></circle>
+          <circle class="rfg" cx="50" cy="50" r="42"></circle></svg>
+          <div class="mid"><div class="dish"></div><div class="act">EMPTY</div></div></div>
+        <div class="roux"><i></i></div>
+      </button>
+    </div>
+
+    <div id="passwrap">
+      <div id="passlab">THE PASS &bull; TAP A PLATE TO PUT IT ON ICE BEFORE IT GOES AMBIENT</div>
+      <div id="pass"><span id="passempty">Nothing plated. The cooler waits, as it has always waited.</span></div>
+    </div>
+
+    <p id="anncbar">&nbsp;</p>
+    <p id="kbhint">TAP TICKET &rarr; TAP STATION &bull; TAP AGAIN IN THE GREEN TO PLATE &bull; KEYS 1&ndash;5 STATIONS, SPACE ICES THE OLDEST PLATE</p>
+
+    <!-- BRIEFING -->
+    <div class="sheet hide" id="briefing">
+      <h1 class="display">The Test Kitchen<br>Is Open To The Public.</h1>
+      <p>Sub-Basement 4 was never zoned for <b>dining</b>. It was zoned for <b>storage of things that
+      should not warm up</b>. But the tickets sold out in nine minutes, the board approved it by
+      failing to respond to the email, and all <b>111 recipes</b> from TO SERVE CRAB PEOPLE are now
+      on the menu. You are the line. There is no one else on the line.</p>
+      <div class="menu">
+        <h4>Standing Orders From The Standards Desk</h4>
+        <ul>
+          <li><span>START</span> &mdash; tap a ticket, then tap a free station that matches it.</li>
+          <li><span>PLATE</span> &mdash; tap the station again while the ring is in the GREEN. Early is raw. Late boils over.</li>
+          <li><span>STIR</span> &mdash; the Étouffée burns unless you keep tapping it. The roux knows when you look away.</li>
+          <li><span>ICE</span> &mdash; every plate on the pass must go on ice within seconds or it goes AMBIENT.</li>
+          <li><span>THREE WALKOUTS</span> &mdash; and service is over, and there will be a review.</li>
+        </ul>
+      </div>
+      <p style="font-size:.78rem;color:#7E6F9E;">Twenty tickets and the rush is over. Nobody has ever
+      made it to twenty. Nobody has ever been asked to.</p>
+      <button class="btn warm" id="startBtn">CALL IT &mdash; OPEN SERVICE</button>
+    </div>
+
+    <!-- RUSH CLEARED -->
+    <div class="sheet hide" id="rushcard">
+      <h1 class="display good">The Rush Is Over.</h1>
+      <div class="rank" id="rankLine"></div>
+      <p id="rushText"></p>
+      <div>
+        <button class="btn" id="hangBtn">HANG THE APRON UP</button>
+        <button class="btn warm" id="keepBtn">KEEP THE LINE OPEN</button>
+      </div>
+      <p style="font-size:.72rem;color:#6B5D8A;">The dining room has not emptied. It has never emptied.</p>
+    </div>
+  </div>
+</div>
+
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const wrap = $('gamewrap');
+  Juice.init(wrap);
+
+  /* ============================================================
+     THE MENU — real recipes from TO SERVE CRAB PEOPLE (111 recipes)
+     ============================================================ */
+  const MENU = [
+    { name:'FIRST CONTACT CRAB CAKES', short:'CRAB CAKES', station:'burner', cook:4200, weight:16,
+      plated:'Crab cakes up. Golden. Nobody was told which pan.' },
+    { name:'NON-DISCLOSURE BISQUE', short:'BISQUE', station:'burner', cook:6400, weight:14,
+      plated:'Bisque away. The table may eat it. They may not discuss it.' },
+    { name:'LOW COUNTRY BLACK-SITE BOIL', short:'BLACK-SITE BOIL', station:'burner', cook:7600, weight:12,
+      plated:'Boil dumped on butcher paper. No plates. No records. No plates.' },
+    { name:'MAC &amp; CHEESE OF SILENCE', short:'MAC &amp; CHEESE', station:'burner', cook:5400, weight:12,
+      plated:'Mac up. The whole table stops talking. That is the recipe working.' },
+    { name:'DEVIL&rsquo;S ADVOCATE EGGS', short:'DEVILED EGGS', station:'burner', cook:4600, weight:11,
+      plated:'Eggs away. Twelve halves. Every one of them arguing the other side.' },
+    { name:'ÉTOUFFÉE: SMOTHERED LIKE THE TRUTH', short:'ÉTOUFFÉE', station:'burner', cook:8200, weight:11,
+      stir:true, plated:'Étouffée away. Dark as a redaction and twice as smooth.' },
+    { name:'THE DEBRIEFING ROLL', short:'DEBRIEF ROLL', station:'ice', cook:5000, weight:8,
+      plated:'Roll cut into eight. Each piece answers a different question.' },
+    { name:'COLD CASE CEVICHE', short:'CEVICHE', station:'ice', cook:6600, weight:8,
+      plated:'Ceviche up. Cooked by acid alone. No heat, no logs, no witnesses.' }
+  ];
+  const WSUM = MENU.reduce((a, r) => a + r.weight, 0);
+  function roll(kind){
+    for (let attempt = 0; attempt < 40; attempt++){
+      let n = Math.random() * WSUM;
+      for (const r of MENU){ n -= r.weight; if (n <= 0){ if (!kind || r.station === kind) return r; break; } }
+    }
+    return MENU[0];
+  }
+
+  /* ---------- tuning ---------- */
+  const GREEN_LO = 0.84, GREEN_HI = 1.06, BOIL = 1.28;
+  const ROUX_DRAIN = 3400;      // ms from full roux to burnt
+  const ROUX_STIR  = 0.30;      // per tap
+  const RUSH_TARGET = 20;
+  const C = 2 * Math.PI * 42;   // ring circumference
+
+  /* ---------- state ---------- */
+  let stations, tickets, plates, sel, state;
+  let served, walkoutsLeft, combo, bestCombo, spawned, iced, ambient, boiled,
+      rouxHeld, rouxBurnt, sentBack, perfects, spawnT, endless, ticketNo;
+  const got = {};
+  const once = (k, fn) => { if (!got[k]){ got[k] = true; fn(); } };
+
+  function stnEl(i){ return $('stn' + i); }
+
+  function reset(){
+    stations = [0,1,2,3,4].map(i => ({
+      i, type: i === 4 ? 'ice' : 'burner', el: stnEl(i),
+      ring: stnEl(i).querySelector('.rfg'), win: stnEl(i).querySelector('.rwin'),
+      dish: stnEl(i).querySelector('.dish'), act: stnEl(i).querySelector('.act'),
+      roux: stnEl(i).querySelector('.roux i'),
+      ticket:null, part:null, t:0, dur:0, rx:0, greened:false, warned:false, scorch:0
+    }));
+    tickets = []; plates = []; sel = null;
+    served = 0; walkoutsLeft = 3; combo = 0; bestCombo = 0; spawned = 0; iced = 0;
+    ambient = 0; boiled = 0; rouxHeld = 0; rouxBurnt = 0; sentBack = 0; perfects = 0;
+    spawnT = 900; endless = false; ticketNo = 0;
+    $('rail').innerHTML = '<span id="railempty">Dining room is seated. Tickets incoming.</span>';
+    $('pass').innerHTML = '<span id="passempty">Nothing plated. The cooler waits, as it has always waited.</span>';
+    for (const s of stations){
+      s.el.className = 'stn' + (s.type === 'ice' ? ' ice' : '');
+      s.ring.style.strokeDasharray = C + ' ' + C;
+      s.ring.style.strokeDashoffset = C;
+      s.win.style.strokeDasharray = (C * (1 - GREEN_LO)) + ' ' + C;
+      s.win.style.strokeDashoffset = -(C * GREEN_LO);
+      s.dish.innerHTML = ''; s.act.textContent = 'EMPTY';
+    }
+    hud();
+    state = 'play';
+  }
+
+  /* ---------- announcer ---------- */
+  let anncT = 0;
+  function say(t){ $('anncbar').innerHTML = t; anncT = 3400; }
+
+  /* ---------- difficulty ---------- */
+  const gap        = () => Math.max(2500, 5400 - spawned * 150);
+  const patienceMs = () => Math.max(9500, 16000 - spawned * 300);
+  const ambientMs  = () => Math.max(4300, 6200 - served * 90);
+  const comboOdds  = () => spawned < 7 ? 0 : Math.min(0.36, (spawned - 6) * 0.05);
+
+  /* ============================================================
+     TICKETS
+     ============================================================ */
+  function newTicket(){
+    ticketNo++;
+    const parts = [];
+    const a = roll(null);
+    parts.push(mkPart(a));
+    let two = false;
+    if (Math.random() < comboOdds()){
+      two = true;
+      const b = roll(a.station === 'ice' ? 'burner' : (Math.random() < 0.72 ? 'burner' : 'ice'));
+      parts.push(mkPart(b));
+    }
+    const t = {
+      id: ticketNo, parts, started:false, pat: patienceMs(), maxPat: patienceMs(),
+      done:false, lost:false, two
+    };
+    const el = document.createElement('button');
+    el.type = 'button';
+    el.className = 'tkt';
+    el.innerHTML =
+      '<div class="no"><span>TICKET #' + String(ticketNo).padStart(3,'0') + '</span><span>' +
+        (t.two ? '2 ITEMS' : '1 ITEM') + '</span></div>' +
+      parts.map((p, k) =>
+        '<div class="nm" data-p="' + k + '">' + p.r.name + '</div>' +
+        '<div><span class="bd ' + p.r.station + '">' +
+          (p.r.station === 'ice' ? 'ICE BATH' : 'BURNER') + '</span>' +
+          '<span style="font-size:.5rem;color:#7A6E58;letter-spacing:.1em;">' +
+          (p.r.cook/1000).toFixed(1) + 's' + (p.r.stir ? ' &bull; STIR' : '') + '</span></div>'
+      ).join('') +
+      '<div class="pat"><i></i></div>' +
+      (t.two ? '<div class="combo">TWO-TOP</div>' : '');
+    el.addEventListener('click', () => pickTicket(t.id));
+    t.el = el; t.bar = el.querySelector('.pat i');
+    const empty = $('railempty'); if (empty) empty.remove();
+    $('rail').appendChild(el);
+    tickets.push(t);
+    spawned++;
+    Juice.sfx('blip');
+    if (t.two) say('TWO-TOP FIRED. Both halves leave together or neither one happened.');
+    return t;
+  }
+  function mkPart(r){ return { r, assigned:false, plated:false }; }
+
+  function pickTicket(id){
+    if (state !== 'play') return;
+    const t = tickets.find(x => x.id === id);
+    if (!t || t.done) return;
+    if (!t.parts.some(p => !p.assigned)) return;
+    sel = (sel === id) ? null : id;
+    Juice.sfx('click');
+    refreshSel();
+  }
+  function refreshSel(){
+    for (const t of tickets) t.el.classList.toggle('sel', t.id === sel);
+  }
+  function dropTicket(t){
+    t.done = true;
+    t.el.remove();
+    tickets = tickets.filter(x => x !== t);
+    if (sel === t.id) sel = null;
+    if (!tickets.length && !$('railempty')){
+      const s = document.createElement('span');
+      s.id = 'railempty'; s.textContent = 'Rail clear. Enjoy the four seconds.';
+      $('rail').appendChild(s);
+    }
+  }
+
+  /* ============================================================
+     STATIONS
+     ============================================================ */
+  function fx(el){
+    const r = el.getBoundingClientRect(), h = wrap.getBoundingClientRect();
+    return { x: r.left - h.left + r.width / 2, y: r.top - h.top + r.height / 2 };
+  }
+
+  function tapStation(i){
+    if (state !== 'play') return;
+    const s = stations[i];
+    if (s.scorch > 0){ Juice.sfx('bad'); say('That station is still being scrubbed. Scrubbing is not optional.'); return; }
+    if (s.part){
+      const p = s.t / s.dur;
+      if (s.part.r.stir && p < GREEN_LO){ stir(s); return; }
+      plate(s, p);
+      return;
+    }
+    // empty station: start something
+    let t = sel != null ? tickets.find(x => x.id === sel) : null;
+    let part = t ? t.parts.find(q => !q.assigned && q.r.station === s.type) : null;
+    if (!part){
+      for (const tk of tickets){
+        const q = tk.parts.find(z => !z.assigned && z.r.station === s.type);
+        if (q){ t = tk; part = q; break; }
+      }
+    }
+    if (!part){
+      Juice.sfx('blip');
+      say(s.type === 'ice'
+        ? 'Nothing on the rail wants the ice bath. It is available for brooding.'
+        : 'No ticket on the rail needs a burner. Wipe something down.');
+      return;
+    }
+    start(s, t, part);
+  }
+
+  function start(s, t, part){
+    part.assigned = true;
+    t.started = true;
+    s.ticket = t; s.part = part; s.t = 0; s.dur = part.r.cook;
+    s.rx = part.r.stir ? 1 : 0; s.greened = false; s.warned = false;
+    s.el.classList.add('cooking');
+    s.el.classList.toggle('stirring', !!part.r.stir);
+    s.dish.innerHTML = part.r.short;
+    if (sel === t.id) sel = null;
+    markTicket(t);
+    refreshSel();
+    Juice.sfx('click');
+    if (part.r.stir) say('ÉTOUFFÉE ON. Keep tapping it. <b>The roux knows when you look away.</b>');
+  }
+
+  function markTicket(t){
+    t.parts.forEach((p, k) => {
+      const nm = t.el.querySelector('.nm[data-p="' + k + '"]');
+      if (nm) nm.classList.toggle('done', !!p.plated);
+    });
+    t.el.classList.toggle('cooking', t.parts.every(p => p.assigned));
+  }
+
+  function stir(s){
+    s.rx = Math.min(1, s.rx + ROUX_STIR);
+    Juice.sfx('tick');
+    const p = fx(s.el);
+    Juice.burst(p.x, p.y, { color:'#D9A441', count:5, speed:2.2, gravity:.05 });
+  }
+
+  function clearStation(s){
+    s.ticket = null; s.part = null; s.t = 0; s.dur = 0; s.rx = 0;
+    s.el.classList.remove('cooking','win','hot','stirring');
+    s.dish.innerHTML = ''; s.act.textContent = s.scorch > 0 ? 'SCRUBBING' : 'EMPTY';
+    s.ring.style.strokeDashoffset = C;
+    s.roux.style.width = '0%';
+  }
+
+  /* ---------- plating ---------- */
+  function plate(s, p){
+    const t = s.ticket, part = s.part, pt = fx(s.el);
+    if (p < GREEN_LO){
+      // RAW
+      sentBack++; combo = 0;
+      part.assigned = false;
+      Juice.sfx('bad'); Juice.shake(5);
+      Juice.text(pt.x, pt.y - 26, 'RAW', { color:'#FF3D8A', size:22 });
+      say('SENT BACK &mdash; ' + part.r.name + ' went out raw. Table four is now a witness.');
+      clearStation(s);
+      markTicket(t);
+      hud();
+      return;
+    }
+    const perfect = p <= GREEN_HI;
+    part.plated = true;
+    served++;
+    if (perfect){
+      perfects++; combo++; bestCombo = Math.max(bestCombo, combo);
+      Juice.reward(pt.x, pt.y, { text:'PERFECT', color:'#3DFC8A', sound:'good' });
+      if (combo >= 2) Juice.text(pt.x, pt.y - 44, 'x' + combo, { color:'#FFD23F', size:18 });
+      if (combo >= 8) once('eight', () => Arcade.toast('🏆 EIGHT-TOP', 'Achievement unlocked'));
+      say(part.r.plated);
+    } else {
+      combo = 0;
+      Juice.sfx('thud');
+      Juice.text(pt.x, pt.y - 26, 'OVERDONE', { color:'#FFD23F', size:18 });
+      say('Held it too long. ' + part.r.short + ' goes out <b>tired</b>. It will be described that way.');
+    }
+    if (part.r.stir){
+      rouxHeld++;
+      if (rouxHeld >= 2 && rouxBurnt === 0) once('roux', () => Arcade.toast('🏆 THE ROUX HELD', 'Achievement unlocked'));
+    }
+    addPlate(part.r);
+    clearStation(s);
+    markTicket(t);
+    if (t.parts.every(q => q.plated)){
+      if (t.two){
+        Juice.flash('#3DFC8A', .2);
+        say('TWO-TOP COMPLETE. Both halves went out together. Chain of custody: <b>briefly intact</b>.');
+      }
+      dropTicket(t);
+    }
+    hud();
+    if (!endless && served >= RUSH_TARGET) rushOver();
+  }
+
+  /* ---------- failures ---------- */
+  function boilOver(s){
+    const t = s.ticket, part = s.part, pt = fx(s.el);
+    boiled++;
+    part.assigned = false;
+    combo = 0;
+    Juice.impact(pt.x, pt.y, { text:'BOIL OVER', power:12, sound:'hit', color:'#FF3D8A', count:22 });
+    Juice.sfx('alarm'); Juice.shake(13); Juice.flash('#FF3D8A', .3);
+    say('BOIL-OVER on ' + part.r.short + '. It is on the floor, the ceiling, and the record.');
+    s.scorch = 2200;
+    s.el.classList.add('scorched');
+    clearStation(s);
+    markTicket(t);
+    loseTicket(t, 'The table for ' + part.r.short + ' left while you were mopping.');
+  }
+
+  function rouxBurn(s){
+    const t = s.ticket, part = s.part, pt = fx(s.el);
+    rouxBurnt++;
+    part.assigned = false;
+    combo = 0;
+    Juice.impact(pt.x, pt.y, { text:'ROUX BURNT', power:11, color:'#C2321F', count:20 });
+    Juice.sfx('alarm'); Juice.shake(11);
+    say('THE ROUX BURNT. It knew. <b>It always knows.</b> You looked away for two seconds and it kept a log.');
+    s.scorch = 2200;
+    s.el.classList.add('scorched');
+    clearStation(s);
+    markTicket(t);
+    loseTicket(t, 'The étouffée table walked. They took the bread.');
+  }
+
+  function loseTicket(t, line){
+    if (state !== 'play' || t.lost || t.done) return;
+    t.lost = true;
+    // free any parts still cooking on stations
+    for (const s of stations){
+      if (s.ticket === t){ clearStation(s); }
+    }
+    dropTicket(t);
+    walkout(line);
+  }
+
+  function walkout(line){
+    if (state !== 'play') return;
+    walkoutsLeft--;
+    combo = 0;
+    Juice.sfx('lose'); Juice.shake(9); Juice.flash('#FF3D8A', .22);
+    say('<b style="color:#FF3D8A">WALKOUT.</b> ' + line + ' &mdash; ' + walkoutsLeft + ' left.');
+    hud();
+    if (walkoutsLeft <= 0) serviceOver();
+  }
+
+  /* ---------- the pass ---------- */
+  function addPlate(r){
+    const pl = { r, t:0, limit: ambientMs() };
+    const el = document.createElement('button');
+    el.type = 'button';
+    el.className = 'plate';
+    el.innerHTML = '<div class="pn">' + r.short + '</div><div class="pa">TAP &rarr; ICE BATH</div>' +
+      '<div class="pb"><i></i></div>';
+    el.addEventListener('click', () => toIce(pl));
+    pl.el = el; pl.bar = el.querySelector('.pb i');
+    const e = $('passempty'); if (e) e.remove();
+    $('pass').appendChild(el);
+    plates.push(pl);
+  }
+
+  function toIce(pl){
+    if (state !== 'play' || pl.gone) return;
+    pl.gone = true;
+    iced++;
+    const pt = fx(pl.el);
+    Juice.sfx('good');
+    Juice.burst(pt.x, pt.y, { color:'#7FB8FF', count:12, speed:3, gravity:.02 });
+    Juice.text(pt.x, pt.y - 18, 'ON ICE', { color:'#7FB8FF', size:16 });
+    pl.el.remove();
+    plates = plates.filter(x => x !== pl);
+    passEmptyCheck();
+    if (iced >= 5) once('cooler', () => Arcade.toast('🏆 USED THE COOLER', 'Achievement unlocked'));
+  }
+
+  function goAmbient(pl){
+    pl.gone = true;
+    ambient++;
+    const pt = fx(pl.el);
+    Juice.impact(pt.x, pt.y, { text:'AMBIENT', power:9, color:'#FF3D8A' });
+    pl.el.remove();
+    plates = plates.filter(x => x !== pl);
+    passEmptyCheck();
+    walkout(pl.r.short + ' sat on the pass until it was room temperature. Nobody can say where it is now.');
+  }
+
+  function passEmptyCheck(){
+    if (!plates.length && !$('passempty')){
+      const s = document.createElement('span');
+      s.id = 'passempty';
+      s.textContent = 'Pass clear. The cooler is, for one moment, correct.';
+      $('pass').appendChild(s);
+    }
+  }
+
+  function iceOldest(){
+    if (!plates.length){ Juice.sfx('blip'); return; }
+    let worst = plates[0];
+    for (const p of plates) if ((p.limit - p.t) < (worst.limit - worst.t)) worst = p;
+    toIce(worst);
+  }
+
+  /* ============================================================
+     HUD
+     ============================================================ */
+  function hud(){
+    $('served').innerHTML = '<b>' + served + '</b>TICKETS SERVED';
+    const el = $('combo');
+    el.innerHTML = '<b>x' + Math.max(1, combo) + '</b>PERFECT RUN';
+    el.classList.toggle('hot', combo >= 4);
+    const dots = '●'.repeat(Math.max(0, walkoutsLeft)) + '<span style="color:#3A2A50">' +
+      '●'.repeat(Math.max(0, 3 - Math.max(0, walkoutsLeft))) + '</span>';
+    $('walk').innerHTML = '<b>' + dots + '</b>WALKOUTS LEFT';
+    const pct = Math.min(100, served / RUSH_TARGET * 100);
+    $('rushfill').style.width = pct + '%';
+    $('rushlab').textContent = endless
+      ? 'OVERTIME — ' + served + ' SERVED'
+      : 'THE RUSH — ' + served + ' / ' + RUSH_TARGET;
+  }
+
+  /* ============================================================
+     LOOP
+     ============================================================ */
+  let last = 0;
+  function frame(now){
+    requestAnimationFrame(frame);
+    const dt = Math.min(60, now - last) || 16;
+    last = now;
+    if (state === 'play' && !Juice.frozen()) update(dt);
+    if (state === 'play') render();
+    if (anncT > 0){ anncT -= dt; if (anncT <= 0) $('anncbar').innerHTML = '&nbsp;'; }
+  }
+
+  function update(dt){
+    // spawn
+    spawnT -= dt;
+    const waiting = tickets.filter(t => !t.started).length;
+    if (spawnT <= 0){
+      if (waiting < 5){ newTicket(); spawnT = gap(); }
+      else spawnT = 700;
+    }
+    // tickets
+    for (const t of tickets.slice()){
+      if (t.started || t.lost) continue;
+      t.pat -= dt;
+      if (t.pat <= 0){
+        loseTicket(t, 'Ticket #' + String(t.id).padStart(3,'0') + ' was never started. They left a review instead.');
+      }
+    }
+    // stations
+    for (const s of stations){
+      if (s.scorch > 0){
+        s.scorch -= dt;
+        if (s.scorch <= 0){ s.el.classList.remove('scorched'); s.act.textContent = 'EMPTY'; }
+      }
+      if (!s.part) continue;
+      s.t += dt;
+      const p = s.t / s.dur;
+      if (s.part.r.stir){
+        s.rx -= dt / ROUX_DRAIN;
+        if (s.rx <= 0){ rouxBurn(s); continue; }
+      }
+      if (!s.greened && p >= GREEN_LO){ s.greened = true; Juice.sfx('tick'); Juice.buzz(8); }
+      if (!s.warned && p > GREEN_HI){ s.warned = true; Juice.sfx('alarm'); }
+      if (p > BOIL){ boilOver(s); continue; }
+    }
+    // plates
+    for (const pl of plates.slice()){
+      if (pl.gone) continue;
+      pl.t += dt;
+      if (pl.t >= pl.limit) goAmbient(pl);
+    }
+  }
+
+  function render(){
+    for (const t of tickets){
+      if (t.started){ t.bar.style.width = '100%'; t.el.classList.remove('warn','crit'); continue; }
+      const f = Math.max(0, t.pat / t.maxPat);
+      t.bar.style.width = (f * 100) + '%';
+      t.el.classList.toggle('warn', f < 0.5 && f >= 0.22);
+      t.el.classList.toggle('crit', f < 0.22);
+    }
+    for (const s of stations){
+      if (!s.part){ continue; }
+      const p = s.t / s.dur;
+      const shown = Math.min(1, p);
+      s.ring.style.strokeDashoffset = C * (1 - shown);
+      const inWin = p >= GREEN_LO && p <= GREEN_HI;
+      const late = p > GREEN_HI;
+      s.el.classList.toggle('win', inWin);
+      s.el.classList.toggle('hot', late);
+      if (s.part.r.stir) s.roux.style.width = (Math.max(0, s.rx) * 100) + '%';
+      s.act.textContent = late ? 'PULL IT!' : inWin ? 'PLATE' :
+        (s.part.r.stir ? 'STIR' : Math.ceil((s.dur - s.t) / 1000) + 's');
+    }
+    for (const pl of plates){
+      const f = Math.max(0, 1 - pl.t / pl.limit);
+      pl.bar.style.width = (f * 100) + '%';
+      pl.el.classList.toggle('crit', f < 0.34);
+    }
+  }
+
+  /* ============================================================
+     ENDINGS
+     ============================================================ */
+  function rankOf(){
+    const rate = served ? perfects / served : 0;
+    if (walkoutsLeft === 3 && rate >= 0.72) return 'CHEF DE SUB-BASEMENT';
+    if (rate >= 0.5 || walkoutsLeft === 3) return 'SOUS';
+    return 'LINE COOK';
+  }
+
+  function rushOver(){
+    state = 'rush';
+    Juice.sfx('win'); Juice.flash('#3DFC8A', .35);
+    Juice.burst(wrap.clientWidth / 2, wrap.clientHeight * 0.45, { color:'#3DFC8A', count:44, speed:6 });
+    if (walkoutsLeft === 3) once('nowalk', () => Arcade.toast('🏆 NO WALKOUTS', 'Achievement unlocked'));
+    if (ambient === 0) once('coc', () => Arcade.toast('🏆 CHAIN OF CUSTODY INTACT', 'Achievement unlocked'));
+    const rank = rankOf();
+    $('rankLine').textContent = 'RANK: ' + rank;
+    $('rushText').innerHTML =
+      'Twenty tickets out of a room that was zoned for <b>storage of things that should not warm up</b>. ' +
+      served + ' served, ' + perfects + ' of them perfect, best perfect run <b>x' + bestCombo + '</b>. ' +
+      iced + ' plates put on ice, which is ' + iced + ' more than the incident that started all this. ' +
+      (rank === 'CHEF DE SUB-BASEMENT'
+        ? 'The board would like a word. Not a bad word. They just want to know how, and they want it in writing, and they want the writing classified.'
+        : rank === 'SOUS'
+        ? 'The board has noted your service and declined to elaborate on the noting.'
+        : 'The board is satisfied. The board is easily satisfied. That is the entire problem with the board.');
+    $('rushcard').classList.remove('hide');
+  }
+
+  function serviceOver(){
+    if (state === 'over') return;
+    state = 'over';
+    Juice.sfx('lose'); Juice.shake(16); Juice.flash('#FF3D8A', .4);
+    const rank = served >= 12 ? 'SOUS' : served >= 5 ? 'LINE COOK' : 'STAGIAIRE, UNPAID, UNLOGGED';
+    const lines = [
+      '<b>SUB-BASEMENT 4 &bull; POST-SERVICE REVIEW &bull; JOINT FILING.</b> ' +
+      'Tickets served: <b>' + served + '</b>. Walkouts: <b>3</b>. Plates that went ambient: <b>' + ambient + '</b>. ' +
+      'Boil-overs: <b>' + boiled + '</b>. Sent back raw: <b>' + sentBack + '</b>. Best perfect run: <b>x' + bestCombo + '</b>.',
+
+      '<b>AS YOUR HEALTH INSPECTOR:</b> ' + (ambient > 0
+        ? 'I observed ' + ambient + ' plate' + (ambient === 1 ? '' : 's') + ' held at ambient temperature for an unrecorded interval. ' +
+          'I am required to write down where each one went. I cannot. Nobody ever can. That is the finding.'
+        : 'Every plate reached ice. I have nothing. I resent that, professionally, but I have nothing.'),
+
+      '<b>AS A CRITIC:</b> ' + (perfects >= 8
+        ? 'The étouffée was dark, patient, and completely unwilling to explain itself. Three and a half stars, withheld pending appeal.'
+        : perfects >= 3
+        ? 'Competent. Rushed. The bisque tasted like a man checking the door. Two stars and a paragraph you will not enjoy.'
+        : 'I have eaten in a hangar. I have eaten in a hangar and been happier. One star, and the star is for the ice.'),
+
+      '<b>AS A REPRESENTATIVE OF AN AGENCY I HAVE NOT NAMED:</b> ' + (rouxBurnt > 0
+        ? 'The roux was left unattended ' + rouxBurnt + ' time' + (rouxBurnt === 1 ? '' : 's') + '. We have that. We have all of that. ' +
+          '<b>The roux knows when you look away, and so, in a broader sense, do we.</b>'
+        : 'You never once looked away from the roux. This is noted, in a file, that also has your parking validations in it.'),
+
+      'Final grade: <b>' + rank + '</b>. The dining room has not emptied. It has never emptied. ' +
+      'Somewhere in this building there is a cooler with nothing in it, and it is still, technically, the biggest story in the world.'
+    ];
+    Arcade.gameOver({
+      won: false,
+      title: 'Service Is Over',
+      score: served,
+      lines,
+      links: [
+        { label:'THE 111 RECIPES — $5', href:'../../cookbook.html' },
+        { label:'THE SANDS WING', href:'index.html' }
+      ],
+      onRetry: () => { reset(); say('SERVICE REOPENED. The board still has not responded to the email.'); }
+    });
+  }
+
+  /* ============================================================
+     INPUT
+     ============================================================ */
+  for (let i = 0; i < 5; i++) stnEl(i).addEventListener('click', () => tapStation(i));
+
+  addEventListener('keydown', e => {
+    if (state !== 'play') return;
+    const k = e.key;
+    if (k >= '1' && k <= '5'){ e.preventDefault(); tapStation(parseInt(k, 10) - 1); return; }
+    if (k === ' ' || e.code === 'Space'){ e.preventDefault(); iceOldest(); return; }
+    if (k === 'Tab'){
+      e.preventDefault();
+      const open = tickets.filter(t => t.parts.some(p => !p.assigned));
+      if (!open.length) return;
+      const idx = open.findIndex(t => t.id === sel);
+      pickTicket(open[(idx + 1) % open.length].id);
+    }
+  });
+
+  $('startBtn').addEventListener('click', () => {
+    Juice.sfx('coin');
+    $('briefing').classList.add('hide');
+    reset();
+    say('SERVICE IS OPEN. Four burners, one ice bath, one of you. <b>Go.</b>');
+  });
+  $('hangBtn').addEventListener('click', () => {
+    $('rushcard').classList.add('hide');
+    state = 'over';
+    Arcade.gameOver({
+      won: true,
+      title: 'The Rush Is Over',
+      score: served,
+      lines: [
+        'You cleared <b>' + RUSH_TARGET + ' tickets</b> out of Sub-Basement 4 with ' +
+        (3 - walkoutsLeft) + ' walkout' + ((3 - walkoutsLeft) === 1 ? '' : 's') + ', ' + iced +
+        ' plates on ice, and a best perfect run of <b>x' + bestCombo + '</b>.',
+        'Final rank: <b>' + rankOf() + '</b>.',
+        'The apron goes on the hook. The hook is federal property. The apron is now federal property. ' +
+        'This is how it happens. This is how it has always happened.',
+        'Nobody has produced a receipt for the ice. But tonight, for the first time in the history of ' +
+        'this building, <b>somebody used it.</b>'
+      ],
+      links: [
+        { label:'THE 111 RECIPES — $5', href:'../../cookbook.html' },
+        { label:'THE SANDS WING', href:'index.html' }
+      ],
+      onRetry: () => { reset(); say('SERVICE REOPENED. Same room. Same board. Same email.'); }
+    });
+  });
+  $('keepBtn').addEventListener('click', () => {
+    $('rushcard').classList.add('hide');
+    endless = true;
+    state = 'play';
+    hud();
+    Juice.sfx('coin');
+    say('OVERTIME. The dining room has not emptied. It has never emptied.');
+  });
+
+  /* ============================================================
+     BOOT
+     ============================================================ */
+  state = 'brief';
+  requestAnimationFrame(frame);
+
+  Arcade.cabinet({
+    id: 'boil-order',
+    wing: 'THE JASON SANDS EXPERIENCE',
+    title: 'Boil Order',
+    subtitle: 'Dinner Service at Sub-Basement 4',
+    accent: '#E2604A',
+    scoreLabel: 'TICKETS SERVED',
+    lore: 'The test kitchen is now open to the public. All <b>111 recipes</b> from TO SERVE CRAB PEOPLE ' +
+          'are on the menu, the tickets sold out in nine minutes, and the board approved the whole thing ' +
+          'by failing to answer an email. You have four burners, one ice bath, and no one else on the line. ' +
+          '<b>Three walkouts and there will be a review</b> — conducted by a health inspector who is also a ' +
+          'food critic and also, in a way nobody will clarify, a federal agent.',
+    howto: [
+      'TAP A TICKET, then TAP a matching station to START',
+      'TAP the station again in the GREEN ring to PLATE',
+      'Early = raw. Late = the pot boils over.',
+      'ÉTOUFFÉE — keep tapping to STIR or the roux burns',
+      'TAP A PLATE on the pass to put it on ICE',
+      'KEYS — 1-5 stations, SPACE ices the oldest plate, TAB cycles tickets'
+    ],
+    shrine: '../../shrines/index.html#jason-sands',
+    onStart: () => { $('briefing').classList.remove('hide'); }
+  });
+})();
+</script>
+</body>
+</html>

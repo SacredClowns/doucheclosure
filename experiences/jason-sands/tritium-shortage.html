@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE TRITIUM SHORTAGE — Doucheclosure</title>
+<meta name="description" content="A pale, ear-less gentleman in an immaculate uniform arrives at your kitchen window and asks — politely, telepathically — for tritium. You do not have tritium. You have a pantry. Eight rounds to extend the first hospitality in the history of this field.">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --iso:#7FB8FF; --shadow:rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--void);}
+  body{margin:0; background:var(--void); color:var(--white);
+    font-family:"Courier New", Courier, monospace; line-height:1.65; overflow-x:hidden;}
+  body::after{content:""; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 1px, transparent 1px 3px);
+    pointer-events:none; z-index:100;}
+  a{color:var(--neon-cyan);}
+  .wrap{max-width:960px; margin:0 auto; padding:0 1.25rem;}
+  .display{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-weight:400; text-transform:uppercase; letter-spacing:.03em; line-height:.95;}
+  .crumb{padding:1rem 1.25rem; font-size:.72rem; letter-spacing:.15em; text-transform:uppercase;}
+  .crumb a{text-decoration:none;}
+
+  header.wing{
+    text-align:center; padding:2.4rem 1rem 2.2rem;
+    background:radial-gradient(ellipse at 50% -20%, rgba(127,184,255,.28), transparent 60%),
+      radial-gradient(ellipse at 12% 120%, rgba(255,210,63,.09), transparent 55%);
+    border-bottom:3px solid var(--iso);
+  }
+  .wing .eyebrow{color:var(--neon-cyan); letter-spacing:.28em; text-transform:uppercase; font-size:.72rem;}
+  .wing h1{margin:.5rem 0 0; font-size:clamp(2.4rem,9vw,4.4rem); color:var(--iso);
+    text-shadow:0 0 16px rgba(127,184,255,.6), 4px 4px 0 #10294A;}
+  .wing .sub{color:var(--chrome); max-width:36rem; margin:1.1rem auto 0; font-size:.9rem;}
+  .wing .sub b{color:var(--white);}
+  .file-tab{display:inline-block; margin-top:1.2rem; border:2px solid var(--neon-yellow);
+    color:var(--neon-yellow); padding:.4rem 1.1rem; font-size:.72rem; letter-spacing:.2em;
+    text-transform:uppercase; transform:rotate(-2deg);}
+
+  section{padding:2rem 0 2.6rem;}
+
+  /* ---------- stage ---------- */
+  #stage{position:relative; background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:2px solid #2B4468; border-radius:12px; box-shadow:0 0 26px rgba(127,184,255,.14),0 12px 34px var(--shadow);
+    padding:1.1rem; overflow:hidden;}
+  #stage::before{content:""; position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(ellipse at 24% 24%, rgba(127,184,255,.14), transparent 58%);}
+
+  #hud{display:flex; gap:.9rem; flex-wrap:wrap; align-items:flex-end; position:relative; z-index:2;}
+  .bar{flex:1 1 190px; min-width:170px;}
+  .bar .lab{font-size:.6rem; letter-spacing:.16em; text-transform:uppercase; color:var(--chrome); margin-bottom:4px;
+    display:flex; justify-content:space-between; gap:.5rem;}
+  .bar .lab b{color:var(--white); font-weight:normal;}
+  .track{height:13px; background:#00000099; border:1px solid #000; border-radius:7px; overflow:hidden;}
+  #rapfill{height:100%; width:30%; background:linear-gradient(90deg,#3B4E6B,var(--iso)); transition:width .45s;}
+  #patfill{height:100%; width:100%; background:linear-gradient(90deg,var(--neon-pink),var(--neon-yellow)); transition:width .18s linear;}
+  #roundpill{flex:0 0 auto; font-size:.62rem; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--neon-yellow); border:1px dashed rgba(255,210,63,.45); border-radius:6px; padding:.35rem .6rem;}
+
+  #board{position:relative; z-index:2; margin:.7rem 0 0; font-size:.62rem; letter-spacing:.14em;
+    text-transform:uppercase; color:#7E6F9E; min-height:1.2rem;}
+
+  #arena{display:grid; grid-template-columns:minmax(0,320px) minmax(0,1fr); gap:1.1rem;
+    margin-top:.9rem; position:relative; z-index:2;}
+  @media (max-width:760px){
+    #arena{grid-template-columns:1fr; gap:.7rem;}
+    #gent{max-height:132px;}
+    #windowbox .sill{height:14px;}
+    #gentcap{margin:.35rem 0 0;}
+    #wave{min-height:0;}
+    #react{min-height:0;}
+  }
+
+  /* ---------- the window ---------- */
+  #windowbox{background:#0A0A16; border:2px solid #24354F; border-radius:10px; padding:.6rem;
+    position:relative; overflow:hidden;}
+  #windowbox .sill{position:absolute; left:0; right:0; bottom:0; height:26px;
+    background:linear-gradient(180deg,#1A1526,#0B0812); border-top:2px solid #34405C;}
+  #gent{display:block; width:100%; height:auto; max-height:270px;}
+  .sway{animation:sway 7s ease-in-out infinite;}
+  @keyframes sway{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+  .ripple{opacity:0;}
+  .ripple.go{animation:rip 1.5s ease-out;}
+  @keyframes rip{0%{opacity:.85;transform:scale(.3)}100%{opacity:0;transform:scale(1.9)}}
+  #gentcap{text-align:center; font-size:.58rem; letter-spacing:.2em; text-transform:uppercase;
+    color:#5D6E8C; margin:.5rem 0 .1rem;}
+
+  /* ---------- transmission ---------- */
+  #wave{background:#080D18; border:2px solid #2B4468; border-left:5px solid var(--iso);
+    border-radius:8px; padding:.9rem 1rem; min-height:8.5rem;}
+  #wavekick{font-size:.58rem; letter-spacing:.24em; text-transform:uppercase; color:var(--iso); margin-bottom:.45rem;}
+  #wavetext{font-size:.88rem; color:var(--white); line-height:1.62; margin:0;}
+  #wavetext .cur{color:var(--iso);}
+  #react{margin:.75rem 0 0; font-size:.84rem; color:var(--chrome); line-height:1.6; min-height:3.2rem;}
+  #react b{color:var(--white);}
+  #react .up{color:var(--neon-green);} #react .dn{color:var(--neon-pink);}
+
+  /* ---------- pantry ---------- */
+  #pantrywrap{margin-top:1rem; position:relative; z-index:2;}
+  #pantrylab{font-size:.6rem; letter-spacing:.22em; text-transform:uppercase; color:var(--chrome); margin-bottom:.5rem;}
+  #pantry{display:grid; grid-template-columns:repeat(auto-fill,minmax(148px,1fr)); gap:.55rem;}
+  .item{position:relative; min-height:62px; text-align:left; cursor:pointer; color:var(--white);
+    font-family:inherit; background:linear-gradient(180deg,#1B2436,#121724);
+    border:2px solid #33456A; border-radius:9px; padding:.55rem .6rem; transition:transform .1s, border-color .15s, box-shadow .15s;}
+  .item .n{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; font-weight:400;
+    text-transform:uppercase; letter-spacing:.04em; font-size:1.02rem; line-height:1.05; color:var(--iso);}
+  .item .d{font-size:.62rem; color:#8E9CB5; letter-spacing:.03em; line-height:1.35; margin-top:.2rem;}
+  .item:hover:not(:disabled){border-color:var(--iso); box-shadow:0 0 14px rgba(127,184,255,.35); transform:translateY(-2px);}
+  .item:disabled{opacity:.4; cursor:default;}
+  .item .ct{position:absolute; top:5px; right:6px; font-size:.56rem; letter-spacing:.1em; color:var(--neon-yellow);}
+  .item.sacred{border-color:#5A2438; background:linear-gradient(180deg,#2A1622,#160B12);}
+  .item.sacred .n{color:#D3899E;}
+  .item.sacred:hover:not(:disabled){border-color:var(--neon-pink); box-shadow:0 0 14px rgba(255,61,138,.4);}
+
+  /* ---------- briefing ---------- */
+  #briefing{position:absolute; inset:0; z-index:40; display:none; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center; padding:1.4rem;
+    background:rgba(6,8,16,.95);}
+  #briefing h2{font-size:clamp(1.5rem,5vw,2.4rem); color:var(--iso); text-shadow:0 0 18px rgba(127,184,255,.5);}
+  #briefing p{max-width:34rem; margin:.85rem auto; color:var(--chrome); font-size:.88rem;}
+  #briefing b{color:var(--white);}
+  .btn{display:inline-block; margin:.4rem; padding:.85rem 1.6rem; border-radius:8px; cursor:pointer;
+    font-family:inherit; font-weight:bold; font-size:.8rem; letter-spacing:.14em; text-transform:uppercase;
+    text-decoration:none; border:2px solid var(--iso); background:var(--iso); color:#06192E;}
+  .btn.ghost{background:transparent; color:var(--neon-cyan); border-color:var(--neon-cyan);}
+
+  .dossier{border-left:4px solid var(--neon-yellow); background:var(--panel);
+    padding:1.05rem 1.25rem; color:var(--chrome); font-size:.86rem; margin-top:1.6rem;}
+  .dossier b{color:var(--white);}
+  footer{padding:2rem 1rem 3rem; text-align:center; color:#7E6F9E; font-size:.72rem;}
+  @media (prefers-reduced-motion: reduce){ .sway,.ripple.go{animation:none;} }
+</style>
+</head>
+<body>
+
+<p class="crumb"><a href="../../index.html">&larr; THE ARCADE</a> &nbsp;/&nbsp; <a href="index.html">JASON SANDS</a> &nbsp;/&nbsp; THE TRITIUM SHORTAGE</p>
+
+<header class="wing">
+  <p class="eyebrow">The Jason Sands Experience &bull; Cabinet No. 2</p>
+  <h1 class="display">The Tritium<br>Shortage</h1>
+  <p class="sub">He described a pale, ear-less gentleman in an immaculate uniform who arrived on a
+  Nevada range and asked — politely, without opening his mouth — where a person might find
+  <b>tritium</b>. We believe him completely. Our objection is procedural:
+  <b>the man was sent away with nothing.</b></p>
+  <span class="file-tab">RANGE ROAD &bull; 04:12 &bull; HE IS STILL STANDING THERE</span>
+</header>
+
+<section>
+  <div class="wrap">
+    <div id="stage">
+
+      <div id="hud">
+        <div class="bar">
+          <div class="lab"><span>Rapport</span><b id="raplab">30 / 100</b></div>
+          <div class="track"><div id="rapfill"></div></div>
+        </div>
+        <div class="bar">
+          <div class="lab"><span>Patience &mdash; he is on a schedule</span><b id="patlab">100</b></div>
+          <div class="track"><div id="patfill"></div></div>
+        </div>
+        <div id="roundpill">Exchange 1 / 8</div>
+      </div>
+
+      <p id="board">&nbsp;</p>
+
+      <div id="arena">
+        <div>
+          <div id="windowbox">
+            <svg id="gent" viewBox="0 0 220 260" xmlns="http://www.w3.org/2000/svg" aria-label="A pale, ear-less figure in an immaculate uniform, standing at a kitchen window.">
+              <defs>
+                <radialGradient id="glow" cx="50%" cy="34%" r="62%">
+                  <stop offset="0%" stop-color="#1D3550"/><stop offset="100%" stop-color="#080D18"/>
+                </radialGradient>
+                <linearGradient id="tunic" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#31465F"/><stop offset="100%" stop-color="#16202F"/>
+                </linearGradient>
+                <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#E8EEF6"/><stop offset="100%" stop-color="#A9BCD2"/>
+                </linearGradient>
+              </defs>
+              <rect x="0" y="0" width="220" height="260" fill="url(#glow)"/>
+              <g id="rip1" class="ripple" style="transform-origin:110px 78px">
+                <circle cx="110" cy="78" r="40" fill="none" stroke="#7FB8FF" stroke-width="1.4"/>
+                <circle cx="110" cy="78" r="58" fill="none" stroke="#7FB8FF" stroke-width="1" opacity=".6"/>
+                <circle cx="110" cy="78" r="76" fill="none" stroke="#7FB8FF" stroke-width=".8" opacity=".35"/>
+              </g>
+              <g class="sway">
+                <!-- shoulders / tunic -->
+                <path d="M56 260 L60 168 Q66 140 88 130 L132 130 Q154 140 160 168 L164 260 Z" fill="url(#tunic)" stroke="#6F8CB0" stroke-width="1.6"/>
+                <!-- lapel creases: immaculate -->
+                <path d="M110 132 L110 260" stroke="#8FB0D6" stroke-width="1" opacity=".55"/>
+                <path d="M88 132 L96 260" stroke="#8FB0D6" stroke-width=".8" opacity=".3"/>
+                <path d="M132 132 L124 260" stroke="#8FB0D6" stroke-width=".8" opacity=".3"/>
+                <!-- shoulder boards -->
+                <rect x="60" y="150" width="26" height="9" rx="3" fill="#9FC4EA" opacity=".85"/>
+                <rect x="134" y="150" width="26" height="9" rx="3" fill="#9FC4EA" opacity=".85"/>
+                <!-- buttons -->
+                <circle cx="110" cy="164" r="3" fill="#CFE3FA"/>
+                <circle cx="110" cy="186" r="3" fill="#CFE3FA"/>
+                <circle cx="110" cy="208" r="3" fill="#CFE3FA"/>
+                <!-- high collar -->
+                <path d="M88 130 Q110 122 132 130 L128 116 Q110 110 92 116 Z" fill="#3E5877" stroke="#9FC4EA" stroke-width="1.4"/>
+                <!-- neck -->
+                <path d="M99 96 L99 118 Q110 124 121 118 L121 96 Z" fill="#B4C6DA"/>
+                <!-- head: no ears -->
+                <ellipse cx="110" cy="72" rx="38" ry="46" fill="url(#skin)"/>
+                <!-- eyes -->
+                <ellipse cx="95" cy="72" rx="9.5" ry="13" fill="#0C1524"/>
+                <ellipse cx="125" cy="72" rx="9.5" ry="13" fill="#0C1524"/>
+                <ellipse cx="92.5" cy="67" rx="2.6" ry="3.4" fill="#8FC4FF" opacity=".8"/>
+                <ellipse cx="122.5" cy="67" rx="2.6" ry="3.4" fill="#8FC4FF" opacity=".8"/>
+                <!-- nostril hints, thin mouth -->
+                <path d="M107 88 h2 M111 88 h2" stroke="#7E90A6" stroke-width="1.4"/>
+                <path d="M100 100 Q110 103 120 100" stroke="#7E90A6" stroke-width="1.6" fill="none"/>
+              </g>
+              <rect x="0" y="246" width="220" height="14" fill="#0B0812"/>
+            </svg>
+            <div class="sill"></div>
+          </div>
+          <p id="gentcap">He does not blink. It is not rudeness.</p>
+        </div>
+
+        <div>
+          <div id="wave">
+            <div id="wavekick">Incoming transmission</div>
+            <p id="wavetext">&nbsp;</p>
+          </div>
+          <p id="react">&nbsp;</p>
+        </div>
+      </div>
+
+      <div id="pantrywrap">
+        <p id="pantrylab">Your pantry &mdash; offer <b style="color:var(--white)">one</b> item</p>
+        <div id="pantry"></div>
+      </div>
+
+      <div id="briefing">
+        <h2 class="display">He Is At The Window.</h2>
+        <p>No engine. No footsteps — the gravel simply agrees to have been stepped on. The uniform
+        is pressed. The uniform is <b>immaculate</b>, out here, at four in the morning, in a state
+        made almost entirely of dust.</p>
+        <p>He wants tritium. <b>You do not have tritium.</b> You have a pantry, a thermos, and the
+        one thing nobody in the history of this field has ever thought to try.</p>
+        <button class="btn" id="startBtn">Open the window</button>
+      </div>
+
+    </div>
+
+    <div class="dossier">
+      <b>WING DOCTRINE:</b> We do not question the encounter. We question the reception. A visitor
+      crossed an unknowable distance, sustained damage, located the only lit window for forty miles,
+      and asked one American for help — and that American, through no fault of his own, had received
+      no training whatsoever in <b>having someone over</b>. This cabinet is remedial.
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>DOUCHECLOSURE&trade; EXPERIENCES &bull; A work of parody commenting on public statements of public figures.<br>
+  <a href="index.html">Back to the Sands wing</a> &bull; <a href="../../shrines/index.html#jason-sands">The shrine</a> &bull;
+  <a href="../../index.html">The arcade</a></p>
+</footer>
+
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const stage = $('stage');
+  Juice.init(stage);
+
+  /* ============================================================
+     PANTRY
+     traits: warm cold food fat bright share ceremony dignity
+             tool direction light sacred
+     ============================================================ */
+  const ITEMS = [
+    { id:'butter',   n:'Butter',            d:'A stick. Softening. Ideologically load-bearing.',
+      t:{ food:.6, fat:1, warm:.15 } },
+    { id:'oldbay',   n:'Old Bay',           d:'The tin. Obviously the tin.',
+      t:{ food:.35, bright:1 } },
+    { id:'biscuit',  n:'A Biscuit',         d:'Still warm. Wrapped in foil, like a secret.',
+      t:{ food:1, warm:.6, fat:.35, share:.4 } },
+    { id:'drawn',    n:'Drawn Butter',      d:'A little cup of it. Ceremonial. Steaming.',
+      t:{ food:.7, fat:1, warm:.9, ceremony:.5 } },
+    { id:'lemon',    n:'Lemon Wedge',       d:'Bright. Honest. Cuts through anything.',
+      t:{ food:.35, bright:1, cold:.35 } },
+    { id:'thermos',  n:'Thermos of Coffee', d:'Black. Two cups in the lid. Always two.',
+      t:{ warm:1, food:.45, share:1, ceremony:.3 } },
+    { id:'ice',      n:'Ice',               d:'From the cooler. THE COOLER EXISTS.',
+      t:{ cold:1, food:.15 } },
+    { id:'napkin',   n:'A Napkin',          d:'Paper. Clean. Folded once, on purpose.',
+      t:{ dignity:1, ceremony:.5, warm:.1 } },
+    { id:'map',      n:'Road Map',          d:'Nevada, and all of its opinions.',
+      t:{ tool:1, direction:1 } },
+    { id:'flash',    n:'Spare Flashlight',  d:'Works. Batteries checked Tuesday.',
+      t:{ tool:1, light:1 } },
+    { id:'sandwich', n:'Half a Sandwich',   d:'Yours. The good half, if it comes to that.',
+      t:{ food:1, share:.85, fat:.4 } },
+    { id:'tags',     n:'Dog Tags',          d:'Yours. Around your neck. No.', sacred:true,
+      t:{ sacred:1 } }
+  ];
+  const BY_ID = {};
+  ITEMS.forEach(it => { BY_ID[it.id] = it; });
+
+  /* ============================================================
+     MOODS — the wave. Never a quote. Always weather.
+     ============================================================ */
+  const MOODS = [
+    { id:'ask', kick:'Incoming transmission &bull; first contact',
+      w:{ direction:1, tool:.9, light:.5 },
+      text:'He arrives at the window. There is no arriving to it — the gravel simply agrees to have been stepped on. A wave comes across the sill and lands somewhere behind your eyes, and inside the wave is a word you already know: TRITIUM. He is not demanding it. He is asking the way a man asks for directions in a country whose language he has politely decided not to mention he already speaks.' },
+
+    { id:'cold', kick:'Incoming transmission &bull; low, at knee height',
+      w:{ warm:1, food:.35, ceremony:.2, cold:-.9 },
+      text:'A wave arrives at knee height, like a draft under a door. It carries the specific fact of standing on a range at four in the morning with nothing at all between you and the state of Nevada. The uniform is immaculate. It is also, you notice for the first time, very thin.' },
+
+    { id:'overheat', kick:'Incoming transmission &bull; scorched',
+      w:{ cold:1, bright:.35, warm:-.7 },
+      text:'A wave arrives with a smell inside it: hot bearing, scorched penny, the inside of a toaster that has been thinking too hard about something. Whatever is out there past the fence line is running well above the temperature it originally agreed to.' },
+
+    { id:'hunger', kick:'Incoming transmission &bull; shaped like a room',
+      w:{ food:1, fat:.45, share:.3 },
+      text:'A wave arrives shaped like an empty room. He looks — politely, briefly, entirely without shame — at your hands, then at the window ledge, then back at your hands. Nothing about the look is a request. Everything about it is information.' },
+
+    { id:'flavor', kick:'Incoming transmission &bull; mostly a question mark',
+      w:{ bright:1, food:.35, fat:.2 },
+      text:'A wave arrives that is almost entirely a question mark. When the window opened, something got out into the air, and that something has been quietly filed for further study by an institution you will never see. It was not the diesel. It was not the sage. It was sharper than both and it came from your counter.' },
+
+    { id:'dignity', kick:'Incoming transmission &bull; enormous, mortified',
+      w:{ dignity:1, ceremony:.4, food:-.25, fat:-.6 }, req:'greasy',
+      text:'A wave arrives and it is embarrassment and it is the size of a weather system. There is butter on his cuff. He has not mentioned the butter on his cuff. He would sooner discuss the entire tritium situation, at length, in front of a panel, than mention the butter on his cuff.' },
+
+    { id:'dark', kick:'Incoming transmission &bull; from underneath',
+      w:{ light:1, tool:.5, direction:.2 },
+      text:'A wave arrives from underneath. He has spent four of your minutes looking at the underside of things — the truck, the ledge, the fence post, whatever is parked out past the fence post — and the underside of things is where the dark keeps its main office.' },
+
+    { id:'lost', kick:'Incoming transmission &bull; with a direction in it',
+      w:{ direction:1, tool:.6, light:.25 },
+      text:'A wave arrives with a direction inside it, and the direction is wrong. He is extremely certain of where he is standing. He is entirely uncertain of where that is in relation to anything else that has ever existed, and he is being very calm about it, which is worse.' },
+
+    { id:'company', kick:'Incoming transmission &bull; not a request',
+      w:{ share:1, warm:.7, ceremony:.3 },
+      text:'A wave arrives that is not a request. It is the shape of a long shift ending nowhere, with nobody at the end of it. He has stopped asking for things. He is simply standing at a lit window in the dark because it is lit, and that is somehow the most human thing that has happened on this range in forty years.' },
+
+    { id:'farewell', kick:'Incoming transmission &bull; slower than the others', last:true,
+      w:{ share:1, warm:.9, food:.3, ceremony:.4 },
+      text:'A wave arrives slower than the others, the way a person slows down at a doorway. He is preparing to leave. Whatever happens in the next few seconds, he is going to thank you for it — sincerely, completely, without a trace of complaint. That is the part that should worry you.' }
+  ];
+
+  // normalize: precompute the best possible raw score per mood
+  MOODS.forEach(m => {
+    let best = 0.0001;
+    ITEMS.forEach(it => {
+      if (it.sacred) return;
+      let raw = 0;
+      for (const k in m.w) raw += (m.w[k] || 0) * (it.t[k] || 0);
+      if (raw > best) best = raw;
+    });
+    m.norm = best;
+  });
+
+  function scoreOf(mood, item){
+    if (item.sacred) return -1;
+    let raw = 0;
+    for (const k in mood.w) raw += (mood.w[k] || 0) * (item.t[k] || 0);
+    return Math.max(-1, Math.min(1, raw / mood.norm));
+  }
+
+  /* ============================================================
+     REACTIONS — tiered per item
+     ============================================================ */
+  const REACT = {
+    butter: {
+      good:'He takes the butter in both hands, like a document. A wave arrives that is pure recognition. Whatever he is, wherever he is from, <b>butter has apparently come up before</b>.',
+      mid:'He accepts the stick of butter. He turns it over twice, looking for the instructions. There are none. He seems, on balance, to respect that.',
+      bad:'The butter goes soft in his hand almost immediately. A wave arrives that is mostly the word <b>temperature</b>, said kindly, the way you would say it to a child.'
+    },
+    oldbay: {
+      good:'He opens the tin himself. A wave comes off him so bright the truck radio hisses. Somewhere behind those eyes a brand-new file is opened and labeled in a language that does not use letters.',
+      mid:'He accepts the tin. He does not open the tin. He is saving it, which is somehow both better and worse than opening it.',
+      bad:'He sneezes. It is the least composed thing that has ever happened on this range. He apologizes — to <b>you</b> — before you have finished being startled.'
+    },
+    biscuit: {
+      good:'He holds the biscuit at chest height like it has been formally issued to him. A wave arrives: warmth, and underneath the warmth, the enormous relief of a man handed a thing he understands.',
+      mid:'He takes the biscuit. He does not eat the biscuit. He nods at the biscuit. The biscuit has been officially acknowledged.',
+      bad:'He accepts the biscuit the way you accept a pamphlet. Politely. Permanently. It is going to be in that pocket forever.'
+    },
+    drawn: {
+      good:'He receives the little cup with two hands and a half-bow your body answers before you decide to. A wave arrives that is unmistakably <b>ceremony</b>. Somebody, somewhere, has done this correctly before, and it was not on this planet.',
+      mid:'The drawn butter steams in the cold. He watches the steam more than he watches the butter. Fair enough. The steam is the good part.',
+      bad:'He looks at the cup of warm fat. He looks at you. A wave arrives, gently, requesting a clarification you do not have and cannot generate.'
+    },
+    lemon: {
+      good:'He holds the wedge up against the range light and the entire thing goes gold. A wave arrives: delight, undiluted, faintly embarrassing for everyone standing in the gravel.',
+      mid:'He accepts the lemon. He smells the lemon. Something in that face, which has almost no moving parts, moves.',
+      bad:'The lemon does not help. A wave arrives that is very carefully constructed so as not to say that the lemon does not help.'
+    },
+    thermos: {
+      good:'You pour. There are two cups in the lid, because there have always been two cups in the lid. He takes one. He does not ask what it is. He holds it under his face for a long moment and lets the steam do whatever steam does to a man with no ears.',
+      mid:'He accepts the thermos and holds it flat against his chest for the heat — the first thing he has done all night that was not manners.',
+      bad:'He takes the coffee and holds it out away from himself, like a man carrying something that belongs to somebody else and is still hot.'
+    },
+    ice: {
+      good:'The ice goes into his hands and the hiss is audible from six feet. A wave arrives with relief so total it briefly turns the dashboard clock into a symbol. <b>THE COOLER EXISTED. THE COOLER WAS RIGHT HERE THE WHOLE TIME.</b>',
+      mid:'He accepts the ice. It melts. He watches it happen with the patience of someone who has watched a great many things melt in a great many places.',
+      bad:'The ice makes it worse. A wave comes back with frost on it and no complaint attached to it anywhere, which is its own kind of complaint.'
+    },
+    napkin: {
+      good:'He takes the napkin and handles the cuff in one movement, and the wave that arrives is unbroken gratitude — the very specific gratitude of <b>never having to mention it</b>.',
+      mid:'He accepts the napkin, folds it along the fold that was already there, and puts it into a pocket that closes without a seam.',
+      bad:'A napkin. He looks at the napkin. There is nothing on him. There has never been anything on him. He accepts it anyway, because you are trying.'
+    },
+    map: {
+      good:'You spread the map on the ledge. He leans in without breathing on it. A wave arrives carrying the first real hope of the evening: the feeling of a man who has finally been handed <b>somewhere to start looking</b>.',
+      mid:'He studies the map with great politeness. Nevada, as always, declines to explain itself to visitors.',
+      bad:'He looks at the map. He looks up at the sky. The two documents, it turns out, are not the same document.'
+    },
+    flash: {
+      good:'He clicks it on. He clicks it off. A wave arrives with a frankly undignified amount of enthusiasm in it. Batteries checked Tuesday. <b>Tuesday has paid off.</b>',
+      mid:'He accepts the flashlight and tests it against his own palm, which is the correct way to test a flashlight, which nobody taught him.',
+      bad:'The flashlight is not the problem. He shines it at the ground once anyway, so that your gift will have been used.'
+    },
+    sandwich: {
+      good:'You give him the good half. He notices that it is the good half. Whatever a face does when it has no equipment for doing that, his does.',
+      mid:'He accepts half a sandwich with the gravity of a man accepting the key to a city, and holds it at exactly the angle you handed it to him.',
+      bad:'He holds the sandwich. The sandwich holds still. Nothing further develops between them.'
+    },
+    tags: {
+      any:'You put your own dog tags on the ledge. He does not touch them. He does not look away from them either. A wave arrives that is entirely apology — <b>yours</b>, coming back at you from six feet away, because he read the situation instantly and he is sorry you thought that was the ask.'
+    }
+  };
+
+  const REPEAT_LINES = [
+    'He accepts it again. He holds two now. He does not point out that he holds two.',
+    'A second one. He arranges them side by side on the sill, squared to the edge. He is too polite for the sentence he is not saying.',
+    'He takes it, and this time there is the faintest delay before he takes it, and the delay is the whole review.'
+  ];
+
+  const BOARD_NOTES = [
+    'BOARD: minute six. Still nobody from the government.',
+    'BOARD: no cooler on scene. Noted, as ever.',
+    'BOARD: the visitor has not asked twice. He has asked once, slower.',
+    'BOARD: hospitality expenditure to date — the entire national budget, zero dollars of it here.',
+    'BOARD: he has not sat down. Nobody offered him a chair. Nobody has a chair.',
+    'BOARD: the range is quiet. The quiet is not on our side.',
+    'BOARD: the tin of Old Bay is federal-adjacent. We are letting it go.',
+    'BOARD: reminder — the man came a long way and knocked on the lit one.'
+  ];
+
+  /* ============================================================
+     STATE
+     ============================================================ */
+  let rapport, patience, round, queue, mood, counts, greasy, running,
+      typing, typeTimer, decayLast, streak, tagsOffered, awarded, offersMade, ended;
+
+  const ROUNDS = 8;
+  const WIN_AT = 75;
+
+  function award(key, label){
+    if (awarded[key]) return;
+    awarded[key] = true;
+    Arcade.toast(label);
+  }
+
+  function reset(){
+    rapport = 30; patience = 100; round = 0;
+    counts = {}; greasy = false; running = false; typing = false;
+    streak = 0; tagsOffered = false; awarded = {}; offersMade = 0; ended = false;
+    mood = null;
+    const mid = MOODS.filter(m => m.id !== 'ask' && !m.last);
+    for (let i = mid.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      const tmp = mid[i]; mid[i] = mid[j]; mid[j] = tmp;
+    }
+    queue = mid;
+    renderPantry();
+    renderHud();
+    $('react').innerHTML = '&nbsp;';
+    $('board').innerHTML = '&nbsp;';
+  }
+
+  function nextMood(){
+    if (round >= ROUNDS) return null;
+    if (round === 0) return MOODS.find(m => m.id === 'ask');
+    if (round === ROUNDS - 1) return MOODS.find(m => m.last);
+    for (let i = 0; i < queue.length; i++){
+      const m = queue[i];
+      if (m.req === 'greasy' && !greasy) continue;
+      queue.splice(i, 1);
+      return m;
+    }
+    return queue.shift() || MOODS.find(m => m.id === 'company');
+  }
+
+  /* ---------- rendering ---------- */
+  function renderPantry(){
+    const box = $('pantry');
+    box.innerHTML = '';
+    ITEMS.forEach(it => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'item' + (it.sacred ? ' sacred' : '');
+      b.dataset.id = it.id;
+      const c = counts[it.id] || 0;
+      b.innerHTML = '<div class="n">' + it.n + '</div><div class="d">' + it.d + '</div>' +
+                    (c ? '<div class="ct">OFFERED &times;' + c + '</div>' : '');
+      b.disabled = !running || typing;
+      b.addEventListener('click', () => offer(it, b));
+      box.appendChild(b);
+    });
+  }
+  function setPantryEnabled(on){
+    [].forEach.call($('pantry').children, el => { el.disabled = !on; });
+  }
+  function renderHud(){
+    const r = Math.max(0, Math.min(100, Math.round(rapport)));
+    $('rapfill').style.width = r + '%';
+    $('raplab').textContent = r + ' / 100';
+    $('rapfill').style.background = r >= WIN_AT
+      ? 'linear-gradient(90deg,#2E7A55,var(--neon-green))'
+      : 'linear-gradient(90deg,#3B4E6B,var(--iso))';
+    const p = Math.max(0, Math.min(100, patience));
+    $('patfill').style.width = p + '%';
+    $('patlab').textContent = Math.ceil(p);
+    $('roundpill').textContent = 'Exchange ' + Math.min(round + 1, ROUNDS) + ' / ' + ROUNDS;
+  }
+
+  function ripple(){
+    const g = $('rip1');
+    g.classList.remove('go');
+    void g.getBoundingClientRect();
+    g.classList.add('go');
+  }
+
+  function typeOut(str, done){
+    typing = true;
+    setPantryEnabled(false);
+    const el = $('wavetext');
+    let i = 0;
+    clearInterval(typeTimer);
+    typeTimer = setInterval(() => {
+      i += 2;
+      el.textContent = str.slice(0, i);
+      if (i % 12 === 0) Juice.sfx('tick');
+      if (i >= str.length){
+        clearInterval(typeTimer);
+        el.textContent = str;
+        typing = false;
+        setPantryEnabled(true);
+        decayLast = performance.now();
+        if (done) done();
+      }
+    }, 14);
+  }
+  function skipType(){
+    if (!typing || !mood) return;
+    clearInterval(typeTimer);
+    $('wavetext').textContent = mood.text;
+    typing = false;
+    setPantryEnabled(true);
+    decayLast = performance.now();
+  }
+  $('wave').addEventListener('click', skipType);
+
+  /* ---------- round flow ---------- */
+  // keep the transmission and the pantry within reach without yanking the page around
+  function ensureVisible(){
+    const r = $('wave').getBoundingClientRect();
+    if (r.top < 0 || r.top > innerHeight * 0.45){
+      const y = scrollY + r.top - Math.max(8, innerHeight * 0.06);
+      scrollTo({ top: y, behavior: 'smooth' });
+    }
+  }
+
+  function beginRound(){
+    mood = nextMood();
+    if (!mood){ finish('rounds'); return; }
+    $('wavekick').innerHTML = mood.kick;
+    $('board').textContent = BOARD_NOTES[round % BOARD_NOTES.length];
+    renderHud();
+    ensureVisible();
+    ripple();
+    Juice.sfx('blip');
+    typeOut(mood.text);
+  }
+
+  function centerOf(el){
+    const a = el.getBoundingClientRect(), b = stage.getBoundingClientRect();
+    return { x: a.left - b.left + a.width / 2, y: a.top - b.top + a.height / 2 };
+  }
+
+  function offer(item, btn){
+    if (!running || typing || ended) return;
+    const pt = centerOf(btn);
+    const c = counts[item.id] || 0;
+    counts[item.id] = c + 1;
+    offersMade++;
+    if (item.t.fat) greasy = true;
+
+    let line, delta, tier;
+
+    if (item.sacred){
+      tagsOffered = true;
+      delta = -30;
+      patience = Math.max(0, patience - 22);
+      line = '<span class="dn">&minus;30 RAPPORT.</span> ' + REACT.tags.any;
+      streak = 0;
+      Juice.impact(pt.x, pt.y, { text: 'NO', color:'#FF3D8A', power:14, count:22, sound:'lose' });
+      Juice.flash('#FF3D8A', .4);
+      $('board').textContent = 'BOARD: we are formally striking that from the record and we are not discussing it.';
+    } else {
+      const s = scoreOf(mood, item);
+      const mult = c === 0 ? 1 : (c === 1 ? 0.45 : 0.18);
+      const eff = s > 0 ? s * mult : s;
+      delta = Math.round(eff * 13) + 1;
+      tier = s >= 0.72 ? 'good' : (s >= 0.3 ? 'mid' : 'bad');
+      line = REACT[item.id][tier];
+      if (c > 0) line += ' <b>' + REPEAT_LINES[Math.min(c - 1, REPEAT_LINES.length - 1)] + '</b>';
+      patience = Math.min(100, patience + 14 + Math.max(0, eff) * 14);
+
+      if (s >= 0.72){
+        streak++;
+        Juice.reward(pt.x, pt.y, { text:'+' + delta, color:'#3DFC8A', sound:'good', count:22 });
+        Juice.burst(pt.x, pt.y, { color:'#7FB8FF', count:14, speed:4.4, gravity:.01 });
+        if (streak >= 3) award('fluent', '🏆 FLUENT IN WAVE');
+      } else if (delta > 0){
+        streak = 0;
+        Juice.reward(pt.x, pt.y, { text:'+' + delta, color:'#7FB8FF', sound:'pickup' });
+      } else {
+        streak = 0;
+        Juice.impact(pt.x, pt.y, { text:String(delta), color:'#FF3D8A', power:7, sound:'bad' });
+      }
+
+      if (item.id === 'thermos' && s >= 0.72) award('coffee', '🏆 THE COFFEE GAMBIT');
+      if (item.id === 'ice' && s >= 0.72) award('cooler', '🏆 THE COOLER EXISTED');
+      if (item.id === 'napkin' && mood.id === 'dignity') award('cuff', '🏆 THE CUFF INCIDENT, UNSPOKEN');
+    }
+
+    if (offersMade === 1) award('first', '🏆 SOMEBODY FINALLY OFFERED HIM SOMETHING');
+
+    rapport = Math.max(0, Math.min(100, rapport + delta));
+    const sign = delta > 0 ? '<span class="up">+' + delta + ' RAPPORT.</span> ' :
+                 (delta < 0 && !item.sacred ? '<span class="dn">' + delta + ' RAPPORT.</span> ' : '');
+    $('react').innerHTML = item.sacred ? line : sign + line;
+    renderPantry();
+    setPantryEnabled(false);
+    renderHud();
+
+    round++;
+    if (round >= ROUNDS){
+      setTimeout(() => finish('rounds'), 2600);
+    } else {
+      setTimeout(() => { if (!ended) beginRound(); }, 2100);
+    }
+  }
+
+  /* ---------- patience decay ---------- */
+  function tick(now){
+    requestAnimationFrame(tick);
+    if (!running || ended) return;
+    if (typing){ decayLast = now; return; }
+    const dt = Math.min(120, now - (decayLast || now));
+    decayLast = now;
+    const before = patience;
+    patience = Math.max(0, patience - dt * 0.0026); // ~2.6 patience per second
+    if (before > 34 && patience <= 34){
+      $('gentcap').textContent = 'He checks something on his wrist that is not a watch.';
+      Juice.sfx('alarm');
+    }
+    if (before > 15 && patience <= 15){
+      $('gentcap').textContent = 'He has turned a quarter-step toward the dark. Politely.';
+    }
+    renderHud();
+    if (patience <= 0) finish('patience');
+  }
+
+  /* ---------- endings ---------- */
+  function finish(cause){
+    if (ended) return;
+    ended = true; running = false;
+    clearInterval(typeTimer);
+    setPantryEnabled(false);
+    const won = rapport >= WIN_AT;
+    if (!tagsOffered) award('tags', '🏆 NOT THE DOG TAGS');
+
+    let lines, title;
+    if (won){
+      award('hospitality', '🏆 FIRST HOSPITALITY IN THIS FIELD');
+      Juice.sfx('win'); Juice.flash('#7FB8FF', .38);
+      Juice.burst(stage.clientWidth / 2, stage.clientHeight * 0.4,
+        { color:'#7FB8FF', count:44, speed:6, gravity:.02 });
+      $('gentcap').textContent = 'He is still here. He is drinking it.';
+      title = 'He Takes The Coffee.';
+      lines = [
+        'He cannot use any of it. Let us be extremely clear about that, because the review board insists on clarity: <b>not one item on that ledge will repair one thing on that craft.</b> The butter is butter. The map is Nevada. The flashlight, God love it, is a flashlight.',
+        'There is no tritium at this address. There was never going to be tritium at this address.',
+        '<b>He takes the coffee anyway.</b>',
+        'And then — and this is the part, this is the entire part — <b>he stands there and drinks it.</b> Both hands around the cup. No hurry in him at all. At a kitchen window, on a range road, in the dark, next to a truck, with a stranger who has run completely out of useful objects.',
+        'Neither of you says anything, because one of you cannot and the other one has finally worked out when not to.',
+        'When the cup is empty he sets it on the ledge right side up and squares it to the edge, because he is that kind of guest, and then he goes.',
+        'He leaves the range with <b>nothing repaired</b>. He also leaves it with the first thing anybody on this planet has ever handed him without a form attached, and the ledger on that is not close.',
+        'REVIEW BOARD FINDING: <b>hospitality was extended.</b> The file on the tritium stays open — we still have no idea where a person gets it. The file on the man is closed, and it closes warm.'
+      ];
+    } else {
+      Juice.sfx('lose'); Juice.shake(12); Juice.flash('#FF3D8A', .32);
+      $('gentcap').textContent = 'The gravel does not comment.';
+      title = cause === 'patience' ? 'He Was On A Schedule.' : 'He Thanks You. Sincerely.';
+      lines = [
+        (cause === 'patience'
+          ? 'He waits as long as he can, and he can wait a long time, and then he cannot. '
+          : 'The eighth wave lands and it is short. ') +
+        '<b>He thanks you.</b> Sincerely. Completely. Without one grain of complaint anywhere in it. That is the worst part and it is not close.',
+        'The last wave is not anger. It is the polite, portable disappointment of somebody who has been told no in eleven countries and stopped keeping score somewhere around the fourth.',
+        'Then he turns and walks out past the fence line into the dark, and the gravel does not comment.',
+        'The uniform is still immaculate. That detail will bother you for years.',
+        'REVIEW BOARD FINDING: he crossed an unsurvivable distance, sustained damage, found the only lit window for forty miles, and asked ONE American for help. We had a pantry. We had a thermos. <b>We had ICE.</b> America had one job.',
+        'The tritium remains unlocated. So, more expensively, does the hospitality.'
+      ];
+    }
+
+    setTimeout(() => {
+      Arcade.gameOver({
+        won: won,
+        title: title,
+        score: Math.round(rapport),
+        accent: won ? '#7FB8FF' : '#FF3D8A',
+        lines: lines,
+        onRetry: () => {
+          reset();
+          $('gentcap').textContent = 'He does not blink. It is not rudeness.';
+          $('briefing').style.display = 'flex';
+          stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        },
+        links: won
+          ? [{ label:'Tritium is not an ingredient — $5', href:'../../cookbook.html' },
+             { label:'The Sands wing', href:'index.html' }]
+          : [{ label:'The Sands wing', href:'index.html' },
+             { label:'Visit the shrine', href:'../../shrines/index.html#jason-sands' }]
+      });
+      const ovs = document.querySelectorAll('.dcab-overlay');
+      const ov = ovs[ovs.length - 1];
+      if (ov){
+        ov.scrollTop = 0;
+        const ps = ov.querySelectorAll('.dcab-lore');
+        [].forEach.call(ps, (p, i) => {
+          p.style.opacity = '0';
+          p.style.transition = 'opacity 1s';
+          setTimeout(() => { p.style.opacity = '1'; }, 260 + i * 900);
+        });
+      }
+    }, 1400);
+  }
+
+  /* ---------- boot ---------- */
+  $('startBtn').addEventListener('click', () => {
+    Juice.sfx('click');
+    $('briefing').style.display = 'none';
+    running = true;
+    decayLast = performance.now();
+    beginRound();
+  });
+
+  reset();
+  requestAnimationFrame(tick);
+
+  Arcade.cabinet({
+    id: 'tritium-shortage',
+    wing: 'THE JASON SANDS EXPERIENCE',
+    title: 'The Tritium Shortage',
+    subtitle: 'He Asked One American',
+    accent: '#7FB8FF',
+    scoreLabel: 'RAPPORT',
+    lore: 'On a Nevada range, a pale, ear-less gentleman in an immaculate uniform asked one American — ' +
+          'politely, without opening his mouth — where a person might find <b>tritium</b> to repair his craft. ' +
+          'We believe every syllable of it. Our objection is procedural: <b>the man was sent away with nothing.</b> ' +
+          'No coffee, no biscuit, not so much as a napkin. You have eight exchanges and a pantry, and the pantry ' +
+          'does not contain tritium and never will.',
+    howto: [
+      'TAP or CLICK an item to offer it — one per exchange',
+      'READ THE WAVE. It never asks. It always tells.',
+      'REPEATS lose value. He is far too polite to say so.',
+      'PATIENCE decays — he is courteous, not free',
+      'Never, under any circumstances, the DOG TAGS',
+      'RAPPORT 75 by exchange 8 and something happens'
+    ],
+    shrine: '../../shrines/index.html#jason-sands',
+    onStart: () => {
+      $('briefing').style.display = 'flex';
+      stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+})();
+</script>
+</body>
+</html>

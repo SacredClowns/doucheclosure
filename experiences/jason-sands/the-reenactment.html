@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE REENACTMENT: SEQUENCE OF EVENTS — Doucheclosure</title>
+<meta name="description" content="The review board cannot rule on the incident without a full physical reenactment. A stunt double has been hired. Insurance has been notified. Perform the sequence, in order, on a gymnasium mat, in front of five people with clipboards.">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --evidence:#FFD23F; --mat:#3A2A55;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;overflow:hidden;background:var(--void);color:var(--white);
+    font-family:"Courier New",Courier,monospace;}
+  .display{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-weight:400;text-transform:uppercase;letter-spacing:.03em;line-height:.95;}
+  #frame{position:fixed;inset:0;display:flex;flex-direction:column;}
+  #topbar{display:flex;justify-content:space-between;align-items:center;gap:.5rem;padding:.55rem 1rem;
+    font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;z-index:9;}
+  #topbar a{color:var(--neon-cyan);text-decoration:none;white-space:nowrap;}
+  #topbar .t{color:var(--evidence);}
+  #topbar .r{color:#7E6F9E;white-space:nowrap;}
+  @media (max-width:720px){ #topbar .t{display:none;} #topbar{font-size:.58rem;} }
+
+  #gamewrap{flex:1;position:relative;overflow:hidden;
+    background:radial-gradient(ellipse at 50% 12%, #1D1130 0%, #0B0614 72%);}
+  #stage{position:absolute;inset:0;display:flex;flex-direction:column;padding:.4rem .6rem .6rem;gap:.4rem;}
+
+  /* ---------- HUD ---------- */
+  #hud{display:flex;gap:.9rem;align-items:center;flex-wrap:wrap;
+    font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;}
+  #hud .lab{color:var(--chrome);margin-bottom:3px;}
+  .bar{flex:1;min-width:160px;max-width:320px;}
+  .track{height:11px;background:#00000099;border:1px solid #000;border-radius:6px;overflow:hidden;}
+  #conffill{height:100%;width:50%;background:linear-gradient(90deg,#7A3B4E,var(--evidence));transition:width .45s;}
+  #roundbox{color:var(--evidence);font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-size:1.15rem;letter-spacing:.06em;}
+  #strikes{display:flex;gap:5px;align-items:center;color:var(--chrome);}
+  #strikes .dot{width:11px;height:11px;border-radius:50%;border:2px solid #6E6288;}
+  #strikes .dot.on{background:var(--neon-pink);border-color:var(--neon-pink);box-shadow:0 0 9px var(--neon-pink);}
+
+  /* ---------- the board ---------- */
+  #board{display:flex;justify-content:center;gap:clamp(.5rem,3vw,1.5rem);padding:.35rem 0 .1rem;}
+  .member{width:clamp(28px,7vw,44px);text-align:center;opacity:.85;transition:transform .18s;}
+  .member .head{width:56%;margin:0 auto;aspect-ratio:1;border-radius:50%;background:#6E6288;}
+  .member .torso{margin:2px auto 0;width:100%;height:clamp(14px,3.4vw,22px);border-radius:4px 4px 2px 2px;
+    background:#3A2F52;position:relative;}
+  .member .clip{position:absolute;left:50%;top:32%;transform:translateX(-50%);
+    width:64%;height:70%;background:#D9CFAF;border-top:3px solid #8A7F60;border-radius:2px;}
+  #board.nod .member{transform:translateY(3px);}
+  #board.nod .member .head{background:var(--neon-green);}
+  #board.tut .member{transform:rotate(-4deg);}
+  #board.tut .member .head{background:var(--neon-pink);}
+  #board .member:nth-child(2){transition-delay:.04s}
+  #board .member:nth-child(3){transition-delay:.08s}
+  #board .member:nth-child(4){transition-delay:.12s}
+  #board .member:nth-child(5){transition-delay:.16s}
+  #boardlab{text-align:center;font-size:.55rem;letter-spacing:.24em;color:#6E6288;text-transform:uppercase;}
+
+  /* ---------- announcement + pips ---------- */
+  #annc{text-align:center;color:var(--evidence);font-size:clamp(.72rem,2.4vw,.86rem);
+    letter-spacing:.05em;min-height:2.4em;padding:0 .4rem;text-shadow:0 2px 0 #000;
+    display:flex;align-items:center;justify-content:center;}
+  #pips{display:flex;justify-content:center;gap:5px;flex-wrap:wrap;min-height:12px;}
+  #pips i{width:22px;height:6px;border-radius:3px;background:#2A2040;border:1px solid #000;display:block;}
+  #pips i.on{background:var(--evidence);box-shadow:0 0 8px rgba(255,210,63,.7);}
+
+  /* ---------- the mat ---------- */
+  #mat{flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);
+    gap:clamp(.4rem,1.4vw,.7rem);padding:clamp(.4rem,1.6vw,.9rem);
+    border:3px solid #2A1E42;border-radius:14px;
+    background:repeating-linear-gradient(45deg,#170F28 0 14px,#1B1230 14px 28px);}
+  @media (max-width:640px){ #mat{grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(3,1fr);} }
+
+  .move{position:relative;border:3px solid var(--c);border-radius:12px;background:#100A1C;
+    color:var(--c);font-family:inherit;cursor:pointer;overflow:hidden;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.15rem;
+    padding:.3rem;transition:background .09s,box-shadow .09s,transform .09s;
+    -webkit-tap-highlight-color:transparent;touch-action:manipulation;min-height:64px;}
+  .move .glyph{font-size:clamp(1.1rem,4.4vw,1.9rem);line-height:1;}
+  .move .name{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;text-transform:uppercase;
+    font-size:clamp(.85rem,3.4vw,1.3rem);letter-spacing:.04em;line-height:1;text-align:center;}
+  .move .sub{font-size:clamp(.44rem,1.5vw,.56rem);letter-spacing:.1em;color:#8E82AC;text-transform:uppercase;
+    text-align:center;line-height:1.3;}
+  .move .num{position:absolute;top:5px;left:8px;font-size:.6rem;color:#6E6288;}
+  .move.lit{background:var(--c);color:#0B0614;box-shadow:0 0 34px var(--c),inset 0 0 22px rgba(255,255,255,.35);transform:scale(1.035);}
+  .move.lit .sub{color:#0B0614;}
+  .move.lit .num{color:#0B0614;}
+  #mat.locked .move{cursor:default;opacity:.72;}
+  #mat.locked .move.lit{opacity:1;}
+
+  /* ---------- clipboard note ---------- */
+  #note{position:absolute;inset:0;z-index:30;display:none;align-items:center;justify-content:center;
+    background:rgba(4,3,10,.88);padding:1rem;}
+  #note.show{display:flex;}
+  #notecard{max-width:34rem;width:100%;background:#EDE6CE;color:#241C12;border-radius:6px;
+    padding:1.4rem 1.3rem 1.2rem;position:relative;box-shadow:0 22px 60px rgba(0,0,0,.65);
+    border-top:14px solid #8A7F60;animation:noteIn .28s ease-out;}
+  @keyframes noteIn{from{opacity:0;transform:translateY(-14px) rotate(-.6deg)}to{opacity:1;transform:none}}
+  #notecard .kick{font-size:.56rem;letter-spacing:.28em;text-transform:uppercase;color:#7A6A45;margin-bottom:.6rem;}
+  #notecard .body{font-size:.9rem;line-height:1.6;}
+  #notecard .body b{color:#000;}
+  #notecard .stamp{position:absolute;right:10px;top:22px;font-size:.5rem;letter-spacing:.2em;
+    color:#B04A3A;border:2px solid #B04A3A;border-radius:4px;padding:2px 6px;transform:rotate(9deg);opacity:.75;}
+  #notebtn{margin-top:1.1rem;padding:.8rem 1.5rem;border-radius:6px;border:2px solid #241C12;
+    background:#241C12;color:#EDE6CE;font-family:inherit;font-weight:bold;cursor:pointer;
+    font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;width:100%;}
+  #notebtn:hover{filter:brightness(1.2);}
+
+  /* ---------- briefing ---------- */
+  #briefing{position:absolute;inset:0;z-index:40;display:none;align-items:center;justify-content:center;
+    flex-direction:column;background:rgba(4,4,10,.94);text-align:center;padding:1rem;overflow-y:auto;}
+  #briefing h1{font-size:clamp(1.6rem,6vw,2.9rem);color:var(--evidence);
+    text-shadow:0 0 18px rgba(255,210,63,.45);}
+  #briefing p{max-width:37rem;margin:.85rem auto;color:var(--chrome);font-size:.88rem;line-height:1.65;}
+  #briefing b{color:var(--white);}
+  .btn{display:inline-block;margin:.4rem;padding:.85rem 1.6rem;border-radius:8px;
+    font-family:inherit;font-weight:bold;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;
+    text-decoration:none;cursor:pointer;border:2px solid var(--evidence);background:var(--evidence);color:#241C12;}
+  .btn.ghost{background:transparent;color:var(--neon-cyan);border-color:var(--neon-cyan);}
+
+  #kbhint{text-align:center;color:#7E6F9E;font-size:10px;letter-spacing:.06em;}
+  @media (prefers-reduced-motion: reduce){ .move,.member{transition:none} }
+</style>
+</head>
+<body>
+<div id="frame">
+  <div id="topbar">
+    <a href="index.html">&larr; THE SANDS WING</a>
+    <span class="t display" style="font-size:1.05rem;">THE REENACTMENT: SEQUENCE OF EVENTS</span>
+    <span class="r">INSURANCE: NOTIFIED</span>
+  </div>
+
+  <div id="gamewrap">
+    <div id="stage">
+      <div id="hud">
+        <div id="roundbox">ROUND 1 / 8</div>
+        <div class="bar">
+          <div class="lab">BOARD CONFIDENCE</div>
+          <div class="track"><div id="conffill"></div></div>
+        </div>
+        <div id="strikes">
+          <span style="margin-right:4px;">SUSPENSION</span>
+          <span class="dot" data-f="0"></span><span class="dot" data-f="1"></span><span class="dot" data-f="2"></span>
+        </div>
+      </div>
+
+      <div id="board">
+        <div class="member"><div class="head"></div><div class="torso"><div class="clip"></div></div></div>
+        <div class="member"><div class="head"></div><div class="torso"><div class="clip"></div></div></div>
+        <div class="member"><div class="head"></div><div class="torso"><div class="clip"></div></div></div>
+        <div class="member"><div class="head"></div><div class="torso"><div class="clip"></div></div></div>
+        <div class="member"><div class="head"></div><div class="torso"><div class="clip"></div></div></div>
+      </div>
+      <div id="boardlab">FIVE PEOPLE &bull; FIVE CLIPBOARDS &bull; ONE RENTED GYMNASIUM</div>
+
+      <p id="annc">&nbsp;</p>
+      <div id="pips"></div>
+
+      <div id="mat" class="locked"></div>
+      <p id="kbhint">KEYS 1&ndash;6 OR TAP &bull; WATCH THE BOARD DEMONSTRATE, THEN REPEAT THE SEQUENCE IN ORDER</p>
+    </div>
+
+    <div id="note"><div id="notecard">
+      <div class="stamp">EXHIBIT</div>
+      <div class="kick" id="notekick">CLIPBOARD NOTE</div>
+      <div class="body" id="notebody"></div>
+      <button id="notebtn">THE BOARD IS READY</button>
+    </div></div>
+
+    <div id="briefing">
+      <h1 class="display">The Board Cannot Rule<br>Without A Reenactment.</h1>
+      <p>We believe him. The board believes him. That was never in dispute. What is in dispute is
+      <b>the order of operations</b> — and the board's rules of procedure state that an incident
+      cannot be entered into the record until it has been <b>performed physically, in sequence,
+      in a neutral facility.</b></p>
+      <p>A stunt double has been hired. Insurance has been notified. The facility is a middle-school
+      gymnasium rented at the day rate. The mat is rated for gymnastics. Nobody raised this.</p>
+      <p>The board will now <b>demonstrate the sequence of events</b>. You will then perform it back,
+      in order, without deviation. Each round the sequence grows by one event, because the incident
+      keeps getting longer every time somebody remembers something.</p>
+      <p style="color:#8E82AC;font-size:.78rem;">Two corrections are permitted per round. Three round
+      failures and the reenactment is suspended pending counsel.</p>
+      <button class="btn" id="startBtn">TAKE THE MAT</button>
+    </div>
+  </div>
+</div>
+
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const wrap = $('gamewrap');
+  Juice.init(wrap);
+
+  /* ---------------- the six moves ---------------- */
+  const MOVES = [
+    { name:'BLOCK',        sub:'forearm, high',        glyph:'▣', color:'#7FB8FF', sfx:'thud'   },
+    { name:'PIVOT',        sub:'left foot planted',    glyph:'↻', color:'#3DFC8A', sfx:'blip'   },
+    { name:'GRAPPLE',      sub:'collar and elbow',     glyph:'✥', color:'#FF3D8A', sfx:'click'  },
+    { name:'DODGE LEFT',   sub:'toward the treeline',  glyph:'◀', color:'#2DE1FC', sfx:'tick'   },
+    { name:'DODGE RIGHT',  sub:'toward the cooler',    glyph:'▶', color:'#E2604A', sfx:'pickup' },
+    { name:'THE THING YOU DID', sub:'unnamed, per counsel', glyph:'?', color:'#FFD23F', sfx:'coin'   }
+  ];
+  const WIN_ROUND = 8;
+
+  /* ---------------- board flavor ---------------- */
+  const ROUND_NOTES = [
+    'Note: the mat is rated for gymnastics, not for litigation. The board has accepted this and moved on.',
+    "Note: the stunt double has asked whether the entity was <b>'more crab or more person.'</b> The board has recessed.",
+    'Note: a board member requests the sequence again, <b>slower</b>, and with the bearing of a man who has already decided.',
+    'Note: insurance has approved the reenactment on the condition that nothing be performed at full speed. Nothing has been performed at full speed.',
+    "Note: the gymnasium is booked until 4:00 PM. At 4:00 PM there is a children's tumbling class. The board is aware of the time.",
+    "Note: the board formally requested a definition of <b>'the thing you did.'</b> The request was withdrawn twelve seconds later, unanimously.",
+    "Note: the stunt double's contract lists his role as <b>MAN</b> and the entity's role as <b>TO BE DETERMINED</b>. Payroll has flagged this.",
+    'Note: a board member has asked whether a cooler should be present on the mat for accuracy. The cooler has been sent for. The cooler is coming.'
+  ];
+  const CORRECTION_NOTES = [
+    'Correction: that is not the order. <b>The order is the entire reason we rented the gymnasium.</b>',
+    'Correction: the board did not observe a pivot. The board observed a step. A step is not a pivot, and the record knows the difference.',
+    'Correction: two board members recorded a different move than the other three. The board has resolved this by making you do it again.',
+    'Correction: the stunt double performed that beautifully, but out of sequence, which is legally identical to not performing it.',
+    'Correction: the board reminds you that an incident performed in the wrong order is, procedurally, <b>a different incident.</b>',
+    'Correction: you improvised. The board does not accept improvisation. The board accepts <b>the sequence</b>.'
+  ];
+  const FAIL_NOTES = [
+    '<b>The board has seen enough.</b> From the top. The clipboards have been turned to a fresh page, which nobody enjoys.',
+    "<b>Round failure entered into the record.</b> A member has written the word 'concerning' and underlined it twice. From the top.",
+    '<b>Second round failure.</b> Insurance has been re-notified. The gymnasium has been re-booked at the extended rate. From the top.'
+  ];
+  const OPENERS = [
+    'THE BOARD DEMONSTRATES. WATCH THE MAT.',
+    'EVENT ADDED TO THE SEQUENCE. WATCH.',
+    'THE SEQUENCE HAS GROWN AGAIN. WATCH.',
+    'SOMEBODY REMEMBERED SOMETHING ELSE. WATCH.'
+  ];
+
+  /* ---------------- build the mat ---------------- */
+  const mat = $('mat');
+  const btns = MOVES.map((m, i) => {
+    const b = document.createElement('button');
+    b.className = 'move';
+    b.type = 'button';
+    b.style.setProperty('--c', m.color);
+    b.innerHTML = '<span class="num">' + (i + 1) + '</span>' +
+                  '<span class="glyph">' + m.glyph + '</span>' +
+                  '<span class="name">' + m.name + '</span>' +
+                  '<span class="sub">' + m.sub + '</span>';
+    b.addEventListener('pointerdown', ev => { ev.preventDefault(); press(i); });
+    mat.appendChild(b);
+    return b;
+  });
+
+  const pips = $('pips');
+
+  /* ---------------- state ---------------- */
+  let seq = [], pos = 0, round = 1, phase = 'idle';
+  let confidence = 50, failures = 0, roundStrikes = 0, mistakes = 0;
+  let noteIdx = 0, corrIdx = 0, timers = [];
+  const got = {};
+  const once = (k, fn) => { if (!got[k]) { got[k] = true; fn(); } };
+  const wait = (ms, fn) => { const t = setTimeout(fn, ms); timers.push(t); return t; };
+  const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
+
+  function say(t) { $('annc').innerHTML = t; }
+
+  function centerOf(el) {
+    const r = el.getBoundingClientRect(), w = wrap.getBoundingClientRect();
+    return { x: r.left - w.left + r.width / 2, y: r.top - w.top + r.height / 2 };
+  }
+
+  function renderHud() {
+    $('roundbox').textContent = 'ROUND ' + Math.min(round, WIN_ROUND) + ' / ' + WIN_ROUND;
+    $('conffill').style.width = Math.max(3, Math.min(100, confidence)) + '%';
+    document.querySelectorAll('#strikes .dot').forEach(d => {
+      d.classList.toggle('on', parseInt(d.dataset.f, 10) < failures);
+    });
+  }
+
+  function renderPips() {
+    pips.innerHTML = '';
+    for (let i = 0; i < seq.length; i++) {
+      const el = document.createElement('i');
+      if (i < pos) el.classList.add('on');
+      pips.appendChild(el);
+    }
+  }
+
+  function lock(on) { mat.classList.toggle('locked', !!on); }
+
+  function light(i, dur) {
+    const b = btns[i];
+    b.classList.add('lit');
+    Juice.sfx(MOVES[i].sfx);
+    wait(dur, () => b.classList.remove('lit'));
+  }
+
+  function boardMood(cls, ms) {
+    const b = $('board');
+    b.className = cls || '';
+    wait(ms || 520, () => { b.className = ''; });
+  }
+
+  /* ---------------- clipboard note card ---------------- */
+  function showNote(kick, body, btnLabel, onGo) {
+    $('notekick').textContent = kick;
+    $('notebody').innerHTML = body;
+    $('notebtn').textContent = btnLabel;
+    $('note').classList.add('show');
+    $('notebtn').onclick = () => {
+      Juice.sfx('click');
+      $('note').classList.remove('show');
+      onGo();
+    };
+  }
+
+  /* ---------------- round flow ---------------- */
+  function beginRound(grow) {
+    phase = 'demo';
+    lock(true);
+    if (grow) seq.push(Math.floor(Math.random() * MOVES.length));
+    pos = 0;
+    renderPips();
+    renderHud();
+    say(grow ? OPENERS[Math.min(OPENERS.length - 1, Math.floor(Math.random() * OPENERS.length))]
+             : 'THE BOARD DEMONSTRATES AGAIN. FROM THE TOP.');
+    demo();
+  }
+
+  function demo() {
+    const lit = Math.max(230, 470 - round * 20);
+    const gap = Math.max(105, 215 - round * 11);
+    let i = 0;
+    (function next() {
+      if (phase !== 'demo') return;
+      if (i >= seq.length) { wait(430, startInput); return; }
+      light(seq[i++], lit);
+      wait(lit + gap, next);
+    })();
+  }
+
+  function startInput() {
+    if (phase !== 'demo') return;
+    phase = 'input';
+    lock(false);
+    pos = 0;
+    renderPips();
+    say('YOUR TURN. PERFORM THE SEQUENCE. <b>' + seq.length + '</b> EVENT' + (seq.length > 1 ? 'S' : '') + ', IN ORDER.');
+    Juice.sfx('tick');
+  }
+
+  function press(i) {
+    if (phase !== 'input') return;
+    light(i, 180);
+    const b = btns[i];
+    if (seq[pos] === i) {
+      pos++;
+      renderPips();
+      if (i === 5) once('thething', () => Arcade.toast('🏆 THE THING YOU DID'));
+      if (pos >= seq.length) { phase = 'scoring'; lock(true); wait(260, roundCleared); }
+    } else {
+      mistake(b, i);
+    }
+  }
+
+  function mistake(b, i) {
+    phase = 'scoring';
+    lock(true);
+    clearTimers();
+    mistakes++;
+    roundStrikes++;
+    const c = centerOf(b);
+    Juice.impact(c.x, c.y, { text: 'OUT OF SEQUENCE', power: 11, color: '#FF3D8A' });
+    Juice.flash('#FF3D8A', .3);
+    Juice.sfx('bad');
+    boardMood('tut', 700);
+    btns.forEach(x => x.classList.remove('lit'));
+
+    if (roundStrikes >= 2) {
+      roundStrikes = 0;
+      failures++;
+      confidence = Math.max(4, confidence - 15);
+      renderHud();
+      if (failures >= 3) { wait(620, suspended); return; }
+      const txt = FAIL_NOTES[Math.min(FAIL_NOTES.length - 1, failures - 1)];
+      say('ROUND FAILURE. THE BOARD IS WRITING.');
+      wait(760, () => showNote('BOARD RULING — ROUND ' + round, txt,
+        'FROM THE TOP', () => beginRound(false)));
+    } else {
+      confidence = Math.max(4, confidence - 8);
+      renderHud();
+      const txt = CORRECTION_NOTES[corrIdx % CORRECTION_NOTES.length]; corrIdx++;
+      say('THE BOARD SAW THAT. ONE CORRECTION REMAINING THIS ROUND.');
+      wait(700, () => showNote('CLIPBOARD NOTE — CORRECTION', txt,
+        'PERFORM IT AGAIN', () => beginRound(false)));
+    }
+  }
+
+  function roundCleared() {
+    confidence = Math.min(100, confidence + 7 + round);
+    boardMood('nod', 620);
+    Juice.sfx('good');
+    Juice.reward(wrap.clientWidth / 2, wrap.clientHeight * 0.42,
+      { text: 'ENTERED INTO THE RECORD', color: '#FFD23F', sound: 'good', count: 22 });
+    renderHud();
+    roundStrikes = 0;
+
+    if (round >= WIN_ROUND) { wait(700, victory); return; }
+
+    say('THE BOARD ACCEPTS ROUND ' + round + '.');
+    const txt = ROUND_NOTES[noteIdx % ROUND_NOTES.length]; noteIdx++;
+    wait(760, () => showNote('CLIPBOARD NOTE — AFTER ROUND ' + round, txt,
+      'THE BOARD IS READY', () => { round++; renderHud(); beginRound(true); }));
+  }
+
+  /* ---------------- endings ---------------- */
+  function victory() {
+    phase = 'over';
+    clearTimers();
+    lock(true);
+    Juice.sfx('win');
+    Juice.flash('#FFD23F', .4);
+    Juice.burst(wrap.clientWidth / 2, wrap.clientHeight * 0.5,
+      { color: '#FFD23F', count: 46, speed: 6 });
+    Arcade.toast('🏆 STUNT DOUBLE SURVIVED');
+    if (mistakes === 0) wait(1100, () => Arcade.toast('🏆 PERFECT RECALL'));
+
+    wait(900, () => Arcade.gameOver({
+      won: true,
+      score: WIN_ROUND,
+      accent: '#FFD23F',
+      title: 'The Board Is Satisfied',
+      lines: [
+        'All eight events performed in sequence, on the mat, in front of five people with clipboards. ' +
+        'The reenactment is <b>entered into the record</b> at 3:52 PM, eight minutes before the tumbling class.',
+        'The stunt double receives a credit. It reads <b>MAN</b>. He has framed it. He tells people it was ' +
+        'the hardest role of his career, and when they ask what happened he says <b>"I am not allowed to say, ' +
+        'but I can show you"</b> — and then he does the sequence. Perfectly. Every time. He never forgets it.',
+        'Insurance is billed at the extended day rate, plus mat, plus one cooler that arrived at 4:10 PM ' +
+        'and was <b>never entered into evidence</b> because by then the children were tumbling.',
+        'The board’s finding, adopted unanimously: <b>the sequence proves he was defending himself.</b>',
+        'A footnote is attached at the request of a single member, and it is the only sentence anyone will ' +
+        'remember from the whole proceeding: <b>any of the eight moves could have been "carry it to a cooler."</b> ' +
+        'The board does not know which one was. The board rules that it does not have to.',
+        'The file is closed. The gymnasium is swept. The record now contains a fight, in order, forever — ' +
+        'and a cooler that arrived eighteen minutes late, which is, if you think about it, the entire case.'
+      ],
+      links: [
+        { label: 'Visit the shrine', href: '../../shrines/index.html#jason-sands' },
+        { label: 'The 111 recipes — $5', href: '../../cookbook.html' }
+      ],
+      onRetry: () => location.reload()
+    }));
+  }
+
+  function suspended() {
+    phase = 'over';
+    clearTimers();
+    lock(true);
+    Juice.sfx('lose');
+    Juice.shake(15);
+    Juice.flash('#FF3D8A', .45);
+    Arcade.gameOver({
+      won: false,
+      score: round,
+      title: 'Reenactment Suspended',
+      lines: [
+        'Three round failures. Under the rules of procedure, an incident that cannot be performed in order ' +
+        '<b>cannot be said to have an order</b>, and an incident without an order cannot be ruled upon.',
+        'The gymnasium is released back to the school. The mat is rolled by two people who were not read in ' +
+        'and now have questions. The stunt double is paid in full and asks, on his way out, whether the entity ' +
+        'was ever found. Nobody on the board answers, because answering would require knowing the sequence.',
+        'The file is marked <b>PENDING PHYSICAL DEMONSTRATION</b> and returned to the shelf, where it joins ' +
+        'every other thing that certainly happened and cannot be scheduled.',
+        'Insurance is billed anyway.'
+      ],
+      links: [
+        { label: 'Visit the shrine', href: '../../shrines/index.html#jason-sands' }
+      ],
+      onRetry: () => location.reload()
+    });
+  }
+
+  /* ---------------- input: keyboard ---------------- */
+  addEventListener('keydown', e => {
+    if (phase !== 'input') return;
+    const n = parseInt(e.key, 10);
+    if (n >= 1 && n <= 6) { e.preventDefault(); press(n - 1); }
+  });
+
+  /* ---------------- boot ---------------- */
+  function reset() {
+    clearTimers();
+    seq = []; pos = 0; round = 1; phase = 'idle';
+    confidence = 50; failures = 0; roundStrikes = 0; mistakes = 0;
+    noteIdx = 0; corrIdx = 0;
+    btns.forEach(b => b.classList.remove('lit'));
+    renderHud(); renderPips();
+  }
+
+  $('startBtn').addEventListener('click', () => {
+    Juice.sfx('click');
+    $('briefing').style.display = 'none';
+    reset();
+    wait(420, () => beginRound(true));
+  });
+
+  renderHud();
+  say('THE BOARD IS SEATED.');
+
+  Arcade.cabinet({
+    id: 'the-reenactment',
+    wing: 'THE JASON SANDS EXPERIENCE',
+    title: 'The Reenactment',
+    subtitle: 'Sequence Of Events',
+    accent: '#FFD23F',
+    scoreLabel: 'ROUND REACHED',
+    lore: 'The review board cannot rule on the incident without a full physical reenactment. ' +
+          'A stunt double has been hired. Insurance has been notified. A middle-school gymnasium has been ' +
+          'rented at the day rate. <b>The board will now call out the sequence of events, and you will perform ' +
+          'it, in order, on a gymnastics mat, in front of five people with clipboards.</b> The sequence grows ' +
+          'every round, because the incident keeps getting longer every time somebody remembers something.',
+    howto: [
+      'WATCH — the board lights up the sequence, in order',
+      'REPEAT — tap the moves back, same order',
+      'KEYS 1–6 or tap the big buttons',
+      'Two corrections per round — then the round is failed',
+      'Three round failures — the reenactment is suspended'
+    ],
+    shrine: '../../shrines/index.html#jason-sands',
+    onStart: () => { $('briefing').style.display = 'flex'; }
+  });
+})();
+</script>
+</body>
+</html>
