@@ -38,9 +38,13 @@ parking validation. "He killed a crab person? Fine. Where's the cooler?" That's 
 
 ## The other half: the shrines
 `/shrines/` promotes and **books** the figures — their record, clips, socials, and booking info —
-plus **The House Tip**: a share of what each wing earns goes to the person it's about, and a standing
-offer to correct links or take a wing down on request. Honor that literally. The site's mission is to
-*help* witnesses, not farm them.
+plus a standing offer to correct links, add links, or take a wing down entirely on request. Honor
+that literally. The site's mission is to *help* witnesses, not farm them.
+
+**NEVER promise anyone money, revenue share, royalties, or `a cut` anywhere on the site or in any
+product.** A public payment promise creates expectations and potential obligations we do not control.
+Removed 2026-07-30 at the client's instruction. Promotion and takedown-on-request are the offer; cash
+is never mentioned.
 
 ## Technical
 - Static site. No build step currently. Vanilla JS, canvas, Three.js (vendored in `/assets/`).

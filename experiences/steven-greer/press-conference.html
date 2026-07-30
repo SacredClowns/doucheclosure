@@ -85,8 +85,8 @@
 
   /* ---------- running order ---------- */
   #slots{display:grid; gap:.3rem;}
-  .slot{display:flex; align-items:stretch; gap:.45rem; background:#0C0912;
-    border:2px solid #33291A; border-radius:7px; padding:.35rem .4rem; min-height:44px;}
+  .slot{display:flex; align-items:center; gap:.45rem; background:#0C0912;
+    border:2px solid #33291A; border-radius:7px; padding:.3rem .4rem; height:50px; overflow:hidden;}
   .slot.empty{border-style:dashed; border-color:#332A42;}
   .slot.sel{border-color:var(--neon-yellow); box-shadow:0 0 12px rgba(255,210,63,.3);}
   .slot.live{border-color:var(--brass); background:#1A1408; box-shadow:0 0 14px rgba(201,162,75,.4);}
@@ -98,15 +98,16 @@
   .slot .r{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; text-transform:uppercase;
     font-size:.86rem; line-height:1.1; color:#E8D9B4; letter-spacing:.03em;
     overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-  .slot .m{font-size:.53rem; letter-spacing:.1em; color:#7E6F9E; text-transform:uppercase;}
-  .slot .ph{font-size:.58rem; letter-spacing:.18em; color:#4E4364; text-transform:uppercase; line-height:2.1;}
-  .slot .ctl{flex:0 0 auto; display:flex; flex-direction:column; justify-content:center; gap:2px;}
+  .slot .m{font-size:.53rem; letter-spacing:.1em; color:#7E6F9E; text-transform:uppercase;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .slot .ph{font-size:.58rem; letter-spacing:.18em; color:#4E4364; text-transform:uppercase;}
+  .slot .ctl{flex:0 0 auto; display:flex; align-items:center; gap:3px;}
   .slot .ctl button{font-family:inherit; cursor:pointer; background:#1B1526; color:#9C8CB8;
-    border:1px solid #3A2F4C; border-radius:3px; font-size:.55rem; line-height:1; padding:2px 5px;}
+    border:1px solid #3A2F4C; border-radius:4px; font-size:.62rem; line-height:1; padding:6px 8px;}
   .slot .ctl button:hover{color:var(--neon-yellow); border-color:var(--neon-yellow);}
   .slot .ctl button:disabled{opacity:.25; cursor:default;}
   .slot .risk{display:inline-block; font-size:.46rem; letter-spacing:.12em; color:#0B0614;
-    background:var(--neon-yellow); border-radius:3px; padding:0 .25rem; margin-left:.3rem; vertical-align:1px;}
+    background:var(--neon-yellow); border-radius:3px; padding:0 .25rem; margin-right:.3rem;}
   .slot.drop{border-color:var(--neon-cyan); background:#0A1820;}
 
   /* ---------- roster ---------- */
@@ -181,6 +182,9 @@
   .btn{display:inline-block; margin:.4rem; padding:.85rem 1.6rem; border-radius:8px; cursor:pointer;
     font-family:inherit; font-weight:bold; font-size:.8rem; letter-spacing:.14em; text-transform:uppercase;
     text-decoration:none; border:2px solid var(--brass); background:var(--brass); color:#22190A;}
+
+  /* the ending card is long — keep its top reachable when it overflows */
+  body .dcab-overlay{align-items:safe center;}
 
   .dossier{border-left:4px solid var(--neon-yellow); background:var(--panel);
     padding:1.05rem 1.25rem; color:var(--chrome); font-size:.86rem; margin-top:1.6rem;}
@@ -271,7 +275,7 @@
         <p>Every one of them has something to lose by walking through that door and every one of them
         walked through it anyway. <b>Your job today is not persuasion. It is sequencing.</b></p>
         <p>Eight slots. Eighty-four minutes. Twelve witnesses who between them need a hundred and
-        sixteen. <b>You are going to cut people who drove here,</b> and the ones you cut are not going
+        fifteen. <b>You are going to cut people who drove here,</b> and the ones you cut are not going
         to get another room like this, and you have to do it anyway, because a program that runs long
         is a program the wire services leave early.</p>
         <p>The room will teach you the rules if you let it. Watch the meter. Watch the back table.
@@ -607,8 +611,10 @@
         const w = BY[id];
         row.innerHTML =
           '<div class="num">' + (i + 1) + '</div>' +
-          '<div class="body"><div class="r">' + w.role + (w.risk ? '<span class="risk">Extraordinary</span>' : '') + '</div>' +
-          '<div class="m">' + w.org.replace('&bull;', '·') + ' &nbsp;·&nbsp; ' + w.min + ' min</div></div>' +
+          '<div class="body"><div class="r">' + w.role + '</div>' +
+          '<div class="m">' + (w.risk ? '<span class="risk">Extraordinary</span>' : '') +
+          '<b style="color:#C9A24B;font-weight:normal">' + w.min + ' min</b> &nbsp;·&nbsp; ' +
+          w.org.replace('&bull;', '·') + '</div></div>' +
           (phase === 'book'
             ? '<div class="ctl">' +
               '<button type="button" data-act="up" ' + (i === 0 ? 'disabled' : '') + '>▲</button>' +
@@ -825,10 +831,12 @@
     const p = n > 1 ? idx / (n - 1) : 0.5;
     const prev = idx > 0 ? seated[idx - 1] : null;
 
-    let raw = w.w * 1.4;
+    let raw = w.w * 1.35;
     raw += w.c * (-1.4 + 2.8 * p);
+    raw -= idx * 0.55;                 // the room gets heavier every slot
 
     const bits = [];
+    if (idx === 5) bits.push('An hour in those chairs. <b>The room is heavier than it was at ten o’clock</b> and everything from here has to be worth the seat it is costing.');
     if (idx === 0 && w.w >= 5 && w.c <= 2){ raw += 4; bits.push('The room settles. You opened on a resume, not a claim, and a settled room is a room that hears the second witness.'); }
     if (idx === 0 && w.c >= 4){ bits.push('You opened on the biggest thing you had. There is nowhere to go from here but sideways, and the room knows it before you do.'); }
 
@@ -861,7 +869,7 @@
       else { raw -= 1.5; bits.push('The program steps backwards &mdash; a smaller claim after a larger one, and a room reads a downshift as a retreat.'); }
     }
 
-    const mult = raw > 0 ? Math.max(0.15, Math.min(1, (100 - cred) / 55)) : 1;
+    const mult = raw > 0 ? Math.max(0.1, Math.min(1, (100 - cred) / 70)) : 1;
     let delta = raw * mult;
     delta = Math.round(delta * 10) / 10;
     cred = Math.max(0, Math.min(MAX_CRED, cred + delta));
@@ -929,9 +937,15 @@
     const s = stage.getBoundingClientRect();
     const px = r.left - s.left + r.width / 2, py = r.top - s.top + 40;
 
+    /* a program with nothing extraordinary in it is a program with nothing to print */
+    let noStory = false;
+    for (let k = 0; k < seated.length; k++) if (seated[k].c >= 4) noStory = true;
+    noStory = !noStory;
+    if (noStory) cred = Math.max(0, cred - 12);
+
     let d;
     if (hadQA){
-      d = Math.round(6 * Math.max(0.3, Math.min(1, (100 - cred) / 55)) * 10) / 10 + 2;
+      d = Math.round(6 * Math.max(0.3, Math.min(1, (100 - cred) / 70)) * 10) / 10 + 2;
       cred = Math.min(MAX_CRED, cred + d);
       $('pod-says').innerHTML = '“We have time. Go ahead.”<br><br>Hands go up all over the room and the witnesses stay at the table for forty minutes past the schedule, and every single one of them answers every single question, including the stupid ones, including the hostile ones, including the third time somebody asks the radar operator whether he had been drinking.';
       $('pod-verdict').innerHTML = '<span class="up tag">+' + d + ' credibility</span> <b>You left them time.</b> A panel that takes questions is a panel that is not selling anything, and a press corps can smell the difference from the back of a hall. Two reporters who had already packed their bags sit back down.';
@@ -950,13 +964,16 @@
       REPORTERS.forEach(rp => { rp.eng = Math.max(0, rp.eng - 16); rp.chip = rp.eng >= 55 ? 'Taking notes' : 'Packing up'; });
     }
 
+    let bd;
     if (distinct >= 5){
       const b = (distinct - 3) * 2;
       cred = Math.min(MAX_CRED, cred + b);
-      $('board').textContent = 'BOARD: ' + distinct + ' different services represented. Breadth bonus +' + b + '. Nobody can call this one unit with one grievance.';
+      bd = 'BOARD: ' + distinct + ' different services represented. Breadth bonus +' + b + '. Nobody can call this one unit with one grievance.';
     } else {
-      $('board').textContent = 'BOARD: only ' + distinct + ' services on that stage. A narrow roster reads as a narrow problem.';
+      bd = 'BOARD: only ' + distinct + ' services on that stage. A narrow roster reads as a narrow problem.';
     }
+    if (noStory) bd += ' — BOARD: −12. Eight unimpeachable people said eight unimpeachable things and not one of them said anything a newsroom can print as news. You cut every extraordinary claim on the roster. That is not caution. That is an empty program.';
+    $('board').textContent = bd;
 
     renderAll();
     schedule(finish, 3400);
@@ -1045,7 +1062,9 @@
         title: title,
         score: score,
         accent: c >= 85 ? '#C9A24B' : (won ? '#3DFC8A' : '#FF3D8A'),
-        lines: ['<span class="tag flat">CREDIBILITY ' + c + '</span> <span class="tag up">' + n + ' SEATED</span>'].concat(lines),
+        lines: ['<span class="tag flat">FINAL ' + score + '</span> = <span class="tag up">CREDIBILITY ' + c +
+                '</span> + <span class="tag up">' + n + ' SEATED</span>' +
+                (hadQA ? ' &nbsp;<span class="tag flat">QUESTIONS TAKEN</span>' : '')].concat(lines),
         onRetry: () => {
           reset();
           $('briefing').style.display = 'flex';
@@ -1099,6 +1118,7 @@
       '8 SLOTS, 84 MINUTES &mdash; you cannot seat everyone. Cutting is the game.',
       'THE ROOM HAS RULES. It will not tell you what they are. It will show you.',
       'EXTRAORDINARY testimony is not weaker. It is heavier. Heavy goes on top.',
+      'A PROGRAM WITH NO STORY IN IT IS NOT NEWS. Cut them all and you have nothing.',
       'LEAVE 12 MINUTES unbooked or there is no time for questions',
       'CREDIBILITY 85 and the room goes quiet'
     ],
@@ -1110,5 +1130,6 @@
   });
 })();
 </script>
+<script src="../../assets/legal.js"></script>
 </body>
 </html>

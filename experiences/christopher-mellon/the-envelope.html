@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE ENVELOPE — Doucheclosure</title>
+<meta name="description" content="By his own public account, the century's most consequential media handoff travelled in a plain manila envelope. The review board has reopened procurement. Money is no object. Equip the handoff properly and discover the correct answer costs about four dollars.">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --manila:#E8D9A8; --oldmoney:#7FA88F; --shadow:rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--void);}
+  body{margin:0; background:var(--void); color:var(--white);
+    font-family:"Courier New", Courier, monospace; line-height:1.65; overflow-x:hidden;}
+  body::after{content:""; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 1px, transparent 1px 3px);
+    pointer-events:none; z-index:100;}
+  a{color:var(--neon-cyan);}
+  .wrap{max-width:1040px; margin:0 auto; padding:0 1.25rem;}
+  .display{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-weight:400; text-transform:uppercase; letter-spacing:.03em; line-height:.95;}
+  .crumb{padding:1rem 1.25rem; font-size:.72rem; letter-spacing:.15em; text-transform:uppercase;}
+  .crumb a{text-decoration:none;}
+
+  header.wing{
+    text-align:center; padding:2.6rem 1rem 2.2rem;
+    background:radial-gradient(ellipse at 50% -20%, rgba(232,217,168,.22), transparent 60%),
+      radial-gradient(ellipse at 88% 118%, rgba(127,168,143,.11), transparent 55%);
+    border-bottom:3px solid var(--manila);
+  }
+  .wing .eyebrow{color:var(--neon-cyan); letter-spacing:.28em; text-transform:uppercase; font-size:.72rem;}
+  .wing h1{margin:.5rem 0 0; font-size:clamp(2.6rem,10vw,5rem); color:var(--manila);
+    text-shadow:0 0 18px rgba(232,217,168,.5), 4px 4px 0 #4A3E1E;}
+  .wing .sub{color:var(--chrome); max-width:38rem; margin:1.1rem auto 0; font-size:.9rem;}
+  .wing .sub b{color:var(--white);}
+  .file-tab{display:inline-block; margin-top:1.2rem; border:2px solid var(--neon-pink);
+    color:var(--neon-pink); padding:.4rem 1.1rem; font-size:.72rem; letter-spacing:.2em;
+    text-transform:uppercase; transform:rotate(-2deg);}
+
+  section{padding:2rem 0 2.6rem;}
+
+  /* ---------- stage ---------- */
+  #stage{position:relative; background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:2px solid #6A5A2E; border-radius:12px;
+    box-shadow:0 0 26px rgba(232,217,168,.12),0 12px 34px var(--shadow);
+    padding:1.1rem; overflow:hidden;}
+  #stage::before{content:""; position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(ellipse at 22% 10%, rgba(232,217,168,.08), transparent 58%);}
+
+  /* ---------- readout ---------- */
+  #readout{position:relative; z-index:2; display:flex; gap:.7rem; align-items:stretch; flex-wrap:wrap;}
+  .rbox{flex:1 1 190px; min-width:158px; text-align:center; border:2px solid #6A5A2E; border-radius:10px;
+    background:#0A0710; padding:.4rem .7rem .55rem;}
+  .rbox .rl{font-size:.52rem; letter-spacing:.2em; text-transform:uppercase; color:#8A7A5A;}
+  .rbox .rv{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; font-weight:400;
+    font-size:2.3rem; line-height:1.05; color:var(--manila); letter-spacing:.03em; word-break:break-all;}
+  .rbox .rn{font-size:.55rem; letter-spacing:.1em; text-transform:uppercase; color:#6E6288; min-height:1.1rem;}
+  #costbox .rv.rich{color:var(--neon-pink);}
+  #metbox .rv.all{color:var(--neon-green);}
+  #effbox .rv.s{color:var(--neon-green);}
+  #effbox .rv.bad{color:var(--neon-pink);}
+
+  #ticker{position:relative; z-index:2; margin-top:.6rem; border:1px dashed #4A3E1E; border-radius:8px;
+    background:#0D0817; padding:.42rem .7rem; font-size:.62rem; letter-spacing:.11em;
+    text-transform:uppercase; color:#8B7CA8; min-height:1.9rem;}
+  #ticker b{color:var(--manila); font-weight:normal;}
+  #ticker i{color:var(--neon-green); font-style:normal;}
+
+  /* ---------- requirements sheet ---------- */
+  #sheetwrap{position:relative; z-index:2; margin-top:.9rem; border:2px solid #6A5A2E;
+    border-radius:10px; background:#0D0817; padding:.75rem .85rem .85rem;}
+  .sechead{font-size:.58rem; letter-spacing:.24em; text-transform:uppercase; color:var(--manila);
+    display:flex; justify-content:space-between; align-items:baseline; gap:.6rem; flex-wrap:wrap;}
+  .sechead span.hint{color:#6E6288; letter-spacing:.12em;}
+  #sheet{margin-top:.6rem; display:grid; gap:.42rem;}
+  .req{border:1.5px solid #35205C; border-left:4px solid #4A3E1E; border-radius:7px;
+    background:#100B1C; padding:.45rem .6rem .5rem; transition:border-color .18s, background .18s;}
+  .req.met{border-left-color:var(--neon-green); background:#0C1A14;}
+  .req.flash{border-color:var(--neon-green);}
+  .req .rhead{display:flex; justify-content:space-between; gap:.6rem; align-items:baseline; flex-wrap:wrap;}
+  .req .rname{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; font-weight:400;
+    text-transform:uppercase; letter-spacing:.04em; font-size:.98rem; color:var(--manila); line-height:1;}
+  .req.met .rname{color:var(--neon-green);}
+  .req .rstat{font-size:.56rem; letter-spacing:.2em; text-transform:uppercase; color:var(--neon-pink);
+    border:1px solid var(--neon-pink); border-radius:4px; padding:.06rem .35rem; white-space:nowrap;}
+  .req.met .rstat{color:var(--neon-green); border-color:var(--neon-green);}
+  .req .rspec{font-size:.6rem; color:#7E6F9E; letter-spacing:.02em; line-height:1.45; margin:.2rem 0 .32rem;}
+  .track{height:9px; background:#00000099; border:1px solid #000; border-radius:5px; overflow:hidden;}
+  .req .fill{height:100%; width:0%; background:linear-gradient(90deg,#5B2436,var(--neon-pink));
+    transition:width .32s ease-out;}
+  .req.met .fill{background:linear-gradient(90deg,#1B5B36,var(--neon-green));}
+  .req .chips{display:flex; flex-wrap:wrap; gap:.22rem; margin-top:.3rem; min-height:.2rem;}
+  .chip{font-size:.5rem; letter-spacing:.08em; text-transform:uppercase; color:#B9AFD0;
+    border:1px solid #35205C; border-radius:4px; padding:.04rem .3rem; background:#0A0710;}
+  .chip.neg{color:#D98CA6; border-color:#5B2436;}
+  .chip.zero{opacity:.4;}
+  .req .cover{font-size:.55rem; letter-spacing:.1em; color:#6E6288; white-space:nowrap;}
+
+  /* ---------- catalogue ---------- */
+  #catwrap{position:relative; z-index:2; margin-top:.95rem;}
+  .cat{margin-top:.75rem; border:2px solid #35205C; border-radius:10px; background:#100B1C;
+    padding:.6rem .7rem .7rem;}
+  .cat > .ch{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; font-weight:400;
+    text-transform:uppercase; letter-spacing:.06em; font-size:1.02rem; color:var(--neon-cyan); line-height:1;}
+  .cat > .cs{font-size:.58rem; color:#7E6F9E; letter-spacing:.03em; margin:.16rem 0 .45rem;}
+  .cat > .cs em{color:var(--neon-yellow); font-style:normal;}
+  .items{display:grid; grid-template-columns:repeat(auto-fill,minmax(232px,1fr)); gap:.45rem;}
+  .item{font-family:inherit; text-align:left; cursor:pointer; color:#C8BEE0; background:#0E0B18;
+    border:1.5px solid #3A2E52; border-radius:7px; padding:.44rem .5rem .48rem; line-height:1.3;
+    display:flex; flex-direction:column; gap:.12rem; transition:border-color .12s, background .12s, transform .08s;}
+  .item .iname{font-size:.68rem; letter-spacing:.05em; text-transform:uppercase; color:var(--white);}
+  .item .iblurb{font-size:.56rem; color:#7E6F9E; letter-spacing:.02em; line-height:1.4;}
+  .item .iprice{font-size:.62rem; letter-spacing:.08em; color:var(--neon-yellow); margin-top:.12rem;}
+  .item .ispec{font-size:.5rem; letter-spacing:.06em; color:#5F8FA8; display:none;}
+  body.audit .item .ispec{display:block;}
+  .item:hover:not(.on){border-color:var(--manila); transform:translateY(-1px);}
+  .item.on{background:var(--manila); border-color:var(--manila); color:#231B02;}
+  .item.on .iname{color:#231B02; font-weight:bold;}
+  .item.on .iblurb{color:#5B4E22;}
+  .item.on .iprice{color:#4A3E08;}
+  .item.on .ispec{color:#4A3E08;}
+  .item.lux .iprice{color:var(--neon-pink);}
+  .item.on.lux{background:#F0D2DE; border-color:var(--neon-pink);}
+  .item.on.lux .iprice{color:#7A1030;}
+
+  /* ---------- action row ---------- */
+  #actions{position:relative; z-index:2; margin-top:1.1rem; text-align:center;}
+  .btn{display:inline-block; margin:.3rem; padding:.8rem 1.5rem; border-radius:8px; cursor:pointer;
+    font-family:inherit; font-weight:bold; font-size:.76rem; letter-spacing:.14em; text-transform:uppercase;
+    text-decoration:none; border:2px solid var(--manila); background:var(--manila); color:#231B02;}
+  .btn.ghost{background:transparent; color:var(--neon-cyan); border-color:var(--neon-cyan);}
+  .btn.warn{background:transparent; color:var(--neon-pink); border-color:var(--neon-pink);}
+  .btn:disabled{opacity:.35; cursor:not-allowed;}
+  .btn.small{padding:.5rem .85rem; font-size:.62rem; letter-spacing:.16em; font-weight:normal;}
+
+  /* ---------- comparison ---------- */
+  #compare{position:relative; z-index:2; display:none; margin-top:.9rem;
+    border-left:4px solid var(--neon-pink); background:#170C15; padding:.9rem 1rem;}
+  #compare h4{margin:0 0 .35rem; font-size:.62rem; letter-spacing:.22em; text-transform:uppercase; color:var(--neon-pink);}
+  #compare p{margin:.5rem 0; font-size:.76rem; color:var(--chrome);}
+  #compare p b{color:var(--white);}
+  #compareList{display:grid; gap:.28rem; margin:.6rem 0;}
+  .crow{display:flex; justify-content:space-between; gap:.6rem; align-items:baseline;
+    border-bottom:1px dashed #3C2B60; padding-bottom:.18rem; font-size:.66rem; letter-spacing:.05em;}
+  .crow .cn{color:#C8BEE0; text-transform:uppercase;}
+  .crow .cv{white-space:nowrap; font-size:.58rem; letter-spacing:.16em;}
+  .crow .cv.no{color:var(--neon-pink);}
+  .crow .cv.yes{color:var(--neon-green);}
+  #compareKit{font-size:.62rem; color:#8B7CA8; letter-spacing:.06em; text-transform:uppercase;}
+  #compareKit b{color:var(--manila); font-weight:normal;}
+
+  /* ---------- report ---------- */
+  #report{position:relative; z-index:2; display:none; margin-top:1.1rem;}
+  #po{background:#12100A; border:2px solid var(--manila); border-radius:4px; padding:1rem 1.1rem;
+    font-size:.72rem; color:#D8CEA8; letter-spacing:.03em; line-height:1.7;
+    background-image:repeating-linear-gradient(0deg, rgba(0,0,0,.16) 0 1px, transparent 1px 4px);
+    overflow-x:auto;}
+  #po .poh{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; font-size:1.5rem;
+    text-transform:uppercase; color:var(--manila); letter-spacing:.06em; line-height:1;}
+  #po .posub{font-size:.58rem; letter-spacing:.2em; text-transform:uppercase; color:#8A7A5A; margin-bottom:.6rem;}
+  #po .rule{border-top:1px dashed #6A5A2E; margin:.55rem 0;}
+  #po .line{display:flex; justify-content:space-between; gap:1rem;}
+  #po .line span:first-child{overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  #po .line span:last-child{white-space:nowrap;}
+  #po .tot{color:var(--white); font-size:.86rem;}
+  #po .stampline{margin-top:.7rem; text-align:right; color:var(--neon-pink); font-size:.6rem;
+    letter-spacing:.2em; text-transform:uppercase;}
+  #grades{margin-top:.9rem; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:.6rem;}
+  .gcard{border:2px solid var(--manila); border-radius:10px; background:#0D0817; padding:.75rem .9rem; text-align:center;}
+  .gcard .gl{font-size:.56rem; letter-spacing:.22em; text-transform:uppercase; color:var(--chrome);}
+  .gcard .g{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; font-weight:400;
+    font-size:clamp(2.6rem,11vw,4rem); line-height:.95; color:var(--manila);}
+  .gcard .gn{font-size:.64rem; color:#8B7CA8; line-height:1.5;}
+  .gcard .gn b{color:var(--white);}
+
+  /* ---------- briefing ---------- */
+  #briefing{position:absolute; inset:0; z-index:40; display:none; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center; padding:1.4rem;
+    background:rgba(6,5,12,.965); overflow-y:auto;}
+  #briefing h2{font-size:clamp(1.5rem,5vw,2.4rem); color:var(--manila);
+    text-shadow:0 0 18px rgba(232,217,168,.4); margin:.2rem 0 0;}
+  #briefing p{max-width:35rem; margin:.75rem auto; color:var(--chrome); font-size:.85rem;}
+  #briefing b{color:var(--white);}
+  #briefing .memo{font-size:.58rem; letter-spacing:.24em; text-transform:uppercase; color:var(--neon-cyan);}
+
+  .dossier{border-left:4px solid var(--neon-yellow); background:var(--panel);
+    padding:1.05rem 1.25rem; color:var(--chrome); font-size:.86rem; margin-top:1.6rem;}
+  .dossier b{color:var(--white);}
+  footer{padding:2rem 1rem 3rem; text-align:center; color:#7E6F9E; font-size:.72rem;}
+
+  @media (max-width:760px){
+    #stage{padding:.8rem;}
+    header.wing{padding:1.8rem 1rem 1.6rem;}
+    .items{grid-template-columns:1fr;}
+    .rbox .rv{font-size:1.9rem;}
+    .rbox{flex-basis:46%; min-width:0;}
+  }
+  @media (prefers-reduced-motion: reduce){ .req .fill{transition:none;} }
+</style>
+</head>
+<body>
+
+<p class="crumb"><a href="../../index.html">&larr; THE ARCADE</a> &nbsp;/&nbsp; <a href="index.html">CHRISTOPHER MELLON</a> &nbsp;/&nbsp; THE ENVELOPE</p>
+
+<header class="wing">
+  <p class="eyebrow">The Christopher Mellon Experience &bull; Cabinet No. 2</p>
+  <h1 class="display">The Envelope</h1>
+  <p class="sub">By his own public account, the most consequential media handoff of the century
+  happened in a parking lot, in a plain manila envelope. Not even the string-button model.
+  <b>We believe every word of it.</b> The review board's only finding was against
+  <b>procurement</b> &mdash; and procurement has now been reopened, with an unlimited budget,
+  because somebody upstairs is very embarrassed.</p>
+  <span class="file-tab">REQ-1147-M &bull; BUDGET CEILING: NONE &bull; STATUS: OPEN</span>
+</header>
+
+<section>
+  <div class="wrap">
+    <div id="stage">
+
+      <div id="readout">
+        <div class="rbox" id="metbox">
+          <div class="rl">Requirements met</div>
+          <div class="rv" id="metv">0 / 7</div>
+          <div class="rn" id="metn">The order is empty</div>
+        </div>
+        <div class="rbox" id="costbox">
+          <div class="rl">Total cost</div>
+          <div class="rv" id="costv">$0.00</div>
+          <div class="rn" id="costn">Nothing requisitioned</div>
+        </div>
+        <div class="rbox" id="effbox">
+          <div class="rl">Cost efficiency</div>
+          <div class="rv" id="effv">&mdash;</div>
+          <div class="rn" id="effn">Graded on completion</div>
+        </div>
+      </div>
+
+      <div id="ticker">Requisition open. Select items from the catalogue. The sheet updates live.</div>
+
+      <div id="sheetwrap">
+        <div class="sechead">
+          <span>Requirements sheet &mdash; REQ-1147-M &bull; what the handoff must survive</span>
+          <span class="hint">A requirement is met at 100% coverage</span>
+        </div>
+        <div id="sheet"></div>
+      </div>
+
+      <div id="catwrap">
+        <div class="sechead">
+          <span>Approved vendor catalogue &mdash; no ceiling, no questions asked</span>
+          <span class="hint"><button class="btn ghost small" id="auditBtn" type="button">Reveal spec scores</button></span>
+        </div>
+        <div id="cats"></div>
+      </div>
+
+      <div id="actions">
+        <button class="btn" id="submitBtn" type="button" disabled>Submit requisition</button>
+        <button class="btn warn" id="compareBtn" type="button">What was actually used</button>
+        <button class="btn ghost" id="clearBtn" type="button">Void the order</button>
+      </div>
+
+      <div id="compare">
+        <h4>Comparison: the configuration described in the public account</h4>
+        <p id="compareKit">&nbsp;</p>
+        <div id="compareList"></div>
+        <p id="compareNote">&nbsp;</p>
+      </div>
+
+      <div id="report">
+        <div id="po"></div>
+        <div id="grades"></div>
+      </div>
+
+      <div id="briefing">
+        <p class="memo">Internal memorandum &bull; Office of Acquisitions</p>
+        <h2 class="display">Money Is No Object.</h2>
+        <p>The board has read the account. The board accepts the account <b>in full</b>. A parking
+        structure, a handoff, an envelope. Nothing about the people is in dispute here and nothing
+        about the people is our business.</p>
+        <p>What is our business is that the vessel was a <b>9&times;12 manila envelope</b>. Economy
+        grade. No clasp. No string button. The board has been unable to work since it found out.</p>
+        <p>So: procurement is reopened. There is a requirements sheet. There is a catalogue with no
+        price ceiling on it whatsoever &mdash; diplomatic pouches, armored couriers, a butler.
+        Spend whatever you want. <b>There is no clock.</b> Take all day.</p>
+        <p>You will be graded twice. Once on <b>requirements met</b>. Then, separately, on
+        <b>what it cost you to meet them.</b></p>
+        <button class="btn" id="startBtn" type="button">Open the catalogue</button>
+      </div>
+
+    </div>
+
+    <div class="dossier">
+      <b>WING DOCTRINE:</b> Nobody's honesty is on trial in this cabinet. Not one item in this
+      catalogue is an accusation. The defendant here is a purchasing department &mdash; an entire
+      apparatus that can put a satellite over a wristwatch and could not put four dollars of
+      stationery around the thing it says matters most. Every product in this game is real, sold
+      today, at roughly these prices, at a store you can walk into. That is the joke and it is also
+      just true.
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>DOUCHECLOSURE&trade; EXPERIENCES &bull; A work of parody commenting on public statements of public figures.<br>
+  <a href="index.html">Back to the Mellon wing</a> &bull; <a href="../../shrines/index.html#christopher-mellon">The shrine</a> &bull;
+  <a href="../../index.html">The arcade</a></p>
+</footer>
+
+<script src="../../assets/screen.js"></script>
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const stage = $('stage');
+  Juice.init(stage);
+
+  const clamp = (v, a, b) => v < a ? a : (v > b ? b : v);
+  const PARKING = 4.50;   // the stub in the wing dossier: 11 minutes, $4.50
+
+  /* ============================================================
+     THE REQUIREMENTS SHEET
+     ============================================================ */
+  const REQS = [
+    { id:'rain', n:'Rain',
+      d:'Forecast: intermittent. The exchange happens outdoors, on painted asphalt, under a deck that is open on three sides. The contents must arrive dry, not "mostly dry."' },
+    { id:'walk', n:'A 400-yard walk',
+      d:'Vehicle to handoff and back. Two corners, one stairwell, one curb. Nothing may bend, crease, curl, or arrive as a tube.' },
+    { id:'pigeon', n:'One (1) pigeon',
+      d:'Present for the entire exchange, wearing what witnesses describe as a tiny lanyard. Has declined every interview through counsel. Assume overflight.' },
+    { id:'puddle', n:'The puddle scenario',
+      d:'Dropped, full immersion, four seconds, retrieved. This is not hypothetical. This is Level C in March.' },
+    { id:'chain', n:'Chain of custody',
+      d:'Who held it, when, for how long, in writing, signed by both parties. Without this the item is a rumor with a staple in it.' },
+    { id:'tamper', n:'Tamper evidence',
+      d:'The receiving party must be able to state on the record that nothing was added or removed in transit. "It looked closed" is not a finding.' },
+    { id:'pace', n:'Carried by a man who will not run',
+      d:'The carrier proceeds at a dignified walking pace. One hand. No jogging, no juggling, no visible strain, no scurrying. The board is not joking about this one.' }
+  ];
+
+  /* ============================================================
+     THE CATALOGUE
+     spec order: rain, walk, pigeon, puddle, chain, tamper, pace
+     ============================================================ */
+  function I(id, sn, n, blurb, price, rain, walk, pigeon, puddle, chain, tamper, pace){
+    return { id, sn, n, blurb, price,
+      s:{ rain, walk, pigeon, puddle, chain, tamper, pace } };
+  }
+
+  const CATS = [
+    { id:'envelope', n:'Envelope', req:true,
+      d:'The vessel itself. <em>Required &mdash; the board will not process an order without one.</em>',
+      items:[
+        I('manila','MANILA','Manila 9×12, economy',
+          'The one your landlord returns a security deposit in, minus deductions. Gummed flap. No clasp.',
+          0.31,  0, 25,  0,  0,  0,  0, 60),
+        I('string','CLASP','String-button clasp envelope',
+          'The luxury model. Everyone agrees it is the luxury model. It is seven cents more.',
+          0.68,  5, 50, 15,  0,  0, 10, 60),
+        I('rigid','RIGID','Rigid photo mailer, chipboard',
+          'Stamped DO NOT BEND by a machine that means it. Nothing inside has ever curled.',
+          2.40, 15,100, 70,  5,  0,  5, 45),
+        I('pouch','POUCH','Waterproof document pouch',
+          'A roll-top dry bag with a window. Kayakers have solved this problem. Kayakers solved it in 1974.',
+          12.95,100, 90, 80,100,  0, 20, 55),
+        I('diplo','DIPLO','Diplomatic pouch, treaty-sealed',
+          'Inviolable under the Vienna Convention. Requires a courier, a certificate, and a foreign ministry that returns calls.',
+          18400.00,100,100,100,100, 70,100, 40)
+      ]},
+
+    { id:'seal', n:'Seal',
+      d:'How the flap holds, and how anyone knows it held.',
+      items:[
+        I('lick','LICK','Lick it',
+          'The adhesive is fine. The adhesive was never the problem. The problem is that a licked flap proves nothing to anybody, ever.',
+          0.00,  0,  0,  0,  0,  0,  5, 10),
+        I('tape','TAPE','Packing tape across the flap',
+          'Functional. Reassuring. Peels off clean and goes back on clean, which is the entire trouble with it.',
+          0.19, 15, 10,  0, 10,  0, 25,  5),
+        I('seal','SEAL','Tamper-evident security seal, numbered',
+          'Serialized void-if-lifted label. Forty-two cents. Used nightly on cash bags by people earning eleven dollars an hour.',
+          0.42,  5,  5,  0,  5, 45,100,  5),
+        I('wax','WAX','Wax seal with a family signet',
+          'Magnificent. Genuinely magnificent. Also brittle, and 400 yards in a coat pocket is a long time for wax.',
+          46.00,  0,-15,  0,  0, 10, 60, 30)
+      ]},
+
+    { id:'doc', n:'Documentation',
+      d:'The paperwork that turns a handoff into a transfer.',
+      items:[
+        I('nodoc','NONE','Nothing',
+          'The transfer is remembered instead of recorded. Memory is admissible right up until two people remember it.',
+          0.00,  0,  0,  0,  0,  0,  0,  0),
+        I('sticky','STICKY','A sticky note reading "the videos"',
+          'Undated, unsigned, adhesive failing. Technically a document. Genuinely worse than nothing in a hearing.',
+          0.04,  0,  0,  0,  0, 15,  0,  5),
+        I('coc','FORM','Numbered chain-of-custody form, 2-part',
+          'Carbonless duplicate. Both parties sign, both parties keep a copy. Every evidence locker in the country runs on this pad.',
+          1.10,  0,  0,  0,  0,100, 20,  0),
+        I('notary','NOTARY','Notarized transfer log, notary on site',
+          'A commissioned officer of the state, standing in Level C, watching a pigeon. Billable by the hour, plus travel.',
+          325.00,  0,  0,  0,  0,100, 35,-10)
+      ]},
+
+    { id:'transport', n:'Transport',
+      d:'What the vessel rides in, and who is holding it.',
+      items:[
+        I('pocket','POCKET','Coat pocket',
+          'Free, discreet, dignified, one-handed, and pigeon-proof by geometry alone. The board is fond of this option.',
+          0.00, 30, 25, 70,  0,  0,  0,100),
+        I('tote','TOTE','Branded tote from a defense conference',
+          'Open at the top. Says AEROSPACE & DEFENSE SUMMIT 2019 on it in a font that is trying so hard.',
+          0.00,  5, 35, 35,  0,  0,  0, 80),
+        I('case','CASE','Hard-sided document case',
+          'Aluminium, foam-lined, latching. Nothing bends, nothing lands on it, nothing gets through it. Two hands on the stairwell.',
+          24.00, 70,100,100, 45,  0, 15, 55),
+        I('armored','COURIER','Armored courier, two-man rule, chase vehicle',
+          'Bonded crew, hardened vehicle, second vehicle behind it. Meets every requirement on this sheet including the one about walking, since you are no longer carrying anything.',
+          9800.00,100,100,100,100, 80, 60,100)
+      ]},
+
+    { id:'backup', n:'Backup',
+      d:'What survives if the primary does not. The board notes that nothing here protects the original — it protects the record.',
+      items:[
+        I('nobk','NONE','None',
+          'One copy. In the world. In the rain. Near the pigeon.',
+          0.00,  0,  0,  0,  0,  0,  0,  0),
+        I('copy','COPY','A photocopy, left at home',
+          'Twelve cents at the library. If the primary is destroyed, the transfer still happened and can still be described.',
+          0.12, 35,  0, 40, 40, 20,  0,  0),
+        I('drive','DRIVE','Encrypted drive in the other pocket',
+          'Hardware-encrypted, hashed, and the hash is the closest thing to tamper evidence that exists for a file.',
+          18.99, 60,  0, 60, 60, 25, 10,  0),
+        I('counsel','COUNSEL','A second copy held by counsel',
+          'Retained, privileged, receipted, and stored in a firm with a fire suppression system and a retainer agreement.',
+          1450.00, 70,  0, 70, 70, 90, 15,  0)
+      ]},
+
+    { id:'misc', n:'Miscellaneous', multi:true,
+      d:'Add as many as you like. <em>The board wishes to be clear that it is not going to tell you which of these are load-bearing.</em>',
+      items:[
+        I('ziploc','BAG','One (1) gallon freezer bag, zip closure',
+          'Fourteen cents. A box of them is under your sink right now. It has never once let water in.',
+          0.14, 85,  0, 25, 85,  0,  0,  0),
+        I('portfolio','LEATHER','Monogrammed leather portfolio',
+          'Full-grain, hand-stitched, initials blind-embossed. Handsome. Absorbent. Opens at the top like a hat.',
+          890.00, 10, 30, 20,  0,  0,  0, 90),
+        I('coin','COIN','Commemorative challenge coin',
+          'Struck in brass, numbered on the rim, presented in a velvet box, and doing nothing at all for this handoff.',
+          34.00,  0,  0,  0,  0,  0,  0,  0),
+        I('butler','BUTLER','A butler',
+          'Salaried. Discreet. Will carry it, will not run, and will not be told what is in it. Priced annually because that is how butlers are priced.',
+          71000.00, 40,100,100, 20, 30, 20,100)
+      ]}
+  ];
+
+  /* lookup */
+  const BY_ID = {};
+  CATS.forEach(c => c.items.forEach(it => { it.cat = c.id; BY_ID[it.id] = it; }));
+
+  /* the configuration described in the public account */
+  const HISTORIC = ['manila','lick','nodoc','pocket','nobk'];
+
+  /* ============================================================
+     STATE
+     ============================================================ */
+  let order, misc, awarded, butlerSeen, submitted, prevMet, opened;
+
+  function reset(){
+    order = { envelope:null, seal:null, doc:null, transport:null, backup:null };
+    misc = {};
+    awarded = awarded || {};
+    butlerSeen = false;
+    submitted = false;
+    prevMet = {};
+    $('report').style.display = 'none';
+    $('compare').style.display = 'none';
+    $('compareBtn').textContent = 'What was actually used';
+    $('ticker').innerHTML = 'Requisition open. Select items from the catalogue. The sheet updates live.';
+    renderSheet();
+    renderCats();
+    renderReadout();
+  }
+
+  function award(key, label){
+    if (awarded[key]) return;
+    awarded[key] = true;
+    Arcade.toast(label);
+    Juice.sfx('coin');
+  }
+
+  /* ---------- money ---------- */
+  function money(v){
+    const p = Math.abs(v).toFixed(2).split('.');
+    p[0] = p[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return (v < 0 ? '-$' : '$') + p.join('.');
+  }
+
+  /* ============================================================
+     COMPUTE
+     ============================================================ */
+  function pickedIds(o, m){
+    const out = [];
+    ['envelope','seal','doc','transport','backup'].forEach(k => { if (o[k]) out.push(o[k]); });
+    Object.keys(m).forEach(k => { if (m[k]) out.push(k); });
+    return out;
+  }
+
+  function compute(ids){
+    const tot = {}, contrib = {};
+    REQS.forEach(r => { tot[r.id] = 0; contrib[r.id] = []; });
+    let cost = 0;
+    ids.forEach(id => {
+      const it = BY_ID[id];
+      if (!it) return;
+      cost += it.price;
+      REQS.forEach(r => {
+        const v = it.s[r.id] || 0;
+        tot[r.id] += v;
+        if (v !== 0) contrib[r.id].push({ sn: it.sn, v: v });
+      });
+    });
+    let met = 0;
+    REQS.forEach(r => { if (tot[r.id] >= 100) met++; });
+    return { tot, contrib, cost, met, ids };
+  }
+
+  function state(){ return compute(pickedIds(order, misc)); }
+
+  /* ============================================================
+     EFFICIENCY GRADE
+     ============================================================ */
+  const EFF_TIERS = [
+    [PARKING, 'S', 'Under the price of the parking. This is the ceiling of the game and you found it.'],
+    [40,      'A', 'Under forty dollars. Everything on the sheet, for less than dinner.'],
+    [250,     'B', 'Defensible. A purchasing officer would sign this without reading it twice.'],
+    [2000,    'C', 'Over-specified. Somebody in this chain enjoyed spending money.'],
+    [25000,   'D', 'The requirements are met and the budget is a crime scene.'],
+    [Infinity,'F', 'Every requirement met at a cost that is its own kind of scandal.']
+  ];
+
+  function efficiency(cost, met){
+    if (met < 7) return { g:'—', note:'Efficiency is not graded on an order that does not meet the sheet. Spending is only wasteful once it works.', ok:false };
+    for (let i = 0; i < EFF_TIERS.length; i++){
+      if (cost < EFF_TIERS[i][0]) return { g: EFF_TIERS[i][1], note: EFF_TIERS[i][2], ok:true };
+    }
+    return { g:'F', note:'', ok:true };
+  }
+
+  /* ============================================================
+     RENDER — requirements sheet
+     ============================================================ */
+  const reqEls = {};
+  function renderSheet(){
+    const box = $('sheet');
+    box.innerHTML = '';
+    REQS.forEach(r => {
+      const d = document.createElement('div');
+      d.className = 'req';
+      d.innerHTML =
+        '<div class="rhead"><span class="rname">' + r.n + '</span>' +
+        '<span class="cover" data-cover>0%</span>' +
+        '<span class="rstat" data-stat>Unmet</span></div>' +
+        '<p class="rspec">' + r.d + '</p>' +
+        '<div class="track"><div class="fill" data-fill></div></div>' +
+        '<div class="chips" data-chips></div>';
+      box.appendChild(d);
+      reqEls[r.id] = d;
+    });
+    updateSheet(state());
+  }
+
+  function updateSheet(st){
+    REQS.forEach(r => {
+      const el = reqEls[r.id];
+      if (!el) return;
+      const v = st.tot[r.id];
+      const met = v >= 100;
+      el.className = 'req' + (met ? ' met' : '');
+      el.querySelector('[data-fill]').style.width = clamp(v, 0, 100) + '%';
+      el.querySelector('[data-cover]').textContent = Math.max(0, Math.round(v)) + '%' + (v > 100 ? ' (' + Math.round(v) + ' spec)' : '');
+      el.querySelector('[data-stat]').textContent = met ? 'Met' : 'Unmet';
+      const chips = el.querySelector('[data-chips]');
+      chips.innerHTML = '';
+      if (!st.contrib[r.id].length){
+        const c = document.createElement('span');
+        c.className = 'chip zero';
+        c.textContent = 'nothing in the order addresses this';
+        chips.appendChild(c);
+      } else {
+        st.contrib[r.id].forEach(x => {
+          const c = document.createElement('span');
+          c.className = 'chip' + (x.v < 0 ? ' neg' : '');
+          c.textContent = x.sn + ' ' + (x.v > 0 ? '+' : '') + x.v;
+          chips.appendChild(c);
+        });
+      }
+    });
+  }
+
+  /* ============================================================
+     RENDER — catalogue
+     ============================================================ */
+  function specLine(it){
+    return REQS.map(r => (it.s[r.id] ? r.n.split(' ')[0].toUpperCase().replace(/[^A-Z]/g,'') + ' ' + (it.s[r.id] > 0 ? '+' : '') + it.s[r.id] : null))
+      .filter(Boolean).join(' · ') || 'NO SPEC CONTRIBUTION';
+  }
+
+  function renderCats(){
+    const host = $('cats');
+    host.innerHTML = '';
+    CATS.forEach(c => {
+      const wrap = document.createElement('div');
+      wrap.className = 'cat';
+      const h = document.createElement('div');
+      h.className = 'ch';
+      h.textContent = c.n + (c.multi ? ' — choose any' : ' — choose one') + (c.req ? ' (required)' : '');
+      const s = document.createElement('div');
+      s.className = 'cs';
+      s.innerHTML = c.d;
+      const grid = document.createElement('div');
+      grid.className = 'items';
+      c.items.forEach(it => {
+        const b = document.createElement('button');
+        const on = c.multi ? !!misc[it.id] : order[c.id] === it.id;
+        b.type = 'button';
+        b.className = 'item' + (on ? ' on' : '') + (it.price >= 100 ? ' lux' : '');
+        b.innerHTML =
+          '<span class="iname">' + it.n + '</span>' +
+          '<span class="iblurb">' + it.blurb + '</span>' +
+          '<span class="iprice">' + money(it.price) + (it.id === 'butler' ? ' / year' : '') + '</span>' +
+          '<span class="ispec">' + specLine(it) + '</span>';
+        b.addEventListener('click', () => choose(c, it, b));
+        grid.appendChild(b);
+      });
+      wrap.appendChild(h); wrap.appendChild(s); wrap.appendChild(grid);
+      host.appendChild(wrap);
+    });
+  }
+
+  function centerOf(el){
+    const a = el.getBoundingClientRect(), b = stage.getBoundingClientRect();
+    return { x: a.left - b.left + a.width / 2, y: a.top - b.top + a.height / 2 };
+  }
+  function centerOfReq(rid){
+    const el = reqEls[rid];
+    if (!el) return { x: stage.clientWidth / 2, y: stage.clientHeight * 0.3 };
+    return centerOf(el);
+  }
+
+  /* ============================================================
+     SELECTION
+     ============================================================ */
+  function choose(cat, it, btn){
+    if (submitted) return;
+    const before = state();
+    const pt = centerOf(btn);
+    let action;
+
+    if (cat.multi){
+      if (misc[it.id]){ delete misc[it.id]; action = 'removed'; }
+      else { misc[it.id] = true; action = 'added'; }
+      if (it.id === 'butler'){
+        if (action === 'added') butlerSeen = true;
+        else if (butlerSeen) award('butler', '🏆 DECLINED THE BUTLER');
+      }
+    } else {
+      if (order[cat.id] === it.id){ order[cat.id] = null; action = 'removed'; }
+      else { order[cat.id] = it.id; action = 'added'; }
+    }
+
+    /* sound: coin on the expensive picks, click on everything else */
+    if (action === 'added' && it.price >= 100){
+      Juice.sfx('coin');
+      Juice.burst(pt.x, pt.y, { color:'#FF3D8A', count:16, speed:3.4, gravity:.03 });
+      Juice.text(pt.x, pt.y - 16, money(it.price), { color:'#FF3D8A', size:18 });
+      Juice.flash('#FF3D8A', 0.12);
+      Juice.buzz(24);
+    } else {
+      Juice.sfx('click');
+      Juice.burst(pt.x, pt.y, { color:'#E8D9A8', count:7, speed:2.4, gravity:.03 });
+      if (action === 'added') Juice.text(pt.x, pt.y - 14, money(it.price), { color:'#E8D9A8', size:15 });
+    }
+
+    const after = state();
+
+    /* newly met requirements pay out */
+    REQS.forEach(r => {
+      const was = before.tot[r.id] >= 100, now = after.tot[r.id] >= 100;
+      if (now && !was){
+        const p = centerOfReq(r.id);
+        Juice.reward(p.x, p.y, { text:'MET', color:'#3DFC8A', count:18 });
+        reqEls[r.id].classList.add('flash');
+        setTimeout(() => { if (reqEls[r.id]) reqEls[r.id].classList.remove('flash'); }, 700);
+        if (r.id === 'tamper') award('tamper', '🏆 TAMPER EVIDENT');
+      }
+    });
+
+    if (after.met === 7 && before.met < 7){
+      Juice.sfx('good');
+      Juice.flash('#3DFC8A', 0.2);
+    }
+
+    /* ticker copy */
+    const verb = action === 'added' ? 'Added to the order' : 'Struck from the order';
+    $('ticker').innerHTML = '<b>' + verb + ': ' + it.n.toUpperCase() + '</b> — ' + money(it.price) +
+      ' · running total ' + money(after.cost) + ' · <i>' + after.met + ' of 7 requirements met</i>' +
+      (after.met === 7 ? ' · <i>THE SHEET IS SATISFIED — now look at the total</i>' : '');
+
+    renderCats();
+    updateSheet(after);
+    renderReadout();
+  }
+
+  /* ============================================================
+     RENDER — readout
+     ============================================================ */
+  const COST_NOTES = [
+    [0,        'Nothing requisitioned'],
+    [0.001,    'Roughly one envelope'],
+    [5,        'Under the parking stub'],
+    [40,       'Under a dinner'],
+    [250,      'A line item somebody will read'],
+    [2000,     'A line item somebody will question'],
+    [25000,    'A line item with a meeting attached'],
+    [Infinity, 'A line item with a hearing attached']
+  ];
+  function costNote(c){
+    let out = COST_NOTES[0][1];
+    for (let i = 0; i < COST_NOTES.length; i++){ if (c >= COST_NOTES[i][0]) out = COST_NOTES[i][1]; }
+    return out;
+  }
+
+  function renderReadout(){
+    const st = state();
+    const eff = efficiency(st.cost, st.met);
+
+    $('metv').textContent = st.met + ' / 7';
+    $('metv').className = 'rv' + (st.met === 7 ? ' all' : '');
+    $('metn').textContent = st.met === 7 ? 'The sheet is satisfied'
+      : (st.met === 0 ? 'The order is empty' : (7 - st.met) + ' requirement' + (st.met === 6 ? '' : 's') + ' outstanding');
+
+    $('costv').textContent = money(st.cost);
+    $('costv').className = 'rv' + (st.cost >= 250 ? ' rich' : '');
+    $('costn').textContent = costNote(st.cost);
+
+    $('effv').textContent = eff.g;
+    $('effv').className = 'rv' + (eff.ok && (eff.g === 'S' || eff.g === 'A') ? ' s' : (eff.ok && (eff.g === 'D' || eff.g === 'F') ? ' bad' : ''));
+    $('effn').textContent = eff.ok
+      ? (st.cost < PARKING ? 'Cheaper than the parking' : 'Graded on total cost')
+      : 'Graded on completion';
+
+    const b = $('submitBtn');
+    b.disabled = !order.envelope;
+    b.textContent = order.envelope ? 'Submit requisition' : 'Select an envelope first';
+  }
+
+  /* ============================================================
+     WHAT WAS ACTUALLY USED
+     ============================================================ */
+  function renderCompare(){
+    const st = compute(HISTORIC);
+    $('compareKit').innerHTML = HISTORIC.map(id => '<b>' + BY_ID[id].n + '</b>').join(' &nbsp;+&nbsp; ') +
+      ' &nbsp;—&nbsp; total ' + money(st.cost);
+    const list = $('compareList');
+    list.innerHTML = '';
+    REQS.forEach(r => {
+      const met = st.tot[r.id] >= 100;
+      const row = document.createElement('div');
+      row.className = 'crow';
+      row.innerHTML = '<span class="cn">' + r.n + '</span>' +
+        '<span class="cv ' + (met ? 'yes' : 'no') + '">' + Math.max(0, Math.round(st.tot[r.id])) + '% — ' +
+        (met ? 'MET' : 'UNMET') + '</span>';
+      list.appendChild(row);
+    });
+    $('compareNote').innerHTML =
+      '<b>' + st.met + ' of 7.</b> The only requirement the historical configuration satisfies is the ' +
+      'one about not running — which it satisfies perfectly, because a manila envelope in a coat pocket ' +
+      'is the single most dignified object a person can carry across a parking structure. ' +
+      'The rain requirement, the puddle requirement, the pigeon, the paperwork, and the seal are all ' +
+      'open. <b>Total spend: thirty-one cents.</b> The board wishes to state plainly that this is not a ' +
+      'criticism of any person. It is a criticism of a stationery cupboard.';
+  }
+
+  /* ============================================================
+     THE REPORT
+     ============================================================ */
+  function poLine(a, b, cls){
+    return '<div class="line' + (cls ? ' ' + cls : '') + '"><span>' + a + '</span><span>' + b + '</span></div>';
+  }
+
+  function buildReport(st, eff){
+    const rows = st.ids.map(id => poLine(BY_ID[id].n, money(BY_ID[id].price))).join('') ||
+      poLine('(no line items)', money(0));
+    const stampTxt = st.met === 7
+      ? (st.cost < PARKING ? 'APPROVED — AND FRAMED' : (st.cost < 40 ? 'APPROVED' : 'APPROVED UNDER PROTEST'))
+      : 'RETURNED TO ORIGINATOR';
+    $('po').innerHTML =
+      '<div class="poh">Purchase Order REQ-1147-M</div>' +
+      '<div class="posub">Office of Acquisitions · Parking Level C · one (1) handoff</div>' +
+      rows +
+      '<div class="rule"></div>' +
+      poLine('REQUIREMENTS MET', st.met + ' of 7') +
+      poLine('LINE ITEMS', String(st.ids.length)) +
+      poLine('COMPARISON: the historical configuration', money(0.31) + ' · 1 of 7') +
+      '<div class="rule"></div>' +
+      poLine('TOTAL', money(st.cost), 'tot') +
+      (st.met === 7 ? poLine('COST PER REQUIREMENT', money(st.cost / 7)) : '') +
+      '<div class="stampline">' + stampTxt + '</div>';
+
+    const g = $('grades');
+    g.innerHTML = '';
+    const c1 = document.createElement('div');
+    c1.className = 'gcard';
+    c1.innerHTML = '<div class="gl">Requirements met</div><div class="g">' + st.met + '/7</div>' +
+      '<div class="gn">' + (st.met === 7
+        ? 'Every line on the sheet. Rain, walk, pigeon, puddle, paperwork, seal, and the walking pace.'
+        : 'Outstanding: <b>' + REQS.filter(r => st.tot[r.id] < 100).map(r => r.n).join(', ') + '</b>.') + '</div>';
+    c1.style.borderColor = st.met === 7 ? '#3DFC8A' : '#FF3D8A';
+    c1.querySelector('.g').style.color = st.met === 7 ? '#3DFC8A' : '#FF3D8A';
+
+    const c2 = document.createElement('div');
+    c2.className = 'gcard';
+    const good = eff.g === 'S' || eff.g === 'A';
+    c2.innerHTML = '<div class="gl">Cost efficiency</div><div class="g">' + eff.g + '</div>' +
+      '<div class="gn">' + eff.note + '</div>';
+    c2.style.borderColor = !eff.ok ? '#6E6288' : (good ? '#3DFC8A' : '#FF3D8A');
+    c2.querySelector('.g').style.color = !eff.ok ? '#6E6288' : (good ? '#3DFC8A' : '#FF3D8A');
+
+    g.appendChild(c1);
+    g.appendChild(c2);
+  }
+
+  /* ============================================================
+     VERDICT COPY
+     ============================================================ */
+  function verdictLines(st, eff){
+    const L = [];
+    const hist = compute(HISTORIC);
+
+    if (st.met === 7 && st.cost < PARKING){
+      L.push('Every requirement on the sheet. Rain, the four-hundred-yard walk, the pigeon, the puddle, ' +
+        'the chain of custody, the tamper seal, and the man who will not run. All seven. ' +
+        '<b>For ' + money(st.cost) + '.</b>');
+      L.push('The parking cost more than the solution. The parking cost <b>' + money(PARKING) + '</b> for eleven ' +
+        'minutes and did not give change. Your entire procurement came in under the stub.');
+      L.push('The board would like to sit with that for a moment. An unlimited budget was authorized. ' +
+        'A diplomatic pouch was on the table. There was an <b>armored courier with a chase vehicle</b> in ' +
+        'the catalogue and a butler priced by the year. And the correct answer was a rigid mailer, ' +
+        'a forty-two-cent seal, a carbonless form, a freezer bag, a photocopy, and a coat pocket.');
+      L.push('This was never a secrecy problem. Nothing was withheld from you. Nothing was hidden. ' +
+        '<b>The whole problem was solvable at an office supply store on the way there</b>, in one trip, ' +
+        'by anybody, in about nine minutes, using items stocked at eye level.');
+      L.push('BOARD FINDING: <b>procurement failure, total and cheap.</b> The account is accepted in full ' +
+        'and always was. What the record shows is that history rode in the economy envelope while a ' +
+        'building full of people with clearances walked past a shelf of the right ones.');
+      L.push('The order is approved, filed, and framed. Somebody has already asked whether the frame was ' +
+        'in the budget. It was.');
+    } else if (st.met === 7 && st.cost < 40){
+      L.push('All seven requirements met for <b>' + money(st.cost) + '</b>. Under forty dollars. ' +
+        'This order would clear any purchasing desk in the country without a second signature.');
+      L.push('You will notice that the diplomatic pouch also meets all seven. So does the armored courier. ' +
+        'So, God help us, does the butler. <b>Meeting the sheet was never the hard part.</b> ' +
+        'Meeting it without a hearing attached is the hard part.');
+      L.push('There is a cheaper version of this order. It is under the price of the parking. ' +
+        'It exists, it meets everything, and the last item in it costs fourteen cents.');
+      L.push('BOARD FINDING: <b>the problem was always solvable at an office supply store.</b> ' +
+        'Not at a foreign ministry. Not at a security firm. At a store with a laminating machine near ' +
+        'the register, for less than a dinner, by anyone, on the way to the parking structure.');
+    } else if (st.met === 7){
+      L.push('All seven requirements met. <b>' + money(st.cost) + '.</b>');
+      L.push('The board notes that the requirements were met and that this is, technically, the assignment. ' +
+        'The board also notes that ' + money(hist.cost) + ' of manila envelope met one of them, which means ' +
+        'you have purchased six additional requirements for ' + money(st.cost - hist.cost) + '.');
+      L.push('Somewhere in this catalogue is an order that meets the same seven lines for under forty ' +
+        'dollars. There is another that does it for less than the parking. The difference between them ' +
+        'and this one is not competence. <b>It is that nobody stopped you.</b>');
+      L.push('BOARD FINDING: <b>requirements satisfied; budget uncontained.</b> The whole thing was always ' +
+        'solvable at an office supply store. You solved it at a foreign ministry, and history is still ' +
+        'riding in the economy envelope in every account but this one.');
+    } else if (st.met >= 4){
+      L.push('<b>' + st.met + ' of 7.</b> Better than the record, which stands at one, and the one it ' +
+        'gets is the walking pace.');
+      L.push('Outstanding: <b>' + REQS.filter(r => st.tot[r.id] < 100).map(r => r.n).join(', ') + '</b>. ' +
+        'The board is not going to tell you which fourteen-cent item closes most of that, but it will ' +
+        'observe that a box of them is under your sink.');
+      L.push('BOARD FINDING: <b>partial procurement.</b> You bought thoughtfully and stopped early.');
+    } else if (st.met >= 1){
+      L.push('<b>' + st.met + ' of 7.</b> The order exists. The sheet does not care that the order exists.');
+      L.push('Outstanding: <b>' + REQS.filter(r => st.tot[r.id] < 100).map(r => r.n).join(', ') + '</b>.');
+      L.push('Read the sheet again. Every line on it names a specific, physical, boring thing that can ' +
+        'happen to a piece of paper between a car and a person, and every one of those things has a ' +
+        'product aisle devoted to it.');
+      L.push('BOARD FINDING: <b>requisition incomplete.</b> The budget was unlimited and the imagination was not.');
+    } else {
+      L.push('Zero of seven. The sheet is untouched.');
+      L.push('This is, to be exact, the current state of the historical record, minus the coat pocket.');
+      L.push('BOARD FINDING: <b>no procurement occurred.</b>');
+    }
+
+    if (!awarded.compare){
+      L.push('<span style="color:#E8D9A8">You never ran the comparison. The historical configuration scores ' +
+        '<b>1 of 7</b> against this sheet, and the one it passes is the one about not running.</span>');
+    }
+    L.push('<span style="color:#7FA88F">ORDER: ' + (st.ids.length ? st.ids.map(i => BY_ID[i].sn).join(' · ') : 'EMPTY') +
+      ' · TOTAL ' + money(st.cost) + '</span>');
+    return L;
+  }
+
+  /* ============================================================
+     SUBMIT
+     ============================================================ */
+  function submit(){
+    if (submitted || !order.envelope) return;
+    submitted = true;
+    const st = state();
+    const eff = efficiency(st.cost, st.met);
+
+    buildReport(st, eff);
+    $('report').style.display = 'block';
+    $('report').scrollIntoView({ behavior:'smooth', block:'center' });
+    Juice.sfx('alarm');
+
+    if (st.met === 7 && st.cost < 40) award('under40', '🏆 UNDER FORTY DOLLARS');
+    if (st.met === 7 && st.cost < PARKING) award('parking', '🏆 CHEAPER THAN THE PARKING');
+    if (st.met === 7 && !misc.butler) award('butler', '🏆 DECLINED THE BUTLER');
+    if (st.tot.tamper >= 100) award('tamper', '🏆 TAMPER EVIDENT');
+
+    const mid = { x: stage.clientWidth / 2, y: stage.clientHeight * 0.42 };
+    setTimeout(() => {
+      if (st.met === 7 && st.cost < 40){
+        Juice.sfx('win');
+        Juice.reward(mid.x, mid.y, { text:'APPROVED', color:'#3DFC8A', count:34 });
+        Juice.burst(mid.x, mid.y, { color:'#E8D9A8', count:44, speed:6, gravity:.02 });
+        Juice.flash('#E8D9A8', 0.3);
+      } else if (st.met === 7){
+        Juice.sfx('good');
+        Juice.reward(mid.x, mid.y, { text:'APPROVED — ' + money(st.cost), color:'#FFD23F', count:20 });
+      } else {
+        Juice.impact(mid.x, mid.y, { text:st.met + ' / 7', color:'#FF3D8A', power:10, count:20, sound:'lose' });
+        Juice.flash('#FF3D8A', 0.24);
+      }
+    }, 500);
+
+    setTimeout(() => {
+      Arcade.gameOver({
+        won: st.met === 7,
+        title: st.met === 7
+          ? (st.cost < PARKING ? 'Cheaper Than The Parking'
+             : (st.cost < 40 ? 'Under Forty Dollars' : 'Approved Under Protest'))
+          : 'Requisition Returned',
+        score: st.met,
+        accent: st.met === 7 ? (st.cost < 40 ? '#3DFC8A' : '#FFD23F') : '#FF3D8A',
+        lines: verdictLines(st, eff),
+        onRetry: () => {
+          reset();
+          $('briefing').style.display = 'flex';
+          stage.scrollIntoView({ behavior:'smooth', block:'start' });
+        },
+        links: [
+          { label:'The Dead Drop Meter field kit — $5', href:'index.html#prize' },
+          { label:'The Mellon wing', href:'index.html' },
+          { label:'Visit the shrine', href:'../../shrines/index.html#christopher-mellon' }
+        ]
+      });
+      const ovs = document.querySelectorAll('.dcab-overlay');
+      const ov = ovs[ovs.length - 1];
+      if (ov){
+        ov.scrollTop = 0;
+        const ps = ov.querySelectorAll('.dcab-lore');
+        [].forEach.call(ps, (p, i) => {
+          p.style.opacity = '0';
+          p.style.transition = 'opacity .9s';
+          setTimeout(() => { p.style.opacity = '1'; }, 240 + i * 780);
+        });
+      }
+    }, st.met === 7 ? 2600 : 2000);
+  }
+
+  /* ============================================================
+     WIRING
+     ============================================================ */
+  $('submitBtn').addEventListener('click', () => { Juice.sfx('click'); submit(); });
+
+  $('clearBtn').addEventListener('click', () => {
+    Juice.sfx('bad');
+    Juice.shake(4);
+    reset();
+    $('ticker').innerHTML = 'Order voided. The board has seen worse and has, in fact, filed worse.';
+  });
+
+  $('compareBtn').addEventListener('click', () => {
+    const c = $('compare');
+    const open = c.style.display === 'block';
+    if (open){
+      c.style.display = 'none';
+      $('compareBtn').textContent = 'What was actually used';
+      Juice.sfx('click');
+      return;
+    }
+    renderCompare();
+    c.style.display = 'block';
+    $('compareBtn').textContent = 'Close the comparison';
+    Juice.sfx('thud');
+    Juice.shake(5);
+    Juice.flash('#FF3D8A', 0.14);
+    const p = centerOf(c);
+    Juice.text(p.x, p.y - 10, '1 / 7', { color:'#FF3D8A', size:26 });
+    award('compare', '🏆 RAN THE COMPARISON');
+    c.scrollIntoView({ behavior:'smooth', block:'center' });
+  });
+
+  $('auditBtn').addEventListener('click', () => {
+    const on = document.body.classList.toggle('audit');
+    $('auditBtn').textContent = on ? 'Hide spec scores' : 'Reveal spec scores';
+    Juice.sfx('blip');
+  });
+
+  $('startBtn').addEventListener('click', () => {
+    Juice.sfx('coin');
+    $('briefing').style.display = 'none';
+    opened = true;
+  });
+
+  reset();
+
+  Arcade.cabinet({
+    id: 'the-envelope',
+    wing: 'THE CHRISTOPHER MELLON EXPERIENCE',
+    title: 'The Envelope',
+    subtitle: 'Procurement, Reopened',
+    accent: '#E8D9A8',
+    scoreLabel: 'REQUIREMENTS MET',
+    lore: 'By his own public account, the most consequential media handoff of the century happened ' +
+          'in a parking lot, in a plain manila envelope — not even the string-button model. ' +
+          '<b>We believe all of it.</b> The board’s only finding was against <b>procurement</b>, and ' +
+          'procurement has now been reopened with <b>no budget ceiling whatsoever.</b> There is a ' +
+          'requirements sheet. There is a catalogue containing a diplomatic pouch, an armored courier, ' +
+          'and a butler. Equip the handoff properly. There is no clock. The joke is what the correct ' +
+          'answer costs.',
+    howto: [
+      'READ THE REQUIREMENTS SHEET — seven things the handoff must survive',
+      'TAP catalogue items to add them to the order. Tap again to remove.',
+      'ONE item per category, except MISCELLANEOUS — take as many as you like',
+      'A requirement is MET at 100% coverage. Items stack.',
+      'THERE IS NO CLOCK AND NO BUDGET CEILING. That is the trap.',
+      'YOU ARE GRADED TWICE: requirements met, then what it cost you',
+      'RUN "WHAT WAS ACTUALLY USED" — that comparison is the whole cabinet'
+    ],
+    shrine: '../../shrines/index.html#christopher-mellon',
+    onStart: () => {
+      $('briefing').style.display = 'flex';
+      stage.scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+  });
+})();
+</script>
+<script src="../../assets/legal.js"></script>
+</body>
+</html>

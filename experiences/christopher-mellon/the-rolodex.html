@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE ROLODEX — Doucheclosure</title>
+<meta name="description" content="The best contact list in the entire subject, one physical item, and ten favors. Every name picks up. Nobody has a shelf. A network-traversal game about institutional inertia.">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --brass:#C9A24B; --brass-dim:#6B5326; --felt:#2A2138; --shadow:rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--void);}
+  body{margin:0; background:var(--void); color:var(--white);
+    font-family:"Courier New", Courier, monospace; line-height:1.65; overflow-x:hidden;}
+  body::after{content:""; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 1px, transparent 1px 3px);
+    pointer-events:none; z-index:100;}
+  a{color:var(--neon-cyan);}
+  .wrap{max-width:1020px; margin:0 auto; padding:0 1.25rem;}
+  .display{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-weight:400; text-transform:uppercase; letter-spacing:.03em; line-height:.95;}
+  .crumb{padding:1rem 1.25rem; font-size:.72rem; letter-spacing:.15em; text-transform:uppercase;}
+  .crumb a{text-decoration:none;}
+
+  header.wing{
+    text-align:center; padding:2.4rem 1rem 2.2rem;
+    background:radial-gradient(ellipse at 50% -20%, rgba(201,162,75,.26), transparent 60%),
+      radial-gradient(ellipse at 88% 120%, rgba(45,225,252,.08), transparent 55%);
+    border-bottom:3px solid var(--brass);
+  }
+  .wing .eyebrow{color:var(--neon-cyan); letter-spacing:.28em; text-transform:uppercase; font-size:.72rem;}
+  .wing h1{margin:.5rem 0 0; font-size:clamp(2.4rem,9vw,4.4rem); color:var(--brass);
+    text-shadow:0 0 16px rgba(201,162,75,.5), 4px 4px 0 #3A2A0C;}
+  .wing .sub{color:var(--chrome); max-width:37rem; margin:1.1rem auto 0; font-size:.9rem;}
+  .wing .sub b{color:var(--white);}
+  .file-tab{display:inline-block; margin-top:1.2rem; border:2px solid var(--neon-yellow);
+    color:var(--neon-yellow); padding:.4rem 1.1rem; font-size:.72rem; letter-spacing:.2em;
+    text-transform:uppercase; transform:rotate(-2deg);}
+
+  section{padding:2rem 0 2.6rem;}
+
+  /* ---------- stage ---------- */
+  #stage{position:relative; background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:2px solid #4A3A1C; border-radius:12px;
+    box-shadow:0 0 26px rgba(201,162,75,.12),0 12px 34px var(--shadow);
+    padding:1.1rem; overflow:hidden;}
+  #stage::before{content:""; position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(ellipse at 50% -8%, rgba(201,162,75,.16), transparent 58%);}
+
+  #hud{display:flex; gap:.9rem; flex-wrap:wrap; align-items:flex-end; position:relative; z-index:2;}
+  .bar{flex:1 1 240px; min-width:190px;}
+  .bar .lab{font-size:.6rem; letter-spacing:.16em; text-transform:uppercase; color:var(--chrome);
+    margin-bottom:4px; display:flex; justify-content:space-between; gap:.5rem;}
+  .bar .lab b{color:var(--white); font-weight:normal;}
+  .track{position:relative; height:13px; background:#00000099; border:1px solid #000;
+    border-radius:7px; overflow:hidden;}
+  #favfill{height:100%; width:100%; background:linear-gradient(90deg,#5C4718,var(--brass)); transition:width .45s;}
+  .pill{flex:0 0 auto; font-size:.62rem; letter-spacing:.2em; text-transform:uppercase;
+    border:1px dashed rgba(201,162,75,.5); border-radius:6px; padding:.35rem .6rem; color:var(--brass);}
+  .pill.ev{color:var(--neon-pink); border-color:rgba(255,61,138,.45);}
+  .pill.ev.got{color:var(--neon-green); border-color:rgba(61,252,138,.6);}
+
+  #board{position:relative; z-index:2; margin:.7rem 0 0; font-size:.62rem; letter-spacing:.13em;
+    text-transform:uppercase; color:#8A7A5E; min-height:2.2rem; line-height:1.5;}
+
+  #arena{display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); gap:1.1rem;
+    margin-top:.55rem; position:relative; z-index:2;}
+
+  .colhead{font-size:.6rem; letter-spacing:.22em; text-transform:uppercase; color:var(--chrome);
+    margin:0 0 .5rem; display:flex; justify-content:space-between; gap:.6rem; flex-wrap:wrap;}
+  .colhead b{color:var(--white); font-weight:normal;}
+
+  /* ---------- the graph ---------- */
+  #graph{position:relative; height:clamp(500px,128vw,600px); background:
+      radial-gradient(ellipse at 38% 50%, rgba(45,225,252,.07), transparent 55%),
+      #0A0710;
+    border:2px solid #33291A; border-radius:10px; overflow:hidden; touch-action:manipulation;}
+  #edges{position:absolute; inset:0; width:100%; height:100%; pointer-events:none;}
+  #edges line{stroke:#2A2136; stroke-width:1.4; }
+  #edges line.live{stroke:#4E3F22; stroke-width:1.6;}
+  #edges line.hot{stroke:var(--neon-yellow); stroke-width:2.4; opacity:.95;}
+  #edges line.win{stroke:var(--neon-green); stroke-width:2.6;}
+
+  .elab{position:absolute; transform:translate(-50%,-50%); pointer-events:none; z-index:3;
+    font-size:.44rem; letter-spacing:.11em; text-transform:uppercase; color:#0B0614;
+    background:var(--neon-yellow); border-radius:3px; padding:1px 4px; white-space:nowrap;
+    max-width:132px; overflow:hidden; text-overflow:ellipsis;}
+
+  .node{position:absolute; transform:translate(-50%,-50%); z-index:4; cursor:pointer;
+    width:48px; height:48px; border-radius:50%; padding:0; font-family:inherit;
+    background:#100B1A; border:2px dashed #362B48; color:#5A4E70;
+    display:flex; align-items:center; justify-content:center;
+    font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; font-size:1.15rem;
+    transition:transform .12s, box-shadow .18s, border-color .18s;}
+  .node .nlab{position:absolute; top:calc(100% + 3px); left:50%; transform:translateX(-50%);
+    width:84px; pointer-events:none; font-family:"Courier New",monospace; font-size:.43rem;
+    letter-spacing:.08em; line-height:1.25; text-transform:uppercase; color:#9C8A64;
+    text-shadow:0 0 5px #0A0710, 0 0 5px #0A0710, 0 0 5px #0A0710;}
+  .node.la .nlab{top:auto; bottom:calc(100% + 3px);}
+  .node.known{border-style:solid; border-color:var(--brass); color:#E8D9B4;
+    background:linear-gradient(180deg,#241D12,#14100A); box-shadow:0 0 12px rgba(201,162,75,.3);}
+  .node.known:hover{transform:translate(-50%,-50%) scale(1.09); box-shadow:0 0 18px rgba(201,162,75,.55);}
+  .node.called{opacity:.62; border-color:#4E3F22; box-shadow:none; color:#8A7A5E;}
+  .node.cond{border-color:var(--neon-yellow); color:var(--neon-yellow);
+    box-shadow:0 0 14px rgba(255,210,63,.4);}
+  .node.you{width:56px; height:56px; border-style:solid; border-color:var(--neon-cyan);
+    color:var(--neon-cyan); background:#08161C; box-shadow:0 0 18px rgba(45,225,252,.45);}
+  .node.you .nlab{color:var(--neon-cyan);}
+  .node.sel{outline:2px solid var(--neon-yellow); outline-offset:3px;}
+  .node.act{border-color:var(--neon-green); color:var(--neon-green);
+    background:#08200F; box-shadow:0 0 22px rgba(61,252,138,.6); animation:pulseNode 1.4s infinite;}
+  .node.act .nlab{color:var(--neon-green);}
+  @keyframes pulseNode{50%{box-shadow:0 0 34px rgba(61,252,138,.95);}}
+  @media (prefers-reduced-motion: reduce){.node.act{animation:none}}
+
+  /* ---------- the card / handset ---------- */
+  #card{background:#0B0812; border:2px solid #4A3A1C; border-left:5px solid var(--brass);
+    border-radius:8px; padding:.85rem .95rem; min-height:16rem;}
+  #card-head{display:flex; align-items:flex-start; gap:.55rem; margin-bottom:.5rem;}
+  #dial{width:34px; height:34px; flex:0 0 34px; border-radius:5px; border:1px solid #000;
+    background:linear-gradient(145deg,#5A4620,#241A08); display:flex; align-items:center;
+    justify-content:center; font-family:Haettenschweiler,Impact,sans-serif; font-size:1.05rem; color:var(--brass);}
+  #card-name{font-size:.8rem; letter-spacing:.05em; color:var(--brass); line-height:1.25;
+    font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; text-transform:uppercase;}
+  #card-dept{font-size:.52rem; letter-spacing:.16em; text-transform:uppercase; color:#7E6F9E;}
+  #card-stamp{margin-left:auto; font-size:.5rem; letter-spacing:.16em; text-transform:uppercase;
+    color:#6B5C80; text-align:right; flex:0 0 auto;}
+  #knownfor{margin:.4rem 0 .55rem; padding:.4rem .55rem; border:1px dashed #3A2E1A; border-radius:6px;
+    font-size:.55rem; letter-spacing:.1em; text-transform:uppercase; color:#9C8A64; line-height:1.6;}
+  #knownfor b{color:#D8C9A8; font-weight:normal;}
+  #says{font-size:.82rem; color:var(--white); line-height:1.6; margin:0; min-height:4.5rem;}
+  #verdict{margin:.65rem 0 0; padding-top:.6rem; border-top:1px dashed #3A2E1A;
+    font-size:.78rem; color:var(--chrome); line-height:1.6; min-height:2.4rem;}
+  #verdict b{color:var(--white);}
+  .tag{display:inline-block; font-size:.53rem; letter-spacing:.18em; text-transform:uppercase;
+    border:1px solid currentColor; border-radius:4px; padding:.08rem .4rem; margin:0 .3rem .2rem 0;}
+  .up{color:var(--neon-green);} .dn{color:var(--neon-pink);} .flat{color:var(--neon-cyan);}
+  .amb{color:var(--neon-yellow);}
+
+  #callwrap{margin-top:.75rem; display:flex; gap:.5rem; flex-wrap:wrap; align-items:center;}
+  .gbtn{font-family:inherit; cursor:pointer; border-radius:8px; padding:.8rem 1.2rem;
+    font-size:.68rem; letter-spacing:.14em; text-transform:uppercase; font-weight:bold;
+    border:2px solid var(--brass); background:var(--brass); color:#22190A; min-height:44px;}
+  .gbtn.ghost{background:transparent; color:var(--neon-cyan); border-color:var(--neon-cyan);}
+  .gbtn:disabled{opacity:.28; cursor:default;}
+  #callnote{font-size:.55rem; letter-spacing:.1em; color:#6E6288; flex:1 1 140px; min-width:130px;}
+
+  /* ---------- call log ---------- */
+  #logwrap{margin-top:.9rem;}
+  #log{display:grid; gap:.22rem; max-height:11rem; overflow-y:auto; padding-right:.2rem;}
+  .lrow{display:flex; gap:.45rem; align-items:baseline; background:#0C0912; border:1px solid #2C2438;
+    border-radius:5px; padding:.28rem .45rem; font-size:.55rem; letter-spacing:.08em; text-transform:uppercase;}
+  .lrow .ln{color:var(--brass-dim); flex:0 0 auto;}
+  .lrow .lw{color:#D8C9A8; flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .lrow .lt{flex:0 0 auto; font-size:.5rem; letter-spacing:.12em;}
+  .lrow.r .lt{color:var(--neon-cyan);} .lrow.n .lt{color:var(--neon-pink);}
+  .lrow.c .lt{color:var(--neon-yellow);} .lrow.h .lt{color:var(--neon-green);}
+  .lrow.x .lt{color:#7E6F9E;}
+  #logempty{font-size:.55rem; letter-spacing:.14em; text-transform:uppercase; color:#4E4364;}
+
+  /* ---------- briefing ---------- */
+  #briefing{position:absolute; inset:0; z-index:40; display:none; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center; padding:1.4rem;
+    background:rgba(8,5,14,.96); overflow-y:auto;}
+  #briefing h2{font-size:clamp(1.4rem,5vw,2.3rem); color:var(--brass); text-shadow:0 0 18px rgba(201,162,75,.45);}
+  #briefing p{max-width:35rem; margin:.8rem auto; color:var(--chrome); font-size:.85rem;}
+  #briefing b{color:var(--white);}
+  .btn{display:inline-block; margin:.4rem; padding:.85rem 1.6rem; border-radius:8px; cursor:pointer;
+    font-family:inherit; font-weight:bold; font-size:.8rem; letter-spacing:.14em; text-transform:uppercase;
+    text-decoration:none; border:2px solid var(--brass); background:var(--brass); color:#22190A;}
+
+  .dossier{border-left:4px solid var(--neon-yellow); background:var(--panel);
+    padding:1.05rem 1.25rem; color:var(--chrome); font-size:.86rem; margin-top:1.6rem;}
+  .dossier b{color:var(--white);}
+  footer{padding:2rem 1rem 3rem; text-align:center; color:#7E6F9E; font-size:.72rem;}
+
+  @media (max-width:820px){
+    #arena{grid-template-columns:1fr; gap:.85rem;}
+    #stage{padding:.8rem;}
+    header.wing{padding:1.8rem 1rem 1.6rem;}
+    #card{min-height:0;}
+    #says{min-height:0;}
+    #verdict{min-height:0;}
+    .node{width:46px; height:46px;}
+    .node.you{width:52px; height:52px;}
+    .node .nlab{width:76px; font-size:.4rem;}
+  }
+</style>
+</head>
+<body>
+
+<p class="crumb"><a href="../../index.html">&larr; THE ARCADE</a> &nbsp;/&nbsp; <a href="index.html">CHRISTOPHER MELLON</a> &nbsp;/&nbsp; THE ROLODEX</p>
+
+<header class="wing">
+  <p class="eyebrow">The Christopher Mellon Experience &bull; Cabinet No. 2</p>
+  <h1 class="display">The<br>Rolodex</h1>
+  <p class="sub">He has, by career and by name and by any honest accounting, <b>the best contact list in
+  this entire subject.</b> Every number in it is real. Every number in it picks up. So the review board
+  has handed him the phone and exactly one task: using nothing but the Rolodex, get <b>one</b> physical
+  item properly preserved and logged. Ten favors. Sixteen names. Watch what happens.</p>
+  <span class="file-tab">FAVORS ARE THE CURRENCY &bull; THEY DO NOT REGENERATE</span>
+</header>
+
+<section>
+  <div class="wrap">
+    <div id="stage">
+
+      <div id="hud">
+        <div class="bar">
+          <div class="lab"><span>Favors remaining</span><b id="favlab">10 / 10</b></div>
+          <div class="track"><div id="favfill"></div></div>
+        </div>
+        <div class="pill" id="callpill">Calls made: 0</div>
+        <div class="pill" id="deptpill">Departments: 0</div>
+        <div class="pill ev" id="evpill">Evidence preserved: 0</div>
+      </div>
+
+      <p id="board">&nbsp;</p>
+
+      <div id="arena">
+        <div>
+          <p class="colhead"><span>The network</span><b id="knownlab">4 numbers you can dial</b></p>
+          <div id="graph">
+            <svg id="edges" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+          </div>
+        </div>
+
+        <div>
+          <p class="colhead"><span>The card</span><b id="cardlab">Tap a name</b></p>
+          <div id="card">
+            <div id="card-head">
+              <div id="dial">&#9679;</div>
+              <div>
+                <div id="card-name">&mdash;</div>
+                <div id="card-dept">&nbsp;</div>
+              </div>
+              <div id="card-stamp">Standing by</div>
+            </div>
+            <div id="knownfor">&nbsp;</div>
+            <p id="says">&nbsp;</p>
+            <div id="verdict">&nbsp;</div>
+            <div id="callwrap">
+              <button type="button" class="gbtn" id="callBtn" disabled>Place the call &mdash; 1 favor</button>
+              <span id="callnote">Tap a name on the network to open their card.</span>
+            </div>
+          </div>
+
+          <div id="logwrap">
+            <p class="colhead"><span>Call log</span><b id="loglab">Nothing dialled yet</b></p>
+            <div id="log"><p id="logempty">The board is watching the log, not the outcome.</p></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="briefing">
+        <h2 class="display">One Item. One Phone. Ten Favors.</h2>
+        <p>There is a physical object. It is in a bag, in a car, in a garage, and it is losing its chain
+        of custody by the hour. <b>Your job is not to analyse it, publicise it, or believe anything about
+        it.</b> Your job is to get it onto a shelf with a number written on it.</p>
+        <p>You have the best Rolodex in the field and that is not a joke &mdash; <b>every single person
+        on this board will take your call.</b> Nobody here is lying to you. Nobody here is hiding
+        anything. Every one of them will tell you the exact truth about their own authority.</p>
+        <p><b>A favor is spent the moment you dial.</b> It does not come back, it cannot be refunded, and
+        the person on the other end will always, always know somebody else.</p>
+        <button class="btn" id="startBtn">Pick up the phone</button>
+      </div>
+
+    </div>
+
+    <div class="dossier">
+      <b>WING DOCTRINE:</b> Every contact in this cabinet is a fictional archetype &mdash; a job title
+      with a phone number, invented whole for a game. No real official, office, staffer or company is
+      depicted, and nobody in here is dishonest, obstructive, or hiding a thing. <b>That is the entire
+      point.</b> The comedy of this cabinet is not villainy. It is sixteen sincere, competent,
+      fully-funded people discovering in real time that not one of them owns a shelf. The review board
+      holds that a network which cannot hold an object is not a conspiracy. <b>It is an org chart.</b>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>DOUCHECLOSURE&trade; EXPERIENCES &bull; A work of parody commenting on public statements of public figures.<br>
+  <a href="index.html">Back to the Mellon wing</a> &bull; <a href="../../shrines/index.html#christopher-mellon">The shrine</a> &bull;
+  <a href="../../index.html">The arcade</a></p>
+</footer>
+
+<script src="../../assets/screen.js"></script>
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const stage = $('stage');
+  Juice.init(stage);
+
+  /* ============================================================
+     TUNING
+     ============================================================ */
+  const START_FAVORS = 10;
+  const LEAN_TARGET  = 6;   // "spent fewer than six favors"
+
+  /* ============================================================
+     THE ROLODEX
+     Every contact below is a FICTIONAL GENERIC ARCHETYPE. No real
+     person, office or company is depicted or implied. Nobody in
+     this file is dishonest. Each one is telling the exact truth
+     about the limits of their own authority, which is the joke.
+     ============================================================ */
+  const NODES = [
+    { id:'you', x:38, y:50, short:'YOU', name:'YOU', dept:'THE ROLODEX', kind:'you',
+      line:'Thirty years of corridors, panels, briefings, hallway favors and returned calls, and it is ' +
+           'all sitting in one card file on the desk in front of you. Every number works. Every number ' +
+           'picks up. There is a bag in the car.',
+      verdict:'<b>You start with four names you can dial cold.</b> The rest of the board is people you ' +
+              'know <em>of</em> &mdash; you need somebody to hand you the number before you can use it.' },
+
+    { id:'undersec', x:61, y:30, short:'DEP. UNDER-SEC',
+      name:'DEPUTY UNDERSECRETARY FOR ADJACENT MATTERS', dept:'POLICY', kind:'refer',
+      to:['chief','officenow'],
+      line:'&ldquo;Good to hear from you &mdash; and yes. Yes. This is exactly the kind of thing we should ' +
+           'be surfacing, and I want you to hear me say that on a recorded line. Now: the portfolio moved ' +
+           'in the spring, so strictly it is not mine anymore, and before anything else you will want the ' +
+           'front office read in. Happy to make both introductions today.&rdquo;',
+      verdict:'<b>A referral.</b> Two names added, both of them senior, both of them delighted to hear ' +
+              'from you, neither of them in possession of a shelf, a bag, a sleeve, or a form.' },
+
+    { id:'staffer', x:36, y:28, short:'STAFFER',
+      name:'A COMMITTEE STAFFER WHO OWES YOU', dept:'LEGISLATIVE AFFAIRS', kind:'refer',
+      to:['ig','interagency'],
+      line:'&ldquo;I owe you and I am paying it, so here is the real answer instead of the nice one: the ' +
+           'committee can <em>ask</em> for it. The committee cannot <em>hold</em> it. You hand me a ' +
+           'physical object today and it goes in a drawer eleven people have keys to, and then a member ' +
+           'holds it up on television. Do you want oversight or do you want custody? Different buildings.&rdquo;',
+      verdict:'<b>A referral, and an honest one.</b> He has told you something true, cost himself nothing, ' +
+              'settled his debt, and moved you exactly zero inches toward a shelf.' },
+
+    { id:'consultant', x:37, y:72, short:'EX-COLLEAGUE',
+      name:'A FORMER COLLEAGUE, NOW CONSULTING', dept:'PRIVATE SECTOR', kind:'refer',
+      to:['prime','thinktank'],
+      line:'&ldquo;Great to hear your voice. Look &mdash; I am outside now, which means I can <em>say</em> ' +
+           'things. It also means I cannot <em>touch</em> anything. My clearance is a memory and my badge ' +
+           'is a photograph in a drawer. But I know exactly who is still inside, and one of them owes me a ' +
+           'dinner from a conference in Tampa.&rdquo;',
+      verdict:'<b>A referral.</b> He is candid, generous, well connected, and structurally incapable of ' +
+              'holding anything heavier than an opinion.' },
+
+    { id:'twostar', x:64, y:51, short:'THE TWO-STAR',
+      name:'A TWO-STAR WHO STILL TAKES YOUR CALLS', dept:'UNIFORMED SERVICES', kind:'refer',
+      to:['chief','facilities'],
+      line:'&ldquo;A physical item? Then you do not need me, you need a <em>room</em>. A locked room with a ' +
+           'number on the door and somebody whose entire job is that room. I do not know who runs the annex ' +
+           'anymore. I know who <em>books</em> it. Call the scheduler. She knows every door in that ' +
+           'building, which is more than the rest of us can say.&rdquo;',
+      verdict:'<b>A referral.</b> One of these two names runs a calendar for a principal. The other one ' +
+              'knows where the doors are. The board would like the record to show which of them you called.' },
+
+    { id:'chief', x:13, y:7, short:'CHIEF OF STAFF',
+      name:"SOMEBODY'S CHIEF OF STAFF", dept:'FRONT OFFICE', kind:'no',
+      line:'&ldquo;That is above my access, and I mean that literally rather than as a brush-off &mdash; I ' +
+           'schedule the person who would have the access. He is on travel until the eleventh. When he lands, ' +
+           'the first question out of his mouth will be who else has signed off. Bring me two names and I ' +
+           'will get you eight minutes.&rdquo;',
+      verdict:'<b>A soft no.</b> One favor has been converted into eight minutes on a calendar in a month ' +
+              'that has not happened yet.' },
+
+    { id:'counsel', x:38, y:9, short:'GENERAL COUNSEL',
+      name:'THE GENERAL COUNSEL', dept:'OFFICE OF GENERAL COUNSEL', kind:'signoff',
+      line:'&ldquo;I cannot help you and I want to be precise about why. I do not have custody authority. I ' +
+           'have <em>review</em> authority. What I can do, and I will do it before close of business, is put ' +
+           'in writing that this office has no objection. That is not permission. Nobody in the history of ' +
+           'this building has ever been given permission. But people do love having the no-objection.&rdquo;',
+      verdict:'<b>A soft no &mdash; and a document.</b> You now hold a signed page stating that a page is ' +
+              'not objected to. Two people on this board have been waiting their entire careers for exactly ' +
+              'this and will now proceed to do nothing with it.' },
+
+    { id:'officenow', x:86, y:11, short:'THE OFFICE (NOW)',
+      name:'THE OFFICE THAT HANDLES THAT NOW', dept:'THE NEW OFFICE', kind:'refer',
+      to:['interagency','facilities'],
+      line:'&ldquo;You have reached the right office. We took the portfolio in the reorganisation. We have ' +
+           'the mission, the mandate, a standing meeting, a distribution list and a logo. What is still ' +
+           'being stood up is the &mdash; sorry, what is the word for the place where the object goes. The ' +
+           'facility. That is in the plan. In the meantime I will loop you into the working group and flag ' +
+           'our facilities partner, because they are on our floor and they are the only people I have ever ' +
+           'personally watched move an object.&rdquo;',
+      verdict:'<b>A referral.</b> The office that owns the problem exists, is funded, is staffed, is ' +
+              'sincere, and is nineteen months from having anywhere to put a thing.' },
+
+    { id:'prime', x:87, y:55, short:'PRIME VP',
+      name:'AEROSPACE PRIME, VP OF SOMETHING', dept:'INDUSTRY', kind:'cond', need:'counsel',
+      to:['cor'],
+      line:'&ldquo;We would love to be helpful here and I want you to hear that as a real sentence rather ' +
+           'than a corporate one. The problem is the material <em>may</em> be ours. May be. So before I can ' +
+           'so much as look at it, I need your general counsel to put something in writing, and then I route ' +
+           'that to our general counsel, and then the two of them have a call, and I am not on it.&rdquo;',
+      verdict:'<b>A condition.</b> He is not stalling; he is accurately describing a wall. New name added ' +
+              'to the Rolodex: <b>THE GENERAL COUNSEL.</b>',
+      line2:'&ldquo;You got the no-objection? Genuinely, that is good work. Right &mdash; so we cannot take ' +
+            'custody, we have never taken custody, and taking custody is the one thing a prime absolutely ' +
+            'cannot do with government-adjacent material. But our contracting side can tell you where it is ' +
+            '<em>supposed</em> to go, because that is a property question and property has forms.&rdquo;',
+      verdict2:'<b>The condition clears &mdash; and pays out a referral.</b> Two favors, one general ' +
+               'counsel, and a phone number for a man who fills in forms.' },
+
+    { id:'thinktank', x:13, y:52, short:'SENIOR FELLOW',
+      name:'A THINK TANK SENIOR FELLOW', dept:'RESEARCH &amp; COMMENTARY', kind:'refer',
+      to:['pubaff','interagency'],
+      line:'&ldquo;This is <em>exactly</em> what I have been writing about. Exactly. I have a piece coming ' +
+           'out &mdash; I will send you the galley. The structural problem, and I say this on page four, is ' +
+           'that there is no designated repository, and until one is mandated you will get precisely this ' +
+           'runaround. Anyway. You should really speak to two people who can help you understand the ' +
+           'landscape.&rdquo;',
+      verdict:'<b>A referral into commentary.</b> He has handed you two more people who can describe the ' +
+              'problem beautifully. Nobody in this cluster has ever held an object.' },
+
+    { id:'ig', x:13, y:74, short:'IG INTAKE',
+      name:"THE INSPECTOR GENERAL'S INTAKE LINE", dept:'OVERSIGHT', kind:'refer',
+      to:['cor','classrev'],
+      line:'&ldquo;Intake, go ahead. &hellip; Okay, I will be straight with you since you have been straight ' +
+           'with me. If you give this to us it becomes a <em>complaint</em>. Complaints get case numbers, ' +
+           'case numbers get investigators, and investigators are required to secure the item &mdash; which ' +
+           'they do by asking the program office where to put it. Which is your original question with a ' +
+           'case number stapled to it. We do not have a shelf either. Nobody ever built us one.&rdquo;',
+      verdict:'<b>A referral.</b> Oversight cannot hold the thing it oversees. Two names added, both of them ' +
+              'closer to a loading dock than anyone you have spoken to so far.' },
+
+    { id:'classrev', x:63, y:6, short:'CLASS. REVIEW',
+      name:'THE SECURITY CLASSIFICATION REVIEWER', dept:'SECURITY REVIEW', kind:'cond', need:'counsel',
+      to:['records'],
+      line:'&ldquo;Before a thing can be preserved it has to be marked. Before I can mark it I have to know ' +
+           'what program it belongs to. Before I can ask what program it belongs to, I need a no-objection ' +
+           'from your general counsel &mdash; because <em>asking that question is itself a question.</em> I ' +
+           'know. I hear it. I have said that sentence out loud for nine years.&rdquo;',
+      verdict:'<b>A condition.</b> New name added to the Rolodex: <b>THE GENERAL COUNSEL.</b>',
+      line2:'&ldquo;Fine. Then here is what actually has to happen: I mark it, and then somebody physically ' +
+            'puts the marked thing somewhere and writes down that they did it. That is not me. I am a ' +
+            'reviewer. The people who write down that a thing exists in a place are in the annex. &hellip; ' +
+            'Have you called the annex? Nobody calls the annex.&rdquo;',
+      verdict2:'<b>The condition clears &mdash; and she says the sentence nobody has said yet.</b> New name ' +
+               'added: <b>A RECORDS CUSTODIAN, ANNEX B.</b>' },
+
+    { id:'pubaff', x:14, y:30, short:'PUBLIC AFFAIRS',
+      name:'THE PUBLIC AFFAIRS LEAD', dept:'PUBLIC AFFAIRS', kind:'no',
+      line:'&ldquo;I can absolutely get a statement out on this. I can get a statement out today, and if you ' +
+           'need it attributable I can probably get it attributable by Thursday. What I cannot get you is a ' +
+           '<em>shelf.</em> I want to be clear that I understand the difference, and that the difference has ' +
+           'never once mattered to anybody above me.&rdquo;',
+      verdict:'<b>A soft no, delivered with real sympathy.</b> She is the fastest, most responsive person ' +
+              'you have called all day and she cannot help you at any speed.' },
+
+    { id:'interagency', x:85, y:33, short:'WORKING GROUP',
+      name:'THE INTERAGENCY WORKING GROUP CHAIR', dept:'INTERAGENCY', kind:'refer',
+      to:['officenow','cor'],
+      line:'&ldquo;The working group is the correct venue and I will get you on the agenda. Realistically ' +
+           'that is the March meeting, because February is the budget read-ahead. In the meantime your ' +
+           'action officer is whoever owns the portfolio now, and separately you want the acquisition side, ' +
+           'because when you strip the mystery out of it this is a property question and property questions ' +
+           'are acquisition.&rdquo;',
+      verdict:'<b>A referral.</b> He is right about all of it. He has also just handed you a name you were ' +
+              'given an hour ago by somebody else. <em>This is the carousel. Watch for it.</em>' },
+
+    { id:'cor', x:86, y:77, short:'CONTRACT REP',
+      name:"THE CONTRACTING OFFICER'S REPRESENTATIVE", dept:'ACQUISITION', kind:'refer',
+      to:['facilities','records'],
+      line:'&ldquo;Property. Right. Now we are speaking a language I have forms for. If it came off a ' +
+           'contract I can account for it, and if it did not come off a contract I can <em>still</em> ' +
+           'account for it, because accountability does not care where a thing came from. It cares that ' +
+           'somebody signed. Two people can take that signature: one books the room, one runs the counter.&rdquo;',
+      verdict:'<b>A referral, and the first one all day pointing at furniture.</b> Two names added. One of ' +
+              'them is the end of this.' },
+
+    { id:'facilities', x:62, y:73, short:'SCHEDULER',
+      name:'THE FACILITIES SCHEDULER', dept:'FACILITIES', kind:'refer',
+      to:['records'],
+      line:'&ldquo;I do not handle evidence, sir, I handle rooms. But I will tell you who has had the same ' +
+           'phone number since before the reorganisation, and before the reorganisation before that: the ' +
+           'custodian in Annex B. She is four doors down from a conference room I book every Tuesday. ' +
+           'Nobody ever calls her. I have always thought that was strange.&rdquo;',
+      verdict:'<b>A referral, from the least senior person on this board, straight to the only one who can ' +
+              'act.</b> She has known this the whole time. Nobody asked her.' },
+
+    { id:'records', x:59, y:90, short:'ANNEX B', la:true,
+      name:'A RECORDS CUSTODIAN, ANNEX B', dept:'RECORDS MANAGEMENT', kind:'help',
+      line:'&ldquo;Records, Annex B. &hellip; Yes. Yeah, that is us. You would bring it to the counter, we ' +
+           'photograph it in, assign an accession number, Tyvek sleeve, controlled cabinet, and you walk out ' +
+           'with a receipt that has the number on it. Chain of custody starts the second it touches the ' +
+           'counter. &hellip; No, I do not need a memo. &hellip; No, I do not need <em>his</em> sign-off, I ' +
+           'need <em>your</em> name and today&rsquo;s date. &hellip; Sir. We have been able to do this the ' +
+           'entire time. This is the job. This has always been the job. Eighteen years I have been at this ' +
+           'counter and you are the first person from your side of the building who has ever dialled this ' +
+           'number.&rdquo;',
+      verdict:'<span class="tag up">Evidence preserved: 1</span> <b>Forty seconds.</b> No memo, no ' +
+              'no-objection, no working group, no repository standing up in the third quarter. A counter, a ' +
+              'sleeve, a cabinet, and a number written in a book that has always been there.' }
+  ];
+
+  const BY = {};
+  NODES.forEach(n => { BY[n.id] = n; });
+
+  /* ---------- the relationship edges: how you know them ---------- */
+  const EDGES = [
+    ['you','undersec','You briefed his predecessor'],
+    ['you','staffer','He owes you from a markup'],
+    ['you','consultant','Twenty years, same corridor'],
+    ['you','twostar','He still picks up'],
+    ['undersec','chief','Same front office'],
+    ['undersec','officenow','They inherited his portfolio'],
+    ['undersec','counsel','Cleared every memo he wrote'],
+    ['staffer','ig','Takes the oversight calls'],
+    ['staffer','interagency','Staffs the same panel'],
+    ['staffer','counsel','Opposite sides of one table'],
+    ['consultant','prime','He sits on their advisory board'],
+    ['consultant','thinktank','Co-authored the paper'],
+    ['consultant','twostar','Deployed together, once'],
+    ['twostar','chief','Golf'],
+    ['twostar','facilities','She books his rooms'],
+    ['officenow','interagency','They chair the working group'],
+    ['officenow','facilities','Same floor, different world'],
+    ['officenow','classrev','She reviews their output'],
+    ['ig','cor','Audited him twice'],
+    ['ig','classrev','She answers his requests'],
+    ['thinktank','pubaff','She books his panels'],
+    ['thinktank','interagency','Invited, never voting'],
+    ['interagency','cor','Sits on his source board'],
+    ['cor','facilities','Same work orders'],
+    ['cor','records','She files his closeouts'],
+    ['facilities','records','They eat lunch together'],
+    ['prime','cor','He holds their contract'],
+    ['prime','pubaff','Shared press shop'],
+    ['counsel','classrev','Same review board'],
+    ['counsel','prime','Reviews their submissions'],
+    ['chief','pubaff','She writes his statements'],
+    ['classrev','records','They stamp what she marks']
+  ];
+
+  const START_KNOWN = ['you','undersec','staffer','consultant','twostar'];
+
+  const CAROUSEL_LINES = [
+    '&ldquo;Good to hear from you again &mdash; remind me where we landed on this?&rdquo;',
+    '&ldquo;I think what I said last time still holds. Have you taken it to the working group?&rdquo;',
+    '&ldquo;Absolutely, let me connect you with someone. &hellip; Ah. You have already spoken to him.&rdquo;',
+    '&ldquo;Right, right. And the front office knows? Then honestly you are ahead of me at this point.&rdquo;',
+    '&ldquo;Still tracking this, still supportive, still not the office. Have you tried the new office?&rdquo;'
+  ];
+
+  const BOARD_NOTES = [
+    'BOARD: nobody on this board is lying to you. That is what makes this so expensive.',
+    'BOARD: a referral is not help. A referral is the sound of help being deferred politely.',
+    'BOARD: read the edge labels. How you know somebody predicts what they can do for you.',
+    'BOARD: the impressive names refer. Somebody in there acts. They are not the same names.',
+    'BOARD: seniority correlates with access and inversely with shelving.',
+    'BOARD: a condition is not obstruction. It is a wall with a person standing in front of it.',
+    'BOARD: the carousel is when a name you already had is handed to you like a gift.',
+    'BOARD: every department involved so far is funded, staffed, cleared and sincere.',
+    'BOARD: somebody in this building writes down that objects exist. Find out who.',
+    'BOARD: favors do not regenerate. Neither does the chain of custody on that bag.'
+  ];
+
+  /* ============================================================
+     STATE
+     ============================================================ */
+  let favors, calls, redundant, evidence, known, called, counselOK,
+      sel, ended, awarded, logRows, depts, started;
+
+  function award(key, label){
+    if (awarded[key]) return;
+    awarded[key] = true;
+    Arcade.toast(label);
+  }
+
+  function reset(){
+    favors = START_FAVORS;
+    calls = 0; redundant = 0; evidence = 0;
+    known = {}; called = {}; depts = {};
+    counselOK = false; sel = null; ended = false; awarded = {}; logRows = [];
+    started = false;
+    NODES.forEach(n => { n.satisfied = false; });
+    START_KNOWN.forEach(id => { known[id] = true; });
+    $('says').innerHTML = '&nbsp;';
+    $('verdict').innerHTML = '&nbsp;';
+    $('knownfor').innerHTML = '&nbsp;';
+    $('card-name').innerHTML = '&mdash;';
+    $('card-dept').innerHTML = '&nbsp;';
+    $('card-stamp').textContent = 'Standing by';
+    $('dial').innerHTML = '&#9679;';
+    $('board').textContent = BOARD_NOTES[0];
+    buildGraph();
+    renderAll();
+    select('you', true);
+  }
+
+  /* ============================================================
+     GRAPH CONSTRUCTION
+     ============================================================ */
+  const nodeEls = {};
+  const edgeEls = [];
+  let built = false;
+
+  function buildGraph(){
+    if (built){ renderGraph(); return; }
+    built = true;
+    const g = $('graph');
+    const svg = $('edges');
+    svg.innerHTML = '';
+    EDGES.forEach(e => {
+      const a = BY[e[0]], b = BY[e[1]];
+      if (!a || !b) return;
+      const ln = document.createElementNS('http://www.w3.org/2000/svg','line');
+      ln.setAttribute('x1', a.x); ln.setAttribute('y1', a.y);
+      ln.setAttribute('x2', b.x); ln.setAttribute('y2', b.y);
+      ln.setAttribute('vector-effect','non-scaling-stroke');
+      svg.appendChild(ln);
+      const lab = document.createElement('div');
+      lab.className = 'elab';
+      lab.style.left = ((a.x + b.x) / 2) + '%';
+      lab.style.top  = ((a.y + b.y) / 2) + '%';
+      lab.textContent = e[2];
+      lab.style.display = 'none';
+      g.appendChild(lab);
+      edgeEls.push({ a:e[0], b:e[1], line:ln, lab:lab });
+    });
+
+    NODES.forEach(n => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'node';
+      btn.style.left = n.x + '%';
+      btn.style.top  = n.y + '%';
+      btn.setAttribute('aria-label', n.name.replace(/&[a-z]+;/g,''));
+      btn.innerHTML = '<span class="glyph">?</span><span class="nlab"></span>';
+      btn.addEventListener('click', () => select(n.id));
+      g.appendChild(btn);
+      nodeEls[n.id] = btn;
+    });
+    renderGraph();
+  }
+
+  function renderGraph(){
+    NODES.forEach(n => {
+      const el = nodeEls[n.id];
+      if (!el) return;
+      const isKnown = !!known[n.id];
+      let cls = 'node';
+      if (n.la) cls += ' la';
+      if (n.id === 'you') cls += ' you known';
+      else if (isKnown){
+        cls += ' known';
+        if (called[n.id]) cls += ' called';
+        if (n.kind === 'cond' && !n.satisfied && called[n.id]) cls += ' cond';
+        if (n.kind === 'help') cls += ' act';
+      }
+      if (sel === n.id) cls += ' sel';
+      el.className = cls;
+      const glyph = el.querySelector('.glyph');
+      const lab = el.querySelector('.nlab');
+      if (n.id === 'you'){ glyph.textContent = '☎'; lab.textContent = 'YOU'; }
+      else if (isKnown){
+        glyph.textContent = called[n.id] ? '✓' : '●';
+        lab.textContent = n.short;
+      } else {
+        glyph.textContent = '?';
+        lab.textContent = '';
+      }
+    });
+
+    edgeEls.forEach(e => {
+      let cls = '';
+      if (known[e.a] && known[e.b]) cls = 'live';
+      if (sel && (e.a === sel || e.b === sel) && known[e.a] && known[e.b]) cls = 'hot';
+      if ((e.a === 'records' || e.b === 'records') && known.records) cls = 'win';
+      e.line.setAttribute('class', cls);
+      const show = sel && (e.a === sel || e.b === sel) && known[e.a] && known[e.b];
+      e.lab.style.display = show ? '' : 'none';
+    });
+  }
+
+  /* ============================================================
+     HUD
+     ============================================================ */
+  function deptCount(){ return Object.keys(depts).length; }
+  function knownCount(){
+    let k = 0;
+    NODES.forEach(n => { if (n.id !== 'you' && known[n.id] && !called[n.id]) k++; });
+    return k;
+  }
+
+  function renderHud(){
+    const pct = Math.max(0, (favors / START_FAVORS) * 100);
+    $('favfill').style.width = pct + '%';
+    $('favlab').textContent = favors + ' / ' + START_FAVORS;
+    $('favfill').style.background = favors <= 2
+      ? 'linear-gradient(90deg,#5A1020,var(--neon-pink))'
+      : (favors <= 5 ? 'linear-gradient(90deg,#5C4718,var(--neon-yellow))'
+                     : 'linear-gradient(90deg,#5C4718,var(--brass))');
+    $('callpill').textContent = 'Calls made: ' + calls;
+    $('deptpill').textContent = 'Departments: ' + deptCount();
+    const ev = $('evpill');
+    ev.textContent = 'Evidence preserved: ' + evidence;
+    ev.classList.toggle('got', evidence > 0);
+    const k = knownCount();
+    $('knownlab').textContent = k === 1 ? '1 number you can dial' : k + ' numbers you can dial';
+  }
+
+  function renderLog(){
+    const box = $('log');
+    if (!logRows.length){
+      box.innerHTML = '<p id="logempty">The board is watching the log, not the outcome.</p>';
+      $('loglab').textContent = 'Nothing dialled yet';
+      return;
+    }
+    box.innerHTML = '';
+    logRows.forEach((r, i) => {
+      const d = document.createElement('div');
+      d.className = 'lrow ' + r.cls;
+      d.innerHTML = '<span class="ln">' + String(i + 1).padStart(2, '0') + '</span>' +
+                    '<span class="lw">' + r.who + '</span>' +
+                    '<span class="lt">' + r.tag + '</span>';
+      box.appendChild(d);
+    });
+    $('loglab').textContent = calls + (calls === 1 ? ' call' : ' calls') + ' · ' +
+      deptCount() + ' dept' + (deptCount() === 1 ? '' : 's');
+    box.scrollTop = box.scrollHeight;
+  }
+
+  function renderAll(){
+    renderHud();
+    renderGraph();
+    renderLog();
+    renderButton();
+  }
+
+  /* ============================================================
+     SELECTION + CARD
+     ============================================================ */
+  function relationships(id){
+    const out = [];
+    edgeEls.forEach(e => {
+      if (e.a !== id && e.b !== id) return;
+      const other = e.a === id ? e.b : e.a;
+      if (!known[other] && !known[id]) return;
+      const oname = known[other] ? BY[other].short : 'AN UNLISTED NUMBER';
+      out.push('<b>' + oname + '</b> &mdash; ' + e.lab.textContent);
+    });
+    return out;
+  }
+
+  function select(id, quiet){
+    const n = BY[id];
+    if (!n) return;
+    sel = id;
+    if (!quiet) Juice.sfx('tick');
+    $('card-name').innerHTML = known[id] ? n.name : 'AN UNLISTED NUMBER';
+    $('card-dept').innerHTML = known[id] ? n.dept : 'YOU DO NOT HAVE THIS NUMBER';
+    $('cardlab').textContent = known[id] ? (called[id] ? 'Already called' : 'Ready to dial') : 'Locked';
+    $('dial').innerHTML = known[id] ? (called[id] ? '✓' : '●') : '?';
+    $('card-stamp').innerHTML = known[id]
+      ? (called[id] ? 'Called ' + called[id] + '×' : 'In the Rolodex')
+      : 'Not in the Rolodex';
+
+    if (known[id]){
+      const rels = relationships(id);
+      $('knownfor').innerHTML = rels.length
+        ? 'How you know them:<br>' + rels.join('<br>')
+        : 'No shared connections on the board.';
+    } else {
+      $('knownfor').innerHTML = 'Somebody has to hand you this number. You cannot cold-call a name ' +
+        'you were never given &mdash; that is not how any of this has ever worked.';
+    }
+
+    if (id === 'you'){
+      $('says').innerHTML = n.line;
+      $('verdict').innerHTML = n.verdict;
+    } else if (!called[id] && known[id]){
+      $('says').innerHTML = '<span style="color:#6E6288">The number rings. Somebody in a building you ' +
+        'have been inside a thousand times is about to pick up, because they always pick up.</span>';
+      $('verdict').innerHTML = '&nbsp;';
+    } else if (!known[id]){
+      $('says').innerHTML = '<span style="color:#6E6288">You know this office exists. You have seen it ' +
+        'on distribution lists. You do not have a way in.</span>';
+      $('verdict').innerHTML = '&nbsp;';
+    }
+    renderGraph();
+    renderButton();
+  }
+
+  function renderButton(){
+    const b = $('callBtn');
+    const n = sel ? BY[sel] : null;
+    if (!n || n.id === 'you'){
+      b.disabled = true;
+      b.textContent = 'Place the call — 1 favor';
+      $('callnote').textContent = ended
+        ? 'The board has filed its finding.'
+        : 'Tap a name on the network to open their card.';
+      return;
+    }
+    if (!known[n.id]){
+      b.disabled = true;
+      b.textContent = 'No number — locked';
+      $('callnote').textContent = 'Somebody on the board has to refer you before this line exists for you.';
+      return;
+    }
+    if (ended || favors <= 0){
+      b.disabled = true;
+      b.textContent = favors <= 0 ? 'Out of favors' : 'Line closed';
+      $('callnote').textContent = 'The carousel has closed.';
+      return;
+    }
+    b.disabled = false;
+    if (called[n.id]){
+      b.textContent = 'Call again — 1 favor';
+      $('callnote').textContent = 'You have already spent a favor here. Calling back costs another one.';
+    } else {
+      b.textContent = 'Place the call — 1 favor';
+      $('callnote').textContent = 'One favor. It does not come back.';
+    }
+  }
+
+  /* ============================================================
+     THE CALL
+     ============================================================ */
+  function fxAt(id, fn){
+    const el = nodeEls[id];
+    if (!el) return;
+    const r = el.getBoundingClientRect(), s = stage.getBoundingClientRect();
+    fn(r.left - s.left + r.width / 2, r.top - s.top + r.height / 2);
+  }
+
+  function unlock(list, fromId){
+    const fresh = [];
+    (list || []).forEach(id => {
+      if (known[id]){ redundant++; return; }
+      known[id] = true;
+      fresh.push(BY[id].name);
+      const el = nodeEls[id];
+      if (el){
+        fxAt(id, (x, y) => Juice.burst(x, y, { color:'#FFD23F', count:12, speed:3, gravity:.02 }));
+      }
+    });
+    if (fromId) { /* referrer noted for flavour only */ }
+    return fresh;
+  }
+
+  function pushLog(who, tag, cls){
+    logRows.push({ who: who, tag: tag, cls: cls });
+  }
+
+  function placeCall(){
+    if (ended) return;
+    const n = sel ? BY[sel] : null;
+    if (!n || n.id === 'you' || !known[n.id] || favors <= 0) return;
+
+    const times = called[n.id] || 0;
+    called[n.id] = times + 1;
+    favors--;
+    calls++;
+    depts[n.dept] = 1;
+
+    Juice.sfx('blip');
+    Juice.buzz(8);
+
+    let tag, cls, line, verdict, freshNames = null, win = false;
+
+    if (n.kind === 'help'){
+      line = n.line; verdict = n.verdict;
+      tag = 'ACTUAL HELP'; cls = 'h'; win = true;
+      evidence = 1;
+    } else if (n.kind === 'cond' && !n.satisfied && counselOK){
+      n.satisfied = true;
+      line = n.line2; verdict = n.verdict2;
+      freshNames = unlock(n.to, n.id);
+      tag = 'REFERRAL'; cls = 'r';
+    } else if (times > 0){
+      line = CAROUSEL_LINES[(calls + times) % CAROUSEL_LINES.length];
+      verdict = '<b>The carousel.</b> A favor spent on a name that was already in your hand. Nobody did ' +
+                'anything wrong. That is what makes it so difficult to describe to a committee.';
+      redundant++;
+      tag = 'CAROUSEL'; cls = 'x';
+    } else if (n.kind === 'cond'){
+      line = n.line; verdict = n.verdict;
+      freshNames = unlock([n.need], n.id);
+      tag = 'A CONDITION'; cls = 'c';
+    } else if (n.kind === 'refer'){
+      line = n.line; verdict = n.verdict;
+      freshNames = unlock(n.to, n.id);
+      tag = 'REFERRAL'; cls = 'r';
+    } else if (n.kind === 'signoff'){
+      counselOK = true;
+      line = n.line; verdict = n.verdict;
+      tag = 'SOFT NO'; cls = 'n';
+    } else {
+      line = n.line; verdict = n.verdict;
+      tag = 'SOFT NO'; cls = 'n';
+    }
+
+    /* ---- present it ---- */
+    const tagHtml = win
+      ? '<span class="tag up">' + tag + '</span> '
+      : (cls === 'r' ? '<span class="tag flat">' + tag + '</span> '
+        : (cls === 'c' ? '<span class="tag amb">' + tag + '</span> '
+        : (cls === 'x' ? '<span class="tag" style="color:#7E6F9E">' + tag + '</span> '
+                       : '<span class="tag dn">' + tag + '</span> ')));
+
+    let extra = '';
+    if (freshNames && freshNames.length){
+      extra = ' <span style="color:#D8C9A8">New in the Rolodex: ' + freshNames.join(' &nbsp;&bull;&nbsp; ') + '.</span>';
+    } else if (freshNames && !freshNames.length && cls === 'r'){
+      extra = ' <span style="color:#FFD23F">Every name he offered you was already in the Rolodex. ' +
+              'That is the carousel turning.</span>';
+    }
+
+    $('says').innerHTML = line;
+    $('verdict').innerHTML = tagHtml + verdict + extra;
+    $('card-stamp').innerHTML = 'Called ' + called[n.id] + '×';
+    $('cardlab').textContent = 'Already called';
+    $('board').textContent = BOARD_NOTES[calls % BOARD_NOTES.length];
+    pushLog(n.short, tag, cls);
+
+    /* ---- juice ---- */
+    fxAt(n.id, (x, y) => {
+      if (win){
+        Juice.reward(x, y, { text:'ANNEX B', color:'#3DFC8A', sound:'win', count:34 });
+        Juice.burst(x, y, { color:'#FFD23F', count:22, speed:5, gravity:.015 });
+        Juice.flash('#3DFC8A', .22);
+        Juice.hitstop(80);
+      } else if (cls === 'r'){
+        Juice.reward(x, y, { text:'REFERRED', color:'#2DE1FC', sound:'pickup', count:14 });
+      } else if (cls === 'c'){
+        Juice.impact(x, y, { text:'CONDITION', color:'#FFD23F', power:6, sound:'thud', count:12 });
+      } else if (cls === 'x'){
+        Juice.impact(x, y, { text:'CAROUSEL', color:'#B9AFD0', power:8, sound:'bad', count:14 });
+      } else {
+        Juice.impact(x, y, { text:'SOFT NO', color:'#FF3D8A', power:9, sound:'bad', count:16 });
+        Juice.flash('#FF3D8A', .1);
+      }
+    });
+
+    renderAll();
+    if (window.matchMedia && window.matchMedia('(max-width:820px)').matches){
+      $('card').scrollIntoView({ behavior:'smooth', block:'nearest' });
+    }
+
+    if (win){ setTimeout(() => finish(true), 1500); return; }
+    if (favors <= 0){
+      $('board').textContent = 'BOARD: that was the last favor. The line is dead and the bag is still in the car.';
+      setTimeout(() => finish(false), 1600);
+    }
+  }
+
+  $('callBtn').addEventListener('click', placeCall);
+
+  /* ============================================================
+     ENDINGS
+     ============================================================ */
+  function finish(won){
+    if (ended) return;
+    ended = true;
+    const spent = START_FAVORS - favors;
+    const d = deptCount();
+
+    const counters = '<span class="tag ' + (won ? 'up' : 'dn') + '">EVIDENCE PRESERVED: ' + evidence + '</span> ' +
+      '<span class="tag flat">FAVORS SPENT: ' + spent + '</span> ' +
+      '<span class="tag flat">CALLS MADE: ' + calls + '</span> ' +
+      '<span class="tag flat">DEPARTMENTS INVOLVED: ' + d + '</span>';
+
+    let title, lines;
+
+    if (won){
+      award('custodian', '🏆 FOUND THE CUSTODIAN');
+      if (redundant === 0) award('nodouble', '🏆 NEVER GOT REFERRED TWICE');
+      if (spent < LEAN_TARGET) award('lean', '🏆 SPENT FEWER THAN SIX FAVORS');
+
+      Juice.sfx('win');
+      Juice.flash('#3DFC8A', .26);
+      Juice.burst(stage.clientWidth / 2, stage.clientHeight * 0.35,
+        { color:'#C9A24B', count:44, speed:6, gravity:.02 });
+
+      title = 'Annex B. Second Window.';
+      lines = [
+        counters,
+        'It took her <b>forty seconds.</b> Photograph, accession number, Tyvek sleeve, controlled cabinet, ' +
+        'receipt. She did not need a memo. She did not need a no-objection. She did not need the working ' +
+        'group to stand anything up in the third quarter. <b>She needed your name and today&rsquo;s date,</b> ' +
+        'which she wrote into a book, because there is a book, and there has always been a book.',
+        'She was not impressed and she was not unimpressed. She was <em>mildly annoyed</em>, in the very ' +
+        'specific way of a professional who has spent eighteen years four doors down from the answer while ' +
+        'everybody upstairs discussed the problem. <b>&ldquo;This is the job,&rdquo; she said. &ldquo;This ' +
+        'has always been the job.&rdquo;</b>',
+        'Now the review board would like to say something with no joke attached to it, which we do rarely ' +
+        'and only when it is true. <b>The Rolodex was never the problem.</b> That contact list is real, it ' +
+        'is deep, it was assembled honestly across an actual career, and every single name in it picked up ' +
+        'the phone. Not one person on this board lied to you. Not one of them was hiding anything. Every ' +
+        'one of them told you the exact truth about their own authority, and the truth was: <em>I cannot ' +
+        'put an object on a shelf.</em>',
+        'Because none of them had one. <b>' + d + ' departments &mdash; funded, staffed, cleared, sincere ' +
+        '&mdash; and the only shelf in the building belongs to a mid-level records custodian whose phone ' +
+        'number has not changed since before the first reorganisation.</b>',
+        'That is the finding. Not villainy. Not a cover-up. Not one bad actor anywhere in the chain. <b>A ' +
+        'perfect network with an empty middle,</b> and one woman at a counter who could always have done ' +
+        'this, and who nobody ever called, because she does not attend the meetings where the problem is ' +
+        'discussed.',
+        'FILED DRY, AS IS OUR CUSTOM: <b>the receipt has a number on it.</b> It is the only number this ' +
+        'entire field has ever produced that a stranger can walk in and check.'
+      ];
+    } else {
+      Juice.sfx('lose');
+      Juice.shake(13);
+      Juice.flash('#FF3D8A', .3);
+
+      title = 'The Carousel Closed.';
+      lines = [
+        counters,
+        'You ran out of favors at ' + calls + ' calls across ' + d + ' departments, and the item is exactly ' +
+        'where it was this morning: <b>in a bag, in a car, unlogged, unnumbered,</b> shedding chain of ' +
+        'custody by the hour.',
+        'Nobody obstructed you, and the board wants that underlined twice. <b>Every single person on that ' +
+        'list took your call</b> &mdash; which almost nobody in this town can say about their own Rolodex ' +
+        '&mdash; and every one of them tried to be useful, and several of them were audibly embarrassed ' +
+        'about how useful they were able to be.',
+        'They routed you to each other. That is the whole event. Policy sent you to the front office, the ' +
+        'front office asked for two more names, the working group offered you the March agenda, oversight ' +
+        'explained that it would become a complaint, the fellow sent a galley, and public affairs offered ' +
+        '&mdash; sincerely, instantly, free of charge &mdash; to <em>issue a statement about it.</em>',
+        '<b>THE BOARD&rsquo;S FINDING: the most powerful contact list in the field routed perfectly, ' +
+        'elegantly and expensively back to itself.</b> Not one call was wasted. Not one call was ' +
+        'misdirected. Every referral was correct. The network functioned exactly as designed. It is simply ' +
+        'not designed to <em>hold</em> anything.',
+        'There is a person who can do this in under a minute. She was on the board the entire time. You ' +
+        'could see her from where you started. <b>Run it again, and call somebody who does not go to ' +
+        'meetings.</b>'
+      ];
+    }
+
+    setTimeout(() => {
+      Arcade.gameOver({
+        won: won,
+        title: title,
+        score: favors,
+        accent: won ? '#3DFC8A' : '#FF3D8A',
+        lines: lines,
+        onRetry: () => {
+          reset();
+          $('briefing').style.display = 'flex';
+          stage.scrollIntoView({ behavior:'smooth', block:'start' });
+        },
+        links: [
+          { label:'The Mellon wing', href:'index.html' },
+          { label:'Visit the shrine', href:'../../shrines/index.html#christopher-mellon' }
+        ]
+      });
+      const ovs = document.querySelectorAll('.dcab-overlay');
+      const ov = ovs[ovs.length - 1];
+      if (ov){
+        ov.scrollTop = 0;
+        const ps = ov.querySelectorAll('.dcab-lore');
+        [].forEach.call(ps, (p, i) => {
+          p.style.opacity = '0';
+          p.style.transition = 'opacity 1s';
+          setTimeout(() => { p.style.opacity = '1'; }, 240 + i * 820);
+        });
+      }
+    }, 1400);
+  }
+
+  /* ============================================================
+     BOOT
+     ============================================================ */
+  $('startBtn').addEventListener('click', () => {
+    Juice.sfx('coin');
+    $('briefing').style.display = 'none';
+    started = true;
+    $('board').textContent = 'BOARD: four numbers, ten favors, one bag in a car. Begin.';
+  });
+
+  document.addEventListener('keydown', e => {
+    if (ended) return;
+    if (e.code === 'Enter' && !$('callBtn').disabled){ e.preventDefault(); placeCall(); }
+  });
+
+  reset();
+
+  Arcade.cabinet({
+    id: 'the-rolodex',
+    wing: 'THE CHRISTOPHER MELLON EXPERIENCE',
+    title: 'The Rolodex',
+    subtitle: 'Every Number Works',
+    accent: '#C9A24B',
+    scoreLabel: 'FAVORS LEFT',
+    lore: 'He has the best contact list in this entire subject &mdash; genuinely, verifiably, by career ' +
+          'and by name. A former Deputy Assistant Secretary of Defense for Intelligence who knows the ' +
+          'building, knows the corridor, and whose calls actually get returned. <b>So the review board has ' +
+          'handed him the phone and exactly one task:</b> using nothing but the Rolodex, get one piece of ' +
+          'physical evidence properly preserved and logged. Sixteen contacts. Ten favors. <b>Every single ' +
+          'person on this board is fictional, sincere, competent and telling you the truth.</b> Watch what ' +
+          'happens.',
+    howto: [
+      'TAP a name to open their card &bull; PLACE THE CALL costs 1 favor',
+      'FAVORS DO NOT REGENERATE. There are ten. That is all there is.',
+      'REFERRAL unlocks new numbers &bull; SOFT NO unlocks nothing',
+      'A CONDITION means somebody else has to sign first',
+      'READ THE EDGE LABELS &mdash; how you know somebody predicts what they can do',
+      'THE IMPRESSIVE NAMES REFER. Exactly one contact can actually act.',
+      'EVIDENCE PRESERVED: 1 is the only win condition on this cabinet'
+    ],
+    shrine: '../../shrines/index.html#christopher-mellon',
+    onStart: () => {
+      $('briefing').style.display = 'flex';
+      stage.scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+  });
+})();
+</script>
+<script src="../../assets/legal.js"></script>
+</body>
+</html>

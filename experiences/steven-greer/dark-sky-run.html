@@ -207,7 +207,7 @@
   <b>We are not disputing the desert.</b> The review board has exactly one question, and it is a
   logistics question: <b>could you have done this yourself, for free, tonight?</b> You have a car,
   most of a tank, a map of your own county, and until moonrise.</p>
-  <span class="file-tab">DEPART 19:42 &bull; DUSK 21:12 &bull; MOON UP 01:31</span>
+  <span class="file-tab" id="fileTab">ONE COUNTY &bull; ONE TANK &bull; UNTIL MOONRISE</span>
 </header>
 
 <section>
@@ -948,6 +948,8 @@
     $('nbFuel').textContent = START_GAL.toFixed(1);
     $('nbRange').innerHTML = 'gal &middot; ' + Math.round(START_GAL * MPG) + ' mi range';
     $('nbCash').textContent = '$' + START_CASH;
+    $('fileTab').textContent = 'DEPART ' + fmtT(night.departT) + ' • DUSK ' + fmtT(night.duskT) +
+      ' • MOON UP ' + fmtT(night.moonT);
   }
 
   function horizonWord(o){
@@ -1065,7 +1067,7 @@
       : 'Bortle · horizon · air';
     $('lvQBar').style.width = clamp(avgQ * 100, 0, 100) + '%';
     $('lvEff').textContent = Math.round(r.eff);
-    $('lvDrive').textContent = Math.round(r.driveMin + r.homeMin || 0);
+    $('lvDrive').textContent = Math.round(r.driveMin + (r.homeMin || 0));
     $('lvDriveS').innerHTML = 'min &middot; ' + Math.round(r.miles) + ' mi round trip';
     $('lvFuel').textContent = r.galEnd < 0 ? 'DRY' : r.galEnd.toFixed(1);
     $('lvFuelS').textContent = 'gal left · $' + r.spent.toFixed(2) + ' spent';
@@ -1090,7 +1092,6 @@
       if (route.length >= 6){ Juice.sfx('bad'); return; }
       route.push(id); Juice.sfx('click');
       const n = N[id];
-      const rect = cv.getBoundingClientRect();
       Juice.burst(n.x, n.y, { color:'#2DE1FC', count:10, speed:2.8, gravity:.02 });
     }
     Juice.buzz(8);
@@ -1477,5 +1478,6 @@
   });
 })();
 </script>
+<script src="../../assets/legal.js"></script>
 </body>
 </html>

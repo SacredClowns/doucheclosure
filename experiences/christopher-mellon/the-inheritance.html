@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE INHERITANCE — Doucheclosure</title>
+<meta name="description" content="The board has opened a discretionary line of two hundred and fifty million dollars and handed you fourteen line items. Two columns. One of them preserves evidence. The other one raises awareness, which was never the problem. Spend it.">
+<style>
+  :root{
+    --void:#060610; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --manila:#E8D9A8; --oldmoney:#7FA88F; --paper:#F2ECDA; --ink:#171219;
+    --shadow:rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;overflow:hidden;background:var(--void);color:var(--white);
+    font-family:"Courier New",Courier,monospace;-webkit-text-size-adjust:100%;}
+  .display{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-weight:400;text-transform:uppercase;letter-spacing:.03em;line-height:.95;}
+  #frame{position:fixed;inset:0;display:flex;flex-direction:column;}
+
+  /* ---------- chrome ---------- */
+  #topbar{display:flex;justify-content:space-between;align-items:center;gap:.6rem;
+    padding:.5rem .9rem;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;
+    border-bottom:1px solid #2A1A44;z-index:9;flex:0 0 auto;}
+  #topbar a{color:var(--neon-cyan);text-decoration:none;white-space:nowrap;}
+  #topbar .t{color:var(--manila);text-align:center;}
+  #topbar .r{color:#7E6F9E;white-space:nowrap;}
+  @media (max-width:820px){#topbar .r{display:none;} #topbar .t{font-size:.82rem;}}
+
+  #gamewrap{flex:1;position:relative;display:flex;flex-direction:column;min-height:0;
+    background:radial-gradient(ellipse at 50% -10%, rgba(232,217,168,.12), transparent 62%),
+      linear-gradient(180deg,#060610,#140E24);}
+  #gamewrap::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:6;
+    background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 1px,transparent 1px 3px);}
+
+  /* ---------- hud ---------- */
+  #hud{flex:0 0 auto;display:flex;gap:.7rem;align-items:flex-end;justify-content:space-between;
+    padding:.5rem .8rem .45rem;font-size:.5rem;letter-spacing:.16em;text-transform:uppercase;
+    color:#8C81A8;flex-wrap:wrap;border-bottom:1px solid #221538;}
+  .cell{min-width:74px;}
+  .cell b{display:block;font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-weight:400;font-size:1.25rem;letter-spacing:.03em;color:var(--white);line-height:1;}
+  #remainCell{flex:1 1 210px;min-width:190px;}
+  #remainCell b{font-size:clamp(1.5rem,5.2vw,2.35rem);color:var(--manila);
+    text-shadow:0 0 16px rgba(232,217,168,.25);letter-spacing:.01em;}
+  #remainCell b.bump{animation:bump .22s;}
+  @keyframes bump{50%{transform:scale(1.045);}}
+  #spentCell b{color:var(--neon-pink);}
+  #recCell b{color:var(--neon-green);}
+  #witCell b{color:var(--neon-cyan);}
+  #awareCell b{color:#6E6288;}
+  .meter{flex:1 1 160px;min-width:140px;max-width:280px;}
+  .meter .lab{display:flex;justify-content:space-between;gap:.4rem;}
+  .meter .lab i{font-style:normal;color:var(--white);letter-spacing:.06em;}
+  .track{height:9px;background:#00000099;border:1px solid #000;border-radius:6px;overflow:hidden;margin-top:3px;}
+  .track > i{display:block;height:100%;width:0%;transition:width .3s;
+    background:linear-gradient(90deg,#4A3E22,var(--manila));}
+  @media (prefers-reduced-motion: reduce){#remainCell b.bump{animation:none;}}
+
+  /* ---------- stage ---------- */
+  #stage{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    gap:.6rem;padding:.35rem .7rem .2rem;overflow:hidden;}
+  @media (max-width:900px){
+    #stage{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr);gap:.45rem;
+      padding:.25rem .5rem .15rem;overflow-y:auto;}
+    .col{min-height:auto;}
+    .colbody{overflow:visible !important;}
+  }
+  .col{display:flex;flex-direction:column;min-height:0;}
+  .collab{font-size:.52rem;letter-spacing:.22em;text-transform:uppercase;color:#6E6288;
+    margin:0 0 .3rem 2px;flex:0 0 auto;display:flex;justify-content:space-between;gap:.4rem;}
+  .collab b{color:var(--manila);font-weight:normal;}
+  .col.vis .collab b{color:var(--neon-pink);}
+  .colbody{flex:1;min-height:0;overflow-y:auto;display:grid;gap:.4rem;padding:0 .25rem .5rem 0;align-content:start;}
+
+  /* ---------- allocation cards ---------- */
+  .alloc{background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:1px solid #35205C;border-left:4px solid #6B4FA0;border-radius:7px;
+    padding:.45rem .55rem .5rem;box-shadow:0 3px 10px var(--shadow);}
+  .alloc.on{border-left-color:var(--manila);}
+  .col.vis .alloc.on{border-left-color:var(--neon-pink);}
+  .alloc.max{background:linear-gradient(180deg,#2A2413,#171021);border-color:#5D5330;}
+  .ahead{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem;}
+  .aname{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;font-weight:400;
+    text-transform:uppercase;font-size:.98rem;letter-spacing:.02em;line-height:1.05;color:var(--white);}
+  .aunit{font-size:.53rem;letter-spacing:.1em;color:var(--manila);white-space:nowrap;}
+  .col.vis .aunit{color:var(--neon-pink);}
+  .asub{font-size:.5rem;letter-spacing:.14em;text-transform:uppercase;color:#6E6288;margin-top:.12rem;}
+  .arow{display:flex;align-items:center;gap:.35rem;margin-top:.38rem;}
+  .qbtn{flex:0 0 auto;width:30px;height:28px;border-radius:5px;cursor:pointer;
+    font-family:inherit;font-size:1rem;line-height:1;touch-action:manipulation;
+    border:1px solid #4A3670;background:#0E0A18;color:var(--white);}
+  .qbtn:hover{background:#1B1230;}
+  .qbtn:active{transform:translateY(1px);}
+  .qbtn:disabled{opacity:.3;cursor:default;}
+  .alloc input[type=range]{flex:1;min-width:0;height:26px;background:transparent;cursor:pointer;
+    -webkit-appearance:none;appearance:none;accent-color:var(--manila);}
+  .alloc input[type=range]::-webkit-slider-runnable-track{height:6px;border-radius:4px;
+    background:#0A0714;border:1px solid #33224F;}
+  .alloc input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+    width:17px;height:17px;border-radius:4px;margin-top:-6px;background:var(--manila);
+    border:1px solid #0B0614;box-shadow:0 0 6px rgba(232,217,168,.4);}
+  .alloc input[type=range]::-moz-range-track{height:6px;border-radius:4px;background:#0A0714;border:1px solid #33224F;}
+  .alloc input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:4px;
+    background:var(--manila);border:1px solid #0B0614;}
+  .col.vis .alloc input[type=range]{accent-color:var(--neon-pink);}
+  .col.vis .alloc input[type=range]::-webkit-slider-thumb{background:var(--neon-pink);box-shadow:0 0 6px rgba(255,61,138,.45);}
+  .col.vis .alloc input[type=range]::-moz-range-thumb{background:var(--neon-pink);}
+  .amax{flex:0 0 auto;font-family:inherit;font-size:.46rem;letter-spacing:.12em;cursor:pointer;
+    padding:.3rem .32rem;border-radius:4px;border:1px solid #4A3670;background:#0E0A18;color:#9E90C2;
+    text-transform:uppercase;touch-action:manipulation;}
+  .amax:hover{color:var(--white);border-color:var(--manila);}
+  .afoot{display:flex;justify-content:space-between;gap:.5rem;margin-top:.2rem;
+    font-size:.56rem;letter-spacing:.08em;}
+  .aqty{color:var(--white);}
+  .aqty i{font-style:normal;color:#6E6288;letter-spacing:.14em;font-size:.5rem;}
+  .acost{color:var(--neon-pink);white-space:nowrap;}
+  .aimp{margin-top:.28rem;border-top:1px dotted #3A2A58;padding-top:.24rem;
+    font-size:.53rem;letter-spacing:.1em;text-transform:uppercase;color:var(--neon-green);}
+  .aimp.zero{color:#6E6288;}
+  .anote{margin-top:.25rem;font-size:.63rem;line-height:1.45;color:#9186AE;}
+  .anote b{color:#D6CFE8;}
+
+  /* ---------- actions ---------- */
+  #actions{flex:0 0 auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.35rem;
+    padding:.3rem .7rem .1rem;}
+  @media (max-width:640px){#actions{grid-template-columns:1fr 1fr;}
+    #actions .act.submit{grid-column:1 / -1;}}
+  .act{font-family:inherit;cursor:pointer;touch-action:manipulation;border-radius:8px;
+    padding:.55rem .35rem;border:2px solid #4A3670;background:#160E26;color:var(--white);
+    font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;line-height:1.25;
+    transition:filter .12s,border-color .12s,background .12s;}
+  .act:active{transform:translateY(1px);}
+  .act small{display:block;font-size:.44rem;letter-spacing:.13em;color:#8C81A8;margin-top:2px;}
+  .act.hist{border-color:var(--neon-cyan);} .act.hist small{color:#4E8AA0;}
+  .act.clear{border-color:#6E6288;} .act.clear small{color:#6E6288;}
+  .act.submit{border-color:var(--manila);background:#231B02;} .act.submit small{color:#A2955F;}
+  .act.submit:hover{background:#2E2404;}
+
+  #kbhint{flex:0 0 auto;text-align:center;color:#5F5382;font-size:9.5px;letter-spacing:.06em;
+    padding:.28rem .5rem .34rem;line-height:1.5;}
+  @media (max-width:700px){#kbhint{display:none;}}
+
+  /* ---------- sheets ---------- */
+  .sheet{position:absolute;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;
+    flex-direction:column;background:rgba(4,3,10,.96);text-align:center;padding:1rem;overflow-y:auto;}
+  .sheet.hide{display:none;}
+  .sheet h1{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;font-weight:400;
+    text-transform:uppercase;line-height:.95;font-size:clamp(1.6rem,6vw,2.9rem);color:var(--manila);
+    text-shadow:0 0 18px rgba(232,217,168,.35);}
+  .sheet p{max-width:37rem;margin:.8rem auto;color:var(--chrome);font-size:.86rem;line-height:1.62;}
+  .sheet b{color:var(--white);}
+  .sheet .fine{font-size:.66rem;color:#7E6F9E;letter-spacing:.04em;}
+  .memo{border:2px dashed rgba(185,175,208,.35);border-radius:10px;padding:.7rem 1rem;margin:.9rem auto 0;
+    max-width:33rem;text-align:left;}
+  .memo h4{font-size:.55rem;letter-spacing:.24em;text-transform:uppercase;color:var(--manila);margin-bottom:.4rem;}
+  .memo ul{list-style:none;display:grid;gap:.24rem;}
+  .memo li{font-size:.71rem;color:#D6CFE8;letter-spacing:.02em;line-height:1.45;}
+  .memo li span{color:var(--neon-yellow);}
+  .btn{display:inline-block;margin:.4rem .3rem 0;padding:.85rem 1.5rem;border-radius:8px;
+    font-family:inherit;font-weight:bold;font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;
+    text-decoration:none;cursor:pointer;border:2px solid var(--manila);background:var(--manila);color:#231B02;}
+  .btn.ghost{background:transparent;color:var(--neon-cyan);border-color:var(--neon-cyan);}
+
+  /* ---------- comparison ---------- */
+  #compare .inner{max-width:44rem;width:100%;}
+  .cmp{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin:1rem auto 0;text-align:left;}
+  @media (max-width:620px){.cmp{grid-template-columns:1fr;}}
+  .cmpcol{border:1px solid #35205C;border-radius:9px;padding:.6rem .7rem .7rem;
+    background:linear-gradient(180deg,var(--panel-2),var(--panel));}
+  .cmpcol.good{border-color:#4E7A5C;}
+  .cmpcol h5{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;font-weight:400;
+    text-transform:uppercase;font-size:1.05rem;letter-spacing:.02em;color:var(--white);line-height:1.05;}
+  .cmpcol .kick{font-size:.48rem;letter-spacing:.22em;text-transform:uppercase;color:#6E6288;}
+  .cmprow{display:flex;justify-content:space-between;gap:.5rem;font-size:.62rem;letter-spacing:.05em;
+    padding:.2rem 0;border-bottom:1px dotted #3A2A58;color:#9186AE;}
+  .cmprow b{color:var(--white);font-weight:normal;white-space:nowrap;}
+  .cmpbig{margin-top:.5rem;font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-weight:400;text-transform:uppercase;font-size:1.5rem;line-height:1;color:var(--neon-pink);}
+  .cmpcol.good .cmpbig{color:var(--neon-green);}
+  .cmpcol .cmpsub{font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;color:#6E6288;margin-top:.15rem;}
+</style>
+</head>
+<body>
+<div id="frame">
+  <div id="topbar">
+    <a href="index.html">&larr; THE MELLON WING</a>
+    <span class="t display" style="font-size:1rem;">THE INHERITANCE</span>
+    <span class="r">REVIEW BOARD &bull; SESSION 4 &bull; THE DISCRETIONARY LINE</span>
+  </div>
+
+  <div id="gamewrap">
+    <div id="hud">
+      <div class="cell" id="remainCell"><b>$250,000,000</b>MONEY REMAINING</div>
+      <div class="cell" id="spentCell"><b>$0</b>TOTAL SPENT</div>
+      <div class="cell" id="recCell"><b>0</b>RECORDS PRESERVED</div>
+      <div class="cell" id="witCell"><b>0</b>WITNESSES PROTECTED</div>
+      <div class="cell" id="awareCell"><b>0%</b>AWARENESS RAISED</div>
+      <div class="meter" id="lineWrap">
+        <div class="lab"><span>LINE CONSUMED</span><i id="pctNum">0.00%</i></div>
+        <div class="track"><i id="lineFill"></i></div>
+      </div>
+    </div>
+
+    <div id="stage">
+      <div class="col log">
+        <div class="collab"><span>COLUMN A &bull; LOGISTICS</span><b id="logSum">$0</b></div>
+        <div class="colbody" id="colLog"></div>
+      </div>
+      <div class="col vis">
+        <div class="collab"><span>COLUMN B &bull; VISIBILITY</span><b id="visSum">$0</b></div>
+        <div class="colbody" id="colVis"></div>
+      </div>
+    </div>
+
+    <div id="actions">
+      <button class="act hist" id="aHist" type="button">HISTORICAL ALLOCATION<small>HOW THE FIELD ACTUALLY SPENDS</small></button>
+      <button class="act clear" id="aClear" type="button">CLEAR THE BOARD<small>ZERO EVERY LINE ITEM</small></button>
+      <button class="act submit" id="aSubmit" type="button">SUBMIT ALLOCATION<small>CLOSE THE BOOKS &bull; PRINT THE RECEIPT</small></button>
+    </div>
+
+    <p id="kbhint">KEYS &mdash; H HISTORICAL ALLOCATION &bull; X CLEAR THE BOARD &bull; ENTER SUBMIT &bull; TAB TO A SLIDER, THEN &larr; &rarr; TO ALLOCATE &bull; SHIFT+CLICK A SLIDER ROW&rsquo;S <b>MAX</b> TO FUND EVERYONE</p>
+
+    <!-- COMPARISON -->
+    <div class="sheet hide" id="compare">
+      <div class="inner">
+        <h1>The Historical Allocation</h1>
+        <p>The board keeps a model of how this subject has been funded. Not by any one person &mdash;
+        by everybody, together, for twenty years. Here it is beside the cheapest complete fix
+        available on your board this afternoon.</p>
+        <div class="cmp">
+          <div class="cmpcol">
+            <div class="kick">COLUMN B HEAVY &bull; THE MODEL</div>
+            <h5>How It Has Been Spent</h5>
+            <div id="cmpHist"></div>
+            <div class="cmpbig" id="cmpHistBig">&mdash;</div>
+            <div class="cmpsub">RECORDS PRESERVED</div>
+          </div>
+          <div class="cmpcol good">
+            <div class="kick">COLUMN A FULL &bull; AVAILABLE TODAY</div>
+            <h5>What It Would Cost To Fix</h5>
+            <div id="cmpBest"></div>
+            <div class="cmpbig" id="cmpBestBig">&mdash;</div>
+            <div class="cmpsub">RECORDS PRESERVED</div>
+          </div>
+        </div>
+        <p class="fine" id="cmpPunch">&nbsp;</p>
+        <p class="fine">Illustrative model. The board is describing a pattern of spending, not a person.
+        Nobody is accused of anything anywhere in this cabinet.</p>
+        <button class="btn ghost" id="cmpLoad">LOAD THE HISTORICAL ALLOCATION</button>
+        <button class="btn" id="cmpClose">BACK TO THE BOARD</button>
+      </div>
+    </div>
+
+    <!-- BRIEFING -->
+    <div class="sheet hide" id="briefing">
+      <h1>The Board Has Opened<br>A Discretionary Line</h1>
+      <p><b>$250,000,000.</b> It is not real money and it is not anyone&rsquo;s money. The board
+      constructed it out of a spreadsheet for one reason: to remove the only excuse this subject
+      has ever had.</p>
+      <p>Because sitting in the chair opposite you is the best-resourced advocate this question has
+      ever had. The name on the museums and the universities. Decades at the top of Defense
+      intelligence. The clearance, the committee staff who return calls, the Rolodex, the standing
+      to be taken seriously in a building where almost nobody is.
+      <b>On paper, the one person who could have fixed the logistics.</b></p>
+      <p>And the evidentiary standard of this entire field is still <b>a man in a garage with an
+      unlabeled chest freezer.</b></p>
+      <div class="memo">
+        <h4>Instructions From The Board</h4>
+        <ul>
+          <li><span>FOURTEEN LINE ITEMS.</span> Eight in Column A. Six in Column B. Allocate as much or as little as you like.</li>
+          <li><span>COLUMN A &mdash; LOGISTICS.</span> Coolers, tripods, bags, filing fees, storage, a lawyer&rsquo;s phone number. Cheap. Preserves records.</li>
+          <li><span>COLUMN B &mdash; VISIBILITY.</span> Galas, documentaries, keynotes, rebrands, retainers, a coin. Expensive. Raises awareness.</li>
+          <li><span>THE SCORE IS RECORDS PRESERVED.</span> Not dollars moved. Not awareness. Records.</li>
+          <li><span>WATCH THE MONEY REMAINING.</span> The board considers that number the entire point of this exercise.</li>
+          <li><span>THIS IS NOT AN ACCUSATION.</span> Nobody in this room is charged with anything. The only allegation on the docket is <b>UNSPENT CAPABILITY</b>.</li>
+        </ul>
+      </div>
+      <p class="fine">Registry on file: 2,500 witnesses. Every one of them currently owns
+      a phone and nothing else.</p>
+      <button class="btn" id="startBtn">TAKE THE BUDGET</button>
+    </div>
+  </div>
+</div>
+
+<script src="../../assets/screen.js"></script>
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const wrap = $('gamewrap');
+  Juice.init(wrap);
+
+  /* ============================================================
+     THE DISCRETIONARY LINE
+     ============================================================ */
+  const LINE = 250000000;
+  const WITNESSES = 2500;
+
+  /* ============================================================
+     FOURTEEN LINE ITEMS
+     side 'log' = preserves the evidentiary record
+     side 'vis' = raises awareness, which was never the problem
+     ============================================================ */
+  const ITEMS = [
+    /* ---------- COLUMN A: cheap, enormous ---------- */
+    { id:'cooler', side:'log', name:'COOLERS', unit:40, max:WITNESSES, step:25, rec:2, wit:0,
+      sub:'ONE PER WITNESS ON THE REGISTRY', per:'COOLER', unitLabel:'$40 EA',
+      note:'Forty dollars and a bag of ice is the entire difference between <b>a specimen</b> and <b>an anecdote about a specimen</b>. Every single time. For thirty years.' },
+
+    { id:'tripod', side:'log', name:'TRIPODS', unit:25, max:WITNESSES, step:25, rec:1, wit:0,
+      sub:'ONE PER WITNESS ON THE REGISTRY', per:'TRIPOD', unitLabel:'$25 EA',
+      note:'Every shaky, unusable, laughed-at video in the history of this subject was filmed by somebody who owned a phone and <b>did not own twenty-five dollars of aluminium</b>.' },
+
+    { id:'camera', side:'log', name:'A $300 CAMERA WITH MANUAL FOCUS', unit:300, max:WITNESSES, step:25, rec:2, wit:0,
+      sub:'FIXED LENS &bull; FOCUS RING &bull; NO AUTOFOCUS', per:'CAMERA', unitLabel:'$300 EA',
+      note:'Autofocus hunts. It has hunted, on record, through <b>every important object anybody has ever pointed a lens at</b>. A focus ring costs three hundred dollars and does not have opinions.' },
+
+    { id:'refobj', side:'log', name:'CALIBRATED REFERENCE OBJECTS', unit:12, max:WITNESSES, step:25, rec:1, wit:0,
+      sub:'A RULER THAT GOES IN THE FRAME', per:'MARKER', unitLabel:'$12 EA',
+      note:'Twelve dollars converts the word <b>&ldquo;enormous&rdquo;</b> into a number, and a number is the only kind of testimony an instrument can argue with.' },
+
+    { id:'bags', side:'log', name:'CHAIN-OF-CUSTODY EVIDENCE BAGS', unit:9, max:WITNESSES, step:25, rec:1, wit:0,
+      sub:'TAMPER SEAL &bull; SIGNATURE LINE &bull; BOX OF 50', per:'BOX', unitLabel:'$9 A BOX',
+      note:'Nine dollars turns <b>a thing in the back of a truck</b> into <b>a thing in a record</b>. It is a bag. It has a line on it where you write your name.' },
+
+    { id:'archive', side:'log', name:'A SHARED CLOUD ARCHIVE', unit:16800, max:10, step:1, rec:300, wit:0,
+      sub:'HASHED ON UPLOAD &bull; PRICED PER YEAR', per:'YEAR', unitLabel:'$16,800 / YR',
+      note:'One bucket. Timestamped and hashed the second a file lands, so nobody ever again has to take a stranger&rsquo;s word for when the footage existed. <b>This is a storage bill.</b>' },
+
+    { id:'foia', side:'log', name:'FOIA FILING FEES', unit:32, max:2000, step:20, rec:1, wit:0,
+      sub:'SEARCH AND DUPLICATION &bull; PAID UP FRONT', per:'FILING', unitLabel:'$32 EA',
+      note:'Thirty-two dollars is the whole barrier between <b>a question</b> and <b>a docket number</b>. Two thousand of them costs less than the flowers at a gala.' },
+
+    { id:'legal', side:'log', name:'PRE-PAID LEGAL COUNSEL', unit:450, max:WITNESSES, step:25, rec:0, wit:1,
+      sub:'ONE PREPAID HOUR, BEFORE THEY SAY A WORD', per:'RETAINER', unitLabel:'$450 EA',
+      note:'One hour with an actual lawyer, already paid for, <b>before</b> a person comes forward instead of eighteen months after it goes badly. This is the only line item on this entire board that protects a human being.' },
+
+    /* ---------- COLUMN B: expensive, near-zero ---------- */
+    { id:'gala', side:'vis', name:'THE GALA', unit:2850000, max:3, step:1, rec:0, wit:0, aw:8,
+      sub:'ONE EVENING &bull; SIX HUNDRED PEOPLE WHO AGREE', per:'EVENING', unitLabel:'$2,850,000',
+      note:'A ballroom, a step-and-repeat, a plated chicken, and a keynote to a room that arrived already convinced. <b>Costs more than fixing the entire evidentiary record.</b> One evening.' },
+
+    { id:'doc', side:'vis', name:'THE DOCUMENTARY', unit:4200000, max:2, step:1, rec:0, wit:0, aw:22,
+      sub:'NINETY MINUTES &bull; DRONE SHOTS OF A DESERT', per:'FILM', unitLabel:'$4,200,000',
+      note:'The same four interviews, colour-graded, scored with cellos, intercut with a highway at dusk. Extremely moving. <b>Produces no artefact anybody can test.</b>' },
+
+    { id:'keynote', side:'vis', name:'THE CONFERENCE KEYNOTE STAGE', unit:1600000, max:4, step:1, rec:0, wit:0, aw:5,
+      sub:'STAGE &bull; SCREEN &bull; TICKETED AUDIENCE', per:'STAGE', unitLabel:'$1,600,000',
+      note:'A stage, a screen, a lav mic, and nine hundred people who bought a ticket to be told the thing they came in believing. <b>Nobody in the room brought a cooler.</b>' },
+
+    { id:'rebrand', side:'vis', name:'THE REBRAND', unit:900000, max:2, step:1, rec:0, wit:0, aw:6,
+      sub:'NEW WORDMARK &bull; NEW SERIF &bull; NEW DECK', per:'IDENTITY', unitLabel:'$900,000',
+      note:'The letters now lean four degrees forward, indicating momentum. There is a fifty-page document explaining the four degrees. <b>The chest freezer is still unlabeled.</b>' },
+
+    { id:'lobby', side:'vis', name:'THE LOBBYING RETAINER', unit:85000, max:24, step:1, rec:0, wit:0, aw:1,
+      sub:'MONTHLY &bull; AUTO-RENEWING', per:'MONTH', unitLabel:'$85,000 / MO',
+      note:'Renews quietly. Produces a quarterly memo <b>about the memo</b>. Somebody very competent is being paid to have lunch, and the lunches are, in fairness, excellent.' },
+
+    { id:'coin', side:'vis', name:'THE COMMEMORATIVE COIN', unit:38, max:10000, step:100, rec:0, wit:0, aw:0.0006,
+      sub:'STRUCK BRASS &bull; VELVET SLEEVE &bull; NUMBERED', per:'COIN', unitLabel:'$38 EA',
+      note:'Thirty-eight dollars &mdash; <b>cheaper than a cooler</b>. It is the only inexpensive thing in Column B, and it is proof the problem was never the price. It was the choosing.' }
+  ];
+
+  const BY = {};
+  ITEMS.forEach(it => { BY[it.id] = it; });
+  const LOG = ITEMS.filter(i => i.side === 'log');
+  const VIS = ITEMS.filter(i => i.side === 'vis');
+
+  const MAX_REC = LOG.reduce((s, i) => s + i.max * i.rec, 0);      // 22,500
+  const MAX_WIT = LOG.reduce((s, i) => s + i.max * i.wit, 0);      // 2,500
+  const FULL_LOG_COST = LOG.reduce((s, i) => s + i.max * i.unit, 0); // $2,322,000
+
+  /* the board's model of twenty years of funding */
+  const HISTORICAL = { gala:1, doc:1, keynote:1, rebrand:1, lobby:12, coin:5000, foia:6 };
+
+  /* ============================================================
+     STATE
+     ============================================================ */
+  const q = {};
+  let submitted = false;
+  const got = {};
+  const once = (k, fn) => { if (!got[k]) { got[k] = true; fn(); } };
+
+  /* ---------- formatting ---------- */
+  const money = n => '$' + Math.round(n).toLocaleString('en-US');
+  const num = n => Math.round(n).toLocaleString('en-US');
+  const pct = n => (Math.round(n * 10000) / 100).toFixed(2) + '%';
+
+  /* ---------- sound throttles ---------- */
+  let lastCoin = 0, lastHeavy = 0;
+  function coinSfx(){
+    const t = performance.now();
+    if (t - lastCoin > 55){ lastCoin = t; Juice.sfx('coin'); }
+  }
+  function centre(el){
+    const r = el.getBoundingClientRect(), h = wrap.getBoundingClientRect();
+    return { x: r.left - h.left + r.width / 2, y: r.top - h.top + r.height / 2 };
+  }
+
+  /* ============================================================
+     BUILD THE BOARD
+     ============================================================ */
+  function buildCards(){
+    $('colLog').innerHTML = '';
+    $('colVis').innerHTML = '';
+    ITEMS.forEach(it => {
+      q[it.id] = 0;
+      const d = document.createElement('div');
+      d.className = 'alloc';
+      d.id = 'card-' + it.id;
+      d.innerHTML =
+        '<div class="ahead"><span class="aname">' + it.name + '</span>' +
+          '<span class="aunit">' + it.unitLabel + '</span></div>' +
+        '<div class="asub">' + it.sub + '</div>' +
+        '<div class="arow">' +
+          '<button class="qbtn" type="button" data-d="-1" aria-label="less">&minus;</button>' +
+          '<input type="range" min="0" max="' + it.max + '" step="' + it.step + '" value="0" ' +
+            'aria-label="' + it.name + '">' +
+          '<button class="qbtn" type="button" data-d="1" aria-label="more">+</button>' +
+          '<button class="amax" type="button">MAX</button>' +
+        '</div>' +
+        '<div class="afoot"><span class="aqty">0 <i>' + it.per + 'S</i></span>' +
+          '<span class="acost">$0</span></div>' +
+        '<div class="aimp zero">&mdash;</div>' +
+        '<div class="anote">' + it.note + '</div>';
+
+      (it.side === 'log' ? $('colLog') : $('colVis')).appendChild(d);
+
+      const range = d.querySelector('input[type=range]');
+      range.addEventListener('input', () => setQty(it.id, parseInt(range.value, 10), true));
+      d.querySelectorAll('.qbtn').forEach(b => {
+        b.addEventListener('click', () => {
+          const dir = parseInt(b.getAttribute('data-d'), 10);
+          setQty(it.id, q[it.id] + dir * it.step, true);
+        });
+      });
+      d.querySelector('.amax').addEventListener('click', () => setQty(it.id, it.max, true));
+    });
+  }
+
+  /* ============================================================
+     ALLOCATION
+     ============================================================ */
+  function setQty(id, v, live){
+    if (submitted) return;
+    const it = BY[id];
+    const before = q[id];
+    v = Math.max(0, Math.min(it.max, Math.round(v)));
+    if (v === before) return;
+    q[id] = v;
+
+    const card = $('card-' + id);
+    card.querySelector('input[type=range]').value = v;
+
+    if (live){
+      const up = v > before;
+      if (it.side === 'vis' && up){
+        const t = performance.now();
+        if (t - lastHeavy > 240){
+          lastHeavy = t;
+          const c = centre(card);
+          Juice.impact(c.x, c.y, {
+            power: id === 'gala' ? 11 : 8, color:'#FF3D8A', count:16, sound:'thud',
+            text: id === 'gala' ? 'ONE EVENING' : money(it.unit)
+          });
+          Juice.flash('#FF3D8A', .12);
+        } else coinSfx();
+      } else {
+        coinSfx();
+      }
+      if (it.side === 'log' && up && v === it.max){
+        const c = centre(card);
+        Juice.reward(c.x, c.y, { text:'ALL ' + num(it.max), color:'#3DFC8A', sound:'good', count:24 });
+        Juice.flash('#E8D9A8', .12);
+      }
+    }
+    render();
+    checkLiveAchievements();
+  }
+
+  function loadPreset(preset, live){
+    ITEMS.forEach(it => {
+      const v = preset[it.id] || 0;
+      q[it.id] = Math.max(0, Math.min(it.max, v));
+      $('card-' + it.id).querySelector('input[type=range]').value = q[it.id];
+    });
+    if (live) Juice.sfx('whoosh');
+    render();
+  }
+
+  /* ============================================================
+     THE MATH
+     ============================================================ */
+  function totals(){
+    let spent = 0, records = 0, witnesses = 0, aware = 0, logSpend = 0, visSpend = 0;
+    ITEMS.forEach(it => {
+      const n = q[it.id] || 0, c = n * it.unit;
+      spent += c;
+      if (it.side === 'log'){ logSpend += c; records += n * it.rec; witnesses += n * it.wit; }
+      else { visSpend += c; aware += n * (it.aw || 0); }
+    });
+    return { spent, records, witnesses, aware: Math.min(100, aware),
+             logSpend, visSpend, remaining: LINE - spent, frac: spent / LINE };
+  }
+
+  function statsFor(preset){
+    const save = {};
+    ITEMS.forEach(it => { save[it.id] = q[it.id]; });
+    ITEMS.forEach(it => { q[it.id] = Math.max(0, Math.min(it.max, preset[it.id] || 0)); });
+    const t = totals();
+    ITEMS.forEach(it => { q[it.id] = save[it.id]; });
+    return t;
+  }
+
+  /* ============================================================
+     RENDER
+     ============================================================ */
+  let lastRemain = LINE;
+  function render(){
+    const t = totals();
+
+    ITEMS.forEach(it => {
+      const n = q[it.id] || 0;
+      const card = $('card-' + it.id);
+      card.classList.toggle('on', n > 0);
+      card.classList.toggle('max', it.side === 'log' && n === it.max);
+      card.querySelector('.aqty').innerHTML = num(n) + ' <i>' + it.per + (n === 1 ? '' : 'S') + '</i>';
+      card.querySelector('.acost').textContent = money(n * it.unit);
+      const imp = card.querySelector('.aimp');
+      if (it.side === 'log'){
+        imp.classList.remove('zero');
+        if (it.wit){
+          imp.innerHTML = n === 0
+            ? '+1 WITNESS PROTECTED PER RETAINER'
+            : '&#9654; ' + num(n * it.wit) + ' WITNESSES WITH A LAWYER ON RETAINER';
+        } else {
+          imp.innerHTML = n === 0
+            ? '+' + it.rec + ' RECORD' + (it.rec === 1 ? '' : 'S') + ' PER ' + it.per
+            : '&#9654; ' + num(n * it.rec) + ' RECORDS PRESERVED';
+        }
+      } else {
+        imp.classList.add('zero');
+        imp.innerHTML = n === 0
+          ? 'IMPACT ON THE EVIDENTIARY RECORD: NONE'
+          : '&#9654; 0 RECORDS &bull; 0 WITNESSES &bull; AWARENESS ' +
+            (Math.round(n * (it.aw || 0) * 10) / 10) + '%';
+      }
+    });
+
+    const rb = $('remainCell').querySelector('b');
+    rb.textContent = money(t.remaining);
+    if (t.remaining !== lastRemain){
+      lastRemain = t.remaining;
+      rb.classList.remove('bump'); void rb.offsetWidth; rb.classList.add('bump');
+    }
+    $('spentCell').querySelector('b').textContent = money(t.spent);
+    $('recCell').querySelector('b').textContent = num(t.records);
+    $('witCell').querySelector('b').textContent = num(t.witnesses);
+    $('awareCell').querySelector('b').textContent = (Math.round(t.aware * 10) / 10) + '%';
+    $('pctNum').textContent = pct(t.frac);
+    $('lineFill').style.width = Math.min(100, t.frac * 100) + '%';
+    $('logSum').textContent = money(t.logSpend);
+    $('visSum').textContent = money(t.visSpend);
+  }
+
+  /* ============================================================
+     ACHIEVEMENTS
+     ============================================================ */
+  function checkLiveAchievements(){
+    if (q.cooler === BY.cooler.max)
+      once('cooler', () => Arcade.toast('&#127942; BOUGHT EVERYONE A COOLER', 'Achievement unlocked'));
+    if (q.legal === BY.legal.max)
+      once('legal', () => Arcade.toast('&#127942; EVERY WITNESS HAS A LAWYER', 'Achievement unlocked'));
+    if (LOG.every(i => q[i.id] === i.max))
+      once('column', () => Arcade.toast('&#127942; THE ENTIRE LOGISTICS COLUMN', 'Achievement unlocked'));
+    if (q.coin > 0)
+      once('coin', () => Arcade.toast('&#127942; STRUCK THE COIN', 'Achievement unlocked'));
+  }
+
+  /* ============================================================
+     THE COMPARISON — the punchline
+     ============================================================ */
+  function cmpRow(label, val){
+    return '<div class="cmprow"><span>' + label + '</span><b>' + val + '</b></div>';
+  }
+
+  function openCompare(){
+    const h = statsFor(HISTORICAL);
+    const bestPreset = {};
+    LOG.forEach(i => { bestPreset[i.id] = i.max; });
+    const b = statsFor(bestPreset);
+
+    $('cmpHist').innerHTML =
+      cmpRow('THE GALA', '1 &times; ' + money(BY.gala.unit)) +
+      cmpRow('THE DOCUMENTARY', '1 &times; ' + money(BY.doc.unit)) +
+      cmpRow('THE KEYNOTE STAGE', '1 &times; ' + money(BY.keynote.unit)) +
+      cmpRow('THE REBRAND', '1 &times; ' + money(BY.rebrand.unit)) +
+      cmpRow('LOBBYING RETAINER', '12 MO &times; ' + money(BY.lobby.unit)) +
+      cmpRow('COMMEMORATIVE COINS', '5,000 &times; $38') +
+      cmpRow('FOIA FILINGS', '6') +
+      cmpRow('COOLERS &bull; TRIPODS &bull; BAGS', '0') +
+      cmpRow('WITNESSES WITH COUNSEL', '0') +
+      cmpRow('TOTAL ALLOCATED', money(h.spent));
+    $('cmpHistBig').textContent = num(h.records);
+
+    $('cmpBest').innerHTML =
+      cmpRow('COOLERS', num(BY.cooler.max) + ' &times; $40') +
+      cmpRow('TRIPODS', num(BY.tripod.max) + ' &times; $25') +
+      cmpRow('CAMERAS', num(BY.camera.max) + ' &times; $300') +
+      cmpRow('REFERENCE OBJECTS', num(BY.refobj.max) + ' &times; $12') +
+      cmpRow('EVIDENCE BAGS', num(BY.bags.max) + ' &times; $9') +
+      cmpRow('ARCHIVE', '10 YEARS PREPAID') +
+      cmpRow('FOIA FILINGS', num(BY.foia.max)) +
+      cmpRow('WITNESSES WITH COUNSEL', num(b.witnesses)) +
+      cmpRow('GALAS', '0') +
+      cmpRow('TOTAL ALLOCATED', money(b.spent));
+    $('cmpBestBig').textContent = num(b.records);
+
+    $('cmpPunch').innerHTML =
+      'The model on the left allocated <b>' + money(h.spent) + '</b> and preserved <b>' + num(h.records) +
+      '</b> records. The column on the right allocates <b>' + money(b.spent) + '</b> &mdash; ' +
+      '<b>' + money(h.spent - b.spent) + ' less</b> &mdash; and preserves <b>' + num(b.records) +
+      '</b>. One gala costs ' + money(BY.gala.unit) + '. Fixing the entire evidentiary record costs ' +
+      money(b.spent) + '. <b>The whole fix is cheaper than the party about the fix.</b>';
+
+    $('compare').classList.remove('hide');
+    Juice.sfx('alarm');
+  }
+
+  /* ============================================================
+     SUBMIT — the receipt
+     ============================================================ */
+  function receiptRow(a, b, c, dim){
+    return '<span style="display:flex;justify-content:space-between;gap:.5rem;' +
+      'border-bottom:1px dotted rgba(185,175,208,.22);padding:.16rem 0;font-size:.68rem;' +
+      'letter-spacing:.03em;">' +
+      '<span style="text-align:left;color:' + (dim ? '#8C81A8' : '#D6CFE8') + ';">' + a + '</span>' +
+      '<span style="color:#6E6288;white-space:nowrap;">' + b + '</span>' +
+      '<span style="color:' + (dim ? '#B0658C' : '#F4F0FF') + ';white-space:nowrap;' +
+      'min-width:6.2em;text-align:right;">' + c + '</span></span>';
+  }
+
+  function buildReceipt(t){
+    let out = '<span style="display:block;text-align:left;border:2px dashed rgba(185,175,208,.35);' +
+      'border-radius:10px;padding:.7rem .85rem;max-width:34rem;margin:0 auto;">' +
+      '<span style="display:block;font-size:.55rem;letter-spacing:.24em;text-transform:uppercase;' +
+      'color:#E8D9A8;margin-bottom:.4rem;">ITEMISED RECEIPT &bull; THE DISCRETIONARY LINE</span>';
+
+    const bought = ITEMS.filter(i => q[i.id] > 0);
+    if (!bought.length){
+      out += receiptRow('NOTHING WAS ALLOCATED', '&mdash;', '$0', true);
+    } else {
+      bought.forEach(i => {
+        out += receiptRow(i.name, num(q[i.id]) + ' &times; ' + money(i.unit),
+          money(q[i.id] * i.unit), i.side === 'vis');
+      });
+    }
+    out +=
+      receiptRow('<b style="color:#F4F0FF">TOTAL SPENT</b>', pct(t.frac) + ' OF LINE', money(t.spent)) +
+      receiptRow('<b style="color:#F4F0FF">MONEY REMAINING</b>', pct(1 - t.frac) + ' OF LINE',
+        '<b style="color:#E8D9A8">' + money(t.remaining) + '</b>') +
+      receiptRow('RECORDS PRESERVED', '&mdash;', num(t.records)) +
+      receiptRow('WITNESSES PROTECTED', '&mdash;', num(t.witnesses)) +
+      receiptRow('AWARENESS RAISED', 'NEVER THE PROBLEM', (Math.round(t.aware * 10) / 10) + '%', true) +
+      '</span>';
+    return out;
+  }
+
+  function submit(){
+    if (submitted) return;
+    submitted = true;
+    const t = totals();
+
+    ['aHist','aClear','aSubmit'].forEach(id => { $(id).disabled = true; });
+    document.querySelectorAll('.alloc input,.alloc button').forEach(e => { e.disabled = true; });
+
+    if (q.gala === 0) once('nogala', () => Arcade.toast('&#127942; SKIPPED THE GALA', 'Achievement unlocked'));
+    if (t.frac < 0.01 && t.records >= 20000)
+      once('onepct', () => Arcade.toast('&#127942; UNDER ONE PERCENT', 'Achievement unlocked'));
+
+    const receipt = buildReceipt(t);
+    const perfect = t.records >= MAX_REC && t.witnesses >= MAX_WIT;
+
+    if (perfect) thanked(t, receipt);
+    else if (t.records >= 11000) dent(t, receipt);
+    else if (t.records >= 2500) pilot(t, receipt);
+    else asItIs(t, receipt);
+  }
+
+  /* ---------- the quiet line, every ending gets it ---------- */
+  function alwaysAvailable(){
+    return 'The board wishes the record to state plainly what this exercise was and was not. ' +
+      'It was not an accusation. Nobody has been accused of anything in this room, and nothing ' +
+      'on that receipt implies otherwise. It is arithmetic. Coolers cost forty dollars. Tripods ' +
+      'cost twenty-five. A bag with a signature line on it costs nine. Those were the prices in ' +
+      '2017. They were the prices in 2004. They are the prices this afternoon. ' +
+      '<b>This was always available.</b>';
+  }
+
+  function galaMath(t){
+    const g = BY.gala.unit;
+    return 'For scale: <b>one gala</b> costs ' + money(g) + '. Funding the whole of Column A ' +
+      'costs ' + money(FULL_LOG_COST) + '. You could have fixed the entire evidentiary record ' +
+      'of this subject <b>and</b> thrown the gala anyway <b>and</b> walked out of this room with ' +
+      money(LINE - FULL_LOG_COST - g) + ' still sitting on the line.';
+  }
+
+  function endCard(o){
+    Arcade.gameOver({
+      won: o.won, title: o.title, accent: o.accent, score: o.score, lines: o.lines,
+      links: [
+        { label:'THE $5 FULL EXPERIENCE', href:'index.html#prize' },
+        { label:'THE MELLON WING', href:'index.html' }
+      ],
+      onRetry: () => reset()
+    });
+  }
+
+  /* ---------- BEST ---------- */
+  function thanked(t, receipt){
+    Juice.sfx('win'); Juice.flash('#E8D9A8', .35);
+    Juice.burst(wrap.clientWidth / 2, wrap.clientHeight * 0.42, { color:'#E8D9A8', count:52, speed:6 });
+    Juice.burst(wrap.clientWidth / 2, wrap.clientHeight * 0.5, { color:'#3DFC8A', count:36, speed:5 });
+    once('thanked', () => Arcade.toast('&#127942; THE BOARD FORMALLY THANKS YOU', 'Achievement unlocked'));
+
+    endCard({
+      won: true, title: 'The Board Formally Thanks You', accent:'#E8D9A8', score: t.records,
+      lines: [
+        receipt,
+
+        'Every witness on the registry &mdash; <b>all ' + num(MAX_WIT) + ' of them</b> &mdash; now owns ' +
+        'a cooler, a tripod, a camera that focuses where they point it, a ruler that goes in the frame, ' +
+        'a nine-dollar bag with a signature line on it, ten prepaid years of somewhere to put the file, ' +
+        'and <b>the phone number of a lawyer who has already been paid</b>.',
+
+        'It cost <b>' + money(t.spent) + '</b>. That is <b>' + pct(t.frac) + '</b> of the line. ' +
+        'The board has checked this three times because the first two times it assumed a decimal error.',
+
+        '<b>MONEY REMAINING: ' + money(t.remaining) + '.</b> You solved the evidentiary problem of an ' +
+        'entire field and you did not get through one percent of the budget. The remainder is still ' +
+        'sitting there. It has been sitting there the whole time.',
+
+        galaMath(t),
+
+        'AWARENESS RAISED: <b>' + (Math.round(t.aware * 10) / 10) + '%</b>. The board notes, without ' +
+        'comment, that awareness was never the bottleneck. <b>Refrigeration was the bottleneck.</b>',
+
+        alwaysAvailable()
+      ]
+    });
+  }
+
+  /* ---------- GOOD ---------- */
+  function dent(t, receipt){
+    Juice.sfx('good');
+    endCard({
+      won: true, title: 'A Real And Partial Dent', accent:'#3DFC8A', score: t.records,
+      lines: [
+        receipt,
+
+        'You preserved <b>' + num(t.records) + '</b> records and put counsel behind <b>' +
+        num(t.witnesses) + '</b> witnesses, which is more than this subject has managed in its ' +
+        'entire recorded history, and you did it before lunch.',
+
+        'And then you stopped. <b>' + money(t.remaining) + '</b> is still on the line &mdash; ' +
+        pct(1 - t.frac) + ' of it &mdash; and there are ' +
+        num(MAX_WIT - t.witnesses) + ' people on that registry who still have nobody to call ' +
+        'and ' + num(MAX_REC - t.records) + ' records that will not exist.',
+
+        galaMath(t),
+
+        alwaysAvailable()
+      ]
+    });
+  }
+
+  /* ---------- MIDDLING ---------- */
+  function pilot(t, receipt){
+    Juice.sfx('blip');
+    endCard({
+      won: false, title: 'Approved As A Pilot Program', accent:'#FFD23F', score: t.records,
+      lines: [
+        receipt,
+
+        'The board approves it as a <b>pilot</b>. That is the word the board uses when something ' +
+        'is correct and too small. ' + num(t.records) + ' records. ' + num(t.witnesses) +
+        ' witnesses with a lawyer. A start.',
+
+        'The trouble is the number underneath: <b>MONEY REMAINING ' + money(t.remaining) + '</b>. ' +
+        'You did not run out of budget. You did not come close to running out of budget. ' +
+        '<b>You ran out of the decision to spend it.</b>',
+
+        galaMath(t),
+
+        alwaysAvailable()
+      ]
+    });
+  }
+
+  /* ---------- THE FIELD AS IT IS ---------- */
+  function asItIs(t, receipt){
+    Juice.sfx('lose'); Juice.shake(13); Juice.flash('#FF3D8A', .28);
+    const heavy = t.visSpend > t.logSpend;
+    endCard({
+      won: false, title: heavy ? 'An Extremely Successful Year' : 'The Line Goes Back Unspent',
+      accent:'#FF3D8A', score: t.records,
+      lines: [
+        receipt,
+
+        heavy
+          ? 'The evening went beautifully. The room was full, the film screened at a festival, ' +
+            'the wordmark leans four degrees forward now, and there is a numbered brass coin in a ' +
+            'velvet sleeve on somebody&rsquo;s desk. <b>' + money(t.visSpend) + ' allocated to Column B.</b>'
+          : 'Almost nothing left this room. <b>' + money(t.remaining) + '</b> goes back onto the line ' +
+            'exactly as it arrived, which is the outcome the board has watched every year for twenty years.',
+
+        'RECORDS PRESERVED: <b>' + num(t.records) + '</b>. WITNESSES PROTECTED: <b>' + num(t.witnesses) +
+        '</b>. Somewhere tonight a man in a garage opens an unlabeled chest freezer for a stranger ' +
+        'with a phone, and the phone hunts for focus, and there is no ruler in the frame, and no bag, ' +
+        'and no lawyer, and nowhere to put the file. <b>That is still the evidentiary standard.</b> ' +
+        'It stayed the standard because a cooler is forty dollars and nobody bought the cooler.',
+
+        galaMath(t),
+
+        alwaysAvailable()
+      ]
+    });
+  }
+
+  /* ============================================================
+     RESET
+     ============================================================ */
+  function reset(){
+    submitted = false;
+    lastRemain = LINE;
+    ITEMS.forEach(it => {
+      q[it.id] = 0;
+      const c = $('card-' + it.id);
+      c.querySelector('input[type=range]').value = 0;
+    });
+    document.querySelectorAll('.alloc input,.alloc button').forEach(e => { e.disabled = false; });
+    ['aHist','aClear','aSubmit'].forEach(id => { $(id).disabled = false; });
+    $('compare').classList.add('hide');
+    $('briefing').classList.add('hide');
+    render();
+  }
+
+  /* ============================================================
+     INPUT
+     ============================================================ */
+  $('aHist').addEventListener('click', openCompare);
+  $('aClear').addEventListener('click', () => { loadPreset({}, true); });
+  $('aSubmit').addEventListener('click', submit);
+
+  $('cmpClose').addEventListener('click', () => {
+    $('compare').classList.add('hide');
+    Juice.sfx('click');
+  });
+  $('cmpLoad').addEventListener('click', () => {
+    loadPreset(HISTORICAL, true);
+    $('compare').classList.add('hide');
+    Juice.sfx('thud'); Juice.shake(9); Juice.flash('#FF3D8A', .16);
+    checkLiveAchievements();
+  });
+
+  addEventListener('keydown', e => {
+    if (submitted) return;
+    if (!$('briefing').classList.contains('hide')) return;
+    if (!$('compare').classList.contains('hide')){
+      if (e.key === 'Escape'){ e.preventDefault(); $('compare').classList.add('hide'); }
+      return;
+    }
+    const tag = (e.target && e.target.tagName) || '';
+    const l = (e.key || '').toLowerCase();
+    if (l === 'h' && tag !== 'INPUT'){ e.preventDefault(); openCompare(); return; }
+    if (l === 'x' && tag !== 'INPUT'){ e.preventDefault(); loadPreset({}, true); return; }
+    if (e.key === 'Enter' && tag !== 'INPUT'){ e.preventDefault(); submit(); return; }
+  });
+
+  $('startBtn').addEventListener('click', () => {
+    Juice.sfx('coin');
+    $('briefing').classList.add('hide');
+  });
+
+  /* ============================================================
+     BOOT
+     ============================================================ */
+  buildCards();
+  render();
+
+  Arcade.cabinet({
+    id: 'the-inheritance',
+    wing: 'THE CHRISTOPHER MELLON EXPERIENCE',
+    title: 'The Inheritance',
+    subtitle: 'What The Budget Was Always For',
+    accent: '#E8D9A8',
+    scoreLabel: 'RECORDS PRESERVED',
+    lore: 'The best-resourced advocate this subject has ever had &mdash; the name on the museums and ' +
+          'the universities, decades at the top of Defense intelligence, the clearance, the Rolodex, ' +
+          'the standing to be taken seriously in a building where almost nobody is. <b>On paper, the ' +
+          'one person who could have fixed the logistics.</b> And the evidentiary standard of this ' +
+          'entire field is still a man in a garage with an unlabeled chest freezer. The board is not ' +
+          'accusing anybody of anything. <b>The board is handing you the budget and a spreadsheet.</b>',
+    howto: [
+      'FOURTEEN LINE ITEMS &mdash; eight logistics, six visibility',
+      'DRAG A SLIDER or tap &minus; / + / MAX to allocate',
+      'WATCH &mdash; RECORDS PRESERVED, WITNESSES PROTECTED, MONEY REMAINING',
+      'HISTORICAL ALLOCATION &mdash; see how the field actually spends',
+      'SUBMIT ALLOCATION &mdash; close the books, print the receipt',
+      'KEYS &mdash; H historical, X clear the board, ENTER submit'
+    ],
+    shrine: '../../shrines/index.html#christopher-mellon',
+    onStart: () => { $('briefing').classList.remove('hide'); }
+  });
+})();
+</script>
+<script src="../../assets/legal.js"></script>
+</body>
+</html>
