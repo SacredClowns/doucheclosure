@@ -172,7 +172,7 @@
 <div id="topbar">
   <a href="index.html">&larr; THE SANDS WING</a>
   <span class="t display" style="font-size:1.05rem;">THE FREEZER AUDIT</span>
-  <span class="rt">CHEST FREEZER &bull; &minus;19&deg;C &bull; NEVADA</span>
+  <span class="rt">CHEST FREEZER &bull; &minus;19&deg;C &bull; HUMMING SINCE 2001</span>
 </div>
 
 <main id="wrap">
@@ -180,11 +180,11 @@
     <div id="left">
       <div id="hud">
         <div class="meter">
-          <div class="lab">TOOL USES REMAINING: <b id="uselab">8 / 8</b></div>
+          <div class="lab">USES LEFT BEFORE PURE VIBES: <b id="uselab">8 / 8</b></div>
           <div class="track"><div id="usefill"></div></div>
         </div>
         <div class="meter">
-          <div class="lab">BAGS ELIMINATED: <b id="outlab">0 / 16</b></div>
+          <div class="lab">BAGS CLEARED OF WRONGDOING: <b id="outlab">0 / 16</b></div>
           <div class="track"><div id="outfill"></div></div>
         </div>
       </div>
@@ -198,14 +198,14 @@
 
     <aside id="right">
       <h3>The Clue Board</h3>
-      <p class="sub">Board Exhibit 14-F &bull; Everything anyone remembers</p>
+      <p class="sub">Exhibit 14-F &bull; Sworn from memory &bull; Nobody is sure</p>
       <ol id="clues"></ol>
       <div id="legend">
-        <b>&#9878; SCALE</b> &mdash; weight: LIGHT / MEDIUM / HEAVY<br>
-        <b>&#9788; THAW LAMP</b> &mdash; frost age: LIGHT (moved) / HEAVY (never moved)<br>
-        <b>&#128294; FLASHLIGHT</b> &mdash; silhouette: IRREGULAR / UNIFORM<br>
-        <b>&#10007; MARK</b> &mdash; free. Cross out a bag you have ruled out.<br>
-        Tap a blue clue to light up the shelf it is talking about.
+        <b>&#9878; BATHROOM SCALE</b> &mdash; weight: LIGHT / MEDIUM / HEAVY<br>
+        <b>&#9788; THAW LAMP</b> &mdash; frost age: LIGHT (moved) / HEAVY (fused)<br>
+        <b>&#128294; DALE'S FLASHLIGHT</b> &mdash; silhouette: IRREGULAR / UNIFORM<br>
+        <b>&#10007; MARK</b> &mdash; free. The only free thing in this garage.<br>
+        Tap a blue clue to light up the shelf it is yelling about.
       </div>
     </aside>
   </div>
@@ -229,6 +229,7 @@
 
 <script src="../../assets/arcade.js"></script>
 <script src="../../assets/juice.js"></script>
+<script src="../../assets/riff.js"></script>
 <script>
 (() => {
   'use strict';
@@ -236,6 +237,131 @@
   const $ = id => document.getElementById(id);
   const board = $('board');
   Juice.init(board);
+
+  /* ============================================================
+     THE COMMENTARY TRACK. Tier 1 deadpan, tier 3 indefensible.
+     Initialised before anything can possibly fire a line.
+     ============================================================ */
+  Riff.init({ mount: '#banner', bank: {
+
+    probe: [
+      [1, 'Bag {bag}: {val}. Logged. That is one more fact than this field had at breakfast.'],
+      [1, '{tool} applied to bag {bag}. Nothing exploded. The board records cautious optimism.'],
+      [1, 'Bag {bag} measured. Somebody wrote something down. Historic.'],
+      [2, 'That is the {nth} tool you have picked up, and the freezer has started making a different noise about it.'],
+      [2, 'Bag {bag} submits to the {tool} under protest and has requested a lawyer. There are no lawyers in this garage. There is a Dale.'],
+      [2, '{left} uses left. The compressor kicks on like it heard you say that.'],
+      [2, 'The reading is {val}. Bag {bag} disputes the reading. Bag {bag} does not get a say.'],
+      [3, 'Bag {bag} read {val} out loud and the other fifteen heard it. There is now a bloc. There is a whip. There is one bag abstaining on principle.'],
+      [3, 'The 2019 turkey has retained counsel. Counsel is also frozen. Counsel is doing GREAT.'],
+      [3, 'You have used a tool {n} times inside a freezer that has hummed one unbroken B-flat since the Bush administration. It just went to A. Nobody knows what that means. Dale has left the garage.'],
+      [3, 'The thaw lamp has been on for forty-one seconds and three bags have already changed their story. A fourth is asking what the other three said.']
+    ],
+
+    elim: [
+      [1, 'Bag {bag} eliminated. It was corn.'],
+      [1, 'Bag {bag} crossed off. The written record of this case is now two lines long, which is a doubling.'],
+      [1, 'Ruled out. A negative finding is still a finding. Ask any auditor. There are no auditors.'],
+      [2, 'Bag {bag} is out and took it badly. It is now leaning on a neighbour that wants no part of this.'],
+      [2, 'That is the {nth} bag you have crossed off. The survivors have stopped making eye contact.'],
+      [2, 'Bag {bag} eliminated. It was ice from a gas station that closed in 2008. It has outlasted the gas station.'],
+      [2, 'Struck. Bag {bag} would like the board to know it was doing NOTHING and has witnesses.'],
+      [3, 'Bag {bag} is out, and the survivors have formed a caucus. The 2019 turkey was elected chair unopposed.'],
+      [3, 'Eliminated. Bag {bag} has filed a grievance with the county. The county forwarded it to the state. The state forwarded it to geology.'],
+      [3, 'You have ruled out {n} bags and the turkey has developed a rudimentary legal opinion. The opinion is that YOU are the intruder. The corn has joined it. They are voting.']
+    ],
+
+    unmark: [
+      [1, 'Bag {bag} reinstated. The board reserves the right to change its mind, loudly.'],
+      [1, 'Bag {bag} is back in it. No hard feelings, presumably.'],
+      [2, 'Bag {bag} un-eliminated. It has already told everyone. It is insufferable now.'],
+      [2, 'That is the {nth} reversal. The board has begun writing your findings in pencil.'],
+      [3, 'Bag {bag} returns from the dead to a standing ovation from bags that were, ninety seconds ago, celebrating.'],
+      [3, 'You have reversed yourself {n} times. Geology sent the grievance back with a note reading, and this is verbatim, "this is a you problem."']
+    ],
+
+    dupe: [
+      [1, 'Bag {bag} is already on the record. No charge. The board does not bill twice.'],
+      [1, 'You measured that. It has not changed. It is a bag.'],
+      [2, 'Bag {bag} again? It said the same thing. It will keep saying the same thing.'],
+      [2, 'That is the {nth} time you have checked something you already know. Free, but noted, and noted at length.'],
+      [3, 'Bag {bag} has begun answering before you finish asking, which is the most alarming development in this garage so far.'],
+      [3, 'The board has stopped writing this down. The board is just watching you now. So is Dale. Dale came back.']
+    ],
+
+    broke: [
+      [1, '{left} uses left. Start being choosy.'],
+      [1, 'Budget is thin. The board approved eight and will not discuss a ninth.'],
+      [2, '{left} left. The board is now doing that thing where it looks at the ceiling.'],
+      [2, 'Two uses from pure vibes. This entire field runs on vibes, so statistically you will be fine. Statistically.'],
+      [2, 'That was nearly the last one. Somewhere Dale is preparing a short speech about restraint.'],
+      [3, '{left} left. After this it is deduction, instinct, and whatever the turkey tells you.'],
+      [3, 'Budget critical. The county has been notified. The county notified a federal agency. The federal agency notified geology, which has stopped taking calls.'],
+      [3, 'The board has spent its entire annual equipment allowance inside one freezer in Nevada and would like that read into a hearing it will never be invited to.']
+    ],
+
+    idle: [
+      [1, 'The freezer hums. Nothing has happened for a while.'],
+      [1, 'Cold air is escaping. The board is aware. The board is not paying the bill.'],
+      [2, 'Still holding the lid open. Somewhere a compressor is working overtime it did not agree to.'],
+      [2, 'That is the {nth} pause. The bags have begun timing you.'],
+      [2, 'You have stood in an open chest freezer long enough that Dale has offered you a jacket.'],
+      [3, 'Forty-one seconds of nothing. The rime has advanced. It is advancing on YOU now.'],
+      [3, 'The turkey drafted an opinion, circulated it, and secured a majority while you stood there doing this.'],
+      [3, 'The freezer has changed key again. This garage is now, by any reasonable definition, a tomb with a warranty.']
+    ],
+
+    armed: [
+      [1, 'ACCUSATION ARMED. Tap a bag. The board will hold you to it.'],
+      [1, 'Armed. One accusation. There is no second.'],
+      [2, 'Armed. Choose. The freezer has gone very quiet and so has Dale.'],
+      [2, 'Accusation armed for the {nth} time. Nobody is impressed yet.'],
+      [3, 'ARMED. Every bag in here is watching, and two of them are hoping.'],
+      [3, 'Armed. If you are wrong, this garage gets sealed and the turkey wins its case by default.']
+    ],
+
+    right: [
+      [1, 'That is the one. Bag {bag}.'],
+      [1, 'Correct. Somebody in this story finally did a job.'],
+      [2, 'Bag {bag}. Intact. The board is shaking and blaming the temperature.'],
+      [2, 'You got it. The turkey drops its case and asks for its fee back.'],
+      [2, 'Correct on the {nth} try, which the board is rounding down to first.'],
+      [3, 'Bag {bag} is the specimen and the entire caucus has collapsed. The corn denies it was ever involved.'],
+      [3, 'CORRECT. Geology is on the phone. Cosmology is on the other line. Dale has poured something.'],
+      [3, 'The freezer holds its note. It has held that note since 2001, waiting for exactly one person to check.']
+    ],
+
+    wrong: [
+      [1, 'Wrong bag. The freezer closes.'],
+      [1, 'Not it. The board files the finding and goes home to think about this forever.'],
+      [2, 'Wrong. The 2019 turkey has been cleared of all charges and is insufferable about it.'],
+      [2, 'Not the specimen. Somewhere a lid fits something and nobody will ever learn which.'],
+      [2, 'Wrong bag. Dale saw. Dale said nothing, which is worse.'],
+      [3, 'Incorrect. The caucus has ratified a resolution thanking you personally, by name, in the minutes.'],
+      [3, 'Wrong. The county declines to comment, the state declines to comment, and geology has changed the locks.'],
+      [3, 'You accused a bag of corn in front of witnesses, and the corn will dine out on this until the heat death of the sun.']
+    ]
+
+  }});
+
+  /* fire a riff and drop the same line into the running log */
+  function riff(trigger, tokens){
+    const line = Riff.hit(trigger, tokens);
+    if (line) log(line);
+    return line;
+  }
+
+  /* the freezer notices when you stop doing things */
+  let idleT = 0;
+  function bump(){
+    clearTimeout(idleT);
+    if (!live || finished) return;
+    idleT = setTimeout(() => {
+      if (!live || finished) return;
+      riff('idle');
+      bump();
+    }, 24000);
+  }
 
   const RND = n => Math.floor(Math.random() * n);
   const pick = a => a[RND(a.length)];
@@ -256,59 +382,67 @@
     row0: {
       cells: [0, 1, 2, 3], tag: 'TOP ROW',
       ok: i => row(i) !== 0,
-      text: '<b>Nothing on the TOP ROW has been touched since 2019.</b> The rime up there has fused ' +
-            'those four bags into a single geological unit &mdash; you would need a chisel and a reason. ' +
+      text: '<b>Nothing on the TOP ROW has been touched since 2019.</b> The rime has fused those four bags ' +
+            'into one continuous geological unit with its own strata, its own fossils, and, per the county, ' +
+            'its own drainage rights. You would need a chisel, a permit, and a reason. ' +
             '<b>The specimen was moved twice:</b> once in 2011, once the year the garage flooded. ' +
-            'It is not on the top row.'
+            '<b>It is not on the top row.</b>'
     },
     row3: {
       cells: [12, 13, 14, 15], tag: 'BOTTOM ROW',
       ok: i => row(i) !== 3,
-      text: '<b>The BOTTOM ROW sits in the meltwater line.</b> Twenty-six years of defrost cycles have ' +
-            'puddled down there, which means everything on that row has thawed and refrozen at least once. ' +
-            '<b>The specimen has never thawed.</b> Not for a minute. Not on a Tuesday.'
+      text: '<b>The BOTTOM ROW sits in the meltwater line.</b> Twenty-six years of defrost cycles have puddled ' +
+            'down there, so everything on that row has thawed and refrozen at least once, and two of them ' +
+            'have done it often enough to qualify, in most states, as soup. ' +
+            '<b>The specimen has never thawed.</b> Not once. Not for a minute. Not on a Tuesday.'
     },
     col0: {
       cells: [0, 4, 8, 12], tag: 'LEFT COLUMN',
       ok: i => col(i) !== 0,
-      text: '<b>The LEFT COLUMN is the venison column.</b> Backstrap, shoulder, and one neck the board ' +
-            'has follow-up questions about. It is dated, stacked, and rotated &mdash; the single most ' +
-            'organized act in the recorded history of this subject. <b>The specimen is not part of the system.</b>'
+      text: '<b>The LEFT COLUMN is the venison column.</b> Backstrap, shoulder, and one neck the board has ' +
+            'follow-up questions about. Dated, stacked, and rotated annually &mdash; <b>the single most ' +
+            'organized act in the recorded history of this subject</b> &mdash; performed by a man who has ' +
+            'never labelled anything else in his life, including his own truck. ' +
+            '<b>The specimen is not part of the system.</b>'
     },
     col3: {
       cells: [3, 7, 11, 15], tag: 'RIGHT COLUMN',
       ok: i => col(i) !== 3,
       text: '<b>The RIGHT COLUMN is pressed against the compressor housing</b> and runs two degrees warmer. ' +
-            'That is the bait wall, because bait does not care. <b>You do not park the most important ' +
-            'object in the history of the species against the warm side.</b> Even these people. Probably.'
+            'That is the bait wall, because bait has no ambitions. <b>Nobody parks the most important object ' +
+            'in the history of the species on the warm side.</b> Not even these people. The board has ' +
+            'checked this twice, out loud, alone, in a garage.'
     }
   };
   const COMBOS = [['row0', 'col0', 'col3'], ['row0', 'row3', 'col0'], ['row0', 'row3', 'col3']];
 
   const SHAPE_TEXT =
     '<b>Bait is always double-bagged</b> &mdash; by habit, by smell, and in three counties by ordinance. ' +
-    'A double-bagged item throws a smooth <b>UNIFORM</b> silhouette under the flashlight. ' +
-    '<b>The specimen was never re-bagged.</b> It reads IRREGULAR.';
+    'Double-bagged throws a smooth <b>UNIFORM</b> silhouette under the flashlight. ' +
+    '<b>The specimen was never re-bagged,</b> because nobody re-bags the thing they are afraid of. ' +
+    'It reads <b>IRREGULAR</b>: lumpy, honest, and slightly the wrong shape for this planet.';
   const W_TEXT = {
-    HEAVY: '<b>Two men and a dolly.</b> That is what the tip says it took to get it into the chest freezer, ' +
-           'and two men and a dolly reads <b>HEAVY</b> on the scale &mdash; heavier than any turkey in the ' +
-           'state of Nevada, and there are turkeys in here.',
-    MEDIUM: 'The tip says it went in <b>under one arm, like a sleeping dog,</b> carried by a man who was ' +
-            'also holding a beer. That is <b>MEDIUM.</b> A heavy bag ends the beer. The beer did not end.',
-    LIGHT: 'The tip says it went in <b>one-handed, in a grocery sack,</b> by a man eating a sandwich with ' +
-           'the other hand. Whatever else it is, on the scale it is <b>LIGHT.</b>'
+    HEAVY: '<b>Two men and a dolly.</b> That is what the tip says it took, and two men and a dolly reads ' +
+           '<b>HEAVY</b> on the scale &mdash; heavier than any turkey in the state of Nevada, and there ' +
+           'are turkeys in here, and they know.',
+    MEDIUM: 'It went in <b>under one arm, like a sleeping dog,</b> carried by a man who was also holding a ' +
+            'beer he never put down. That is <b>MEDIUM.</b> A HEAVY bag ends the beer. The beer did not end. ' +
+            'The beer outlived the decade.',
+    LIGHT: 'It went in <b>one-handed, in a grocery sack,</b> by a man eating a sandwich with the other hand ' +
+           'and not hurrying. Whatever else it is &mdash; and the board has theories it will not be sharing ' +
+           '&mdash; on the scale it is <b>LIGHT.</b>'
   };
   const F_TEXT =
-    '<b>A bag that gets moved sheds its rime and reforms thin.</b> The specimen was moved twice, so it ' +
-    'wears <b>LIGHT FROST</b> &mdash; and light frost on a bag in a freezer this old is, all by itself, ' +
-    'a confession that somebody was in here.';
+    '<b>A bag that gets moved sheds its rime and grows it back thin.</b> The specimen was moved twice, so it ' +
+    'wears <b>LIGHT FROST</b> &mdash; and light frost, on a bag, in a freezer this old, is not a clue. ' +
+    'It is a confession that somebody was in here.';
 
   const CONTENT = {
     SPECIMEN: { label: 'THE SPECIMEN', color: '#3DFC8A' },
-    TURKEY:   { label: 'TURKEY · 2019', color: '#FFD23F' },
+    TURKEY:   { label: 'TURKEY · EST. 2019', color: '#FFD23F' },
     VENISON:  { label: 'VENISON · 2014', color: '#E2604A' },
-    ICE:      { label: 'ICE', color: '#7FB8FF' },
-    BAIT:     { label: 'BAIT', color: '#B9AFD0' },
+    ICE:      { label: 'ICE. JUST ICE.', color: '#7FB8FF' },
+    BAIT:     { label: 'BAIT · DOUBLE-BAGGED', color: '#B9AFD0' },
     UNID:     { label: 'UNIDENTIFIABLE', color: '#FF3D8A' }
   };
 
@@ -442,9 +576,9 @@
      STATE + UI
      ============================================================ */
   const TOOLS = {
-    s: { name: 'THE FLASHLIGHT', icon: '🔦', desc: 'Reveal silhouette', col: '#2DE1FC' },
-    w: { name: 'THE SCALE',      icon: '⚖',       desc: 'Reveal weight',     col: '#FFD23F' },
-    f: { name: 'THE THAW LAMP',  icon: '☀',       desc: 'Reveal frost age',  col: '#FF3D8A' }
+    s: { name: 'DALE\'S FLASHLIGHT', icon: '🔦', desc: 'Lumpy or suspiciously smooth', col: '#2DE1FC' },
+    w: { name: 'THE BATHROOM SCALE', icon: '⚖',  desc: 'It rounds down out of politeness', col: '#FFD23F' },
+    f: { name: 'THE THAW LAMP',      icon: '☀',  desc: 'How long since anyone cared', col: '#FF3D8A' }
   };
   const BUDGET = 8;
 
@@ -504,7 +638,7 @@
     m.style.setProperty('--sel', '#3DFC8A');
     m.dataset.mode = 'mark';
     m.disabled = finished;
-    m.innerHTML = '<span class="tn">✗ MARK / UNMARK</span><span class="td">Free · rule a bag out</span>';
+    m.innerHTML = '<span class="tn">✗ MARK / UNMARK</span><span class="td">Free. The only free thing here.</span>';
     box.appendChild(m);
 
     const a = document.createElement('button');

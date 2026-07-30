@@ -21,6 +21,58 @@ parking validation. "He killed a crab person? Fine. Where's the cooler?" That's 
 - Tone reference: fully committed absurdity, deadpan bureaucratic delivery, no winking apology.
   The bar the client set: *"Matt Stone and Trey Parker have to crack up."*
 
+## THE FUNNY PROBLEM — read this before writing any game
+Real audience feedback, 2026-07-30: *"People say it's a great idea, it's just not funny and the
+games suck."* That is fair. Here is the diagnosis and the fix. **Violating these is worse than
+shipping late.**
+
+**What went wrong**
+1. **Clever ≠ funny.** Elegant deadpan bureaucratic prose reads as smart. It does not make anyone
+   laugh out loud. The bar is Stone/Parker: escalate past comfort, commit, don't be tasteful.
+2. **Jokes were buried in prose nobody reads.** The best lines sat in wing-page paragraphs while the
+   actual gameplay ran silent. **Comedy must live in the moment-to-moment, not the essay.**
+3. **Puzzle verbs are not toy verbs.** "Constraint-satisfaction scheduling" is interesting to
+   describe and boring to play. We shipped spreadsheets with jokes printed on them.
+4. **No escalation.** Flat difficulty, flat jokes, same register start to finish.
+5. **Sincerity inflation.** A warm moving ending is devastating ONCE. We did it in nearly every
+   game, which makes the whole site earnest. Earnest is the enemy of funny.
+
+**The rules now**
+- **Every click produces a stupid visible consequence.** No silent actions, ever.
+- **Escalate.** Round 1 deadpan, round 8 indefensible. The game should get MORE unhinged, not just
+  harder. Use `Riff` tiers (below) — that's what they're for.
+- **Be specific.** "A raccoon wearing a lanyard" beats "an animal." Names, brands, weirdly exact
+  numbers. Specificity is 80% of the laugh.
+- **Fail states must be funnier than win states.** Losing should be worth doing on purpose.
+- **Break the rule of three.** Set a pattern, then violate it once, hard.
+- **Sincere endings are RATIONED — at most one wing in five.** Everywhere else, land the joke.
+- **Cut any sentence that is merely well-written.** If it isn't funny, it's set dressing. Delete it.
+
+**The comedy engine: `assets/riff.js`**
+A live commentary track that reacts to what the player actually did and gets more deranged over
+time. This is where the jokes belong now.
+```js
+Riff.init({ mount:'#annc', bank:{
+  good:[ 'deadpan line', [2,'weirder line'], [3,'indefensible line'] ],
+  bad :[ [1,'…'], [3,'…'] ], streak:[…], fail:[…]
+}});
+Riff.hit('bad', { thing:'CLAW' });   // {thing}, {n} and {nth} substitute automatically
+```
+Lines are tiered 1-3 and escalate with play. Repeats are suppressed. `{nth}` gives you free
+callbacks — *"that's the fourth time you've done that"* is funnier than any written joke.
+**Minimum bar: 6+ lines per trigger, spanning all three tiers.**
+
+**FEVER MODE (on by default).** Riff drives `Optics`: as the commentary escalates, bloom, barrel
+curvature, chromatic aberration, grain and flicker all climb with it, and tier 3 fires a shake and an
+alarm. The player is never told. The game just starts to feel like the television is unwell. That
+coupling — jokes bending the picture — is what makes it a fever dream instead of a louder game.
+Pass `fever:false` for deliberately calm games (Stillness Protocol, Mantis counseling).
+
+**"Funny AND smart" is the actual bar.** South Park's absurdity always carries a real argument.
+Every escalation should still be ABOUT something — the logistics failure, the invoice, the
+institution. Random weirdness is Family Guy at its worst; weirdness in service of a thesis is Family
+Guy at its best. If a tier-3 line isn't secretly making the wing's point, rewrite it.
+
 ## Hard rules
 1. **No fabricated quotes** attributed to real people in prose/dossiers. Obviously-absurd cartoon
    dialogue inside a game is fine and established. Prose must describe public claims as claims.

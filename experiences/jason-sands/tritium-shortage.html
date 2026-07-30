@@ -61,8 +61,8 @@
   #roundpill{flex:0 0 auto; font-size:.62rem; letter-spacing:.2em; text-transform:uppercase;
     color:var(--neon-yellow); border:1px dashed rgba(255,210,63,.45); border-radius:6px; padding:.35rem .6rem;}
 
-  #board{position:relative; z-index:2; margin:.7rem 0 0; font-size:.62rem; letter-spacing:.14em;
-    text-transform:uppercase; color:#7E6F9E; min-height:1.2rem;}
+  #board{position:relative; z-index:2; margin:.7rem 0 0; font-size:.66rem; letter-spacing:.12em;
+    text-transform:uppercase; min-height:1.2rem; text-align:left; padding:0;}
 
   #arena{display:grid; grid-template-columns:minmax(0,320px) minmax(0,1fr); gap:1.1rem;
     margin-top:.9rem; position:relative; z-index:2;}
@@ -272,6 +272,7 @@
 
 <script src="../../assets/arcade.js"></script>
 <script src="../../assets/juice.js"></script>
+<script src="../../assets/riff.js"></script>
 <script>
 (() => {
   'use strict';
@@ -280,34 +281,157 @@
   Juice.init(stage);
 
   /* ============================================================
+     RIFF — the commentary track. Tier 1 deadpan, tier 3 indefensible.
+     Mounted on the BOARD line. Fires on what the player actually did.
+     ============================================================ */
+  Riff.init({ mount:'#board', bank:{
+
+    start:[
+      'BOARD: the window is open. That is further than anyone has gotten in eighty years.',
+      'BOARD: minute one. Still nobody from the government.',
+      'BOARD: the visitor has not asked twice. He asked once, slower.',
+      [2,'BOARD: a stenographer was requested. There is no stenographer. There is a man named Dale who volunteered and Dale is doing his best.'],
+      [2,'BOARD: hospitality expenditure to date — the entire national budget, zero dollars of it at this window.'],
+      [2,'BOARD: he has not sat down. Nobody offered him a chair. Nobody out here owns a chair.'],
+      [3,'BOARD: the quiet on this range is not neutral. The quiet has taken a side and the side is not ours.'],
+      [3,'BOARD: astronomy has called ahead to say astronomy had nothing to do with this and would like to be left out of the finding.']
+    ],
+
+    good:[
+      'BOARD: he accepts it. Neutrally. The record will show neutrality.',
+      'BOARD: rapport up. Somebody get a form. There is no form. There has never been a form.',
+      'BOARD: that worked. Not one person on this board expected that to work.',
+      [2,'BOARD: a member has written GOOD, and then, after some thought, a second GOOD.'],
+      [2,'BOARD: he has now been handed a correct object by exactly {n} human being in recorded history. He is keeping a list. The list is not for you.'],
+      [2,'BOARD: the wave that came back had a temperature in it. Nobody on this board is licensed to feel a temperature.'],
+      [2,'BOARD: Dale has stopped writing. Dale is just watching now. Dale has a family.'],
+      [3,'BOARD: he transmits an image of your childhood bedroom. Everything is where you left it. The lamp is ON. He wants you to know the lamp has been on THIS ENTIRE TIME.'],
+      [3,'BOARD: three counties have now reported the same dream. It was your kitchen. You were doing fine in it. Everyone was fine in it.'],
+      [3,'BOARD: geology has filed a compliment. GEOLOGY. We did not know geology could do that. We are not equipped. Dale is under the table.']
+    ],
+
+    okay:[
+      'BOARD: accepted. Held at chest height. Filed under PENDING.',
+      'BOARD: small gain. The board will take it, because the board has taken worse.',
+      'BOARD: he turns it over twice, looking for the instructions. There are none anywhere on this planet.',
+      [2,'BOARD: that is the {nth} object he has accepted without knowing what it is. He is not going to ask. He is never going to ask.'],
+      [2,'BOARD: it goes into a pocket that closes without a seam. There is no seam. Stop looking for the seam.'],
+      [2,'BOARD: a member notes the item was received correctly and used incorrectly, which describes most of this county.'],
+      [3,'BOARD: somewhere out past the fence line a machine the size of a post office adjusts one number by a very small amount and says nothing about it to anybody.'],
+      [3,'BOARD: he thanks you in a frequency that makes the truck radio play forty-one seconds of a song that has not been written.'],
+      [3,'BOARD: the item has been entered into a registry maintained by an institution with no address, no staff, and, we are now told, no ceiling.']
+    ],
+
+    bad:[
+      'BOARD: he accepts it. He accepts everything. That is the entire problem with him.',
+      'BOARD: rapport down. A member has drawn a small frowning face and immediately scribbled it out.',
+      'BOARD: no. That was not it. That was not close to it.',
+      [2,'BOARD: that is the {nth} time tonight an American has handed a wounded stranger the wrong object. We are only counting tonight.'],
+      [2,'BOARD: he files it under a heading that translates roughly as HUMANS, CONTINUED.'],
+      [2,'BOARD: the county is now aware. The county has questions. The county has been told to stand by, which the county has never once done.'],
+      [3,'BOARD: he transmits an image of eleven other kitchens. Eleven other windows. Eleven other people holding EXACTLY WHAT YOU ARE HOLDING. He is not making a point. That is why it lands.'],
+      [3,'BOARD: a federal agency that does not exist has opened a file that does not exist and spelled your name correctly in it, which is the frightening part.'],
+      [3,'BOARD: the gravel has retained counsel. The gravel. We are being advised not to address the gravel directly.'],
+      [3,'BOARD: geology has withdrawn its compliment. Dale has been asked to stop reading over our shoulder and Dale has refused, citing conscience.']
+    ],
+
+    repeat:[
+      'BOARD: he holds two now. He does not mention that he holds two.',
+      'BOARD: he squares them on the sill, edges aligned. He is that kind of guest.',
+      'BOARD: there is now a faint delay before he accepts. The delay is the whole review.',
+      [2,'BOARD: that is {c} of the same object. He has arranged them by size. There is a size order now. You made a size order.'],
+      [2,'BOARD: he has begun building something on the ledge out of {thing}. Do not ask. Do not ask.'],
+      [2,'BOARD: a member is timing the pause before acceptance. The pause is growing. The member has started a second column.'],
+      [3,'BOARD: the collection has a name now, in a language with no letters, and the name translates as WHAT THEY KEPT GIVING ME.'],
+      [3,'BOARD: {c} of them. He will carry all {c} across a distance that does not have a number, and he will not leave one behind, because leaving one behind would be rude.'],
+      [3,'BOARD: a raccoon wearing a lanyard has appeared at the edge of the gravel. He is not with us. He is not with them. He is taking notes and the notes are legible.']
+    ],
+
+    streak:[
+      'BOARD: three in a row. The board is uncomfortable with competence.',
+      'BOARD: you are on a run. Historically this is when Americans stop.',
+      [2,'BOARD: he has begun to anticipate you, which is a violation of at least two treaties we have not signed yet.'],
+      [2,'BOARD: a member is standing. Nobody asked him to stand. He does not appear to know he is standing.'],
+      [2,'BOARD: Dale has written FLUENT and underlined it, and then written UNDERLINED IT, which is not how notes work.'],
+      [3,'BOARD: the truck radio has begun playing something that resolves. Radios out here do not resolve. This is now a weather event.'],
+      [3,'BOARD: three separate satellites have declined to look at this window and all three declined at the same instant, politely, like men taking off their hats.'],
+      [3,'BOARD: cosmology has asked to be recused. Cosmology. From this. From a kitchen window. We have granted it because we do not know what else to do.']
+    ],
+
+    sacred:[
+      'BOARD: no. No. We are striking that, and then we are striking it again.',
+      'BOARD: he did not touch them. He would not. He knew what they were in under a second, which is faster than customs.',
+      [2,'BOARD: the wave that came back is your own apology, returned to you at speed, postage paid.'],
+      [2,'BOARD: a member has closed his clipboard. Just closed it. That has never happened in the history of this board.'],
+      [2,'BOARD: minus thirty rapport and every single one of those thirty was earned.'],
+      [3,'BOARD: he steps back one half-step, which on his end is apparently an entire ceremony, and the gravel — the GRAVEL — declines to make a sound about it.'],
+      [3,'BOARD: he transmits one image and one image only: your own hands. Attached. Fine. Still here. That is the whole message and it is somehow worse.'],
+      [3,'BOARD: put them back on. Put them back on right now. This is the board speaking as people and not as a board.']
+    ],
+
+    clock:[
+      'BOARD: he is checking the thing on his wrist. It is not a watch and it does not agree with any calendar we own.',
+      'BOARD: patience is a resource and we are spending it on browsing.',
+      [2,'BOARD: he has a schedule. We do not know what is on it. We know we are behind on it.'],
+      [2,'BOARD: something past the fence line has changed pitch. The board has decided not to discuss the pitch.'],
+      [2,'BOARD: Dale has quietly moved his chair. Dale has moved it toward the door. Dale is not being subtle.'],
+      [3,'BOARD: the dashboard clock has skipped forty-one minutes and then apologized, which clocks do not do, which we are also striking.'],
+      [3,'BOARD: he has turned a quarter-step toward the dark and every insect within a mile has stopped at the same time, in agreement, like a union.'],
+      [3,'BOARD: two counties, one federal agency, and the entire concept of Tuesday are now waiting on you specifically.']
+    ],
+
+    win:[
+      'BOARD: hospitality extended. Somebody wake the archivist.',
+      [2,'BOARD: the record is amended. It has never been amended in this direction before.'],
+      [2,'BOARD: a member is applauding. One member. Alone. It is going on too long and none of us will stop him.'],
+      [2,'BOARD: Dale is crying. Dale is fine. Leave Dale alone.'],
+      [3,'BOARD: geology, astronomy, and the county have jointly declined to comment, which in this jurisdiction is a standing ovation.'],
+      [3,'BOARD: the raccoon has removed his lanyard. We do not know what that means. We suspect it is enormous.'],
+      [3,'BOARD: eighty years of this field and the finding is one thermos and two cups in the lid. Frame it. Frame the lid.'],
+      [3,'BOARD: the file on the tritium stays open forever. The file on the man closes, and it closes warm, and the board is adjourning before anyone says anything else.']
+    ],
+
+    lose:[
+      'BOARD: he thanks you. Sincerely. That is the worst available outcome.',
+      [2,'BOARD: America had one job and the job was a cup of coffee.'],
+      [2,'BOARD: the uniform is still immaculate. That detail is going to find you at three in the morning for the rest of your life.'],
+      [2,'BOARD: Dale has stopped taking notes and is looking at the wall. Dale will not discuss it.'],
+      [3,'BOARD: the gravel does not comment. The gravel has been advised by counsel not to comment.'],
+      [3,'BOARD: eleven other kitchens. Eleven other windows. He is going to knock on every one of them and he is going to be polite at every single one.'],
+      [3,'BOARD: a raccoon wearing a lanyard has filed a minority report. It is two words long. Neither of them is printable in a family arcade.'],
+      [3,'BOARD: the tritium remains unlocated. So does the hospitality. So, at this point, does Dale.']
+    ]
+  }});
+
+  /* ============================================================
      PANTRY
      traits: warm cold food fat bright share ceremony dignity
              tool direction light sacred
      ============================================================ */
   const ITEMS = [
-    { id:'butter',   n:'Butter',            d:'A stick. Softening. Ideologically load-bearing.',
+    { id:'butter',   n:'Butter',            d:'One stick. Forty-one percent melted. Ideologically load-bearing.',
       t:{ food:.6, fat:1, warm:.15 } },
-    { id:'oldbay',   n:'Old Bay',           d:'The tin. Obviously the tin.',
+    { id:'oldbay',   n:'Old Bay',           d:'The tin. Obviously the tin. There is no other tin.',
       t:{ food:.35, bright:1 } },
-    { id:'biscuit',  n:'A Biscuit',         d:'Still warm. Wrapped in foil, like a secret.',
+    { id:'biscuit',  n:'A Biscuit',         d:'Still warm. Wrapped in foil like a secret it cannot keep.',
       t:{ food:1, warm:.6, fat:.35, share:.4 } },
-    { id:'drawn',    n:'Drawn Butter',      d:'A little cup of it. Ceremonial. Steaming.',
+    { id:'drawn',    n:'Drawn Butter',      d:'A little cup of it. Ceremonial. Steaming. Faintly smug.',
       t:{ food:.7, fat:1, warm:.9, ceremony:.5 } },
-    { id:'lemon',    n:'Lemon Wedge',       d:'Bright. Honest. Cuts through anything.',
+    { id:'lemon',    n:'Lemon Wedge',       d:'Bright. Honest. Has cut through worse than this.',
       t:{ food:.35, bright:1, cold:.35 } },
-    { id:'thermos',  n:'Thermos of Coffee', d:'Black. Two cups in the lid. Always two.',
+    { id:'thermos',  n:'Thermos of Coffee', d:'Black. Two cups in the lid. Always two. Nobody knows why two.',
       t:{ warm:1, food:.45, share:1, ceremony:.3 } },
-    { id:'ice',      n:'Ice',               d:'From the cooler. THE COOLER EXISTS.',
+    { id:'ice',      n:'Ice',               d:'From the cooler. THE COOLER EXISTS. THE COOLER ALWAYS EXISTED.',
       t:{ cold:1, food:.15 } },
-    { id:'napkin',   n:'A Napkin',          d:'Paper. Clean. Folded once, on purpose.',
+    { id:'napkin',   n:'A Napkin',          d:'Paper. Clean. Folded once, on purpose, by a man with standards.',
       t:{ dignity:1, ceremony:.5, warm:.1 } },
-    { id:'map',      n:'Road Map',          d:'Nevada, and all of its opinions.',
+    { id:'map',      n:'Road Map',          d:'Nevada, and all forty-one of its opinions.',
       t:{ tool:1, direction:1 } },
-    { id:'flash',    n:'Spare Flashlight',  d:'Works. Batteries checked Tuesday.',
+    { id:'flash',    n:'Spare Flashlight',  d:'Works. Batteries checked Tuesday. Tuesday was a good day.',
       t:{ tool:1, light:1 } },
-    { id:'sandwich', n:'Half a Sandwich',   d:'Yours. The good half, if it comes to that.',
+    { id:'sandwich', n:'Half a Sandwich',   d:'Yours. The good half, if it comes to that. It is going to come to that.',
       t:{ food:1, share:.85, fat:.4 } },
-    { id:'tags',     n:'Dog Tags',          d:'Yours. Around your neck. No.', sacred:true,
+    { id:'tags',     n:'Dog Tags',          d:'Yours. Around your neck. No. Absolutely not. Put it down.', sacred:true,
       t:{ sacred:1 } }
   ];
   const BY_ID = {};
@@ -319,43 +443,43 @@
   const MOODS = [
     { id:'ask', kick:'Incoming transmission &bull; first contact',
       w:{ direction:1, tool:.9, light:.5 },
-      text:'He arrives at the window. There is no arriving to it — the gravel simply agrees to have been stepped on. A wave comes across the sill and lands somewhere behind your eyes, and inside the wave is a word you already know: TRITIUM. He is not demanding it. He is asking the way a man asks for directions in a country whose language he has politely decided not to mention he already speaks.' },
+      text:'He arrives at the window. There is no arriving to it — the gravel simply agrees to have been stepped on. A wave crosses the sill and lands behind your eyes, and inside it is a word you already know: TRITIUM. He is not demanding it. He is asking the way a man asks directions in a country whose language he has politely decided not to mention he already speaks. You do not have tritium. You have a pantry, a thermos, and about forty-one seconds of nerve.' },
 
     { id:'cold', kick:'Incoming transmission &bull; low, at knee height',
       w:{ warm:1, food:.35, ceremony:.2, cold:-.9 },
-      text:'A wave arrives at knee height, like a draft under a door. It carries the specific fact of standing on a range at four in the morning with nothing at all between you and the state of Nevada. The uniform is immaculate. It is also, you notice for the first time, very thin.' },
+      text:'A wave arrives at knee height, like a draft under a door. It carries the specific fact of standing on a range at four in the morning with nothing at all between you and the state of Nevada. The uniform is immaculate. It is also, you notice for the first time, very thin. Behind you on the counter, a stick of butter is watching this unfold and forming an opinion.' },
 
     { id:'overheat', kick:'Incoming transmission &bull; scorched',
       w:{ cold:1, bright:.35, warm:-.7 },
-      text:'A wave arrives with a smell inside it: hot bearing, scorched penny, the inside of a toaster that has been thinking too hard about something. Whatever is out there past the fence line is running well above the temperature it originally agreed to.' },
+      text:'A wave arrives with a smell inside it: hot bearing, scorched penny, the inside of a toaster that has been thinking too hard about a problem. Whatever is parked past the fence line is running well above the temperature it originally agreed to, and it has stopped pretending otherwise, and it has stopped pretending in a way you can feel in your fillings.' },
 
     { id:'hunger', kick:'Incoming transmission &bull; shaped like a room',
       w:{ food:1, fat:.45, share:.3 },
-      text:'A wave arrives shaped like an empty room. He looks — politely, briefly, entirely without shame — at your hands, then at the window ledge, then back at your hands. Nothing about the look is a request. Everything about it is information.' },
+      text:'A wave arrives shaped like an empty room with the chairs already stacked. He looks — politely, briefly, entirely without shame — at your hands, then at the ledge, then back at your hands. Nothing about the look is a request. Everything about it is evidence, and it is being collected.' },
 
     { id:'flavor', kick:'Incoming transmission &bull; mostly a question mark',
       w:{ bright:1, food:.35, fat:.2 },
-      text:'A wave arrives that is almost entirely a question mark. When the window opened, something got out into the air, and that something has been quietly filed for further study by an institution you will never see. It was not the diesel. It was not the sage. It was sharper than both and it came from your counter.' },
+      text:'A wave arrives that is almost entirely a question mark. When the window opened, something got out into the air, and that something has been filed for further study by an institution with no address, no staff, and — we are now told — no ceiling. It was not the diesel. It was not the sage. It was sharper than both and it came off your counter.' },
 
     { id:'dignity', kick:'Incoming transmission &bull; enormous, mortified',
       w:{ dignity:1, ceremony:.4, food:-.25, fat:-.6 }, req:'greasy',
-      text:'A wave arrives and it is embarrassment and it is the size of a weather system. There is butter on his cuff. He has not mentioned the butter on his cuff. He would sooner discuss the entire tritium situation, at length, in front of a panel, than mention the butter on his cuff.' },
+      text:'A wave arrives and it is embarrassment and it is the size of a weather system. There is butter on his cuff. He has not mentioned the butter on his cuff. He would sooner discuss the entire tritium situation, at length, in front of a panel, under oath, than mention the butter on his cuff. The butter, for its part, is having the night of its life.' },
 
     { id:'dark', kick:'Incoming transmission &bull; from underneath',
       w:{ light:1, tool:.5, direction:.2 },
-      text:'A wave arrives from underneath. He has spent four of your minutes looking at the underside of things — the truck, the ledge, the fence post, whatever is parked out past the fence post — and the underside of things is where the dark keeps its main office.' },
+      text:'A wave arrives from underneath. He has spent four of your minutes looking at the underside of things — the truck, the ledge, the fence post, whatever is parked out past the fence post — and the underside of things is where the dark keeps its main office. The main office is open. The main office is always open.' },
 
     { id:'lost', kick:'Incoming transmission &bull; with a direction in it',
       w:{ direction:1, tool:.6, light:.25 },
-      text:'A wave arrives with a direction inside it, and the direction is wrong. He is extremely certain of where he is standing. He is entirely uncertain of where that is in relation to anything else that has ever existed, and he is being very calm about it, which is worse.' },
+      text:'A wave arrives with a direction inside it, and the direction is wrong. He is extremely certain of where he is standing. He is entirely uncertain of where that is in relation to anything else that has ever existed. He is being very calm about it, which is worse, which the board has noted, which has not helped anybody.' },
 
     { id:'company', kick:'Incoming transmission &bull; not a request',
       w:{ share:1, warm:.7, ceremony:.3 },
-      text:'A wave arrives that is not a request. It is the shape of a long shift ending nowhere, with nobody at the end of it. He has stopped asking for things. He is simply standing at a lit window in the dark because it is lit, and that is somehow the most human thing that has happened on this range in forty years.' },
+      text:'A wave arrives that is not a request. It is the shape of a long shift ending nowhere, with nobody at the end of it. He has stopped asking for things. He is standing at a lit window in the dark because it is lit. That is the most human thing that has happened on this range in forty years and it was not done by a human.' },
 
     { id:'farewell', kick:'Incoming transmission &bull; slower than the others', last:true,
       w:{ share:1, warm:.9, food:.3, ceremony:.4 },
-      text:'A wave arrives slower than the others, the way a person slows down at a doorway. He is preparing to leave. Whatever happens in the next few seconds, he is going to thank you for it — sincerely, completely, without a trace of complaint. That is the part that should worry you.' }
+      text:'A wave arrives slower than the others, the way a person slows down in a doorway. He is preparing to leave. Whatever happens in the next few seconds, he is going to thank you for it — sincerely, completely, without one grain of complaint anywhere in it. That is the part that should worry you. That is the part that has ended careers.' }
   ];
 
   // normalize: precompute the best possible raw score per mood

@@ -69,27 +69,27 @@
   <div id="topbar">
     <a href="index.html">&larr; THE SANDS WING</a>
     <span class="t display" style="font-size:1.05rem;">CARCASS TO CASSEROLE: THE 8-MINUTE WINDOW</span>
-    <span style="color:#7E6F9E;">USDA CLOCK: RUNNING</span>
+    <span style="color:#7E6F9E;">USDA CLOCK: RUNNING &bull; DALE: EN ROUTE</span>
   </div>
   <div id="gamewrap">
     <canvas id="game"></canvas>
     <div id="hud">
       <div class="bar"><div class="lab">AMBIENT REGRET (KEEP LOW)</div><div class="track"><div id="tempfill"></div></div></div>
-      <div class="bar"><div class="lab" id="quotalab">MEAT ON ICE: 0 / 20</div><div class="track"><div id="quotafill"></div></div></div>
+      <div class="bar"><div class="lab" id="quotalab">SACRED PROTEIN ON ICE: 0 / 20</div><div class="track"><div id="quotafill"></div></div></div>
     </div>
     <p id="annc">&nbsp;</p>
 
     <div id="briefing">
       <h1 class="display">The Fight Is Over.<br>The Window Is Open.</h1>
       <p>He won. We believed him instantly — that was never the issue. The issue is the next
-      <b>eight minutes</b>, the ones history fumbled. The field is streaming toward you:
-      sacred protein, honest aromatics, and federal debris. Your bins:</p>
-      <p><b style="color:var(--icebox)">&larr; COOLER</b> — meat. All meat. The claw, the lump, the knuckle. This is the whole ballgame.<br>
+      <b>eight minutes</b>, which history fumbled, and which a man named Dale has been thinking
+      about every day since. Three bins. No exceptions.</p>
+      <p><b style="color:var(--icebox)">&larr; COOLER</b> — meat. ALL meat. The claw, the lump, the knuckle. This is the entire ballgame.<br>
       <b style="color:var(--neon-yellow)">&darr; POT</b> — butter, Old Bay, lemon, corn. The bisque waits for no timeline.<br>
-      <b style="color:var(--neon-pink)">OUT-BIN &rarr;</b> — dog tags, clipboards, lanyards, and the PHONE. Especially the phone.
-      The podcast can hear about this LATER. On ice. Everything can be discussed later, on ice.</p>
-      <p>Sort 20 cuts before regret reaches room temperature, and you will see the timeline
-      that should have been.</p>
+      <b style="color:var(--neon-pink)">OUT-BIN &rarr;</b> — dog tags, lanyards, a single prong, and the PHONE.
+      <b>Especially the phone.</b> The podcast can hear about this later, on ice, like everything else.</p>
+      <p>Twenty cuts on ice before regret hits room temperature. Drop them instead and the floor
+      becomes a heritage site with a four-dollar admission you will never see a cent of.</p>
       <button class="btn" id="startBtn">OPEN THE WINDOW</button>
     </div>
 
@@ -102,13 +102,14 @@
         <a class="btn ghost" href="../../cookbook.html">THE 111 RECIPES THIS TIMELINE DESERVES — $5</a>
       </div>
     </div>
-    <p id="kbhint">&larr; / A = COOLER &bull; &darr; / S = POT &bull; &rarr; / D = OUT-BIN &bull; SORT BEFORE IT LANDS &bull; TAP A THIRD OF THE SCREEN ON MOBILE</p>
+    <p id="kbhint">&larr; / A = COOLER &bull; &darr; / S = POT &bull; &rarr; / D = OUT-BIN &bull; SORT IT BEFORE THE FLOOR DOES &bull; ON MOBILE, TAP A THIRD OF THE SCREEN</p>
   </div>
 </div>
 
 <script src="../../assets/screen.js"></script>
 <script src="../../assets/arcade.js"></script>
 <script src="../../assets/juice.js"></script>
+<script src="../../assets/riff.js"></script>
 <script>
 (() => {
   const cv = document.getElementById('game');
@@ -121,11 +122,189 @@
 
   const $ = id => document.getElementById(id);
   let annT = 0;
-  function say(t){ $('annc').textContent = t; annT = 300; }
+
+  /* ============================================================
+     THE COMMENTARY TRACK
+     Tier 1 deadpan. Tier 2 the objects start having opinions.
+     Tier 3 the objects have retained counsel.
+     ============================================================ */
+  Riff.init({ mount:'#annc', bank:{
+
+    start:[
+      'The window is open. Meat left. Aromatics down. Debris right. Go.',
+      'Clock starts. Nobody is filming. Everybody will later claim they were.',
+      'Eight minutes. A man named Dale is already driving here and does not know why.',
+      [2,'The cooler has been waiting its entire life for this. Do not make it wait longer.'],
+      [2,'The pot is awake. The pot has been awake since 1947.'],
+      [2,'Somewhere a USDA inspector sets down a fork and turns, slowly, toward the west.'],
+      [3,'THE OUT-BIN HAS ALREADY LAWYERED UP AND YOU HAVE NOT TOUCHED ANYTHING YET.'],
+      [3,'Every refrigerator on this continent just dropped half a degree out of respect. Do not squander it.']
+    ],
+
+    ice:[
+      'Meat on ice. Good.',
+      '{thing} — cold, logged, boring. Perfect.',
+      'On ice. The chain of custody exhales.',
+      [2,"That's the {nth} cut. The cooler is developing opinions."],
+      [2,'The cooler makes a sound. Not a hum. Closer to a purr, and you should be concerned about that.'],
+      [2,'{thing} goes cold. In Bethesda a man wakes up calm for the first time in forty-one minutes.'],
+      [3,'THE COOLER IS NOW A FEDERAL WITNESS AND IT IS GOING TO TESTIFY BEAUTIFULLY.'],
+      [3,'The cooler has stopped accepting new items emotionally. Physically it is fine. Emotionally it is at capacity.'],
+      [3,'A raccoon wearing a lanyard has appeared at the treeline. He is not here to steal. He is here to VERIFY.'],
+      [3,'THE COOLER HAS FILED FOR CUSTODY. It says you are never home. It says the pot gets everything and the pot does not even WANT it.']
+    ],
+
+    pot:[
+      '{thing} — into the pot. Fine.',
+      'Butter accepted. Butter was always going to be accepted.',
+      '{thing} in. The bisque stirs in its sleep.',
+      [2,"That's the {nth} thing in there. The bisque is developing a personality and it is not a good one."],
+      [2,'The pot burps once. You both agree never to discuss it.'],
+      [2,'The bisque has begun keeping a list. You are on it twice.'],
+      [3,'THE BISQUE IS ASKING TO SPEAK TO SOMEONE WHO IS NOT YOU.'],
+      [3,'The pot has achieved a rolling boil, a tax ID, and a modest following in Delaware.'],
+      [3,'Old Bay is no longer a seasoning. Old Bay is a witness with a lawyer, a grudge, and a boat.']
+    ],
+
+    out:[
+      '{thing} — bagged and returned.',
+      'Out-bin. Correct. Nobody eats a clipboard.',
+      '{thing}, logged. The Pentagon sends a fruit basket. It is also classified.',
+      [2,'The {nth} piece of federal property today. Somebody at a desk is starting a folder with your name on the tab.'],
+      [2,'The lanyard goes in the bin, still warm, still lanyarding.'],
+      [2,'A courier has been dispatched. The courier is a raccoon in a lanyard. Do not engage the raccoon.'],
+      [3,'THE OUT-BIN HAS UNIONIZED. Its demands are reasonable and that is what makes it terrifying.'],
+      [3,'{thing} returns to a building that appears on no map, to a man named Dale, who signs for it with a pen he was issued in 1988.'],
+      [3,'A filing cabinet somewhere just gained forty pounds. Geologists will note the settling in about nine hundred years.']
+    ],
+
+    phone:[
+      'Declined. Voicemail, on ice.',
+      'The phone can wait. The phone has always been able to wait.',
+      '"Love the show, man — cannot talk, the window is open."',
+      [2,"That's the {nth} call you have dodged. The podcast is beginning to take it personally."],
+      [2,'The phone rings once more, quieter, the way a phone rings when it knows.'],
+      [2,'Four hours of audio that will now never exist. The internet grieves for nine seconds and moves on.'],
+      [3,'THE PHONE IS IN THE BIN, THE BIN IS ON ICE, AND THE ICE HAS BEEN PLACED UNDER OATH.'],
+      [3,'Every microphone within two hundred miles just leaned in slightly. Deny them. Deny them all.'],
+      [3,'A man in a headset is currently saying "we may have lost him" to an empty room in Austin.']
+    ],
+
+    wrongMeat:[
+      'Meat is not a condiment. Cooler. Left. Please.',
+      'Wrong. Sacred protein does not go there.',
+      'That was meat. That was very clearly meat.',
+      [2,'The {nth} misfiled cut. The cooler saw. The cooler always sees.'],
+      [2,'You handed protein to the federal government. They will lose it. They lose everything, including buildings.'],
+      [2,'A knuckle is in the pot, which means the bisque has knuckles, which means the bisque can knock.'],
+      [3,'THE COOLER IS STANDING IN THE DOORWAY WITH ITS COAT ON AND WILL NOT SAY WHERE IT IS GOING.'],
+      [3,'You have now misfiled enough protein to feed a small county fair, and the fair has heard about you.'],
+      [3,'A USDA inspector just woke up screaming in Bethesda and does not know why. He will know by Thursday.']
+    ],
+
+    wrongPot:[
+      'You iced the butter. The butter was already loyal.',
+      'That belonged in the pot. The pot noticed.',
+      'Old Bay does not go back. Old Bay never goes back.',
+      [2,'The {nth} aromatic betrayed. The pot is keeping receipts and the receipts are damp.'],
+      [2,'A lemon is in the cooler now, cold and confused, wondering what it did.'],
+      [2,'The sherry has been returned to the government. The government has no procedure for a personality.'],
+      [3,'THE BUTTER HAS RETAINED COUNSEL AND THE COUNSEL IS ALSO BUTTER.'],
+      [3,'Corn, chilled against its will, has begun radicalizing the backfin. This is exactly how it starts.'],
+      [3,'The pot has stopped boiling. Not cooled — STOPPED. It is waiting for an apology and it has all night.']
+    ],
+
+    wrongOut:[
+      'Dog tags in the cooler. Now the bisque has a service record.',
+      'You boiled federal property. That is a new hearing.',
+      'Wrong bin. That is evidence, not garnish.',
+      [2,'The {nth} document cooked. Somebody is going to have to eat that, legally.'],
+      [2,'A tiny clipboard is on ice. It will be cold, and fine, and extremely admissible.'],
+      [2,'The prong is in the pot. The prong is DISSOLVING. Do not ask into what.'],
+      [3,'A LANYARD IS BOILING AND THE SOUP NOW HOLDS CLEARANCES YOU DO NOT.'],
+      [3,'The manila envelope, submerged, is releasing information into the broth. Everyone at that table is now read in.'],
+      [3,'Congress has scheduled a hearing about a soup. The soup has already agreed to testify, which is the worrying part.']
+    ],
+
+    dropMeat:[
+      'A cut of history hit the floor. Ambient. AMBIENT.',
+      'Down and warming. Every second is a second the record cannot get back.',
+      'That one is gone. Gravity was never on our side.',
+      [2,'The {nth} dropped cut. The floor is now more crime scene than floor.'],
+      [2,'It landed label-up, which somehow makes it worse.'],
+      [2,'A dog has appeared. Nobody owns this dog. The dog is thrilled.'],
+      [3,'YOU HAVE NOW DROPPED ENOUGH PROTEIN TO FEED A SMALL COUNTY FAIR, AND THE FAIR HAS HEARD ABOUT YOU.'],
+      [3,'A USDA inspector in Bethesda sat straight up at 3:14 a.m. and said the word "ambient" to nobody.'],
+      [3,'The floor has been designated a heritage site. Admission is four dollars. You see none of it.']
+    ],
+
+    dropPhone:[
+      'The phone rang out. Correct. It can always ring out.',
+      'Unanswered. Ideal.',
+      'It stopped ringing on its own. Best outcome available.',
+      [2,'The {nth} unanswered call. Somewhere a producer types "just checking in!" with real menace.'],
+      [2,'It hit the floor still ringing and kept ringing. That is not how phones work.'],
+      [2,'The voicemail is now eleven minutes long and is mostly breathing and a chair.'],
+      [3,'THE PHONE HAS BURROWED. IT IS UNDER THE CONCRETE. IT IS STILL RINGING AND THE BUILDING HAS A PULSE.'],
+      [3,'Four separate shows have announced they "reached out." None of them did. It does not matter. It never does.'],
+      [3,'A nine-part series about your silence is now in production. Episode one is three hours and, admittedly, very good.']
+    ],
+
+    dropOther:[
+      'Dropped: {thing}. Sloppy, but survivable.',
+      '{thing} hits the deck. Nobody dies.',
+      'Missed it. The window narrows a little.',
+      [2,'The {nth} thing dropped. The floor is starting to look like a menu.'],
+      [2,'{thing} rolled under the table and became somebody else’s problem for forty-one minutes.'],
+      [2,'A lemon is loose. A LEMON IS LOOSE.'],
+      [3,'THE FLOOR HAS FILED A GRIEVANCE. It was hired as a floor. Not a pantry. Not a landfill. Not this.'],
+      [3,'The dropped items have organized. They have a spokesman. His name is Dale and he wants forty-one minutes of your time.'],
+      [3,'In ninety thousand years geologists will find this layer and name an entire epoch after it. The Butterine.']
+    ],
+
+    streak:[
+      'Streak of {n2}. Clean.',
+      '{n2} in a row. Mise en place under fire.',
+      'Nothing wasted for {n2} straight. Suspicious.',
+      [2,'{n2} without a mistake. The cooler is telling other coolers.'],
+      [2,'{n2} in a row. A man named Dale has begun narrating you to himself.'],
+      [2,'Streak of {n2}. The pot is jealous, and the pot is armed.'],
+      [3,'{n2} STRAIGHT. THE COOLER HAS NAMED A CHILD AFTER YOU. IT IS A SMALLER COOLER. IT IS ADORABLE.'],
+      [3,'{n2} in a row and a federal agency has quietly reclassified you from PERSON to PROCEDURE.'],
+      [3,'Streak of {n2}. Somewhere a raccoon in a lanyard removes his tiny hat.']
+    ],
+
+    hot:[
+      'Regret is climbing. Get the meat cold.',
+      'It is getting warm in here. That is not weather.',
+      'The room is above the number. The number matters.',
+      [2,'The cooler is making a NEW sound. Nobody has catalogued this sound.'],
+      [2,'That is not condensation on the ceiling. Move.'],
+      [2,'A thermometer gave up and took a job at a bank.'],
+      [3,'AMBIENT REGRET IS AT LEVELS PREVIOUSLY OBSERVED ONLY IN DIVORCE.'],
+      [3,'THE PAPERWORK HAS STARTED TO CURL, AND PAPERWORK ONLY CURLS WHEN IT IS AFRAID.'],
+      [3,'A satellite has tasked itself. Nobody asked it to. It just felt strongly.']
+    ],
+
+    milestone:[
+      '{iced} on ice. The number goes up. That is the whole religion.',
+      '{iced} cold and logged. Boring. Correct. Beautiful.',
+      '{iced} on ice and the room has not caught fire. Historic.',
+      [2,'{iced} on ice. The cooler is humming a song nobody taught it.'],
+      [2,'{iced} cold. A man named Dale is updating a spreadsheet nobody asked him to keep.'],
+      [2,'{iced} on ice — the cooler now weighs more than the argument that produced it.'],
+      [3,'{iced} ON ICE. THE COOLER HAS RETAINED ITS OWN COUNSEL AND COUNSEL ARRIVED IN NINE MINUTES.'],
+      [3,'{iced} cold: enough protein to survive a winter, a hearing, and one very specific documentary.'],
+      [3,'{iced} ON ICE AND THE COOLER IS QUOTING THE CONSTITUTION FROM MEMORY, INCORRECTLY, WITH ENORMOUS CONFIDENCE.']
+    ]
+
+  }});
+
+  function say(t){ Riff.say(t); annT = 300; }
   function toast(t2){
     const el = document.createElement('div');
     el.className = 'toast';
-    el.innerHTML = '<div class="t1">ACHIEVEMENT UNLOCKED</div><div class="t2">' + t2 + '</div>';
+    el.innerHTML = '<div class="t1">ACHIEVEMENT UNLOCKED (UNVERIFIABLE)</div><div class="t2">' + t2 + '</div>';
     $('gamewrap').appendChild(el);
     setTimeout(() => el.remove(), 3000);
   }
@@ -134,27 +313,24 @@
 
   // item defs: [label, emoji-ish draw color, correct bin, kind]
   const MEAT = [
-    ['CLAW (SWEETEST)', '#E2604A', 0], ['LUMP', '#E88A75', 0], ['KNUCKLE (UNDERRATED)', '#D0524A', 0],
-    ['BACKFIN', '#EDA090', 0], ['LEG MEAT', '#E2604A', 0]
+    ['CLAW (THE SWEET ONE)', '#E2604A', 0], ['LUMP (PREMIUM, ALLEGEDLY)', '#E88A75', 0],
+    ['KNUCKLE (UNDERRATED, ANGRY)', '#D0524A', 0],
+    ['BACKFIN (THE HONEST CUT)', '#EDA090', 0], ['LEG MEAT (THERE ARE SEVEN)', '#E2604A', 0]
   ];
   const POT = [
-    ['BUTTER (IDEOLOGY)', '#FFD23F', 1], ['OLD BAY', '#C9A24B', 1], ['LEMON', '#F2E94E', 1],
-    ['CORN', '#FFE08A', 1], ['SHERRY (PERSONALITY)', '#B0526E', 1]
+    ['BUTTER (IDEOLOGY)', '#FFD23F', 1], ['OLD BAY (NON-NEGOTIABLE)', '#C9A24B', 1],
+    ['LEMON (A WITNESS)', '#F2E94E', 1],
+    ['CORN (FILLER, BELOVED)', '#FFE08A', 1], ['SHERRY (PERSONALITY)', '#B0526E', 1]
   ];
   const OUT = [
-    ['DOG TAGS', '#B9AFD0', 2], ['TINY CLIPBOARD', '#8A93A6', 2], ['LANYARD (PIGEON-SIZED)', '#FFD23F', 2],
-    ['MANILA ENVELOPE', '#E8D9A8', 2], ['A SINGLE PRONG', '#7FB8FF', 2]
+    ['DOG TAGS (NOT SEASONING)', '#B9AFD0', 2], ['A VERY SMALL CLIPBOARD', '#8A93A6', 2],
+    ['LANYARD (PIGEON-SIZED)', '#FFD23F', 2],
+    ['MANILA ENVELOPE (DAMP)', '#E8D9A8', 2], ['A SINGLE PRONG (OF WHAT)', '#7FB8FF', 2]
   ];
-  const PHONE = ['THE PHONE (A PODCAST CALLING)', '#3DFC8A', 2];
+  const PHONE = ['THE PHONE (IT IS A PODCAST)', '#3DFC8A', 2];
 
-  const WRONG = {
-    0: { 1: "MEAT IN THE POT ALREADY?? SEAR DISCIPLINE. COOLER FIRST. HISTORY IS WATCHING.",
-         2: "You returned MEAT to the PENTAGON. They will lose it. They lose everything. −" },
-    1: { 0: "You iced the butter. The butter was already loyal. −",
-         2: "Old Bay does not go back. Old Bay never goes back. −" },
-    2: { 0: "DOG TAGS IN THE COOLER. Now the bisque has a service record. −",
-         1: "You boiled federal property. That's a NEW hearing. −" }
-  };
+  /* wrong-bin routing: which commentary bank fires for a misfiled item */
+  const WRONGTRIG = ['wrongMeat', 'wrongPot', 'wrongOut'];
 
   let items, temp, iced, t, state, spawnT, spawnGap, streak, phones, over, warned;
   function reset(){
@@ -188,36 +364,38 @@
     for (const it of items){ if (!it.done && (!low || it.y > low.y)) low = it; }
     if (!low) return;
     low.done = true;
+    const tok = { thing: low.label };
     if (low.bin === bin){
       streak++;
-      if (streak === 10) once('mise', () => toast('🏆 MISE EN PLACE UNDER FIRE'));
+      if (streak === 10) once('mise', () => toast('🏆 MISE EN PLACE UNDER LIVE FIRE'));
       if (low.phone){
         phones++;
-        say('DECLINED. Voicemail, on ice. "Hey man, love the show — can\'t talk, the window\'s open."');
-        if (phones >= 3) once('pod', () => toast('🏆 NOTHING FOR THE PODCAST'));
+        Riff.hit('phone', tok);
+        if (phones >= 3) once('pod', () => toast('🏆 THE PODCAST GETS NOTHING'));
         temp = Math.max(0, temp - 4);
         Juice.reward(low.x, low.y, { text: 'DECLINED', color: '#3DFC8A', sound: 'coin' });
       } else if (bin === 0){
         iced++;
         temp = Math.max(0, temp - 5);
-        $('quotalab').textContent = 'MEAT ON ICE: ' + iced + ' / 20';
+        $('quotalab').textContent = 'SACRED PROTEIN ON ICE: ' + iced + ' / 20';
         $('quotafill').style.width = (iced/20*100) + '%';
         Juice.reward(low.x, low.y, { text: 'ON ICE ' + iced + '/20', color: '#7FB8FF' });
         if (streak >= 5) Juice.text(low.x, low.y - 40, 'x' + streak, { color: '#FFD23F', size: 16 });
-        if (iced === 1) say('The first cut touches ice. Somewhere, a timeline forks.');
-        if (iced === 10) say('Halfway. The cooler hums the song of a functioning republic.');
+        Riff.hit('ice', tok);
+        if (iced === 5 || iced === 10 || iced === 15 || iced === 19) Riff.hit('milestone', { iced: iced });
         if (iced >= 20) win();
       } else if (bin === 1){
-        say(low.label + ' — into the pot. The bisque stirs in its sleep.');
+        Riff.hit('pot', tok);
         Juice.reward(low.x, low.y, { text: 'POT', color: '#FFD23F' });
       } else {
-        say(low.label + ' — logged, bagged, returned. The Pentagon sends a fruit basket. It is also classified.');
+        Riff.hit('out', tok);
         Juice.reward(low.x, low.y, { text: 'LOGGED', color: '#FF3D8A', sound: 'blip' });
       }
+      if (streak >= 5 && streak % 5 === 0) Riff.hit('streak', { n2: streak });
     } else {
       streak = 0;
       temp = Math.min(100, temp + 9);
-      say(WRONG[low.bin][bin] || 'Wrong bin. The window narrows.');
+      Riff.hit(WRONGTRIG[low.bin] || 'wrongMeat', tok);
       Juice.impact(low.x, low.y, { text: '+9 REGRET', power: 8 });
     }
     renderTemp();
@@ -225,7 +403,7 @@
   function renderTemp(){
     $('tempfill').style.width = temp + '%';
     if (state === 'play'){
-      if (temp >= 82 && !warned){ warned = true; Juice.sfx('alarm'); }
+      if (temp >= 82 && !warned){ warned = true; Juice.sfx('alarm'); Riff.hit('hot'); }
       if (temp < 70 && warned) warned = false;
     }
     if (temp >= 100 && state === 'play') lose();
@@ -258,11 +436,11 @@
       if (it.y > H - 60){
         it.done = true;
         streak = 0;
-        if (it.bin === 0){ temp = Math.min(100, temp + 12); say('A cut of history hit the ground. Ambient. AMBIENT.');
+        if (it.bin === 0){ temp = Math.min(100, temp + 12); Riff.hit('dropMeat', { thing: it.label });
           Juice.impact(it.x, H - 60, { text: 'AMBIENT', power: 10 }); }
-        else if (it.phone){ temp = Math.max(0, temp - 2); say('The phone rang out. Correct. It can always ring out.');
+        else if (it.phone){ temp = Math.max(0, temp - 2); Riff.hit('dropPhone', { thing: it.label });
           Juice.sfx('blip'); }
-        else { temp = Math.min(100, temp + 4); say('Dropped: ' + it.label + '. Sloppy, but survivable.');
+        else { temp = Math.min(100, temp + 4); Riff.hit('dropOther', { thing: it.label });
           Juice.sfx('thud'); Juice.burst(it.x, H - 60, { color: it.color, count: 8 }); }
       }
     }
@@ -278,7 +456,7 @@
     // bins
     const bw = W/3;
     const cols = ['#7FB8FF','#FFD23F','#FF3D8A'];
-    const labels = ['COOLER ←','POT ↓','→ OUT-BIN'];
+    const labels = ['← COOLER · SACRED','POT ↓ · BISQUE','FEDS · OUT-BIN →'];
     for (let i=0;i<3;i++){
       cx.fillStyle = cols[i] + '22';
       cx.fillRect(i*bw, H-56, bw, 56);
@@ -319,31 +497,30 @@
     Juice.burst(W/2, H*0.6, { color: '#3DFC8A', count: 40, speed: 6 });
     once('timeline', () => toast('🏆 THE TIMELINE WHERE WE ATE'));
     $('endTitle').className = 'display good';
-    $('endTitle').textContent = 'YOU DID IT. THE WINDOW HELD.';
+    $('endTitle').textContent = 'THE COOLER CLOSED.';
     $('endcard').style.display = 'flex';
     const lines = [
-      'The cooler closes with the click of a treaty.',
-      'In THIS timeline: <b>the bisque is served at the hearing.</b> Attendance is perfect.',
-      'The dog tags arrive at the Pentagon with a thank-you note. Lost & Found weeps.',
-      'The podcast still happens — <b>two days later, over leftovers.</b> Best episode ever recorded. Four hours. Nobody argues.',
-      'On the National Mall, a monument gleams in the sun: <b>a cooler, filled, forever.</b>',
-      'Schoolchildren visit it. They read the plaque: <b>"HE KILLED IT. AND THEN — AND THIS IS THE PART — HE CHILLED IT."</b>',
-      'Disclosure arrives on schedule, with drawn butter, and history, for once, tastes like something.'
+      'It shuts with the click of a treaty.',
+      'A USDA inspector in Bethesda sleeps through the night for the first time since 1997. <b>His wife notices.</b>',
+      'The dog tags reach a man named Dale, who signs for them with a pen he was issued in 1988 and then sits down for forty-one minutes.',
+      '<b>THE COOLER HAS BEEN SWORN IN.</b> It is testifying. It is CRUSHING it. Two senators are crying and one of them is not pretending.',
+      'There is a monument on the Mall now: <b>a cooler, filled, forever.</b> A raccoon in a lanyard guards it. Nobody hired him.',
+      'Two days later the podcast happens anyway, over leftovers, and it is the best one he ever recorded. Nobody argues; everybody eats.'
     ];
     const m = $('montage');
     m.innerHTML = lines.map(l => '<p>' + l + '</p>').join('');
-    [...m.children].forEach((p, i) => setTimeout(() => p.classList.add('show'), 700 + i*1400));
-    setTimeout(() => { $('endBtns').style.display = 'block'; }, 700 + lines.length*1400);
+    [...m.children].forEach((p, i) => setTimeout(() => p.classList.add('show'), 500 + i*900));
+    setTimeout(() => { $('endBtns').style.display = 'block'; }, 500 + lines.length*900);
   }
 
   function lose(){
     state = 'lost'; over = true;
     Juice.sfx('lose'); Juice.shake(14); Juice.flash('#FF3D8A', .45);
     $('endTitle').className = 'display';
-    $('endTitle').textContent = 'REGRET AT ROOM TEMPERATURE';
-    $('endText').innerHTML = 'The window closed. The meat went ambient. The phone was answered. ' +
-      'Somewhere, a hearing is scheduled and NOTHING is catered. This is the timeline we already live in — ' +
-      '<b>you have merely confirmed the physics.</b> Re-open the window. History deserves a second draft.';
+    $('endTitle').textContent = 'AMBIENT. EVERYTHING. AMBIENT.';
+    $('endText').innerHTML = 'The window closed. The phone was answered <b>on speaker</b> and forty-one minutes of it are already uploaded. ' +
+      'A raccoon in a lanyard has taken possession of the site and is issuing statements. <b>The cooler has changed the locks.</b> ' +
+      'A hearing is scheduled and NOTHING is catered. Re-open the window.';
     $('endcard').style.display = 'flex';
     $('endBtns').style.display = 'block';
   }
@@ -352,7 +529,7 @@
     Juice.sfx('click');
     $('briefing').style.display = 'none';
     reset();
-    say('THE WINDOW IS OPEN. MEAT LEFT. AROMATICS DOWN. DEBRIS RIGHT. GO.');
+    Riff.hit('start');
   });
 
   state = 'brief';

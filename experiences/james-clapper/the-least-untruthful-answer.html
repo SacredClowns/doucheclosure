@@ -314,7 +314,7 @@
           <div class="track"><div class="fill" id="truthfill"></div><div class="mark" id="truthmark"></div></div>
         </div>
         <div class="bar">
-          <div class="lab"><span>Career</span><b id="careerNum">100</b></div>
+          <div class="lab"><span>Career</span><b id="careerNum">80</b></div>
           <div class="track"><div class="fill" id="careerfill"></div><div class="mark" id="careermark"></div></div>
         </div>
         <div id="phase"><b id="phaseMain">QUESTION 1 / 8</b><span id="phaseSub">Open session</span></div>
@@ -531,8 +531,8 @@
     { t:+11, c:-13 },
     { t:+6,  c:-6  },
     { t:+2,  c:-1  },
-    { t:-7,  c:+5  },
-    { t:-11, c:+8  }
+    { t:-7,  c:+4  },
+    { t:-11, c:+5  }
   ];
   const DT_PLAIN = { t:+19, c:-15 };
 
@@ -549,7 +549,7 @@
   const PLAIN_UNLOCK = 40;
 
   /* ---------------- state ---------------- */
-  let idx = 0, pos = 0, truth = 0, career = 100;
+  let idx = 0, pos = 0, truth = 0, career = 80, careerAtGavel = 80;
   let log = [], busy = false, over = false;
   let usedPlain = 0, usedAdverb = 0, plainOffered = false, careerZeroed = false;
   let rIdx = 0, rTimer = null;
@@ -563,10 +563,19 @@
 
   /* ---------------- live rewriting ---------------- */
   const BLOCKS = '█▓▒░';
-  let typeTarget = '', typeShown = 0, typeRAF = 0;
+  let typeTarget = '', typeShown = 0, typeRAF = 0, typeGuard = 0;
+  // force the sentence to its finished state — the reveal is a flourish, never a gate
+  function typeSettle(){
+    if (typeRAF){ cancelAnimationFrame(typeRAF); typeRAF = 0; }
+    clearTimeout(typeGuard); typeGuard = 0;
+    if (typeTarget) $('recText').innerHTML = '“' + escapeHTML(typeTarget) + '”';
+  }
   function typeTo(str){
     typeTarget = str; typeShown = 0;
     if (typeRAF) cancelAnimationFrame(typeRAF);
+    clearTimeout(typeGuard);
+    // rAF is frozen in background tabs; this guarantees the line is never left blank
+    typeGuard = setTimeout(typeSettle, 800);
     const step = Math.max(5, Math.ceil(str.length / 15));
     const tick = () => {
       typeShown += step;
@@ -582,10 +591,12 @@
       } else {
         $('recText').innerHTML = '“' + out + '”';
         typeRAF = 0;
+        clearTimeout(typeGuard); typeGuard = 0;
       }
     };
     typeRAF = requestAnimationFrame(tick);
   }
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) typeSettle(); });
   function escapeHTML(s){
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
@@ -754,7 +765,9 @@
       Juice.reward(tc.x, tc.y, { text:'+' + d.t + ' RECORD', color:'#3DFC8A', count: isPlain ? 26 : 16 });
       if (isPlain){ Juice.sfx('good'); Juice.flash('#3DFC8A', .18); }
     } else {
-      Juice.impact(tc.x, tc.y, { text: d.t + ' RECORD', color:'#FF3D8A', power: 7, count: 14, stop: 40 });
+      Juice.impact(tc.x, tc.y, {
+        text: truth === 0 ? 'THE RECORD STAYS EMPTY' : d.t + ' RECORD',
+        color:'#FF3D8A', power: 7, count: 14, stop: 40 });
     }
     if (d.c < 0) Juice.text(cc.x, cc.y - 14, d.c + ' CAREER', { color:'#FF9E3D', size:16 });
     else Juice.text(cc.x, cc.y - 14, '+' + d.c + ' CAREER', { color:'#FFD23F', size:16 });
@@ -779,7 +792,7 @@
       $('liveTag').textContent = 'Microphone live';
       if (idx >= Q.length){ busy = false; toReplay(); }
       else { busy = false; renderQuestion(); updatePlainOffer(); }
-    }, careerZeroed && career <= 0 && beforeCareer > 0 ? 2100 : 1050);
+    }, (career <= 0 && beforeCareer > 0) ? 3400 : 1050);
   }
 
   /* ---------------- three months later ---------------- */
@@ -791,6 +804,7 @@
 
   function toReplay(){
     busy = true;
+    careerAtGavel = career;   // what the evasions bought you, before the documents land
     Juice.sfx('alarm'); Juice.shake(10); Juice.flash('#8A93A6', .3);
     titleCard('The hearing adjourned', 'Three months later',
       'The documents come out. The transcript is still sitting there. It has not moved. It never moves.',
@@ -931,15 +945,17 @@
     else medals.push({ ok:false, s:'🏆 JUST ANSWERED IT — never left the dial' });
     if (usedAdverb === 0) medals.push({ ok:true, s:'🏆 NEVER TOUCHED THE ADVERB — "wittingly" is not in your transcript' });
     else medals.push({ ok:false, s:'🏆 NEVER TOUCHED THE ADVERB — used it ' + usedAdverb + '×' });
-    if (c >= 30) medals.push({ ok:true, s:'🏆 SURVIVED THE REPLAY — career intact at ' + c });
-    else medals.push({ ok:false, s:'🏆 SURVIVED THE REPLAY — the transcript got there first' });
+    const gav = Math.round(careerAtGavel);
+    if (c >= 30 && c > gav) medals.push({ ok:true, s:'🏆 SURVIVED THE REPLAY — the transcript gave back more than it took (' + gav + ' → ' + c + ')' });
+    else medals.push({ ok:false, s:'🏆 SURVIVED THE REPLAY — the transcript got there first (' + gav + ' → ' + c + ')' });
 
     const box = document.createElement('div');
     box.className = 'endcard';
     box.style.borderColor = end.color;
     box.innerHTML =
       '<div class="t" style="color:' + end.color + '">' + end.title + '</div>' +
-      '<div class="final">TRUTH ON THE RECORD: ' + t + ' &nbsp;&bull;&nbsp; CAREER AFTER THE REPLAY: ' + c + '</div>' +
+      '<div class="final">TRUTH ON THE RECORD: ' + t + ' &nbsp;&bull;&nbsp; CAREER WHEN THE GAVEL FELL: ' + gav +
+        ' &nbsp;&rarr;&nbsp; AFTER THE REPLAY: ' + c + '</div>' +
       end.body +
       '<ul class="medals">' + medals.map(m => '<li class="' + (m.ok ? '' : 'miss') + '">' + m.s + '</li>').join('') + '</ul>';
     $('ending').classList.add('on');
@@ -962,7 +978,8 @@
         score: t,
         title: end.title,
         lines: [
-          'CAREER AFTER THE REPLAY: <b>' + c + '</b> &nbsp;&bull;&nbsp; ADVERB USED: <b>' + usedAdverb +
+          'CAREER: <b>' + gav + '</b> at the gavel &rarr; <b>' + c + '</b> after the replay' +
+            ' &nbsp;&bull;&nbsp; ADVERB USED: <b>' + usedAdverb +
             '</b> &nbsp;&bull;&nbsp; PLAIN ANSWERS: <b>' + usedPlain + '</b>',
           'The hearing is scored on the record you built, not the job you kept. ' +
             '<b>Truth costs you in the room and pays you in the transcript.</b>',
