@@ -238,10 +238,13 @@
   <a href="../../index.html">Back to the arcade</a> &bull; <a href="../chris-bledsoe/index.html">Previous wing: Chris Bledsoe</a></p>
 </footer>
 
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
 <script>
 (() => {
   const cv = document.getElementById('game');
   const cx = cv.getContext('2d');
+  Juice.init(cv);
   const W = cv.width, H = cv.height;
   const objEl = document.getElementById('objective');
   const meterEl = document.getElementById('meterHud');
@@ -276,7 +279,7 @@
   const PILLARS = [ {x:250,y:150}, {x:250,y:350}, {x:520,y:150}, {x:520,y:350}, {x:760,y:250} ];
   const PIGEON = { x: 660, y: 420 };
 
-  let p, carts, colonel, sus, meter, phase, state, t, keys = {}, nodProg, meterFed;
+  let p, carts, colonel, sus, meter, phase, state, t, keys = {}, nodProg, meterFed, susWarned;
   function reset(){
     p = { x: SEDAN.x, y: SEDAN.y - 30, vx:0, vy:0 };
     carts = [
@@ -285,6 +288,7 @@
     ];
     colonel = { active:false, timer: 600 + Math.random()*400, x:0, y:0 };
     sus = 0; meter = 0; meterFed = false; phase = 0; state = 'play'; t = 0; nodProg = 0;
+    susWarned = false;
     objEl.textContent = 'OBJECTIVE: FEED THE METER (E)';
     think('start');
   }
@@ -311,9 +315,9 @@
   };
   bind('tL', null, 'arrowleft'); bind('tR', null, 'arrowright');
   bind('tU', null, 'arrowup');   bind('tD', null, 'arrowdown');
-  bind('tE', () => { if (state === 'play') interact(); else if (state !== 'talk') reset(); });
-  bind('tN', () => { if (state === 'talk') nod(); else if (state !== 'play') reset(); });
-  cv.addEventListener('pointerdown', () => { if (state === 'win' || state === 'lose') reset(); });
+  bind('tE', () => { Juice.sfx('click'); if (state === 'play') interact(); else if (state !== 'talk') reset(); });
+  bind('tN', () => { Juice.sfx('click'); if (state === 'talk') nod(); else if (state !== 'play') reset(); });
+  cv.addEventListener('pointerdown', () => { if (state === 'win' || state === 'lose'){ Juice.sfx('click'); reset(); } });
 
   const near = (a, r) => Math.hypot(p.x-a.x, p.y-a.y) < r;
 
@@ -323,21 +327,27 @@
       phase = 1;
       objEl.textContent = 'OBJECTIVE: RECEIVE THE ENVELOPE (E) — DIGNIFIED PACE';
       think('meter');
+      Juice.reward(METER.x, METER.y - 30, { text: '$4.50', color: '#3DFC8A', sound: 'coin' });
     } else if (phase === 1 && near(SOURCE, 50)){
       phase = 2;
       objEl.textContent = 'OBJECTIVE: RETURN TO THE SEDAN (E). DO NOT RUN. DO NOT WEEP.';
       think('pickup');
+      Juice.reward(SOURCE.x, SOURCE.y, { text: 'ENVELOPE', color: '#E8D9A8', count: 22 });
     } else if (phase === 2 && near(SEDAN, 50)){
       state = 'win'; think('win');
+      Juice.sfx('win'); Juice.flash('#3DFC8A', .4);
+      Juice.burst(SEDAN.x, SEDAN.y, { color: '#3DFC8A', count: 34, speed: 5 });
     }
   }
 
   function nod(){
     nodProg += 9;
+    Juice.sfx('blip');
     if (nodProg >= 100){
       colonel.active = false; state = 'play'; nodProg = 0;
       colonel.timer = 900 + Math.random()*600;
       meter -= 45; // the colonel costs you meter time. of course he does.
+      Juice.reward(colonel.x, colonel.y - 20, { text: 'NODDED · −45s', color: '#FFD23F', sound: 'good' });
     }
   }
 
@@ -350,6 +360,7 @@
         colonel.active = true; state = 'talk'; nodProg = 0;
         colonel.x = p.x + 30; colonel.y = p.y;
         think('colonel');
+        Juice.sfx('alarm'); Juice.shake(5);
       }
     }
     if (state !== 'play') return;
@@ -385,7 +396,11 @@
     else sus -= 0.12;
     sus = Math.max(0, Math.min(100, sus));
     susEl.style.width = sus + '%';
-    if (sus >= 100){ state = 'lose'; think('made'); loseWhy = 'made'; }
+    if (sus >= 72 && !susWarned){ susWarned = true; Juice.sfx('alarm'); }
+    if (sus < 55 && susWarned) susWarned = false;
+    if (sus >= 100){ state = 'lose'; think('made'); loseWhy = 'made';
+      Juice.sfx('lose'); Juice.shake(14); Juice.flash('#FF3D8A', .45);
+      Juice.burst(PIGEON.x, PIGEON.y, { color: '#FF3D8A', count: 20 }); }
 
     // meter
     if (meterFed){
@@ -393,7 +408,10 @@
       const s = Math.max(0, Math.ceil(meter/60));
       meterEl.textContent = 'METER: ' + Math.floor(s/60) + ':' + String(s%60).padStart(2,'0');
       meterEl.classList.toggle('low', meter < 90*1);
-      if (meter <= 0 && phase < 3 && state === 'play'){ state = 'lose'; loseWhy = 'ticket'; think('ticket'); }
+      if (meter <= 0 && phase < 3 && state === 'play'){ state = 'lose'; loseWhy = 'ticket'; think('ticket');
+        Juice.sfx('lose'); Juice.shake(14); Juice.flash('#FF3D8A', .45);
+        Juice.impact(METER.x, METER.y - 30, { text: 'TICKETED', power: 10 }); }
+      else if (meter > 0 && meter < 300 && meter % 60 === 0){ Juice.sfx('tick'); }
     } else {
       meterEl.textContent = 'METER: UNPAID (A MELLON DOES NOT SKIP THE METER)';
     }
@@ -509,7 +527,31 @@
     }
   }
 
-  (function loop(){ step(); draw(); requestAnimationFrame(loop); })();
+  function loop(){ step(); draw(); requestAnimationFrame(loop); }
+  draw(); // one still frame behind the cabinet
+
+  Arcade.cabinet({
+    id: 'dead-drop-parking-level-c',
+    wing: 'THE CHRISTOPHER MELLON EXPERIENCE',
+    title: 'Dead Drop',
+    subtitle: 'Parking Level C',
+    accent: '#E8D9A8',
+    scoreLabel: 'DIGNITY INTACT',
+    lore: 'The nation\'s most consequential footage changed hands in a parking structure, inside a manila ' +
+          'envelope — not even the string-button model. We believe every word of it. The review board\'s ' +
+          'concern is narrower: <b>eleven minutes, four dollars and fifty cents, and no change given.</b> ' +
+          'This is the tradecraft nobody rehearsed — walking at a pace that cannot be described as hurried, ' +
+          'past a security cart and a colonel who wants to discuss the Commanders, while a meter runs.',
+    howto: [
+      'ARROWS / WASD — walk (a dignified pace)',
+      'SHIFT — stride (faster, and it looks terrible)',
+      'E — interact: meter, then the source, then your sedan',
+      'SPACE — nod politely at the colonel (mash it)',
+      'MOBILE — the pad, plus INTERACT and NOD'
+    ],
+    shrine: '../../shrines/index.html#christopher-mellon',
+    onStart: () => { reset(); requestAnimationFrame(loop); }
+  });
 })();
 </script>
 

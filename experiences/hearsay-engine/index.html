@@ -190,11 +190,20 @@
   <a href="../../index.html">Back to the arcade</a> &bull; <a href="../element-115/index.html">Previous wing: Element 115</a></p>
 </footer>
 
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
 <script>
 (() => {
   const stage = document.getElementById('stage');
   const chainEl = document.getElementById('chain');
   const fidHud = document.getElementById('fidHud');
+  const engine = document.querySelector('.engine');
+
+  // engine-local centre of an element, for juice coordinates
+  function lc(el){
+    const r = el.getBoundingClientRect(), e = engine.getBoundingClientRect();
+    return { x: r.left - e.left + r.width/2, y: r.top - e.top + r.height/2 };
+  }
 
   const STARTS = [
     "WE HAVE AN INTACT CRAFT",
@@ -295,7 +304,7 @@
       b.textContent = s;
       b.addEventListener('mouseenter', () => b.style.borderColor = 'var(--neon-yellow)');
       b.addEventListener('mouseleave', () => b.style.borderColor = '#35205C');
-      b.addEventListener('click', () => { truth = s; current = s.split(' '); nextHop(); });
+      b.addEventListener('click', () => { Juice.sfx('click'); truth = s; current = s.split(' '); nextHop(); });
       row.appendChild(b);
     });
   }
@@ -311,6 +320,7 @@
     const cd = document.getElementById('countdown');
     const iv = setInterval(() => {
       secs--;
+      Juice.sfx('tick');
       if (secs > 0){ cd.textContent = 'MEMORIZE — ' + secs; return; }
       clearInterval(iv);
       askChoices();
@@ -321,6 +331,7 @@
     const msg = document.getElementById('message');
     msg.textContent = '███ TRANSMISSION IN PROGRESS ███';
     msg.classList.add('redacted');
+    Juice.sfx('whoosh');
     document.getElementById('countdown').textContent = 'WHAT DID THEY SAY? CHOOSE WHAT YOU PASS ALONG.';
     const decoys = distinctMutations(current, 2);
     const options = [current.slice(), ...decoys].sort(() => Math.random() - .5);
@@ -329,10 +340,17 @@
       const b = document.createElement('button');
       b.textContent = o.join(' ');
       b.addEventListener('click', () => {
+        Juice.sfx('click');
         const right = o.join(' ') === current.join(' ');
         results[hop] = right;
-        if (right){ correct++; }
-        else { current = o; }
+        const c = lc(b);
+        if (right){
+          correct++;
+          Juice.reward(c.x, c.y, { text: 'PASSED CLEAN', color: '#3DFC8A', count: 16 });
+        } else {
+          current = o;
+          Juice.impact(c.x, c.y, { text: 'DRIFT', color: '#D0524A', power: 8, count: 14 });
+        }
         fidHud.textContent = 'FIDELITY: ' + Math.round((correct/(hop+1))*100) + '%';
         hop++;
         if (hop >= 6) finale(); else nextHop();
@@ -348,17 +366,20 @@
     const intact = finalMsg === truth;
     let verdict, react;
     if (intact){
+      Juice.sfx('win'); Juice.flash('#3DFC8A', .4);
       verdict = 'FIDELITY: 100% — UNPRECEDENTED IN THE HISTORICAL RECORD';
       react = 'Congress receives the sentence EXACTLY as it entered the chain. Six hops. Zero drift. ' +
         'The stenographer asks you to repeat it, not because she missed it, but because nothing this clean ' +
         'has ever entered the record and she wants to feel it again. A hearing is scheduled with terrifying speed. ' +
         'You have broken the engine. The engine needed breaking.';
     } else if (fid >= 66){
+      Juice.sfx('good'); Juice.flash('#FFD23F', .22);
       verdict = 'FIDELITY: ' + fid + '% — REMARKABLE, BY THE STANDARDS OF THE FIELD';
       react = 'Congress receives: "' + finalMsg + '" — recognizably descended from the truth, the way a ' +
         'photocopy of a photocopy is recognizably your grandfather. Follow-up questions are submitted in writing. ' +
         'The written questions will now enter their own chain. Godspeed to them.';
     } else {
+      Juice.sfx('lose'); Juice.shake(14); Juice.flash('#FF3D8A', .45);
       verdict = 'FIDELITY: ' + fid + '% — STANDARD OPERATING PROCEDURE';
       react = 'Congress solemnly receives: "' + finalMsg + '" — and schedules a classified briefing about it. ' +
         'Two senators are visibly moved. One demands the raft. This is, the review board notes, ' +
@@ -374,10 +395,33 @@
       '<a class="btn" href="#prize" style="font-size:.8rem; padding:.75rem 1.3rem;">NEVER AGAIN — THE PROVENANCE LEDGER, $5</a> ' +
       '<button class="btn" style="font-size:.8rem; padding:.75rem 1.3rem; background:transparent; color:var(--neon-cyan); border-color:var(--neon-cyan); box-shadow:none;" id="again">RUN THE CHAIN AGAIN</button>' +
       '</div>';
-    document.getElementById('again').addEventListener('click', intro);
+    document.getElementById('again').addEventListener('click', () => { Juice.sfx('click'); intro(); });
   }
 
-  intro();
+  Arcade.cabinet({
+    id: 'hearsay-engine',
+    wing: 'THE HEARSAY ENGINE &bull; WING NO. 6',
+    title: 'The Hearsay Engine',
+    subtitle: 'Six Hops To The Floor Of Congress',
+    accent: '#D0524A',
+    scoreLabel: 'FIDELITY',
+    lore: 'A sworn whistleblower tells Congress something enormous, and the board believes him ' +
+          'completely. The board simply asked to see the chain of custody — and found that the ' +
+          'sentence had to travel through six cleared individuals, a barbecue, a SCIF janitor, and ' +
+          'the back nine before it reached the record. <b>You are the chain now.</b> Memorize what ' +
+          'you were told, then choose what you pass along.',
+    howto: [
+      'READ the sentence — you get three seconds',
+      'The line redacts itself; pick what you pass to the next official',
+      'One of the three options is exactly what you were told',
+      'Six hops. Nothing has ever survived all six.'
+    ],
+    shrine: '../../shrines/index.html#david-grusch',
+    onStart: () => {
+      Juice.init(engine);
+      intro();
+    }
+  });
 })();
 </script>
 

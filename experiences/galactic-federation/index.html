@@ -387,6 +387,8 @@
   <a href="../../index.html">Back to the arcade</a> &bull; <a href="../jeremy-corbell/index.html">Previous wing: The Frame</a></p>
 </footer>
 
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
 <script>
 (() => {
   // ---------- ELEMENTS ----------
@@ -400,6 +402,15 @@
   const hud     = document.getElementById('hud');
   const toasts  = document.getElementById('toasts');
   const stage   = document.getElementById('stage');
+  const engine  = document.querySelector('.engine');
+  Juice.init(engine);
+
+  /* centre of a DOM element, in page space */
+  function ctr(el){
+    if (!el) return { x: innerWidth / 2, y: innerHeight / 2 };
+    const r = el.getBoundingClientRect();
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+  }
 
   // ---------- REFERENCE DATA ----------
   const DAYS = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
@@ -490,14 +501,14 @@
     const b = document.createElement('button');
     b.className = 'cell'; b.type = 'button'; b.textContent = label;
     b.setAttribute('aria-pressed', 'false');
-    b.addEventListener('click', () => { day = i; sync(); });
+    b.addEventListener('click', () => { Juice.sfx('tick'); day = i; sync(); });
     daysEl.appendChild(b);
   });
   for (let h = 0; h < 24; h++){
     const b = document.createElement('button');
     b.className = 'cell'; b.type = 'button'; b.textContent = pad(h);
     b.setAttribute('aria-pressed', 'false');
-    b.addEventListener('click', () => { hour = h; sync(); });
+    b.addEventListener('click', () => { Juice.sfx('tick'); hour = h; sync(); });
     hoursEl.appendChild(b);
   }
 
@@ -539,6 +550,7 @@
   // ---------- CONVENE ----------
   btn.addEventListener('click', () => {
     if (day === null || hour === null || solved) return;
+    Juice.sfx('click');
 
     const key = day + ':' + hour;
     const repeat = tried.has(key);
@@ -556,6 +568,11 @@
       c.querySelector('.badge').textContent = ok ? 'CONFIRMED' : 'DECLINED';
       c.querySelector('.resp').textContent = ok ? x.yes(day, hour) : x.no(day, hour);
       seatEls[i].className = 'seat ' + (ok ? 'yes' : 'no');
+      setTimeout(() => {
+        const p = ctr(c);
+        if (ok) Juice.reward(p.x, p.y, { text:'CONFIRMED', color:'#3DFC8A' });
+        else Juice.impact(p.x, p.y, { text:'DENIED', power:7, color:'#FF3D8A' });
+      }, i * 110);
     });
 
     if (!DELS[0].test(day, hour)) rDeclines++;
@@ -579,6 +596,7 @@
     if (yesCount === 6){
       solved = true;
       btn.disabled = true;
+      Juice.sfx('win'); Juice.flash('#3DFC8A', .4);
       if (attempts === 1) achieve('cold', 'ACHIEVEMENT // COLD OPEN',
         'FIRST PROPOSAL — No prior contact with the tide table. The board suspects you are already read in.');
       else if (attempts <= 5) achieve('clean', 'ACHIEVEMENT // COMPETENT',
@@ -588,6 +606,8 @@
       finale();
       return;
     }
+
+    if (yesCount <= 1){ Juice.sfx('lose'); Juice.shake(12); }
 
     const flavor = yesCount === 5
       ? 'One delegation short. The board wishes to note that this is not close. In scheduling there is no close — there is a room with people in it, or a room.'
@@ -659,7 +679,28 @@
     });
   }
 
-  sync();
+  Arcade.cabinet({
+    id: 'the-summit',
+    wing: 'THE GALACTIC FEDERATION EXPERIENCE',
+    title: 'The Summit',
+    subtitle: 'Six Delegations. One Slot. No Shared Calendar.',
+    accent: '#D4B24A',
+    scoreLabel: 'DELEGATIONS SEATED',
+    lore: 'A retired general and former head of a national space program states that a galactic ' +
+          'federation exists and that humanity was told it is not ready. <b>The board accepts all ' +
+          'of it.</b> The board only observes that nine species means nine rotational periods and ' +
+          'no shared calendar, and suspects the accords are real, everyone means well, and the ' +
+          'invite has been stuck in drafts since 1954. Book the room. Every rule is printed above ' +
+          'a delegation&rsquo;s name.',
+    howto: [
+      'CLICK A DAY — seven to choose from',
+      'CLICK AN HOUR — twenty-four-hour clock',
+      'CONVENE — all six delegations respond at once',
+      'Read the declines. The tide table is attached. Exactly one slot works.'
+    ],
+    shrine: '../../shrines/index.html#haim-eshed',
+    onStart: () => sync()
+  });
 })();
 </script>
 

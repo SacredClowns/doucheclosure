@@ -311,12 +311,23 @@
 
 <div id="toasts"></div>
 
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
 <script>
 (() => {
   const stage = document.getElementById('stage');
   const stamprow = document.getElementById('stamprow');
   const hud = document.getElementById('hud');
   const toastBox = document.getElementById('toasts');
+  const engine = document.querySelector('.engine');
+  Juice.init(engine);
+
+  /* centre of a DOM element, in page space */
+  function ctr(el){
+    if (!el) return { x: innerWidth / 2, y: innerHeight / 2 };
+    const r = el.getBoundingClientRect();
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+  }
 
   /* ---------- THE FORM ---------- */
   const FIELDS = [
@@ -477,6 +488,7 @@
 
   /* ---------- ROUTING ---------- */
   function submit(){
+    Juice.sfx('click');
     attempts++;
     lastNotes = {};
     passedKeys = new Set();
@@ -517,6 +529,9 @@
         results[i - 1] = ok ? 'ok' : 'no';
         line.className = 'routeline ' + (ok ? 'ok' : 'no');
         line.querySelector('.st').textContent = ok ? '▣ APPROVED' : '✕ RETURNED';
+        const c = ctr(line);
+        if (ok) Juice.reward(c.x, c.y, { text:'STAMPED', color:'#3DFC8A' });
+        else Juice.impact(c.x, c.y, { text:'DENIED', power:7, color:'#FF3D8A' });
         if (ok){ totalStamps++; passedKeys.add(prev.field); }
         else lastNotes[prev.field] = { dept: prev.name, text: prev.rej[chosen] };
         drawStamps(results);
@@ -526,6 +541,7 @@
       const line = document.getElementById('rl' + i);
       line.className = 'routeline on';
       line.querySelector('.st').textContent = 'UNDER REVIEW…';
+      Juice.sfx('tick');
       const cur = results.slice(); cur[i] = 'now';
       drawStamps(cur);
       i++;
@@ -548,6 +564,7 @@
 
     if (stamps === DEPTS.length){ win(out); return; }
 
+    Juice.sfx('lose'); Juice.shake(12);
     const failed = DEPTS.filter(d => state[d.field] !== d.ok);
     let html = '<div class="verdict" style="color:var(--neon-pink);">Returned For Correction — ' +
       failed.length + ' Note' + (failed.length === 1 ? '' : 's') + '</div>';
@@ -565,6 +582,7 @@
 
   function win(out){
     won = true;
+    Juice.sfx('win'); Juice.flash('#3DFC8A', .4);
     achieve('permit', 'THE PERMIT',
       'Approved by all five. Somewhere, a real one of these exists in a real filing cabinet.');
     if (attempts <= 3) achieve('minimum', 'Minimum Viable Paperwork',
@@ -601,7 +619,27 @@
     });
   }
 
-  renderForm();
+  Arcade.cabinet({
+    id: 'the-permit',
+    wing: 'THE ROSS COULTHART EXPERIENCE',
+    title: 'The Permit',
+    subtitle: 'Five Fields. Five Departments. One Beige Building.',
+    accent: '#C97F4A',
+    scoreLabel: 'STAMPS',
+    lore: 'A veteran investigative journalist reports that a recovered craft was too large to move, ' +
+          'so they built a building over it. <b>The board believes him completely.</b> That is the ' +
+          'problem: a building that goes up in this country needs a permit, a plan set, and five ' +
+          'departments signing their actual names. You are the applicant. Fill in every box and find ' +
+          'out which desk objects to which word.',
+    howto: [
+      'DROPDOWNS — answer all five fields',
+      'SUBMIT — route the form through five departments',
+      'Each department objects to exactly one box. Read the note.',
+      'Amend and refile. Amendments are free. The concrete is scheduled.'
+    ],
+    shrine: '../../shrines/index.html#ross-coulthart',
+    onStart: () => renderForm()
+  });
 })();
 </script>
 

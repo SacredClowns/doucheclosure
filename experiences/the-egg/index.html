@@ -173,10 +173,13 @@
   <a href="../../index.html">Back to the arcade</a> &bull; <a href="../jason-sands/index.html">Previous wing: Jason Sands</a></p>
 </footer>
 
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
 <script>
 (() => {
   const cv = document.getElementById('game');
   const cx = cv.getContext('2d');
+  Juice.init(cv);
   const W = cv.width, H = cv.height;
   const shellHud = document.getElementById('shellHud');
   const windHud = document.getElementById('windHud');
@@ -206,11 +209,11 @@
   const TOWERS = [ {x: 380, w: 14, h: 210}, {x: 620, w: 14, h: 150} ];
 
   // --- state ---
-  let heli, egg, wind, gustT, shell, state, t, keys = {};
+  let heli, egg, wind, gustT, shell, state, t, shellWarned, keys = {};
   function reset(){
     heli = { x: 110, y: 150, vx: 0, vy: 0 };
     egg  = { x: 110, y: 150 + 90, vx: 0, vy: 0, r: 16 };
-    wind = 0; gustT = 0; shell = 100; state = 'fly'; t = 0;
+    wind = 0; gustT = 0; shell = 100; state = 'fly'; t = 0; shellWarned = false;
     say('start');
   }
   reset();
@@ -219,20 +222,20 @@
   addEventListener('keydown', e => {
     const k = e.key.toLowerCase();
     if ([' ','arrowup','arrowdown','arrowleft','arrowright'].includes(e.key.toLowerCase())) e.preventDefault();
-    if (k === ' ' && state !== 'fly') { reset(); return; }
+    if (k === ' ' && state !== 'fly') { Juice.sfx('click'); reset(); return; }
     keys[k] = true;
   });
   addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
   const bindTouch = (id, k) => {
     const b = document.getElementById(id);
-    const on = e => { e.preventDefault(); if (state !== 'fly') { reset(); return; } keys[k] = true; };
+    const on = e => { e.preventDefault(); Juice.sfx('click'); if (state !== 'fly') { reset(); return; } keys[k] = true; };
     const off = e => { e.preventDefault(); keys[k] = false; };
     b.addEventListener('pointerdown', on); b.addEventListener('pointerup', off);
     b.addEventListener('pointerleave', off); b.addEventListener('pointercancel', off);
   };
   bindTouch('tL','arrowleft'); bindTouch('tR','arrowright');
   bindTouch('tU','arrowup');   bindTouch('tD','arrowdown');
-  cv.addEventListener('pointerdown', () => { if (state !== 'fly') reset(); });
+  cv.addEventListener('pointerdown', () => { if (state !== 'fly') { Juice.sfx('click'); reset(); } });
 
   // --- physics ---
   const CABLE = 90;
@@ -274,14 +277,21 @@
     }
 
     // swing chatter
-    if (Math.abs(egg.vx) > 3 && annT <= 0) say('swing');
+    if (Math.abs(egg.vx) > 3 && annT <= 0) { say('swing'); Juice.sfx('whoosh'); }
 
     // collisions
     const hit = (impact) => {
       if (impact > 1.4) {
-        shell -= Math.round(impact * 9);
+        const dmg = Math.round(impact * 9);
+        shell -= dmg;
         say('bump');
-        if (shell <= 0) { shell = 0; state = 'lose'; say('lose'); }
+        Juice.impact(egg.x, egg.y, {
+          text: '−' + dmg, power: Math.min(15, 4 + impact * 2),
+          color: '#FFD23F', sound: 'shatter', count: 18
+        });
+        if (shell <= 0) { shell = 0; state = 'lose'; say('lose');
+          Juice.sfx('lose'); Juice.shake(14); Juice.flash('#FF3D8A', .45); }
+        else if (shell < 50 && !shellWarned) { shellWarned = true; Juice.sfx('alarm'); }
       }
     };
     // ground
@@ -304,6 +314,8 @@
     const onPad = egg.x > PAD.x && egg.x < PAD.x + PAD.w && Math.abs(egg.y + egg.r - PAD.y) < 6;
     if (onPad && Math.hypot(egg.vx, egg.vy) < 0.9) {
       state = 'win'; say('win');
+      Juice.sfx('win'); Juice.flash('#3DFC8A', .4);
+      Juice.reward(egg.x, egg.y, { text: 'DELIVERED', count: 30 });
     }
   }
 
@@ -394,7 +406,30 @@
     draw();
     requestAnimationFrame(loop);
   }
-  requestAnimationFrame(loop);
+  draw(); // one still frame behind the cabinet
+
+  Arcade.cabinet({
+    id: 'sling-load-simulator',
+    wing: 'THE EGG EXPERIENCE',
+    title: 'Sling Load Simulator',
+    subtitle: 'That Is Not How You Carry An Egg',
+    accent: '#FFD23F',
+    scoreLabel: 'SHELL INTEGRITY',
+    lore: 'Public testimony describes a craft <b>shaped like an egg</b>, recovered at night and carried ' +
+          'out on a cable slung beneath a helicopter. We believe every word of it. The review board has ' +
+          'exactly one note, and it is the correct note: an egg is a promise, and <b>you do not swing a ' +
+          'promise from a wire in the wind.</b> This is the full-fidelity training environment nobody ran ' +
+          'before the mission. Forty feet of cable, a crosswind, and a hum you do not understand.',
+    howto: [
+      '← → or A D — drift the helicopter',
+      '↑ ↓ or W S — climb and descend',
+      'MOBILE — the four-button pad under the canvas',
+      'Land the egg on the flatbed almost perfectly still',
+      'SPACE or TAP — re-fly the mission'
+    ],
+    shrine: '../../shrines/index.html#jake-barber',
+    onStart: () => { reset(); requestAnimationFrame(loop); }
+  });
 })();
 </script>
 

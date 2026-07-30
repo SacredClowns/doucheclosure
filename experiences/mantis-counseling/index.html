@@ -248,18 +248,34 @@
   <a href="../../index.html">Back to the arcade</a> &bull; <a href="../christopher-mellon/index.html">Previous wing: Christopher Mellon</a></p>
 </footer>
 
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
 <script>
 (() => {
   const scriptEl = document.getElementById('script');
   const choicesEl = document.getElementById('choices');
   const resfill = document.getElementById('resfill');
   const reslabel = document.getElementById('reslabel');
+  const office = document.querySelector('.office');
+  const reswrap = document.getElementById('reswrap');
   let res = 50;
+
+  // where the resonance meter's leading edge currently sits, in office-local coords
+  function meterXY(){
+    const o = office.getBoundingClientRect(), b = reswrap.getBoundingClientRect();
+    return { x: (b.left - o.left) + b.width * (res/100), y: (b.top - o.top) + b.height/2 };
+  }
 
   function bump(d){
     res = Math.max(0, Math.min(100, res + d));
     resfill.style.width = res + '%';
     reslabel.textContent = 'RESONANCE: ' + res + '%';
+    if (d > 0){
+      const p = meterXY();
+      Juice.reward(p.x, p.y, { color:'#8FD48A', count:10 });
+    } else if (d < 0){
+      Juice.sfx('bad');
+    }
   }
   function line(who, cls, text){
     const p = document.createElement('p');
@@ -275,6 +291,7 @@
       const b = document.createElement('button');
       b.textContent = o.label;
       b.addEventListener('click', () => {
+        Juice.sfx('click');
         line('YOU', 'you', o.label);
         bump(o.d);
         clearChoices();
@@ -346,6 +363,7 @@
     ]);
   }
   function beat6(){
+    Juice.sfx('good'); Juice.flash('#8FD48A', .12);
     line('THRAXIMANDER', 'thrax', "(Then — all at once — he transmits. Not a wave. The whole ocean.)");
     line('WAVE', 'wave', "The night you met. The beam. The light. Everyone else ran. You looked up — annoyed, unafraid, holding a sandwich — and asked him if he was cold.");
     line('DR. VYNE', 'doc', "...I felt that from here. Sir, I have been doing this for thirty years and two dimensions and I have never— he has been trying to say THAT. Every day. The garage, the components, the hovering. It's all the same sentence.");
@@ -380,7 +398,30 @@
     p.scrollIntoView({behavior:'smooth', block:'nearest'});
   }
 
-  beat1();
+  Arcade.cabinet({
+    id: 'session-one',
+    wing: 'DOUCHECLOSURE WELLNESS DIVISION',
+    title: 'Session One',
+    subtitle: '"He Says You Never Listen"',
+    accent: '#8FD48A',
+    scoreLabel: 'RESONANCE',
+    lore: 'Six years together. He is nine feet tall, telepathic, and patient in a way that unsettles the ' +
+          'neighbors; you are a person who needs words out loud, with sound, from the mouth. ' +
+          '<b>Nobody here is lying and nobody here is crazy — this is a communication problem with ' +
+          'raptorial forelimbs.</b> Dr. Haldessa Vyne, LMFT (licensed in three dimensions), bills the ' +
+          'full eight-session program; Session One she gives away, because that is how the first one works. ' +
+          'Say the true thing and the resonance meter will tell you so.',
+    howto: [
+      'CLICK a reply &mdash; that is the entire control scheme',
+      'Honest answers raise RESONANCE. Deflections do not.',
+      'There is no wrong ending, only a referral to Session Two',
+      'Read the room. He has been talking the whole time.'
+    ],
+    onStart: () => {
+      Juice.init(office);
+      beat1();
+    }
+  });
 })();
 </script>
 

@@ -340,6 +340,8 @@
 <div id="flash"></div>
 <div id="toasts"></div>
 
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
 <script>
 (() => {
   const $ = id => document.getElementById(id);
@@ -348,6 +350,15 @@
   const owedBox = $('owedBox'), bar = document.querySelector('#chain i'), yrHud = $('yrHud');
   const grieve = $('grieve'), whisper = $('whisper'), flash = $('flash'), toasts = $('toasts');
   const stTitle = $('stTitle'), stName = $('stName');
+  const engine = document.querySelector('.engine');
+  Juice.init(engine);
+
+  /* centre of a DOM element, in page space */
+  function ctr(el){
+    if (!el) return { x: innerWidth / 2, y: innerHeight / 2 };
+    const r = el.getBoundingClientRect();
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+  }
 
   // ---- the arithmetic nobody ever did ----
   const YEAR_STRAIGHT = 4.75 * 40 * 52;          // 9,880.00
@@ -416,6 +427,7 @@
 
   function doShift(){
     if (!working) return;
+    Juice.sfx('click');
     lastClick = Date.now();
     shifts++; years++; careerYears++;
     owed = owed * (1 + INTEREST) + YEAR_TOTAL;
@@ -431,6 +443,7 @@
   }
 
   function regress(){
+    Juice.sfx('alarm'); Juice.shake(16); Juice.flash('#8A6EC9', .5);
     regressions++;
     years = 0;
     flash.classList.remove('go'); void flash.offsetWidth; flash.classList.add('go');
@@ -473,7 +486,7 @@
     taskBtn.classList.add('dimmed');
     whisper.textContent = 'you would have to stop working';
     whisper.classList.add('on');
-    if (!linkFound){ linkFound = true; toast('YOU FOUND THE LINK'); }
+    if (!linkFound){ linkFound = true; Juice.sfx('blip'); toast('YOU FOUND THE LINK'); }
   });
   grieve.addEventListener('mouseleave', () => {
     taskBtn.classList.remove('dimmed');
@@ -486,6 +499,9 @@
   // ---------- THE WIN: YOU STOP ----------
   function file(){
     if (!working) return;
+    Juice.sfx('win'); Juice.flash('#3DFC8A', .4);
+    const g = ctr(grieve);
+    Juice.reward(g.x, g.y, { text:'YOU STOPPED', color:'#3DFC8A' });
     working = false;
     taskBtn.disabled = true;
     taskBtn.classList.remove('dimmed');
@@ -532,6 +548,7 @@
   }
 
   function ruling(finalOwed, finalShifts, finalYears){
+    Juice.sfx('coin');
     toast('THE CHECK CLEARED');
     stage.innerHTML =
       '<div class="official"><div class="title">RULING — IN FAVOR OF THE GRIEVANT</div>' +
@@ -562,7 +579,27 @@
     $('again').addEventListener('click', () => location.reload());
   }
 
-  render(); nextTask();
+  Arcade.cabinet({
+    id: 'the-shift',
+    wing: 'THE 20 AND BACK EXPERIENCE',
+    title: 'The Shift',
+    subtitle: 'Sector 7 &bull; Solar Warden Logistics',
+    accent: '#8A6EC9',
+    scoreLabel: 'SHIFTS WORKED',
+    lore: 'A whistleblower describes twenty years of off-world service, after which he was returned ' +
+          'to the same afternoon he left, nineteen years old, with no memory and no pay stub. ' +
+          '<b>The board believes every word.</b> The board simply notes that twenty years of labor ' +
+          'generates a payroll obligation, and payroll obligations do not care where the work happened. ' +
+          'Clock in. Do the work. Twenty years go fast.',
+    howto: [
+      'CLICK THE BUTTON — work the shift',
+      'Every click is one year of service',
+      'Wages Earned is the number to watch. It is accurate.',
+      'Nothing accrues while you rest. Nothing was ever accruing.'
+    ],
+    shrine: '../../shrines/index.html#corey-goode',
+    onStart: () => { render(); nextTask(); }
+  });
 })();
 </script>
 

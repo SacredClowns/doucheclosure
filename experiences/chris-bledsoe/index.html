@@ -232,6 +232,7 @@
 </footer>
 
 <script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
 <script>
 (() => {
   const cv = document.getElementById('game');
@@ -266,6 +267,7 @@
     film = 12; best = 0; state = 'play'; t = 0; focusPhase = Math.random()*7; flash = 0;
     verdictEl.textContent = ' ';
     updateHud();
+    Juice.init(cv);
   }
   function spawnOrb(){
     orbs.push({
@@ -304,6 +306,9 @@
     if (state !== 'play') return;
     if (film <= 0) return;
     film--; flash = 8;
+    // shutter: mirror slap + click, one frame of white
+    Juice.sfx('click'); Juice.sfx('tick');
+    Juice.flash('#F4F0FF', .16); Juice.buzz(12);
     // nearest orb to reticle
     let nd = 1e9, near = null;
     for (const o of orbs){ const d = Math.hypot(o.x-aim.x, o.y-aim.y); if (d < nd){ nd = d; near = o; } }
@@ -311,17 +316,27 @@
     const sharp = focusSharpness();
     const score = Math.round(aimScore * sharp * 100);
     best = Math.max(best, score);
+    const fx = near ? near.x : aim.x, fy = near ? near.y : aim.y;
     if (score >= 97){
       state = 'win';
       verdictEl.textContent = 'TACK. SHARP. HISTORY HAS A PHOTOGRAPH.';
+      Juice.reward(fx, fy, { text: 'TACK SHARP', count: 26 });
+      Juice.sfx('win'); Juice.flash('#3DFC8A', .4);
     } else if (score >= 75){
       verdictEl.textContent = DECENT[Math.floor(Math.random()*DECENT.length)] + ' (' + score + '%)';
+      Juice.sfx('good');
+      Juice.text(fx, fy - 30, score + '%', { color: '#FFD23F', size: 17 });
       // orbs dart when nearly caught
       orbs.forEach(o => { o.a += Math.PI * (Math.random() - .5); o.sp *= 1.15; });
     } else {
       verdictEl.textContent = BLURRY[Math.floor(Math.random()*BLURRY.length)] + ' (' + score + '%)';
+      Juice.sfx('bad');
+      Juice.text(aim.x, aim.y - 54, 'SMUDGE', { color: '#FF3D8A', size: 16 });
     }
-    if (film <= 0 && state === 'play'){ state = 'lose'; }
+    if (film <= 0 && state === 'play'){
+      state = 'lose';
+      Juice.sfx('lose'); Juice.shake(14); Juice.flash('#FF3D8A', .45);
+    }
     updateHud();
   }
 

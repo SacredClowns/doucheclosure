@@ -231,11 +231,20 @@
   <a href="../../index.html">Back to the arcade</a> &bull; <a href="../tom-delonge/index.html">Previous wing: Tom DeLonge</a></p>
 </footer>
 
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
 <script>
 (() => {
   const $ = id => document.getElementById(id);
   const T = $('transcript'), C = $('choices');
+  const studio = document.querySelector('.studio');
   let disc = 0, rap = 50, qs = 12, over = false, pendingCareful = false, carefuls = 0;
+
+  // studio-local centre of an element, for juice coordinates
+  function lc(el){
+    const r = el.getBoundingClientRect(), s = studio.getBoundingClientRect();
+    return { x: r.left - s.left + r.width/2, y: r.top - s.top + r.height/2 };
+  }
 
   const QUESTIONS = [
     { t:'RAPPORT', q:"Before anything else — how have you been sleeping?",
@@ -283,7 +292,7 @@
       const b = document.createElement('button');
       if (o.cls) b.className = o.cls;
       b.innerHTML = o.label + (o.tag ? '<span class="tag">' + o.tag + '</span>' : '');
-      b.addEventListener('click', o.fn);
+      b.addEventListener('click', () => { Juice.sfx('click'); o.fn(); });
       C.appendChild(b);
     });
   }
@@ -310,6 +319,13 @@
       rap = Math.max(0, Math.min(100, rap + q.r));
       disc = Math.max(0, Math.min(100, disc + q.d));
       render();
+      const rc = lc($('rapfill').parentNode), dc = lc($('discfill').parentNode);
+      if (q.r > 0){
+        Juice.reward(rc.x, rc.y, { text: '+' + q.r + ' RAPPORT', color: '#3DFC8A', count: 10 });
+      } else if (q.r < 0){
+        Juice.impact(rc.x, rc.y, { text: q.r + ' RAPPORT', color: '#FF3D8A', power: 5, count: 10, stop: 30 });
+      }
+      if (q.d >= 12) Juice.text(dc.x, dc.y - 14, '+' + q.d + ' DISCLOSURE', { color: '#6E7F9E', size: 16 });
       line('LUE', 'him', '“' + q.a + '”');
       if (rap <= 0) return endEarly();
       // careful event at thresholds
@@ -323,6 +339,7 @@
 
   function carefulEvent(){
     pendingCareful = true;
+    Juice.sfx('blip');
     line(null, 'dir', '— He stops. He looks at the door. He looks at his hands. He is deciding. —');
     offer([
       { label: 'Say nothing. Let the silence do the work.', cls:'silence',
@@ -340,6 +357,8 @@
       rap = Math.min(100, rap + 8);
       disc = Math.min(100, disc + 12);
       render();
+      const tc = lc(T);
+      Juice.reward(tc.x, tc.y, { text: 'THE SILENCE WORKED', color: '#3DFC8A', count: 20 });
       setTimeout(() => {
         line('LUE', 'him', carefuls === 1
           ? '“...Most people fill that silence. You didn\'t. Alright.”'
@@ -353,6 +372,8 @@
         disc = Math.max(0, disc - 28);
         rap = Math.max(0, rap - 6);
         render();
+        const tc = lc(T);
+        Juice.impact(tc.x, tc.y, { text: 'THE CHEST CLOSES', color: '#FF3D8A', power: 9, count: 16, stop: 55 });
         line(null, 'dir', '— The sentence goes back in the chest. The chest closes. The clock resets. —');
         setTimeout(() => { if (rap <= 0) endEarly(); else mainMenu(); }, 700);
       }, 650);
@@ -361,6 +382,7 @@
 
   function reveal(){
     over = true; clear();
+    Juice.sfx('win'); Juice.flash('#3DFC8A', .4);
     line(null, 'dir', '— He leans forward. He turns the recorder around so it faces him. He says it. —');
     setTimeout(() => {
       const p = document.createElement('div');
@@ -369,6 +391,7 @@
         '<span class="redacted">████████ ███ ████████ ██████ ████ ███████ ██, ███ ████ ████ ████ ' +
         '██████ ████ ███ ████████ — ███ ███ ██████ ██████ ████████ ██.</span>”';
       T.appendChild(p); T.scrollTop = T.scrollHeight;
+      Juice.sfx('shatter'); Juice.shake(6);
       setTimeout(() => {
         line(null, 'dir', '— You heard every word. The transcript did not. It never does. —');
         setTimeout(() => {
@@ -399,6 +422,7 @@
 
   function endEarly(){
     over = true; clear();
+    Juice.sfx('lose'); Juice.shake(14); Juice.flash('#FF3D8A', .45);
     line('LUE', 'him', '“I think we\'re done here.”');
     line(null, 'dir', '— He is polite about it. That is somehow worse. He shakes your hand on the way out. —');
     const d = document.createElement('div');
@@ -413,6 +437,7 @@
 
   function finish(){
     over = true; clear();
+    Juice.sfx('thud'); Juice.flash('#FFD23F', .2);
     line(null, 'dir', '— The producer taps her watch. Twelve questions. That was the whole budget. —');
     const got = Math.round(disc);
     const d = document.createElement('div');
@@ -426,9 +451,33 @@
     C.appendChild(d);
   }
 
-  line(null, 'dir', '— Studio. Two chairs. One recorder. He sits down like a man who has done this four hundred times and still hopes this is the one. —');
-  render();
-  mainMenu();
+  Arcade.cabinet({
+    id: 'the-interview',
+    wing: 'THE LUE ELIZONDO EXPERIENCE',
+    title: 'The Interview',
+    subtitle: 'Twelve Questions. One Careful Man.',
+    accent: '#6E7F9E',
+    scoreLabel: 'DISCLOSURE',
+    lore: 'A former Pentagon counterintelligence officer will sit in the other chair for exactly ' +
+          'twelve questions, and every true sentence he owns has already been read by a man with ' +
+          'a marker. <b>The board built this simulator to extract the one sentence he has never ' +
+          'said out loud — and failed.</b> Swing at him like the internet does and he will thank ' +
+          'you politely and leave. The only technique that has ever worked is shutting up and ' +
+          'letting a person finish.',
+    howto: [
+      'CLICK a question — three are offered at a time',
+      'RAPPORT buys access; PRESSURE questions spend it',
+      'When he hesitates: SAY NOTHING. Let the silence do the work.',
+      'Fill DISCLOSURE to 100% before the twelve questions run out'
+    ],
+    shrine: '../../shrines/index.html#lue-elizondo',
+    onStart: () => {
+      Juice.init(studio);
+      line(null, 'dir', '— Studio. Two chairs. One recorder. He sits down like a man who has done this four hundred times and still hopes this is the one. —');
+      render();
+      mainMenu();
+    }
+  });
 })();
 </script>
 

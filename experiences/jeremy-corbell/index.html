@@ -352,11 +352,14 @@
   <a href="../../index.html">Back to the arcade</a> &bull; <a href="../hearsay-engine/index.html">Previous wing: The Hearsay Engine</a></p>
 </footer>
 
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
 <script>
 (() => {
   // ---------- ELEMENTS ----------
   const view   = document.getElementById('view');
   const dctx   = view.getContext('2d');
+  Juice.init(view);
   const scrub  = document.getElementById('scrub');
   const knob   = document.getElementById('knob');
   const marksEl= document.getElementById('marks');
@@ -639,8 +642,8 @@
     if (e.key === 'ArrowRight'){ setFrame(frame + big, true); stopPlay(); e.preventDefault(); }
     if (e.key === 'Enter' || e.key === ' '){ doMark(); e.preventDefault(); }
   });
-  btnBack.addEventListener('click', () => { stopPlay(); setFrame(frame-1, true); });
-  btnFwd .addEventListener('click', () => { stopPlay(); setFrame(frame+1, true); });
+  btnBack.addEventListener('click', () => { Juice.sfx('tick'); stopPlay(); setFrame(frame-1, true); });
+  btnFwd .addEventListener('click', () => { Juice.sfx('tick'); stopPlay(); setFrame(frame+1, true); });
 
   let playTimer = null;
   function stopPlay(){
@@ -649,6 +652,7 @@
   }
   btnPlay.addEventListener('click', () => {
     if (over) return;
+    Juice.sfx('blip');
     if (playing){ stopPlay(); return; }
     playing = true; btnPlay.textContent = 'PAUSE';
     if (frame >= TOTAL) setFrame(0);
@@ -685,11 +689,13 @@
 
   function doMark(){
     if (over) return;
+    Juice.sfx('click');
     const hit = frame >= anomaly.start && frame <= anomaly.end;
     marksPlaced++;
     addMarkLine(frame, hit);
 
     if (hit){
+      Juice.reward(view.width/2, view.height/2, {text:'CONFIRMED'});
       if (marksPlaced === 1) achieve('oneshot','ACHIEVEMENT UNLOCKED','ONE-SHOT VETTING — first marker, correct frame. Analysts with names would like a word, in a good way.');
       if (misses > 0) achieve('interesting','ACHIEVEMENT UNLOCKED','THE WORD "INTERESTING" — you found it with the reserve already drawn down. The sealed word is hereby broken open. It works.');
       win();
@@ -707,6 +713,7 @@
     if (o && o.kind === 'duck') achieve('duck','ACHIEVEMENT UNLOCKED','THE DUCK REMEMBERS — you marked a duck as evidence. The duck has been notified. The duck is filing.');
     if (noun === 'HORIZON') achieve('horizon','ACHIEVEMENT UNLOCKED','THE HORIZON IS NOT A CRAFT — it is where the sky stops. It has been there the whole time. It is very large.');
 
+    Juice.impact(view.width/2, view.height/2, {text:'DENIED', power:7});
     misses++;
     drawDots();
     updateMeter();
@@ -747,6 +754,7 @@
   }
 
   function win(){
+    Juice.sfx('win'); Juice.flash('#3DFC8A', .4);
     finish();
     setFrame(anomaly.start + 5);
     narr.innerHTML = '<span class="verdict" style="color:var(--neon-green);">CONFIRMED. THAT IS THE OBJECT.</span>' +
@@ -769,6 +777,7 @@
   }
 
   function lose(lastLine, noun){
+    Juice.sfx('lose'); Juice.shake(12);
     finish();
     narr.innerHTML = '<span class="verdict">' + lastLine + '</span>' +
       '<b>RESERVE EXHAUSTED.</b> Three markers, three ordinary things. The vocabulary is gone.';
@@ -818,9 +827,31 @@
   }
 
   // ---------- BOOT ----------
-  setupReel();
-  updateMeter(); drawDots(); setFrame(0); syncHud();
-  requestAnimationFrame(loop);
+  Arcade.cabinet({
+    id: 'the-frame',
+    wing: 'THE JEREMY CORBELL EXPERIENCE',
+    title: 'The Frame',
+    subtitle: 'Three Hundred Frames. Three Markers.',
+    accent: '#4ADBC9',
+    scoreLabel: 'FRAMES REVIEWED',
+    lore: 'Every reel in this field arrives pre-loaded with adjectives — unprecedented, extraordinary, ' +
+          'unlike anything we have ever seen — spent before anyone has counted a single frame. ' +
+          '<b>The board maintains a strategic reserve of those words and it is not infinite.</b> ' +
+          'There is a real object in this footage, and it is in there for eleven frames. Scrub the ' +
+          'timeline by hand and mark it. You get three markers, and the birds are out today.',
+    howto: [
+      'DRAG the scrubber or use &larr; &rarr; (SHIFT for 10 frames)',
+      'STEP — advance one single frame, the correct way to look at video',
+      'PLAY — watch it at speed. Nobody has ever found it at speed.',
+      'MARK THIS FRAME — three markers only. Spend them like they cost something.'
+    ],
+    shrine: '../../shrines/index.html#jeremy-corbell',
+    onStart: () => {
+      setupReel();
+      updateMeter(); drawDots(); setFrame(0); syncHud();
+      requestAnimationFrame(loop);
+    }
+  });
 })();
 </script>
 

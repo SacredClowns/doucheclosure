@@ -116,6 +116,8 @@
   </div>
 </div>
 
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
 <script>
 (() => {
   const cv = document.getElementById('sky');
@@ -135,6 +137,13 @@
   let inhaling = false, phaseStart = 0, breathing = false;
   const TARGET = 4000; // ms per phase
   let honestDismissals = 0, itchResisted = false, toasted = {};
+  let started = false;
+
+  // gentle green acknowledgement, positioned on whatever the player DIDN'T touch
+  function popReward(el){
+    const r = el.getBoundingClientRect();
+    Juice.reward(r.left + r.width/2, r.top + r.height/2, { color:'#00FF66', count:12 });
+  }
 
   function toast(t2){
     const el = document.createElement('div');
@@ -146,6 +155,7 @@
   function once(k, fn){ if (!toasted[k]){ toasted[k] = true; fn(); } }
 
   function charge(amount, why){
+    Juice.sfx('bad'); Juice.shake(4);
     spent += amount;
     $('spent').textContent = 'CHARGED (IN SPIRIT): $' + spent.toFixed(2);
     hitCoherence(18, why);
@@ -169,6 +179,7 @@
 
   // ---------- breath engine ----------
   function startPhase(inh){
+    Juice.sfx('blip');
     inhaling = inh; phaseStart = performance.now(); breathing = true;
     $('pacer').style.transition = 'transform ' + (TARGET/1000) + 's linear';
     $('pacer').style.transform = inh ? 'scale(2.4)' : 'scale(1)';
@@ -189,6 +200,7 @@
 
   function isBreathKey(e){ return e.code === 'Space'; }
   addEventListener('keydown', e => {
+    if (!started) return;
     if (over) { if (e.code === 'Space') location.reload(); return; }
     if (isBreathKey(e)){
       e.preventDefault();
@@ -290,11 +302,13 @@
       coh = Math.min(100, coh + 6); renderCoh();
       say('Declined, honestly. The desert approves. Coherence rises.');
       if (honestDismissals >= 3) once('unclick', () => toast('🏆 THE UNCLICKABLE'));
+      popReward(d);
       kill();
     });
     // popups also expire on their own if you truly ignore them — the purest path
     setTimeout(() => {
       if (d.isConnected){
+        popReward(d);
         kill();
         coh = Math.min(100, coh + 8); renderCoh();
         say('You did not touch it at all. It starved. This is the way.');
@@ -383,6 +397,7 @@
   function winGame(){
     if (over) return;
     over = true;
+    Juice.sfx('win'); Juice.flash('#00FF66', .18);
     once('zero', () => { if (spent === 0) toast('🏆 $0.00'); });
     $('endTitle').textContent = 'CONTACT';
     $('endText').innerHTML = 'It did not descend for the chair, the laser, or the harmonic slider. It came when you got quiet — ' +
@@ -415,7 +430,31 @@
     if (annT > 0) annT--; else if (!over && ann.textContent.length > 0 && Math.random() < 0.002) ann.textContent = '';
     requestAnimationFrame(loop);
   }
-  loop();
+  Arcade.cabinet({
+    id: 'stillness-protocol',
+    wing: 'THE STEVEN GREER EXPERIENCE',
+    title: 'The Stillness Protocol',
+    subtitle: 'A Game Of Not',
+    accent: '#00FF66',
+    scoreLabel: 'COHERENCE HELD',
+    lore: 'The doctrine itself is free, and we accept it completely: sit in the desert, get quiet, ' +
+          'and the sky will come to you. <b>The review board has no notes on the sky. It has notes on the ' +
+          'invoice.</b> The licensed sitting posture, the last two folding chairs, the harmonic frequency ' +
+          'slider at $6.99 a month — every one of them arrives while you are trying to do the one free thing. ' +
+          '<b>This is the only cabinet in the arcade where input is the enemy.</b>',
+    howto: [
+      'HOLD SPACE &mdash; inhale &bull; RELEASE &mdash; exhale',
+      'TOUCH: press and hold the glowing circle',
+      'Every other key costs you coherence. So does tapping the sky.',
+      'Do not click the popups. Letting one starve is the best move in the game.'
+    ],
+    shrine: '../../shrines/index.html#steven-greer',
+    onStart: () => {
+      Juice.init(cv);
+      loop();
+      setTimeout(() => { started = true; }, 0);
+    }
+  });
 })();
 </script>
 </body>

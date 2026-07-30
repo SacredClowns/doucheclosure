@@ -106,10 +106,13 @@
   </div>
 </div>
 
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
 <script>
 (() => {
   const cv = document.getElementById('game');
   const cx = cv.getContext('2d');
+  Juice.init(cv);
   let W, H;
   const fit = () => { W = cv.width = cv.clientWidth; H = cv.height = cv.clientHeight; };
   addEventListener('resize', fit);
@@ -151,11 +154,11 @@
          1: "You boiled federal property. That's a NEW hearing. −" }
   };
 
-  let items, temp, iced, t, state, spawnT, spawnGap, streak, phones, over;
+  let items, temp, iced, t, state, spawnT, spawnGap, streak, phones, over, warned;
   function reset(){
     fit();
     items = []; temp = 20; iced = 0; t = 0; spawnT = 0; spawnGap = 95;
-    streak = 0; phones = 0; over = false; state = 'play';
+    streak = 0; phones = 0; over = false; warned = false; state = 'play';
   }
 
   function spawn(){
@@ -191,28 +194,38 @@
         say('DECLINED. Voicemail, on ice. "Hey man, love the show — can\'t talk, the window\'s open."');
         if (phones >= 3) once('pod', () => toast('🏆 NOTHING FOR THE PODCAST'));
         temp = Math.max(0, temp - 4);
+        Juice.reward(low.x, low.y, { text: 'DECLINED', color: '#3DFC8A', sound: 'coin' });
       } else if (bin === 0){
         iced++;
         temp = Math.max(0, temp - 5);
         $('quotalab').textContent = 'MEAT ON ICE: ' + iced + ' / 20';
         $('quotafill').style.width = (iced/20*100) + '%';
+        Juice.reward(low.x, low.y, { text: 'ON ICE ' + iced + '/20', color: '#7FB8FF' });
+        if (streak >= 5) Juice.text(low.x, low.y - 40, 'x' + streak, { color: '#FFD23F', size: 16 });
         if (iced === 1) say('The first cut touches ice. Somewhere, a timeline forks.');
         if (iced === 10) say('Halfway. The cooler hums the song of a functioning republic.');
         if (iced >= 20) win();
       } else if (bin === 1){
         say(low.label + ' — into the pot. The bisque stirs in its sleep.');
+        Juice.reward(low.x, low.y, { text: 'POT', color: '#FFD23F' });
       } else {
         say(low.label + ' — logged, bagged, returned. The Pentagon sends a fruit basket. It is also classified.');
+        Juice.reward(low.x, low.y, { text: 'LOGGED', color: '#FF3D8A', sound: 'blip' });
       }
     } else {
       streak = 0;
       temp = Math.min(100, temp + 9);
       say(WRONG[low.bin][bin] || 'Wrong bin. The window narrows.');
+      Juice.impact(low.x, low.y, { text: '+9 REGRET', power: 8 });
     }
     renderTemp();
   }
   function renderTemp(){
     $('tempfill').style.width = temp + '%';
+    if (state === 'play'){
+      if (temp >= 82 && !warned){ warned = true; Juice.sfx('alarm'); }
+      if (temp < 70 && warned) warned = false;
+    }
     if (temp >= 100 && state === 'play') lose();
   }
 
@@ -243,9 +256,12 @@
       if (it.y > H - 60){
         it.done = true;
         streak = 0;
-        if (it.bin === 0){ temp = Math.min(100, temp + 12); say('A cut of history hit the ground. Ambient. AMBIENT.'); }
-        else if (it.phone){ temp = Math.max(0, temp - 2); say('The phone rang out. Correct. It can always ring out.'); }
-        else { temp = Math.min(100, temp + 4); say('Dropped: ' + it.label + '. Sloppy, but survivable.'); }
+        if (it.bin === 0){ temp = Math.min(100, temp + 12); say('A cut of history hit the ground. Ambient. AMBIENT.');
+          Juice.impact(it.x, H - 60, { text: 'AMBIENT', power: 10 }); }
+        else if (it.phone){ temp = Math.max(0, temp - 2); say('The phone rang out. Correct. It can always ring out.');
+          Juice.sfx('blip'); }
+        else { temp = Math.min(100, temp + 4); say('Dropped: ' + it.label + '. Sloppy, but survivable.');
+          Juice.sfx('thud'); Juice.burst(it.x, H - 60, { color: it.color, count: 8 }); }
       }
     }
     items = items.filter(it => !it.done || it.y < H);
@@ -297,6 +313,8 @@
 
   function win(){
     state = 'won'; over = true;
+    Juice.sfx('win'); Juice.flash('#3DFC8A', .4);
+    Juice.burst(W/2, H*0.6, { color: '#3DFC8A', count: 40, speed: 6 });
     once('timeline', () => toast('🏆 THE TIMELINE WHERE WE ATE'));
     $('endTitle').className = 'display good';
     $('endTitle').textContent = 'YOU DID IT. THE WINDOW HELD.';
@@ -318,6 +336,7 @@
 
   function lose(){
     state = 'lost'; over = true;
+    Juice.sfx('lose'); Juice.shake(14); Juice.flash('#FF3D8A', .45);
     $('endTitle').className = 'display';
     $('endTitle').textContent = 'REGRET AT ROOM TEMPERATURE';
     $('endText').innerHTML = 'The window closed. The meat went ambient. The phone was answered. ' +
@@ -328,6 +347,7 @@
   }
 
   $('startBtn').addEventListener('click', () => {
+    Juice.sfx('click');
     $('briefing').style.display = 'none';
     reset();
     say('THE WINDOW IS OPEN. MEAT LEFT. AROMATICS DOWN. DEBRIS RIGHT. GO.');
@@ -336,6 +356,30 @@
   state = 'brief';
   fit();
   (function loop(){ if (state === 'play') step(); if (state !== 'brief') draw(); requestAnimationFrame(loop); })();
+
+  // cabinet front-end: hide the briefing until the coin drops
+  $('briefing').style.display = 'none';
+  Arcade.cabinet({
+    id: 'carcass-to-casserole',
+    wing: 'THE JASON SANDS EXPERIENCE',
+    title: 'Carcass to Casserole',
+    subtitle: 'The 8-Minute Window',
+    accent: '#E2604A',
+    scoreLabel: 'MEAT ON ICE',
+    lore: 'We believe him. That was never the question. The question is the <b>eight minutes after</b> — ' +
+          'the ones no chain of custody survives. A field of sacred protein, honest aromatics, and federal ' +
+          'debris is coming toward you all at once, and there are exactly three places anything can go. ' +
+          '<b>Every second the meat spends at room temperature is a second the record can never get back.</b>',
+    howto: [
+      '← or A — COOLER (all meat, no exceptions)',
+      '↓ or S — POT (butter, Old Bay, lemon, corn)',
+      '→ or D — OUT-BIN (federal property, and the PHONE)',
+      'MOBILE — tap the left / middle / right third',
+      'Sort before it lands. Ambient regret only goes up.'
+    ],
+    shrine: '../../shrines/index.html#jason-sands',
+    onStart: () => { $('briefing').style.display = 'flex'; }
+  });
 })();
 </script>
 </body>

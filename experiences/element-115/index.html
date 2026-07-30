@@ -214,10 +214,13 @@
   <a href="../../index.html">Back to the arcade</a> &bull; <a href="../mantis-counseling/index.html">Previous: Mantis Counseling</a></p>
 </footer>
 
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
 <script>
 (() => {
   const cv = document.getElementById('game');
   const cx = cv.getContext('2d');
+  Juice.init(cv);
   const W = cv.width, H = cv.height;
   const chargeHud = document.getElementById('chargeHud');
   const wedgeHud = document.getElementById('wedgeHud');
@@ -248,10 +251,11 @@
   function say(k){ const a = LINES[k]; annc.textContent = a[Math.floor(Math.random()*a.length)]; anncT = 240; }
 
   // state
-  let needle, band, charge, wedges, fuel, t, state, event_, keys = {};
+  let needle, band, charge, wedges, fuel, t, state, event_, keys = {}, wasIn, fuelWarn;
   function reset(){
     needle = 0; band = { c: 0, w: 0.35 };
     charge = 0; wedges = 7; fuel = 100; t = 0; state = 'play'; event_ = null;
+    wasIn = false; fuelWarn = false;
     updateHud(); say('start');
   }
 
@@ -276,17 +280,19 @@
     b.addEventListener('pointerdown', on); b.addEventListener('pointerup', off); b.addEventListener('pointerleave', off);
   };
   bindHold('tL','arrowleft'); bindHold('tR','arrowright'); bindHold('tH','h');
-  document.getElementById('tE').addEventListener('pointerdown', e => { e.preventDefault(); insertWedge(); });
-  document.getElementById('tB').addEventListener('pointerdown', e => { e.preventDefault(); if (event_ && event_.type === 'dubna') believe(); else if (state !== 'play') reset(); });
-  cv.addEventListener('pointerdown', () => { if (state === 'win' || state === 'lose') reset(); });
+  document.getElementById('tE').addEventListener('pointerdown', e => { e.preventDefault(); Juice.sfx('click'); insertWedge(); });
+  document.getElementById('tB').addEventListener('pointerdown', e => { e.preventDefault(); Juice.sfx('click'); if (event_ && event_.type === 'dubna') believe(); else if (state !== 'play') reset(); });
+  cv.addEventListener('pointerdown', () => { if (state === 'win' || state === 'lose'){ Juice.sfx('click'); reset(); } });
 
   function insertWedge(){
     if (state !== 'play' || wedges <= 0) return;
     wedges--; fuel = Math.min(100, fuel + 55);
     say('wedge'); updateHud();
+    Juice.reward(120 + wedges * 34, 488, { text: 'FUEL +55', color: '#FF9E4D' });
+    fuelWarn = false;
   }
   function believe(){
-    if (event_ && event_.type === 'dubna'){ event_.mash++; }
+    if (event_ && event_.type === 'dubna'){ event_.mash++; Juice.sfx('tick'); }
   }
 
   function startEvent(){
@@ -297,6 +303,7 @@
       event_ = { type:'palm', held: 0, need: 150, timer: 420 };
       say('palm');
     }
+    Juice.sfx('alarm'); Juice.shake(5);
   }
 
   function step(){
@@ -310,10 +317,13 @@
     needle = Math.max(-1.6, Math.min(1.6, needle));
 
     const inBand = Math.abs(needle - band.c) < band.w/2;
+    if (inBand && !wasIn){ Juice.sfx('blip'); }
+    wasIn = inBand;
 
     // fuel drain
     fuel -= 0.055;
     if (fuel <= 0){ fuel = 0; }
+    if (fuel < 22 && !fuelWarn){ fuelWarn = true; Juice.sfx('alarm'); }
 
     // charge
     if (inBand && fuel > 0){
@@ -330,18 +340,26 @@
     if (event_){
       event_.timer--;
       if (event_.type === 'dubna'){
-        if (event_.mash >= event_.need){ say('dubnaWin'); charge = Math.min(100, charge + 6); event_ = null; }
-        else if (event_.timer <= 0){ say('dubnaLose'); charge = Math.max(0, charge - 18); event_ = null; }
+        if (event_.mash >= event_.need){ say('dubnaWin'); charge = Math.min(100, charge + 6); event_ = null;
+          Juice.reward(W/2, 70, { text: 'BELIEF HELD +6', sound: 'good', count: 22 }); }
+        else if (event_.timer <= 0){ say('dubnaLose'); charge = Math.max(0, charge - 18); event_ = null;
+          Juice.impact(W/2, 70, { text: '−18 DECAYED', power: 10 }); }
       } else {
         if (keys['h']) event_.held++;
-        else if (event_.held > 0 && event_.held < event_.need && event_.timer > 0){ say('palmLose'); charge = Math.max(0, charge - 10); event_ = null; }
-        if (event_ && event_.held >= event_.need){ say('palmWin'); charge = Math.min(100, charge + 4); event_ = null; }
-        else if (event_ && event_.timer <= 0){ say('palmLose'); charge = Math.max(0, charge - 10); event_ = null; }
+        else if (event_.held > 0 && event_.held < event_.need && event_.timer > 0){ say('palmLose'); charge = Math.max(0, charge - 10); event_ = null;
+          Juice.impact(W/2, 70, { text: '−10 PALM WITHDRAWN', power: 8 }); }
+        if (event_ && event_.held >= event_.need){ say('palmWin'); charge = Math.min(100, charge + 4); event_ = null;
+          Juice.reward(W/2, 70, { text: 'PRONGS REMEMBER +4', color: '#FFD23F', sound: 'good' }); }
+        else if (event_ && event_.timer <= 0){ say('palmLose'); charge = Math.max(0, charge - 10); event_ = null;
+          Juice.impact(W/2, 70, { text: '−10 PALM WITHDRAWN', power: 8 }); }
       }
     }
 
-    if (charge >= 100){ state = 'win'; say('win'); }
-    if (wedges <= 0 && fuel <= 0 && charge <= 0){ state = 'lose'; say('lose'); }
+    if (charge >= 100){ state = 'win'; say('win');
+      Juice.sfx('win'); Juice.flash('#3DFC8A', .4);
+      Juice.burst(W/2, 130, { color: '#7FB8FF', count: 40, speed: 6, gravity: -0.02 }); }
+    if (wedges <= 0 && fuel <= 0 && charge <= 0){ state = 'lose'; say('lose');
+      Juice.sfx('lose'); Juice.shake(14); Juice.flash('#FF3D8A', .45); }
 
     if (t % 10 === 0) updateHud();
     if (anncT > 0) anncT--;
@@ -475,7 +493,31 @@
   }
 
   reset();
-  (function loop(){ if (state === 'play') step(); draw(); requestAnimationFrame(loop); })();
+  function loop(){ if (state === 'play') step(); draw(); requestAnimationFrame(loop); }
+  draw(); // one still frame behind the cabinet
+
+  Arcade.cabinet({
+    id: 'reactor-room-sector-4',
+    wing: 'THE ELEMENT 115 EXPERIENCE',
+    title: 'Reactor Room',
+    subtitle: 'Sector 4 — The Gravity-A Shift',
+    accent: '#7FB8FF',
+    scoreLabel: 'FLIGHT CHARGE',
+    lore: 'Science eventually made Element 115. It existed for roughly eighty milliseconds and then ' +
+          'politely stopped. The testimony describes <b>five hundred stable pounds of it</b>, machined into ' +
+          'triangular wedges, sitting on a shelf. We believe every word. The review board\'s only question ' +
+          'is the one the field never asks: <b>why was the shelf unlabeled?</b> Take a shift on the reactor ' +
+          'and find out what the paperwork feels like from the inside.',
+    howto: [
+      '← → or A D — tune the Gravity-A wave into the green band',
+      'E — insert a wedge (seven per shift, demo allotment)',
+      'SPACE — BELIEVE during a DUBNA event (mash it)',
+      'H — hold your palm to the prongs during a security sweep',
+      'MOBILE — the pad, plus WEDGE and BELIEVE'
+    ],
+    shrine: '../../shrines/index.html#bob-lazar',
+    onStart: () => { reset(); requestAnimationFrame(loop); }
+  });
 })();
 </script>
 

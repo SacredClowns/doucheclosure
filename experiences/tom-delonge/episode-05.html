@@ -110,6 +110,9 @@
   <div id="kbhint">WASD/ARROWS: MOVE &bull; SPACE: STAMP / PARRY &bull; E: PULL THE BREAKER &bull; DESKTOP RECOMMENDED</div>
 </div>
 
+<!-- classic scripts first: window.Arcade / window.Juice must exist before the module runs -->
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
 <script type="importmap">
 { "imports": { "three": "../../assets/three.module.min.js" } }
 </script>
@@ -122,7 +125,7 @@ import * as THREE from 'three';
 
 const $ = id => document.getElementById(id);
 const rand = (a,b) => a + Math.random()*(b-a);
-const State = { cred:100, parries:0, stamped:0, misses:0, phase:1, active:true, toasted:{} };
+const State = { cred:100, parries:0, stamped:0, misses:0, phase:1, active:false, toasted:{} };
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x080610);
@@ -240,6 +243,11 @@ function pop(text, pos3D, type='gold'){
   $('fx').appendChild(el);
   setTimeout(() => el.remove(), 1000);
 }
+/* world position -> #gl-local pixels, which is what Juice was init'd against */
+function screenXY(pos3D){
+  const v = pos3D.clone().project(camera);
+  return { x: (v.x*.5+.5)*innerWidth, y: (-(v.y*.5)+.5)*innerHeight };
+}
 function toast(t2){
   const el = document.createElement('div');
   el.className = 'toast';
@@ -270,6 +278,8 @@ function parry(){
       w.alive = false; scene.remove(w.m); hit = true;
       State.parries++;
       pop('POWER CHORD PARRIED', w.m.position, 'toxic');
+      const s = screenXY(w.m.position);
+      Juice.reward(s.x, s.y, { color:'#7CFC3A' });
     }
   }
   if (!hit) pop('CENSOR STAMP (PRACTICE SWING)', player.position, 'gold');
@@ -281,6 +291,7 @@ function parry(){
 let activeNote = null;
 function phase2(){
   State.phase = 2;
+  Juice.sfx('alarm');
   $('ipoOverlay').style.display = 'flex';
   say('Check out lane four, dude! Preferred shares scrolling at 180 BPM!', 'TOM DELONGE');
   spawnNote();
@@ -321,6 +332,8 @@ function rhythmHit(){
     activeNote = null;
     State.stamped++;
     pop('SHARE STAMPED: DENIED — $5.00 SAVED', player.position, 'gold');
+    const s = screenXY(player.position);
+    Juice.reward(s.x, s.y, { color:'#C9A24B' });
     if (State.stamped >= 4){
       $('ipoOverlay').style.display = 'none';
       if (State.misses === 0) once('sec', () => toast('🏆 SEC COMPLIANT'));
@@ -347,6 +360,7 @@ function win(){
     say('...', 'THE RAFTERS');
     setTimeout(() => {
       once('dude', () => toast('🏆 DUDE.'));
+      Juice.sfx('win'); Juice.flash('#7CFC3A', .18);
       $('endText').innerHTML = 'The stage dies. The generals scatter into the parking lot clutching signed CDs. ' +
         'The prospectuses settle like snow. And in the silence — from somewhere up in the rigging, faint but ' +
         'unmistakable — <b>something hums the chord back.</b> Three notes. Palm-muted. Patient. ' +
@@ -361,6 +375,7 @@ function win(){
 }
 function lose(){
   State.active = false;
+  Juice.sfx('lose'); Juice.shake(10);
   $('endcard').classList.add('bad');
   $('endTitle').textContent = 'ACCREDITED';
   $('endText').textContent = 'You now own 10,000 preferred shares of an imaginary zero-point glider. ' +
@@ -419,6 +434,8 @@ function tick(){
         State.cred -= 10;
         $('credfill').style.width = Math.max(0, State.cred) + '%';
         pop('HIT BY 180-BPM POWER CHORD! (−10)', player.position, 'red');
+        const s = screenXY(player.position);
+        Juice.impact(s.x, s.y, { color:'#FF3D8A' });
         if (State.cred <= 0) lose();
       }
     }
@@ -427,7 +444,32 @@ function tick(){
 }
 
 say('Welcome to soundcheck, boys! Prepare for 180 BPM of pure disclosure!', 'TOM DELONGE');
-tick();
+
+Arcade.cabinet({
+  id: 'pop-punk-ipo',
+  wing: 'THE TOM DELONGE EXPERIENCE',
+  title: 'The Pop-Punk IPO',
+  subtitle: 'Episode 05 — Arena Soundcheck Boss Fight',
+  accent: '#7CFC3A',
+  scoreLabel: 'CHORDS PARRIED',
+  lore: 'A general really did meet him at a Denny\'s. We accept that entirely. ' +
+        '<b>The review board\'s only question is the S-1.</b> Five hundred dollars a preferred share for a ' +
+        'zero-point craft that, on physical inspection, is foam and drifts overhead all night unbillable. ' +
+        'You have a censor stamp, a credibility bar, and 180 BPM of incoming power chords. ' +
+        '<b>Pull the breaker, kill the amps, and then hold still and listen — because the chord was never the problem.</b>',
+  howto: [
+    'WASD / ARROWS &mdash; move the stage floor',
+    'SPACE &mdash; parry a power chord, then stamp the shares',
+    'E &mdash; pull the breaker on the right amp stack (stand close)',
+    'Six parries opens the IPO lane. Four stamps kills it. Desktop recommended.'
+  ],
+  shrine: '../../shrines/index.html#tom-delonge',
+  onStart: () => {
+    Juice.init($('gl'));
+    tick();
+    setTimeout(() => { State.active = true; }, 0);
+  }
+});
 </script>
 </body>
 </html>

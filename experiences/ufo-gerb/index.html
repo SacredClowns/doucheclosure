@@ -259,11 +259,19 @@
   <a href="../../index.html">Back to the arcade</a> &bull; <a href="../tom-delonge/index.html">Previous wing: Tom DeLonge</a></p>
 </footer>
 
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
 <script>
 (() => {
   const $ = id => document.getElementById(id);
   const arena = $('arena'), thread = $('thread'), btn = $('composeBtn'),
         annc = $('annc'), ratiofill = $('ratiofill'), storyfill = $('storyfill');
+
+  // arena-local centre of an element, for juice coordinates
+  function lc(el){
+    const r = el.getBoundingClientRect(), a = arena.getBoundingClientRect();
+    return { x: r.left - a.left + r.width/2, y: r.top - a.top + r.height/2 };
+  }
 
   const STORY = [
     "I was nine. My dad and I were driving back from my grandmother's, two-lane road, no streetlights.",
@@ -289,7 +297,7 @@
   const MEGA = ['@aggregator_prime', 'QUOTE-TWEET: "the desperation on this app istg" — 40.2K views'];
 
   let health = 100, posted = 0, typing = false, typeProg = 0, over = false, t = 0;
-  let dunks = [], spawnTimer = 0, megaSpawned = false;
+  let dunks = [], spawnTimer = 0, megaSpawned = false, tickMark = 0;
 
   function say(s){ annc.textContent = s; }
   function render(){
@@ -323,7 +331,11 @@
       e.preventDefault();
       if (over) return;
       obj.hp--;
+      const c = lc(d);
       if (obj.hp <= 0){
+        Juice.sfx('click');
+        Juice.reward(c.x, c.y, { text: obj.mega ? 'MUTED' : 'BLOCKED', color: '#3DFC8A', count: obj.mega ? 24 : 14 });
+        if (obj.mega){ Juice.shake(8); Juice.flash('#3DFC8A', .2); }
         const p = document.createElement('div');
         p.className = 'poof';
         p.textContent = obj.mega ? 'MUTED. BLESSED SILENCE.' : ['BLOCKED','MUTED','NOT TODAY','TOUCH GRASS'][Math.floor(Math.random()*4)];
@@ -334,6 +346,8 @@
         dunks = dunks.filter(x => x !== obj);
         if (obj.latched) obj.latched = false;
       } else {
+        Juice.sfx('click');
+        Juice.burst(c.x, c.y, { color: '#FFD23F', count: 6 });
         d.style.transform = 'scale(' + (1 + (5-obj.hp)*0.06) + ')';
       }
     });
@@ -343,7 +357,7 @@
   // typing input
   function startType(){ if (!over && posted < STORY.length){ typing = true; btn.classList.add('typing'); } }
   function stopType(){ typing = false; btn.classList.remove('typing'); }
-  btn.addEventListener('pointerdown', e => { e.preventDefault(); startType(); });
+  btn.addEventListener('pointerdown', e => { e.preventDefault(); Juice.sfx('click'); startType(); });
   addEventListener('pointerup', stopType);
   addEventListener('keydown', e => { if (e.code === 'Space'){ e.preventDefault(); if (over){ location.reload(); } else startType(); } });
   addEventListener('keyup', e => { if (e.code === 'Space') stopType(); });
@@ -355,10 +369,14 @@
     if (typing){
       typeProg += 0.9;
       btn.textContent = 'TYPING… ' + Math.min(100, Math.floor(typeProg)) + '%';
+      const mark = Math.floor(typeProg / 20);
+      if (mark !== tickMark){ tickMark = mark; Juice.sfx('tick'); }
       if (typeProg >= 100){
-        typeProg = 0;
+        typeProg = 0; tickMark = 0;
         addPost(STORY[posted]);
         posted++;
+        const bc = lc(btn);
+        Juice.reward(bc.x, bc.y - 24, { text: 'SENTENCE ' + posted + '/' + STORY.length, color: '#2DE1FC', count: 14 });
         say(posted === STORY.length ? 'POSTED. ALL OF IT. NOW SURVIVE.' :
             ['The swarm smells sincerity.', 'Keep going. He can smell a main character forming.',
              'Halfway. The quote-tweets are circling.', 'Your dad would think this was brave. It is.'][Math.min(3, posted-1)]);
@@ -385,6 +403,10 @@
         if (Math.abs(o.x - o.tx) < 12){
           o.latched = true;
           o.el.classList.add('latched');
+          const c = lc(o.el);
+          Juice.impact(c.x, c.y, { text: o.mega ? 'QUOTE-TWEETED' : 'LATCHED',
+                                   color: '#FF5C5C', power: o.mega ? 11 : 6,
+                                   count: o.mega ? 20 : 10, stop: o.mega ? 60 : 30 });
         }
         o.el.style.left = o.x + 'px';
       }
@@ -397,6 +419,7 @@
   function win(){
     if (over) return;
     over = true;
+    Juice.sfx('win'); Juice.flash('#3DFC8A', .4);
     dunks.forEach(o => o.el.remove());
     $('endTitle').textContent = 'THE STORY HELD.';
     $('endBody').innerHTML =
@@ -415,6 +438,7 @@
   }
   function lose(){
     over = true;
+    Juice.sfx('lose'); Juice.shake(14); Juice.flash('#FF3D8A', .45);
     $('endcard').classList.add('bad');
     $('endTitle').textContent = 'RATIOED.';
     $('endBody').innerHTML =
@@ -425,9 +449,31 @@
     $('endcard').style.display = 'flex';
   }
 
-  addPost("okay. deep breath. i've never told this publicly. thread: 🧵");
-  render();
-  (function loop(){ step(); requestAnimationFrame(loop); })();
+  Arcade.cabinet({
+    id: 'the-ratio',
+    wing: 'THE UFO GERB EXPERIENCE',
+    title: 'The Ratio',
+    subtitle: 'Hold The Thread',
+    accent: '#9A8FB8',
+    scoreLabel: 'SENTENCES POSTED',
+    lore: 'Every other wing in this arcade believes somebody. This wing audited an account that ' +
+          'believes nothing, claims nothing, has seen nothing, and harvests engagement from ' +
+          'everyone who has. <b>You do not play as him.</b> You play as the person he dunks on — ' +
+          'seven true sentences about a road, a field, and a father who never spoke of it again. ' +
+          'Post all of it while the swarm arrives, and hold the thread.',
+    howto: [
+      'HOLD SPACE (or the button) — keep typing your story',
+      'CLICK / TAP a dunk-reply — dismiss it before it latches',
+      'A latched reply drains STORY HEALTH until you clear it',
+      'The quote-tweet takes five clicks. It always does.'
+    ],
+    onStart: () => {
+      Juice.init(arena);
+      addPost("okay. deep breath. i've never told this publicly. thread: 🧵");
+      render();
+      (function loop(){ step(); requestAnimationFrame(loop); })();
+    }
+  });
 })();
 </script>
 
