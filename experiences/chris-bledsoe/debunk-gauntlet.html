@@ -688,8 +688,9 @@
     setInputEnabled(false);
 
     roundIdx++;
-    if (cred <= 0){ setTimeout(() => finish('zero'), 1800); return; }
-    if (roundIdx >= ROUNDS) setTimeout(() => finish('through'), 2600);
+    // never cut the run short — every player has to reach reply eight,
+    // because reply eight is the entire point of the cabinet
+    if (roundIdx >= ROUNDS) setTimeout(() => finish(cred <= 0 ? 'zero' : 'through'), 2600);
     else setTimeout(() => { if (!ended) beginRound(); }, 2300);
   }
 
@@ -790,7 +791,7 @@
     armed = null;
     renderHand();
 
-    const won = cred >= WIN_AT && cause !== 'zero';
+    const won = cred >= WIN_AT;
     if (!playedTrust) award('trust', '🏆 NEVER PLAYED &ldquo;TRUST ME&rdquo;');
     if (!playedWrong && !playedAnyTrap && !passedWrong && passedRight && won)
       award('spotless', '🏆 SPOTLESS RECORD');
@@ -868,6 +869,7 @@
 
   /* ---------- boot ---------- */
   $('startBtn').addEventListener('click', () => {
+    if (running || ended) return;          // double-tap guard
     Juice.sfx('click');
     $('briefing').style.display = 'none';
     running = true;

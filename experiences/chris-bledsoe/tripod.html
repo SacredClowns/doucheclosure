@@ -614,7 +614,7 @@
     const notes = [];
 
     if (!manual){
-      sharp -= 45;
+      sharp -= 62;
       notes.push('AUTOFOCUS on a point of light in the dark: it hunted, it quit, it fired anyway.');
     } else if (!taped){
       const drift = 4 + wind * 0.8 + (cond.cold ? 6 : 0);
@@ -653,7 +653,7 @@
     }
     sharp -= shake;
 
-    if (night && moving){ sharp -= 25; notes.push('NIGHT MODE on a moving light: the phone averaged frames that did not match and produced a smear.'); }
+    if (night && moving){ sharp -= 32; notes.push('NIGHT MODE on a moving light: the phone averaged frames that did not match and produced a smear.'); }
     if (wide) sharp -= 6;
     if (burst) sharp += longExp ? 5 : 7;
 
@@ -662,7 +662,7 @@
     sharp -= grain;
     if (grain >= 5) notes.push('ISO ' + s.iso + ' grain is eating the fine detail' + (raw ? ' — RAW clawed half of it back.' : ' and the JPEG engine smeared what was left.'));
 
-    sharp += clamp(leftover * 0.5, 0, 6);
+    sharp += clamp(leftover * 0.5, 0, 4);
     sharp = clamp(sharp, 0, 100);
 
     /* ---------- CONTEXT ---------- */
@@ -685,7 +685,11 @@
     if (night) prov -= 14;
     prov = clamp(prov, 0, 100);
 
-    const overall = 0.34 * sharp + 0.24 * expo + 0.22 * ctxs + 0.20 * prov;
+    // A photograph that is out of focus has no evidentiary value no matter how clean its paperwork
+    // is, and a light with nothing around it settles nothing. Those two failures gate the whole grade.
+    const focusGate = 0.55 + 0.45 * clamp(sharp / 80, 0, 1);
+    const placeGate = 0.72 + 0.28 * clamp(ctxs / 75, 0, 1);
+    const overall = (0.34 * sharp + 0.22 * expo + 0.26 * ctxs + 0.18 * prov) * focusGate * placeGate;
 
     return {
       sharp: sharp, expo: expo, ctxs: ctxs, prov: prov, overall: overall,
@@ -828,9 +832,15 @@
       const a = (bright / samples) * (samples === 1 ? 1 : 1.9);
       if (defocus > 14) bokeh(x, y, defocus, clamp(a, 0, 1));
       else {
-        glow(x, y, defocus * 4.2, clamp(a * 0.5, 0, 1), '255,206,132');
-        cx.fillStyle = 'rgba(255,246,226,' + clamp(a * 0.95, 0, 1) + ')';
-        cx.beginPath(); cx.arc(x, y, Math.max(1.6, defocus * 0.55), 0, 6.2832); cx.fill();
+        // in focus: a defined disc with a tight halo, not a smudge
+        const core = Math.max(5, defocus * 1.15);
+        glow(x, y, core * 7.5, clamp(a * 0.42, 0, 1), '255,206,132');
+        glow(x, y, core * 2.6, clamp(a * 0.65, 0, 1), '255,226,176');
+        cx.fillStyle = 'rgba(255,250,236,' + clamp(a * 0.98, 0, 1) + ')';
+        cx.beginPath(); cx.arc(x, y, core, 0, 6.2832); cx.fill();
+        cx.strokeStyle = 'rgba(255,236,196,' + clamp(a * 0.7, 0, 1) + ')';
+        cx.lineWidth = 1.2;
+        cx.beginPath(); cx.arc(x, y, core + 1.6, 0, 6.2832); cx.stroke();
       }
     }
     if (blown){

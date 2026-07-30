@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE PRESS CONFERENCE — Doucheclosure</title>
+<meta name="description" content="Twelve witnesses. Eight podium slots. Eighty-four minutes of floor time and a room full of reporters who came for the sandwiches. Order the testimony so the room believes it.">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --brass:#C9A24B; --brass-dim:#6B5326; --felt:#2A2138; --shadow:rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--void);}
+  body{margin:0; background:var(--void); color:var(--white);
+    font-family:"Courier New", Courier, monospace; line-height:1.65; overflow-x:hidden;}
+  body::after{content:""; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 1px, transparent 1px 3px);
+    pointer-events:none; z-index:100;}
+  a{color:var(--neon-cyan);}
+  .wrap{max-width:960px; margin:0 auto; padding:0 1.25rem;}
+  .display{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-weight:400; text-transform:uppercase; letter-spacing:.03em; line-height:.95;}
+  .crumb{padding:1rem 1.25rem; font-size:.72rem; letter-spacing:.15em; text-transform:uppercase;}
+  .crumb a{text-decoration:none;}
+
+  header.wing{
+    text-align:center; padding:2.4rem 1rem 2.2rem;
+    background:radial-gradient(ellipse at 50% -20%, rgba(201,162,75,.26), transparent 60%),
+      radial-gradient(ellipse at 88% 120%, rgba(45,225,252,.08), transparent 55%);
+    border-bottom:3px solid var(--brass);
+  }
+  .wing .eyebrow{color:var(--neon-cyan); letter-spacing:.28em; text-transform:uppercase; font-size:.72rem;}
+  .wing h1{margin:.5rem 0 0; font-size:clamp(2.4rem,9vw,4.4rem); color:var(--brass);
+    text-shadow:0 0 16px rgba(201,162,75,.5), 4px 4px 0 #3A2A0C;}
+  .wing .sub{color:var(--chrome); max-width:37rem; margin:1.1rem auto 0; font-size:.9rem;}
+  .wing .sub b{color:var(--white);}
+  .file-tab{display:inline-block; margin-top:1.2rem; border:2px solid var(--neon-yellow);
+    color:var(--neon-yellow); padding:.4rem 1.1rem; font-size:.72rem; letter-spacing:.2em;
+    text-transform:uppercase; transform:rotate(-2deg);}
+
+  section{padding:2rem 0 2.6rem;}
+
+  /* ---------- stage ---------- */
+  #stage{position:relative; background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:2px solid #4A3A1C; border-radius:12px;
+    box-shadow:0 0 26px rgba(201,162,75,.12),0 12px 34px var(--shadow);
+    padding:1.1rem; overflow:hidden;}
+  #stage::before{content:""; position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(ellipse at 50% -8%, rgba(201,162,75,.16), transparent 58%);}
+
+  #hud{display:flex; gap:.9rem; flex-wrap:wrap; align-items:flex-end; position:relative; z-index:2;}
+  .bar{flex:1 1 220px; min-width:180px;}
+  .bar .lab{font-size:.6rem; letter-spacing:.16em; text-transform:uppercase; color:var(--chrome);
+    margin-bottom:4px; display:flex; justify-content:space-between; gap:.5rem;}
+  .bar .lab b{color:var(--white); font-weight:normal;}
+  .track{position:relative; height:13px; background:#00000099; border:1px solid #000;
+    border-radius:7px; overflow:hidden;}
+  #credfill{height:100%; width:42%; background:linear-gradient(90deg,#5C4718,var(--brass)); transition:width .5s;}
+  #timefill{height:100%; width:0%; background:linear-gradient(90deg,#25404A,var(--neon-cyan)); transition:width .3s;}
+  #qamark{position:absolute; top:-2px; bottom:-2px; left:85.7%; width:2px; background:var(--neon-yellow); opacity:.8;}
+  .pill{flex:0 0 auto; font-size:.62rem; letter-spacing:.2em; text-transform:uppercase;
+    border:1px dashed rgba(201,162,75,.5); border-radius:6px; padding:.35rem .6rem; color:var(--brass);}
+  .pill.qa{color:var(--neon-yellow); border-color:rgba(255,210,63,.45);}
+  .pill.qa.no{color:var(--neon-pink); border-color:rgba(255,61,138,.45);}
+
+  #rail{display:flex; gap:.3rem; margin:.7rem 0 0; position:relative; z-index:2;}
+  #rail i{flex:1 1 0; height:6px; border-radius:3px; background:#2A2038; border:1px solid #000;}
+  #rail i.now{background:var(--neon-yellow); box-shadow:0 0 8px rgba(255,210,63,.6);}
+  #rail i.up{background:var(--neon-green);}
+  #rail i.dn{background:var(--neon-pink);}
+  #rail i.big{background:var(--brass); box-shadow:0 0 9px rgba(201,162,75,.75);}
+
+  #board{position:relative; z-index:2; margin:.55rem 0 0; font-size:.62rem; letter-spacing:.14em;
+    text-transform:uppercase; color:#8A7A5E; min-height:1.2rem;}
+
+  #arena{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:1.1rem;
+    margin-top:.75rem; position:relative; z-index:2;}
+
+  .colhead{font-size:.6rem; letter-spacing:.22em; text-transform:uppercase; color:var(--chrome);
+    margin:0 0 .5rem; display:flex; justify-content:space-between; gap:.6rem; flex-wrap:wrap;}
+  .colhead b{color:var(--white); font-weight:normal;}
+
+  /* ---------- running order ---------- */
+  #slots{display:grid; gap:.3rem;}
+  .slot{display:flex; align-items:stretch; gap:.45rem; background:#0C0912;
+    border:2px solid #33291A; border-radius:7px; padding:.35rem .4rem; min-height:44px;}
+  .slot.empty{border-style:dashed; border-color:#332A42;}
+  .slot.sel{border-color:var(--neon-yellow); box-shadow:0 0 12px rgba(255,210,63,.3);}
+  .slot.live{border-color:var(--brass); background:#1A1408; box-shadow:0 0 14px rgba(201,162,75,.4);}
+  .slot.done{opacity:.62;}
+  .slot .num{flex:0 0 20px; font-family:Haettenschweiler,Impact,sans-serif; font-size:1.05rem;
+    color:var(--brass-dim); text-align:center; line-height:1.5;}
+  .slot.live .num{color:var(--brass);}
+  .slot .body{flex:1 1 auto; min-width:0;}
+  .slot .r{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; text-transform:uppercase;
+    font-size:.86rem; line-height:1.1; color:#E8D9B4; letter-spacing:.03em;
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .slot .m{font-size:.53rem; letter-spacing:.1em; color:#7E6F9E; text-transform:uppercase;}
+  .slot .ph{font-size:.58rem; letter-spacing:.18em; color:#4E4364; text-transform:uppercase; line-height:2.1;}
+  .slot .ctl{flex:0 0 auto; display:flex; flex-direction:column; justify-content:center; gap:2px;}
+  .slot .ctl button{font-family:inherit; cursor:pointer; background:#1B1526; color:#9C8CB8;
+    border:1px solid #3A2F4C; border-radius:3px; font-size:.55rem; line-height:1; padding:2px 5px;}
+  .slot .ctl button:hover{color:var(--neon-yellow); border-color:var(--neon-yellow);}
+  .slot .ctl button:disabled{opacity:.25; cursor:default;}
+  .slot .risk{display:inline-block; font-size:.46rem; letter-spacing:.12em; color:#0B0614;
+    background:var(--neon-yellow); border-radius:3px; padding:0 .25rem; margin-left:.3rem; vertical-align:1px;}
+  .slot.drop{border-color:var(--neon-cyan); background:#0A1820;}
+
+  /* ---------- roster ---------- */
+  #roster{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:.45rem;}
+  .wit{position:relative; text-align:left; cursor:pointer; color:var(--white); font-family:inherit;
+    background:linear-gradient(180deg,#241D12,#14100A); border:2px solid #4A3A1C; border-radius:8px;
+    padding:.45rem .5rem .4rem; transition:transform .1s, border-color .15s, box-shadow .15s;}
+  .wit .r{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; text-transform:uppercase;
+    letter-spacing:.03em; font-size:.9rem; line-height:1.04; color:#E8D9B4;}
+  .wit .o{font-size:.53rem; letter-spacing:.12em; text-transform:uppercase; color:#9C8A64; margin-top:.15rem;}
+  .wit .st{display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.3rem; font-size:.5rem;
+    letter-spacing:.1em; text-transform:uppercase; color:#7E6F9E;}
+  .wit .pips{color:var(--brass); letter-spacing:0;}
+  .wit .pips.claim{color:var(--neon-cyan);}
+  .wit .min{margin-top:.25rem; font-size:.52rem; letter-spacing:.14em; text-transform:uppercase; color:var(--neon-yellow);}
+  .wit:hover:not(:disabled){border-color:var(--brass); box-shadow:0 0 13px rgba(201,162,75,.3); transform:translateY(-2px);}
+  .wit.seated{opacity:.3; filter:grayscale(.6);}
+  .wit.risky{border-color:#7A5A18; background:linear-gradient(180deg,#33260F,#1C1508);}
+  .wit.risky .r{color:var(--neon-yellow);}
+  .wit:disabled{cursor:default;}
+  .wit .flag{position:absolute; top:5px; right:5px; font-size:.44rem; letter-spacing:.1em;
+    text-transform:uppercase; color:#0B0614; background:var(--neon-yellow); border-radius:3px; padding:0 .25rem;}
+
+  /* ---------- podium (run phase) ---------- */
+  #podium{display:none; background:#0B0812; border:2px solid #4A3A1C; border-left:5px solid var(--brass);
+    border-radius:8px; padding:.85rem .95rem; min-height:12rem;}
+  #podium.on{display:block;}
+  #pod-head{display:flex; align-items:center; gap:.55rem; margin-bottom:.5rem;}
+  #mic{width:30px; height:30px; flex:0 0 30px; border-radius:5px; border:1px solid #000;
+    background:linear-gradient(145deg,#5A4620,#241A08); display:flex; align-items:center;
+    justify-content:center; font-family:Haettenschweiler,Impact,sans-serif; font-size:.95rem; color:var(--brass);}
+  #pod-role{font-size:.72rem; letter-spacing:.08em; color:var(--brass); line-height:1.25;}
+  #pod-stamp{margin-left:auto; font-size:.52rem; letter-spacing:.18em; text-transform:uppercase; color:#6B5C80; text-align:right;}
+  #pod-says{font-size:.86rem; color:var(--white); line-height:1.6; margin:0; min-height:5.2rem;}
+  #pod-verdict{margin:.7rem 0 0; padding-top:.65rem; border-top:1px dashed #3A2E1A;
+    font-size:.82rem; color:var(--chrome); line-height:1.6; min-height:3rem;}
+  #pod-verdict b{color:var(--white);}
+  .tag{display:inline-block; font-size:.55rem; letter-spacing:.2em; text-transform:uppercase;
+    border:1px solid currentColor; border-radius:4px; padding:.08rem .4rem; margin-right:.35rem;}
+  .up{color:var(--neon-green);} .dn{color:var(--neon-pink);} .flat{color:var(--neon-cyan);}
+
+  /* ---------- press row ---------- */
+  #presswrap{margin-top:1rem; position:relative; z-index:2;}
+  #press{display:grid; grid-template-columns:repeat(auto-fit,minmax(132px,1fr)); gap:.4rem;}
+  .rep{background:#0C0912; border:2px solid #2C2438; border-radius:7px; padding:.4rem .45rem;}
+  .rep.hot{border-color:var(--neon-cyan); box-shadow:0 0 12px rgba(45,225,252,.28);}
+  .rep .rn{font-size:.55rem; letter-spacing:.11em; text-transform:uppercase; color:#D8C9A8; line-height:1.35;}
+  .rep .ro{font-size:.47rem; letter-spacing:.1em; text-transform:uppercase; color:#6E6288;}
+  .rep .rt{height:5px; margin-top:.3rem; background:#00000099; border:1px solid #000; border-radius:3px; overflow:hidden;}
+  .rep .rf{height:100%; width:30%; background:#4A5C6E; transition:width .5s, background .5s;}
+  .rep .rc{margin-top:.25rem; font-size:.46rem; letter-spacing:.14em; text-transform:uppercase; color:#7E6F9E;}
+  #pressline{margin-top:.55rem; min-height:3.1rem; font-size:.78rem; color:var(--chrome);
+    border-left:3px solid #3A2E1A; padding-left:.7rem; line-height:1.55;}
+  #pressline b{color:#D8C9A8; font-weight:normal;}
+
+  /* ---------- controls ---------- */
+  #ctlbar{margin-top:.9rem; display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; position:relative; z-index:2;}
+  .gbtn{font-family:inherit; cursor:pointer; border-radius:8px; padding:.75rem 1.3rem;
+    font-size:.7rem; letter-spacing:.16em; text-transform:uppercase; font-weight:bold;
+    border:2px solid var(--brass); background:var(--brass); color:#22190A;}
+  .gbtn.ghost{background:transparent; color:var(--neon-cyan); border-color:var(--neon-cyan);}
+  .gbtn:disabled{opacity:.3; cursor:default;}
+  #ctlnote{font-size:.57rem; letter-spacing:.1em; color:#6E6288; flex:1 1 200px; min-width:160px;}
+
+  /* ---------- briefing ---------- */
+  #briefing{position:absolute; inset:0; z-index:40; display:none; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center; padding:1.4rem;
+    background:rgba(8,5,14,.96); overflow-y:auto;}
+  #briefing h2{font-size:clamp(1.5rem,5vw,2.4rem); color:var(--brass); text-shadow:0 0 18px rgba(201,162,75,.45);}
+  #briefing p{max-width:35rem; margin:.8rem auto; color:var(--chrome); font-size:.85rem;}
+  #briefing b{color:var(--white);}
+  .btn{display:inline-block; margin:.4rem; padding:.85rem 1.6rem; border-radius:8px; cursor:pointer;
+    font-family:inherit; font-weight:bold; font-size:.8rem; letter-spacing:.14em; text-transform:uppercase;
+    text-decoration:none; border:2px solid var(--brass); background:var(--brass); color:#22190A;}
+
+  .dossier{border-left:4px solid var(--neon-yellow); background:var(--panel);
+    padding:1.05rem 1.25rem; color:var(--chrome); font-size:.86rem; margin-top:1.6rem;}
+  .dossier b{color:var(--white);}
+  footer{padding:2rem 1rem 3rem; text-align:center; color:#7E6F9E; font-size:.72rem;}
+
+  @media (max-width:760px){
+    #arena{grid-template-columns:1fr; gap:.8rem;}
+    #roster{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}
+    #stage{padding:.8rem;}
+    header.wing{padding:1.8rem 1rem 1.6rem;}
+    .slot .r{font-size:.8rem;}
+    #podium{min-height:0;}
+    #pod-says{min-height:0;}
+    #pod-verdict{min-height:0;}
+  }
+</style>
+</head>
+<body>
+
+<p class="crumb"><a href="../../index.html">&larr; THE ARCADE</a> &nbsp;/&nbsp; <a href="index.html">STEVEN GREER</a> &nbsp;/&nbsp; THE PRESS CONFERENCE</p>
+
+<header class="wing">
+  <p class="eyebrow">The Steven Greer Experience &bull; Cabinet No. 2</p>
+  <h1 class="display">The Press<br>Conference</h1>
+  <p class="sub">Twelve people who spent their careers inside the machine have agreed to say what they
+  saw, <b>on the record, under their own names, in front of cameras.</b> You have eight podium slots,
+  eighty-four minutes of floor time, and a press corps that has covered nine of these and believed none
+  of them. The order you put them in is the entire ballgame.</p>
+  <span class="file-tab">DOORS 09:30 &bull; GAVEL 10:00 &bull; WIRE DEADLINE 12:00</span>
+</header>
+
+<section>
+  <div class="wrap">
+    <div id="stage">
+
+      <div id="hud">
+        <div class="bar">
+          <div class="lab"><span>Press credibility</span><b id="credlab">42 / 100</b></div>
+          <div class="track"><div id="credfill"></div></div>
+        </div>
+        <div class="bar">
+          <div class="lab"><span>Floor time booked</span><b id="timelab">0 / 84 min</b></div>
+          <div class="track"><div id="timefill"></div><div id="qamark"></div></div>
+        </div>
+        <div class="pill" id="seatpill">Seated: 0 / 8</div>
+        <div class="pill qa no" id="qapill">Q&amp;A: 84 min free</div>
+      </div>
+
+      <div id="rail"></div>
+      <p id="board">&nbsp;</p>
+
+      <div id="arena">
+        <div>
+          <p class="colhead"><span>Running order &mdash; 8 podium slots</span><b id="orderlab">0 booked</b></p>
+          <div id="slots"></div>
+        </div>
+
+        <div>
+          <p class="colhead" id="rosterhead"><span>The witnesses &mdash; twelve agreed to come</span><b id="cuthead">12 waiting</b></p>
+          <div id="roster"></div>
+          <div id="podium">
+            <div id="pod-head">
+              <div id="mic">&#9679;</div>
+              <div id="pod-role">&mdash;</div>
+              <div id="pod-stamp">At the podium</div>
+            </div>
+            <p id="pod-says">&nbsp;</p>
+            <div id="pod-verdict">&nbsp;</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="presswrap">
+        <p class="colhead"><span>The press row</span><b id="presslab">Five desks. Two of them are here for the sandwiches.</b></p>
+        <div id="press"></div>
+        <p id="pressline">&nbsp;</p>
+      </div>
+
+      <div id="ctlbar">
+        <button type="button" class="gbtn" id="runBtn" disabled>Run the conference</button>
+        <button type="button" class="gbtn ghost" id="clearBtn">Clear the order</button>
+        <span id="ctlnote">Tap a witness to seat them in the next open slot. Tap a slot to cut them. Arrows reorder.</span>
+      </div>
+
+      <div id="briefing">
+        <h2 class="display">Nine Thirty. They Are Actually Here.</h2>
+        <p>Every one of them has something to lose by walking through that door and every one of them
+        walked through it anyway. <b>Your job today is not persuasion. It is sequencing.</b></p>
+        <p>Eight slots. Eighty-four minutes. Twelve witnesses who between them need a hundred and
+        sixteen. <b>You are going to cut people who drove here,</b> and the ones you cut are not going
+        to get another room like this, and you have to do it anyway, because a program that runs long
+        is a program the wire services leave early.</p>
+        <p>The room will teach you the rules if you let it. Watch the meter. Watch the back table.
+        <b>Nobody in that press row is hostile</b> &mdash; they are tired, which is worse.</p>
+        <button class="btn" id="startBtn">Open the doors</button>
+      </div>
+
+    </div>
+
+    <div class="dossier">
+      <b>WING DOCTRINE:</b> This cabinet does not run on irony. In May 2001 a press conference at the
+      National Press Club put roughly twenty named military, intelligence and aviation witnesses on the
+      public record in a single afternoon &mdash; more than the previous fifty years had managed
+      combined. Our grievance with this wing has always been the <em>invoice</em>: the folding chair,
+      the tiered retreat pricing, the sky sold by the seat. <b>It has never once been the witnesses,
+      and it has never been that Wednesday.</b> The twelve on tonight's roster are composites written
+      for a game; the room they are standing in was real, and it cost the people in it something to be
+      there. Play accordingly.
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>DOUCHECLOSURE&trade; EXPERIENCES &bull; A work of parody commenting on public statements of public figures.<br>
+  <a href="index.html">Back to the Greer wing</a> &bull; <a href="../../shrines/index.html#steven-greer">The shrine</a> &bull;
+  <a href="../../index.html">The arcade</a></p>
+</footer>
+
+<script src="../../assets/screen.js"></script>
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const stage = $('stage');
+  Juice.init(stage);
+
+  /* ============================================================
+     TUNING
+     ============================================================ */
+  const SLOTS = 8;
+  const FLOOR = 84;          // minutes of podium time available
+  const QA_MIN = 12;         // minutes that must be left unbooked for questions
+  const START_CRED = 42, MAX_CRED = 100;
+  const BANKED = 58;         // credibility needed before an extraordinary claim lands
+  const MIN_SEATED = 5;      // you cannot call this a press conference with fewer
+
+  /* ============================================================
+     THE ROSTER — twelve composites. Roles, services and years only:
+     no invented people, because inventing a person is the one thing
+     this particular room never did.
+     ============================================================ */
+  const WITNESSES = [
+    { id:'radar67', role:'Radar Operator', org:'U.S. Air Force &bull; 1967',
+      branch:'USAF', era:'1960s', w:4, c:2, min:8,
+      note:'Two scopes, two operators, one return. Logged and initialed the same shift.',
+      says:'“I want to be careful about what I am saying. I did not see an object with my eyes. I watched a return appear on the search scope and on the height-finder at the same time, held it for nineteen minutes, and initialed the log. The log went into a safe. I am here because I would like somebody to open the safe.”',
+      land:'He does not embellish and the room notices that he does not embellish.' },
+
+    { id:'missile66', role:'Missile Launch Officer', org:'U.S. Air Force &bull; 1966',
+      branch:'USAF', era:'1960s', w:5, c:3, min:10,
+      note:'Held the key. Filed the report. Was told the report did not exist.',
+      says:'“I was sixty feet underground with a checklist and a key. Security topside reported an object over the fence line. Inside of a minute I watched ten birds drop off alert status, one after another, on the board in front of me. I wrote it up. I was told the same afternoon that the incident had not occurred.”',
+      land:'That is a man describing paperwork. Paperwork is what a room like this eats.' },
+
+    { id:'atc86', role:'Air Traffic Controller', org:'Federal Aviation &bull; 1986',
+      branch:'FAA', era:'1980s', w:5, c:2, min:9,
+      note:'Primary return, no transponder, no flight plan, and a tape of the whole thing.',
+      says:'“I had a primary target with no transponder and no flight plan, and I had a captain on frequency describing the same position. I do not know what it was. I know it was there, because two systems and one pilot agreed, and because the tape exists, and because I am the one who labelled the tape.”',
+      land:'She says “I do not know what it was” and the science desk stops chewing.' },
+
+    { id:'carrier71', role:'Carrier Radar Supervisor', org:'U.S. Navy &bull; 1971',
+      branch:'U.S. NAVY', era:'1970s', w:4, c:3, min:9,
+      note:'Combat information center. Eleven people watching the same scope.',
+      says:'“There were eleven of us in that compartment. We tracked it for over an hour, we passed it to the air wing, and it did what nothing in our inventory could do at the time or, frankly, now. We were told to log it as anomalous propagation. Anomalous propagation does not change altitude.”',
+      land:'Eleven witnesses in one compartment. The arithmetic does the persuading.' },
+
+    { id:'captain89', role:'Airline Captain', org:'Commercial Aviation &bull; 1989',
+      branch:'CIVIL AIR', era:'1980s', w:4, c:3, min:8,
+      note:'Reported it. Was quietly advised never to report anything again.',
+      says:'“I had a hundred and forty-one people behind me and thirty-one years in the left seat. I reported what my first officer and I both saw, by the book, on landing. Nobody accused me of anything. It was simply made clear that pilots who file this particular report stop being considered for certain things. So the rest of us stopped filing.”',
+      land:'The chilling effect, described plainly by a man it worked on.' },
+
+    { id:'photo74', role:'Photo Interpreter', org:'Army Intelligence &bull; 1974',
+      branch:'U.S. ARMY', era:'1970s', w:5, c:2, min:10,
+      note:'Trained to measure things in frames. Measured this one.',
+      says:'“My entire job was to look at a frame and tell a general how big a thing is and how fast it is going. I did that job for eleven years and nobody ever questioned my numbers until the afternoon I ran the numbers on this frame. I did not change my numbers. I have never changed my numbers.”',
+      land:'A measurement, offered by a man paid for a decade to measure.' },
+
+    { id:'signals78', role:'Signals Analyst', org:'Intelligence Service &bull; 1978',
+      branch:'INTELLIGENCE', era:'1970s', w:5, c:3, min:11,
+      note:'Cleared to a level he still will not name out loud on a stage.',
+      says:'“I am not going to say the name of the program and I am not going to describe the collection method, because I am still bound and I intend to stay bound. What I will say, under my own name, is that traffic of this kind was routine, that it was categorized, that it had its own handling caveat, and that the caveat is the reason none of you have ever seen any of it.”',
+      land:'He declines to say three things and the room believes the fourth.' },
+
+    { id:'range81', role:'Range Safety Technician', org:'Aerospace Contractor &bull; 1981',
+      branch:'AEROSPACE', era:'1980s', w:4, c:5, min:12, risk:true,
+      note:'EXTRAORDINARY: says there is film. Says he was the one who spooled it.',
+      says:'“There is film. I threaded the camera, I broke the seal on the can, and I watched an object hold station off a vehicle in powered flight for four and a half seconds at a closure rate I am not able to explain. Two hours later a man I had never met signed for the can and I never saw it again. I can give you the can number.”',
+      land:'He offers a can number. Offering a number is not how a liar ends a sentence.' },
+
+    { id:'secpol75', role:'Security Police Patrolman', org:'U.S. Air Force &bull; 1975',
+      branch:'USAF', era:'1970s', w:3, c:5, min:11, risk:true,
+      note:'EXTRAORDINARY: close visual, weapons storage perimeter, fifty yards.',
+      says:'“I was twenty years old with a rifle I had been trained to use and I was the closest man to it. Fifty yards. I am not going to tell this room it was a craft from somewhere, because I do not know that. I am going to tell you it was on my perimeter, it was silent, it was bigger than the hangar behind it, and every man on that fence line is on the sign-in sheet outside.”',
+      land:'He refuses to draw the conclusion for you, which is exactly why it lands.' },
+
+    { id:'engineer92', role:'Program Engineer', org:'Defense Contractor &bull; 1992',
+      branch:'AEROSPACE', era:'1990s', w:4, c:5, min:13, risk:true,
+      note:'EXTRAORDINARY: describes a materials program with no customer on the paperwork.',
+      says:'“I was read into a compartment to solve a fabrication problem on material I was not permitted to ask the origin of. There was no customer on the paperwork. There is no customer on that paperwork today. I signed things. I am aware of what I am doing by standing here, and I have brought my own attorney, and she is sitting in the second row.”',
+      land:'He brought a lawyer. Bringing a lawyer is a costly, boring, extremely credible act.' },
+
+    { id:'deck58', role:'Deck Officer', org:'Merchant Marine &bull; 1958',
+      branch:'MARITIME', era:'1950s', w:3, c:2, min:7,
+      note:'Ship’s log, North Atlantic, four names on the entry.',
+      says:'“I have kept a log since I was nineteen years old and a log is a legal document. On the night in question I wrote what four of us watched come out of the water and go up, and I signed it, and the master countersigned it, and that book went ashore with the ship. It is the oldest thing anybody is going to say to you today.”',
+      land:'The oldest entry in the room, and it is a legal document.' },
+
+    { id:'tower96', role:'Tower Chief', org:'Municipal Airport &bull; 1996',
+      branch:'CIVIL AIR', era:'1990s', w:3, c:3, min:7,
+      note:'Grounded traffic for nine minutes and had to write down why.',
+      says:'“I stopped departures for nine minutes because there was something over the threshold of runway two-seven and I am not in the business of launching aircraft into things I cannot identify. Stopping departures generates a form. The form asks for a reason. I wrote the reason down. That form is the only thing I have and it is the only thing I have ever needed.”',
+      land:'A bureaucratic form, filed for the most boring possible reason: safety.' }
+  ];
+  const BY = {};
+  WITNESSES.forEach(w => { BY[w.id] = w; });
+
+  /* ============================================================
+     THE PRESS ROW — nobody here is hostile. They are tired.
+     ============================================================ */
+  const REPORTERS = [
+    { id:'wire', name:'The Wire Desk', outlet:'Back table, laptop open', eng:34,
+      up:[
+        'The wire desk stops eating and starts typing. Four lines, no adjectives, filed before the witness has sat down. That is the highest compliment available in this building.',
+        'A hand goes up at the back table and does not go up to ask a question &mdash; it goes up to signal the desk that this one is moving. The wire is now covering an event instead of attending one.',
+        'The wire desk asks for the spelling of a rank. Nobody asks for a spelling on a story they intend to spike.'
+      ],
+      flat:[
+        'The wire desk has written eleven words and deleted nine of them. It is not hostility. It is a man deciding whether his editor will let him have four inches.',
+        'Back table, no movement. The wire files on verifiable nouns and it has not been handed one for a while.',
+        'The wire desk checks the clock against the deadline and does the arithmetic that every room in this town is secretly running.'
+      ],
+      down:[
+        'The wire desk closes the laptop halfway. Not all the way. Halfway is worse &mdash; halfway is a man keeping his options open about whether you happened.',
+        'The wire reporter writes one word on a legal pad, underlines it twice, and it is not a good word.',
+        'The back table starts a quiet conversation about a different story. You have lost the wire, and the wire is the only desk in here that reaches every other room in the country.'
+      ] },
+
+    { id:'trade', name:'Defense Trade Weekly', outlet:'Front row, reads the tail numbers', eng:44,
+      up:[
+        'The trade reporter writes down a unit designation and circles it. He is going to call that unit this afternoon and he is going to get somebody on the phone, which is more than anybody else in here can do.',
+        'Defense Trade nods once at a piece of radar procedure. He is the only person in the room qualified to catch it if you got that wrong, and you did not get it wrong.',
+        'The trade desk asks whether the log went to a wing or a numbered air force. It is the most boring question asked all morning and it is the one that means you are being taken seriously.'
+      ],
+      flat:[
+        'Defense Trade is waiting for a document number. Everything else in his notebook is a placeholder.',
+        'The trade reporter has heard nine versions of this and covered two, and he is politely reserving judgment in the specific way of a man who has been burned by a press release.',
+        'Defense Trade checks a name against a directory in his lap. The directory is thicker than your program.'
+      ],
+      down:[
+        'Defense Trade puts his pen down. In eleven years nobody has ever seen him put the pen down and pick it back up.',
+        'The trade desk writes “unsourced” in the margin. He is not being unkind. He is being a trade reporter, which is the same thing on a deadline.',
+        'Defense Trade leans to the man beside him and says something short. Whatever it was, the man beside him also stops writing.'
+      ] },
+
+    { id:'metro', name:'Metro Desk', outlet:'City paper, filing by four', eng:26,
+      up:[
+        'Metro has found a lede and you can see the exact second she finds it. Her posture changes before her pen does.',
+        'The metro reporter asks how many of the witnesses live in the city. She is going to run this local, which is not the coverage you wanted and is far better than the coverage you were getting.',
+        'Metro turns to a clean page. A clean page is a bigger event in that notebook than anything you have said out loud.'
+      ],
+      flat:[
+        'Metro is drawing a box around the word “radar” and has been for some time. Metro does not have a radar reader.',
+        'The city desk is here because it is four blocks away and there was coffee. She is not cynical. She is on her third assignment today and this is the second one.',
+        'Metro glances at the clock. Metro files at four. Everything in Metro’s life is a function of filing at four.'
+      ],
+      down:[
+        'Metro writes “color piece?” and underlines the question mark. That is what it looks like when a story becomes a room description.',
+        'The metro reporter starts sketching the room instead of the testimony. Sketching the room is the last thing that happens before packing the bag.',
+        'Metro has switched to her other story. She has two today and you are now the smaller one.'
+      ] },
+
+    { id:'science', name:'Science Correspondent', outlet:'Aisle seat, brought sources', eng:30,
+      up:[
+        'The science desk writes down an instrument type, not an adjective. That is the entire difference between coverage and a paragraph.',
+        'Science asks whether the tape was ever transcribed and by whom. He is not trying to trap anybody. He is trying to find the version of this he is allowed to print.',
+        'The science correspondent underlines “I do not know what it was.” Of everything said this morning, that is the sentence he trusts most, and he is right to.'
+      ],
+      flat:[
+        'Science is reading ahead in the program to see whether anyone is bringing an instrument reading. So far: a great many careers and not much telemetry.',
+        'The science desk is entirely willing to be convinced and has not yet been handed the thing that would do it.',
+        'Science taps a pen against a folder of his own clippings. He has written the debunk twice before. He would genuinely prefer not to write it a third time.'
+      ],
+      down:[
+        'The science correspondent writes “extraordinary claims” in the margin, and the awful part is that he is applying the standard correctly.',
+        'Science has stopped taking notes and started taking notes about the audience, which is how a science desk says no.',
+        'The science reporter sighs the specific sigh of a man who wanted this to hold up and has just watched it not hold up.'
+      ] },
+
+    { id:'stringer', name:'Freelance', outlet:'Standing in the hall, no chair', eng:20,
+      up:[
+        'The freelancer in the hall has stopped counting chairs and started writing. Nobody has ever seen this happen before.',
+        'The stringer asks whether the sign-in sheet by the door is a public document. It is. He photographs it. That sheet will outlive every recording made today.',
+        'The hall freelancer stops a witness on the way out and gets a phone number. He has no outlet, no budget and no chair, and he is currently doing the best reporting in the building.'
+      ],
+      flat:[
+        'The freelancer wants it on the record that the coffee is complimentary, the pastry is not, and that the distinction is unmarked.',
+        'The stringer has counted the folding chairs. There are ninety-four. He has written down ninety-four. He does not know why yet either.',
+        'The hall freelancer is timing the program against the printed schedule and is nine minutes ahead of it, and appears to be the only person in the building aware of this.',
+        'The freelancer asks the front desk who is paying for the room. The front desk says the room was booked at the standard rate. He writes that down like it is a confession.'
+      ],
+      down:[
+        'The stringer has given up on the testimony and is now interviewing the man operating the microphone, who is having a much better morning than you are.',
+        'The freelancer notes that the podium is on a riser rented separately from the riser skirt, and that somebody paid for both, and that nobody in the room has asked who.',
+        'The hall freelancer writes “ninety-four chairs, forty-one people” and circles it. It is the only number anybody has confirmed all morning.'
+      ] }
+  ];
+
+  const BOARD_NOTES = [
+    'BOARD: sequencing is not spin. Sequencing is deciding who a stranger meets first.',
+    'BOARD: credentials open a door. Claims walk through it. Not the other way round.',
+    'BOARD: the wire files on nouns. Give the room nouns.',
+    'BOARD: two men from the same service back to back reads as one man twice.',
+    'BOARD: nobody in this room is being paid to be here, including the witnesses.',
+    'BOARD: the extraordinary testimony is not weaker. It is heavier. Heavy things go on top of foundations.',
+    'BOARD: a program that runs long is a program the wire leaves early.',
+    'BOARD: the questions at the end are not the risk. Having no time for them is the risk.',
+    'BOARD: every witness on this list drove or flew here on their own money.',
+    'BOARD: the room does not owe you belief. It owes you attention, and only for eighty-four minutes.'
+  ];
+
+  /* ============================================================
+     STATE
+     ============================================================ */
+  let cred, order, phase, idx, seated, awarded, ended,
+      timer = null, pending = null, sel = -1, hadQA = false, distinct = 0;
+
+  function award(key, label){
+    if (awarded[key]) return;
+    awarded[key] = true;
+    Arcade.toast(label);
+  }
+
+  function booked(){
+    let m = 0;
+    order.forEach(id => { if (id) m += BY[id].min; });
+    return m;
+  }
+  function count(){
+    let n = 0;
+    order.forEach(id => { if (id) n++; });
+    return n;
+  }
+  function reserve(){ return FLOOR - booked(); }
+
+  function reset(){
+    cred = START_CRED;
+    order = new Array(SLOTS).fill(null);
+    phase = 'book'; idx = 0; seated = []; awarded = {}; ended = false;
+    sel = -1; hadQA = false; distinct = 0;
+    clearTimeout(timer); timer = null; pending = null;
+    REPORTERS.forEach((r, i) => { r.eng = [34, 44, 26, 30, 20][i]; r.chip = 'Seated'; });
+    $('podium').classList.remove('on');
+    $('roster').style.display = '';
+    $('rosterhead').style.display = '';
+    $('pod-says').innerHTML = '&nbsp;';
+    $('pod-verdict').innerHTML = '&nbsp;';
+    $('pressline').innerHTML = '&nbsp;';
+    $('board').innerHTML = '&nbsp;';
+    $('ctlbar').style.display = '';
+    buildRail();
+    renderAll();
+  }
+
+  /* ---------- rendering ---------- */
+  function buildRail(){
+    const rail = $('rail');
+    rail.innerHTML = '';
+    for (let i = 0; i < SLOTS; i++) rail.appendChild(document.createElement('i'));
+  }
+  function markRail(i, cls){
+    const el = $('rail').children[i];
+    if (el) el.className = cls;
+  }
+
+  function pips(n){
+    let s = '';
+    for (let i = 0; i < 5; i++) s += (i < n ? '▮' : '▯');
+    return s;
+  }
+
+  function renderHud(){
+    const c = Math.max(0, Math.min(MAX_CRED, Math.round(cred)));
+    $('credfill').style.width = c + '%';
+    $('credlab').textContent = c + ' / 100';
+    $('credfill').style.background = c >= 78
+      ? 'linear-gradient(90deg,#2E7A55,var(--neon-green))'
+      : (c <= 28 ? 'linear-gradient(90deg,#5A1020,var(--neon-pink))'
+                 : 'linear-gradient(90deg,#5C4718,var(--brass))');
+    const bk = booked();
+    $('timefill').style.width = Math.min(100, (bk / FLOOR) * 100) + '%';
+    $('timelab').textContent = bk + ' / ' + FLOOR + ' min';
+    $('seatpill').textContent = 'Seated: ' + count() + ' / ' + SLOTS;
+    const res = reserve();
+    const qp = $('qapill');
+    qp.textContent = 'Q&A: ' + res + ' min free';
+    qp.classList.toggle('no', res < QA_MIN);
+    $('orderlab').textContent = count() + ' booked';
+    let left = 0;
+    WITNESSES.forEach(w => { if (order.indexOf(w.id) < 0) left++; });
+    $('cuthead').textContent = left + ' waiting';
+  }
+
+  function renderSlots(){
+    const box = $('slots');
+    box.innerHTML = '';
+    for (let i = 0; i < SLOTS; i++){
+      const id = order[i];
+      const row = document.createElement('div');
+      row.className = 'slot' + (id ? '' : ' empty') + (sel === i ? ' sel' : '');
+      row.dataset.i = String(i);
+
+      if (phase !== 'book' && id){
+        let pos = -1;
+        for (let k = 0; k < seated.length; k++) if (seated[k].id === id) pos = k;
+        if (pos >= 0 && pos === idx) row.className = 'slot live';
+        else if (pos >= 0 && pos < idx) row.className = 'slot done';
+      }
+
+      if (id){
+        const w = BY[id];
+        row.innerHTML =
+          '<div class="num">' + (i + 1) + '</div>' +
+          '<div class="body"><div class="r">' + w.role + (w.risk ? '<span class="risk">Extraordinary</span>' : '') + '</div>' +
+          '<div class="m">' + w.org.replace('&bull;', '·') + ' &nbsp;·&nbsp; ' + w.min + ' min</div></div>' +
+          (phase === 'book'
+            ? '<div class="ctl">' +
+              '<button type="button" data-act="up" ' + (i === 0 ? 'disabled' : '') + '>▲</button>' +
+              '<button type="button" data-act="down" ' + (i === SLOTS - 1 ? 'disabled' : '') + '>▼</button>' +
+              '<button type="button" data-act="cut">✕</button>' +
+              '</div>'
+            : '');
+      } else {
+        row.innerHTML =
+          '<div class="num">' + (i + 1) + '</div>' +
+          '<div class="body"><div class="ph">' + (phase === 'book' ? 'Empty — tap a witness' : 'Not used') + '</div></div>';
+      }
+
+      if (phase === 'book'){
+        row.addEventListener('click', ev => {
+          const act = ev.target && ev.target.dataset ? ev.target.dataset.act : null;
+          if (act === 'up'){ ev.stopPropagation(); move(i, -1); return; }
+          if (act === 'down'){ ev.stopPropagation(); move(i, 1); return; }
+          if (act === 'cut'){ ev.stopPropagation(); cut(i); return; }
+          selectSlot(i);
+        });
+        row.addEventListener('dragover', ev => { ev.preventDefault(); row.classList.add('drop'); });
+        row.addEventListener('dragleave', () => row.classList.remove('drop'));
+        row.addEventListener('drop', ev => {
+          ev.preventDefault();
+          row.classList.remove('drop');
+          const wid = ev.dataTransfer ? ev.dataTransfer.getData('text/plain') : '';
+          if (wid && BY[wid]) place(wid, i);
+        });
+      }
+      box.appendChild(row);
+    }
+  }
+
+  function renderRoster(){
+    const box = $('roster');
+    box.innerHTML = '';
+    WITNESSES.forEach(w => {
+      const b = document.createElement('button');
+      const isSeated = order.indexOf(w.id) >= 0;
+      b.type = 'button';
+      b.className = 'wit' + (w.risk ? ' risky' : '') + (isSeated ? ' seated' : '');
+      b.draggable = !isSeated && phase === 'book';
+      b.disabled = isSeated || phase !== 'book';
+      b.innerHTML =
+        (w.risk ? '<span class="flag">Risk</span>' : '') +
+        '<div class="r">' + w.role + '</div>' +
+        '<div class="o">' + w.org + '</div>' +
+        '<div class="st"><span>Cred <span class="pips">' + pips(w.w) + '</span></span>' +
+        '<span>Claim <span class="pips claim">' + pips(w.c) + '</span></span></div>' +
+        '<div class="min">' + w.min + ' min at the podium</div>';
+      b.title = w.note.replace(/<[^>]+>/g, '');
+      b.addEventListener('click', () => tapWitness(w));
+      b.addEventListener('dragstart', ev => {
+        if (ev.dataTransfer) ev.dataTransfer.setData('text/plain', w.id);
+      });
+      box.appendChild(b);
+    });
+    $('runBtn').disabled = phase !== 'book' || count() < MIN_SEATED;
+    $('clearBtn').disabled = phase !== 'book';
+  }
+
+  function renderPress(hotId){
+    const box = $('press');
+    box.innerHTML = '';
+    REPORTERS.forEach(r => {
+      const d = document.createElement('div');
+      d.className = 'rep' + (hotId === r.id ? ' hot' : '');
+      const e = Math.max(0, Math.min(100, Math.round(r.eng)));
+      const col = e >= 72 ? '#3DFC8A' : (e >= 45 ? '#C9A24B' : (e >= 24 ? '#4A5C6E' : '#FF3D8A'));
+      d.innerHTML =
+        '<div class="rn">' + r.name + '</div>' +
+        '<div class="ro">' + r.outlet + '</div>' +
+        '<div class="rt"><div class="rf" style="width:' + e + '%;background:' + col + '"></div></div>' +
+        '<div class="rc">' + (r.chip || 'Seated') + '</div>';
+      box.appendChild(d);
+    });
+  }
+
+  function renderAll(hotId){
+    renderHud();
+    renderSlots();
+    renderRoster();
+    renderPress(hotId);
+  }
+
+  /* ---------- booking ---------- */
+  function note(msg, bad){
+    $('board').textContent = msg;
+    if (bad){ Juice.sfx('bad'); Juice.shake(5); }
+  }
+
+  function place(id, slotIdx){
+    if (phase !== 'book') return;
+    if (order.indexOf(id) >= 0) return;
+    const w = BY[id];
+    if (booked() + w.min > FLOOR){
+      note('BOARD: that does not fit. Floor time is ' + FLOOR + ' minutes and it is not negotiable. Cut somebody.', true);
+      return;
+    }
+    let i = slotIdx;
+    if (i == null || i < 0 || order[i]) i = order.indexOf(null);
+    if (i < 0){
+      note('BOARD: eight slots. All eight are full. Somebody has to be cut, and you have to be the one who does it.', true);
+      return;
+    }
+    order[i] = id;
+    sel = -1;
+    Juice.sfx('click');
+    Juice.buzz(8);
+    renderAll();
+  }
+
+  function cut(i){
+    if (phase !== 'book' || !order[i]) return;
+    order[i] = null;
+    Juice.sfx('blip');
+    renderAll();
+  }
+
+  function move(i, dir){
+    const j = i + dir;
+    if (phase !== 'book' || j < 0 || j >= SLOTS) return;
+    const t = order[i]; order[i] = order[j]; order[j] = t;
+    sel = -1;
+    Juice.sfx('tick');
+    renderAll();
+  }
+
+  function selectSlot(i){
+    if (phase !== 'book') return;
+    if (sel === i){ sel = -1; renderSlots(); return; }
+    if (sel >= 0){
+      const t = order[sel]; order[sel] = order[i]; order[i] = t;
+      sel = -1;
+      Juice.sfx('tick');
+      renderAll();
+      return;
+    }
+    if (order[i]){ sel = i; Juice.sfx('blip'); renderSlots(); }
+  }
+
+  function tapWitness(w){
+    if (phase !== 'book') return;
+    if (sel >= 0 && !order[sel]){ place(w.id, sel); return; }
+    place(w.id, null);
+  }
+
+  $('clearBtn').addEventListener('click', () => {
+    if (phase !== 'book') return;
+    order = new Array(SLOTS).fill(null);
+    sel = -1;
+    Juice.sfx('whoosh');
+    note('BOARD: order cleared. Everybody back in the hall.');
+    renderAll();
+  });
+
+  /* ---------- the run ---------- */
+  function schedule(fn, ms){
+    clearTimeout(timer);
+    pending = fn;
+    timer = setTimeout(() => { pending = null; fn(); }, ms);
+  }
+  function skip(){
+    if (!pending) return;
+    const f = pending; pending = null;
+    clearTimeout(timer);
+    f();
+  }
+  $('podium').addEventListener('click', skip);
+
+  $('runBtn').addEventListener('click', () => {
+    if (phase !== 'book' || count() < MIN_SEATED) return;
+    seated = order.filter(Boolean).map(id => BY[id]);
+    phase = 'run'; idx = 0;
+    hadQA = reserve() >= QA_MIN;
+    if (hadQA) award('qa', '🏆 LEFT TIME FOR QUESTIONS');
+    if (seated.length >= 2 && seated[0].w >= 4 && seated[0].c <= 2 && seated[1].w >= 4 && seated[1].c <= 2)
+      award('lead', '🏆 LED WITH CREDENTIALS');
+    const brs = {};
+    seated.forEach(w => { brs[w.branch] = 1; });
+    distinct = Object.keys(brs).length;
+    if (distinct >= 6) award('breadth', '🏆 BREADTH OF SERVICE');
+
+    $('roster').style.display = 'none';
+    $('rosterhead').style.display = 'none';
+    $('podium').classList.add('on');
+    $('ctlbar').style.display = 'none';
+    Juice.sfx('coin');
+    Juice.flash('#C9A24B', .18);
+    renderAll();
+    stage.scrollIntoView({ behavior:'smooth', block:'start' });
+    schedule(speak, 700);
+  });
+
+  function speak(){
+    if (idx >= seated.length){ questions(); return; }
+    const w = seated[idx];
+    $('mic').textContent = String(idx + 1);
+    $('pod-role').innerHTML = w.role + '<br><span style="color:#9C8A64;font-size:.6rem;letter-spacing:.14em">' + w.org + '</span>';
+    $('pod-stamp').innerHTML = 'Slot ' + (idx + 1) + ' of ' + seated.length + '<br>' + w.min + ' min';
+    $('pod-says').innerHTML = w.says;
+    $('pod-verdict').innerHTML = '&nbsp;';
+    $('board').textContent = BOARD_NOTES[idx % BOARD_NOTES.length];
+    markRail(idx, 'now');
+    renderSlots();
+    Juice.sfx('blip');
+    schedule(resolve, 2400);
+  }
+
+  function resolve(){
+    const w = seated[idx];
+    const n = seated.length;
+    const p = n > 1 ? idx / (n - 1) : 0.5;
+    const prev = idx > 0 ? seated[idx - 1] : null;
+
+    let raw = w.w * 1.4;
+    raw += w.c * (-1.4 + 2.8 * p);
+
+    const bits = [];
+    if (idx === 0 && w.w >= 5 && w.c <= 2){ raw += 4; bits.push('The room settles. You opened on a resume, not a claim, and a settled room is a room that hears the second witness.'); }
+    if (idx === 0 && w.c >= 4){ bits.push('You opened on the biggest thing you had. There is nowhere to go from here but sideways, and the room knows it before you do.'); }
+
+    if (prev && prev.branch === w.branch){ raw -= 5; bits.push('Two from <b>' + w.branch + '</b> back to back. Two men from one service reads to a stranger as one man saying it twice.'); }
+    if (prev && prev.era === w.era && prev.branch !== w.branch){ raw -= 2.5; bits.push('Same decade again. The room starts to wonder whether this only ever happened in the ' + w.era + '.'); }
+
+    let riskTag = '';
+    if (w.risk){
+      if (p <= 0.34){
+        raw -= 13;
+        riskTag = 'early';
+        bits.push('<b>Too early.</b> Nothing has been banked yet. The most extraordinary thing anybody will say today has just been said to a room that has no reason to carry it, and three pens go down at once.');
+      } else if (p < 0.6){
+        raw -= 4;
+        riskTag = 'mid';
+        bits.push('It lands in the soft middle of the program. Not fatal. Not placed.');
+      } else if (cred >= BANKED){
+        raw += 11;
+        riskTag = 'late';
+        bits.push('<b>And now it lands.</b> Six people with unimpeachable records have spent an hour building the floor this sentence is standing on, and the room does not flinch, because the room has already decided these are not people who make things up.');
+      } else {
+        raw += 1;
+        riskTag = 'unbanked';
+        bits.push('It is heard politely and it is not believed, because nothing before it earned the right to ask. The testimony was never the problem. The foundation was.');
+      }
+    }
+
+    if (prev){
+      if (w.c >= prev.c){ raw += 1.5; }
+      else { raw -= 1.5; bits.push('The program steps backwards &mdash; a smaller claim after a larger one, and a room reads a downshift as a retreat.'); }
+    }
+
+    const mult = raw > 0 ? Math.max(0.15, Math.min(1, (100 - cred) / 55)) : 1;
+    let delta = raw * mult;
+    delta = Math.round(delta * 10) / 10;
+    cred = Math.max(0, Math.min(MAX_CRED, cred + delta));
+
+    /* press reaction */
+    const mood = delta >= 4 ? 'up' : (delta <= -2.5 ? 'down' : 'flat');
+    const rep = REPORTERS[(idx * 2 + (w.risk ? 4 : 1)) % REPORTERS.length];
+    const pool = rep[mood];
+    const line = pool[(idx + w.min) % pool.length];
+    REPORTERS.forEach(r => {
+      const pull = r.id === rep.id ? 1.6 : 0.85;
+      r.eng = Math.max(0, Math.min(100, r.eng + delta * pull * 1.5));
+      r.chip = r.eng >= 80 ? 'Filing' : (r.eng >= 58 ? 'Taking notes' : (r.eng >= 34 ? 'Listening' : (r.eng >= 15 ? 'Skeptical' : 'Packing up')));
+    });
+    if (rep.id === 'stringer' && mood === 'flat') rep.chip = 'Counting chairs';
+    $('pressline').innerHTML = '<b>' + rep.name + ', ' + rep.outlet.toLowerCase() + ':</b> ' + line;
+
+    const sign = delta > 0 ? '<span class="up tag">+' + delta + ' credibility</span> '
+               : (delta < 0 ? '<span class="dn tag">' + delta + ' credibility</span> '
+                            : '<span class="flat tag">no change</span> ');
+    $('pod-verdict').innerHTML = sign + '<b>' + w.land + '</b> ' + bits.join(' ');
+
+    const r = $('podium').getBoundingClientRect();
+    const s = stage.getBoundingClientRect();
+    const px = r.left - s.left + r.width / 2, py = r.top - s.top + 40;
+
+    if (delta >= 8){
+      Juice.reward(px, py, { text:'THE ROOM LEANS IN', color:'#C9A24B', sound:'good', count:26 });
+      Juice.burst(px, py, { color:'#FFD23F', count:16, speed:4.4, gravity:.015 });
+      Juice.flash('#C9A24B', .16);
+      Juice.hitstop(70);
+      markRail(idx, 'big');
+    } else if (delta > 0){
+      Juice.reward(px, py, { text:'+' + delta, color:'#3DFC8A', sound:'pickup', count:14 });
+      markRail(idx, 'up');
+    } else if (delta <= -6){
+      Juice.impact(px, py, { text:String(delta), color:'#FF3D8A', power:11, sound:'bad', count:22 });
+      Juice.flash('#FF3D8A', .14);
+      markRail(idx, 'dn');
+    } else if (delta < 0){
+      Juice.impact(px, py, { text:String(delta), color:'#FF3D8A', power:6, sound:'thud', count:12 });
+      markRail(idx, 'dn');
+    } else {
+      Juice.sfx('tick');
+      markRail(idx, '');
+    }
+    if (riskTag === 'late'){
+      Juice.text(px, py - 34, 'IT LANDS', { color:'#FFD23F', size:26 });
+      Juice.shake(9);
+    }
+
+    idx++;
+    renderAll(rep.id);
+    schedule(speak, 2600);
+  }
+
+  function questions(){
+    phase = 'qa';
+    $('mic').textContent = '?';
+    $('pod-role').innerHTML = 'Questions From The Floor';
+    $('pod-stamp').innerHTML = 'Final segment<br>' + reserve() + ' min left';
+    renderSlots();
+
+    const r = $('podium').getBoundingClientRect();
+    const s = stage.getBoundingClientRect();
+    const px = r.left - s.left + r.width / 2, py = r.top - s.top + 40;
+
+    let d;
+    if (hadQA){
+      d = Math.round(6 * Math.max(0.3, Math.min(1, (100 - cred) / 55)) * 10) / 10 + 2;
+      cred = Math.min(MAX_CRED, cred + d);
+      $('pod-says').innerHTML = '“We have time. Go ahead.”<br><br>Hands go up all over the room and the witnesses stay at the table for forty minutes past the schedule, and every single one of them answers every single question, including the stupid ones, including the hostile ones, including the third time somebody asks the radar operator whether he had been drinking.';
+      $('pod-verdict').innerHTML = '<span class="up tag">+' + d + ' credibility</span> <b>You left them time.</b> A panel that takes questions is a panel that is not selling anything, and a press corps can smell the difference from the back of a hall. Two reporters who had already packed their bags sit back down.';
+      $('pressline').innerHTML = '<b>The wire desk, back table:</b> The wire files at 12:04. Eleven paragraphs. Not the front page and never was going to be &mdash; but eleven paragraphs on a wire is every newsroom in the country holding a piece of paper with these names on it.';
+      Juice.reward(px, py, { text:'QUESTIONS TAKEN', color:'#FFD23F', sound:'win', count:32 });
+      Juice.flash('#C9A24B', .2);
+      REPORTERS.forEach(rp => { rp.eng = Math.min(100, rp.eng + 12); rp.chip = rp.eng >= 70 ? 'Filing' : 'Taking notes'; });
+    } else {
+      d = -10;
+      cred = Math.max(0, cred + d);
+      $('pod-says').innerHTML = '“I am afraid that is all the time we—”<br><br>Twenty-two hands are already up. The room booked the hall until noon and the program has just used every minute of it, and the moderator is saying the word “unfortunately” into a live microphone.';
+      $('pod-verdict').innerHTML = '<span class="dn tag">' + d + ' credibility</span> <b>The room turns.</b> Not on the testimony &mdash; on the format. A panel that will not take questions gets written up as an announcement, and an announcement from people nobody is allowed to question is the exact shape of the thing every reporter in here is trained to distrust.';
+      $('pressline').innerHTML = '<b>The freelancer, standing in the hall:</b> Ninety-four chairs, forty-one people, and not one question taken. He writes it down. It is the only number anybody confirmed all morning and it is going to be the lede.';
+      Juice.impact(px, py, { text:'NO TIME LEFT', color:'#FF3D8A', power:13, sound:'alarm', count:26 });
+      Juice.flash('#FF3D8A', .22);
+      REPORTERS.forEach(rp => { rp.eng = Math.max(0, rp.eng - 16); rp.chip = rp.eng >= 55 ? 'Taking notes' : 'Packing up'; });
+    }
+
+    if (distinct >= 5){
+      const b = (distinct - 3) * 2;
+      cred = Math.min(MAX_CRED, cred + b);
+      $('board').textContent = 'BOARD: ' + distinct + ' different services represented. Breadth bonus +' + b + '. Nobody can call this one unit with one grievance.';
+    } else {
+      $('board').textContent = 'BOARD: only ' + distinct + ' services on that stage. A narrow roster reads as a narrow problem.';
+    }
+
+    renderAll();
+    schedule(finish, 3400);
+  }
+
+  /* ============================================================
+     ENDINGS
+     ============================================================ */
+  function finish(){
+    if (ended) return;
+    ended = true;
+    phase = 'done';
+    clearTimeout(timer); pending = null;
+
+    const c = Math.round(cred);
+    const n = seated.length;
+    const score = c + n;
+    const won = c >= 70;
+
+    if (c >= 85) award('quiet', '🏆 THE ROOM WENT QUIET');
+
+    let title, lines;
+
+    const CLOSER = 'REVIEW BOARD NOTE, FILED DRY, AS IS OUR CUSTOM: <b>admission to that press conference was free.</b>';
+
+    if (c >= 85){
+      Juice.sfx('win');
+      Juice.flash('#C9A24B', .3);
+      Juice.burst(stage.clientWidth / 2, stage.clientHeight * 0.35,
+        { color:'#C9A24B', count:48, speed:6, gravity:.02 });
+      title = 'The Room Went Quiet.';
+      lines = [
+        'It happens somewhere in the last twenty minutes and nobody can point to the exact sentence. The shuffling stops. The side conversation at the back table stops. <b>A room that came in tired stops being tired,</b> which is a thing you cannot buy, book, or schedule, and which happens perhaps twice a decade in that building.',
+        'The wire moves at 12:04. Eleven paragraphs, no adjectives, every rank spelled correctly. Defense Trade files nine hundred words and starts making calls to the units. Metro runs it local with three of the names, because three of them live here, because these are people with houses and mortgages and neighbours who are going to read this over breakfast.',
+        'And that was always the whole thing. Not the footage, not the file, not the program with no customer on the paperwork. <b>The names.</b> Every one of them stood up and said a name and a rank and a year, out loud, into a microphone, in a room with cameras, knowing precisely what it costs and paying it anyway.',
+        '<b>Twenty people with real careers stood up under their own names on a Wednesday and said what they saw &mdash; and no amount of merchandising afterward can take that Wednesday back.</b>',
+        'Not the retreats. Not the tiers. Not the folding chair, and this board has more to say about the folding chair than any board in history. None of it reaches backwards. That afternoon is sealed. It happened, it is on tape, the transcripts exist, and the people in that room did the single hardest thing this entire field ever asks of anybody, which is to be <em>identifiable.</em>',
+        'They did not ask you to believe them. Most of them went out of their way to say the opposite &mdash; <em>I do not know what it was.</em> They asked to be allowed to say it under their own name and have somebody write it down.',
+        'Somebody wrote it down.',
+        CLOSER
+      ];
+    } else if (c >= 70){
+      Juice.sfx('good');
+      Juice.flash('#3DFC8A', .18);
+      title = 'The Wire Moved.';
+      lines = [
+        'It is not the front page and it was never going to be the front page. <b>But the wire moved,</b> and a wire story is not an event &mdash; it is a piece of paper that lands on four hundred desks in every state, and some of those desks keep it.',
+        'You got the sequencing mostly right. The credentials went first, the room stayed in its seats, and the heavy testimony went late enough that it was carried instead of dropped. There is a version of this morning where you learn nothing and there is a version where you learn it in the wrong order; you did neither.',
+        'Some of it slid. A program has a rhythm and yours had a flat stretch in it, and a flat stretch in a room like that is a reporter deciding to check their other story. <b>Attention is the only currency in that hall and it is not refundable.</b>',
+        'The witnesses do not care about any of this. They came, they said it, they gave their names, and several of them will get a phone call this week from somebody at their old command asking what exactly they thought they were doing.',
+        '<b>Twenty people with real careers stood up under their own names on a Wednesday and said what they saw &mdash; and no amount of merchandising afterward can take that Wednesday back.</b>',
+        'Run it again and tighten the middle. The order is the whole job.',
+        CLOSER
+      ];
+    } else if (c >= 50){
+      Juice.sfx('bad');
+      Juice.shake(9);
+      title = 'Two Outlets Ran It.';
+      lines = [
+        'Defense Trade ran nine hundred words because Defense Trade runs everything with a unit designation in it. The city paper ran four paragraphs and a photograph of the room, which is the specific coverage you get when the room was more interesting than the program.',
+        'The wire did not move. Nobody in that back table was being unfair &mdash; the wire files on nouns, and somewhere in your running order the nouns ran out and the claims kept going. <b>An extraordinary claim in a room with no floor under it is not testimony. It is a sentence.</b>',
+        'The people on that stage were exactly as credible at noon as they were at ten. Nothing about them changed. <b>Only the order changed,</b> which is an unbearable thing to be told and is also the entire lesson of this cabinet.',
+        'They still did it. That is the part no scoring system on this website is qualified to grade: every one of them still stood up and gave a name.',
+        '<b>Twenty people with real careers stood up under their own names on a Wednesday and said what they saw &mdash; and no amount of merchandising afterward can take that Wednesday back.</b>',
+        CLOSER
+      ];
+    } else {
+      Juice.sfx('lose');
+      Juice.shake(13);
+      Juice.flash('#FF3D8A', .3);
+      title = 'It Ran In The Weird Section.';
+      lines = [
+        'One piece, four hundred words, filed under the heading newspapers reserve for county fairs and haunted houses. There is a photograph of the folding chairs. There is not a photograph of a single witness.',
+        'Here is the autopsy, and it is not the one you want. <b>Nobody in that press row was hostile.</b> Not one. They were tired, and they were on a deadline, and they had covered nine of these, and a tired room on a deadline is not persuaded &mdash; it is <em>sequenced.</em> You had the material. The material was never the problem.',
+        'The heaviest testimony went out before the floor was built, and a room asked to carry a weight it has no reason to carry does not argue. It simply stops writing, quietly, at the back, and you cannot hear it happen.',
+        'And here is the part this review board would like on the record in bold: <b>every person on that stage still went through with it.</b> They came on their own money, they gave their full names and ranks into a live microphone, and several of them are going to pay for it in ways this game does not model.',
+        '<b>Twenty people with real careers stood up under their own names on a Wednesday and said what they saw &mdash; and no amount of merchandising afterward can take that Wednesday back.</b>',
+        'Run it again. They will all come back. They always came back. That was never the part that failed.',
+        CLOSER
+      ];
+    }
+
+    setTimeout(() => {
+      Arcade.gameOver({
+        won: won,
+        title: title,
+        score: score,
+        accent: c >= 85 ? '#C9A24B' : (won ? '#3DFC8A' : '#FF3D8A'),
+        lines: ['<span class="tag flat">CREDIBILITY ' + c + '</span> <span class="tag up">' + n + ' SEATED</span>'].concat(lines),
+        onRetry: () => {
+          reset();
+          $('briefing').style.display = 'flex';
+          stage.scrollIntoView({ behavior:'smooth', block:'start' });
+        },
+        links: [
+          { label:'The Greer wing', href:'index.html' },
+          { label:'Visit the shrine', href:'../../shrines/index.html#steven-greer' }
+        ]
+      });
+      const ovs = document.querySelectorAll('.dcab-overlay');
+      const ov = ovs[ovs.length - 1];
+      if (ov){
+        ov.scrollTop = 0;
+        const ps = ov.querySelectorAll('.dcab-lore');
+        [].forEach.call(ps, (p, i) => {
+          p.style.opacity = '0';
+          p.style.transition = 'opacity 1s';
+          setTimeout(() => { p.style.opacity = '1'; }, 260 + i * 900);
+        });
+      }
+    }, 1600);
+  }
+
+  /* ---------- boot ---------- */
+  $('startBtn').addEventListener('click', () => {
+    Juice.sfx('click');
+    $('briefing').style.display = 'none';
+    note('BOARD: eight slots, eighty-four minutes, twelve people who came a long way. Begin.');
+  });
+
+  reset();
+
+  Arcade.cabinet({
+    id: 'press-conference',
+    wing: 'THE STEVEN GREER EXPERIENCE',
+    title: 'The Press Conference',
+    subtitle: 'Sequencing For Persuasion',
+    accent: '#C9A24B',
+    scoreLabel: 'CREDIBILITY',
+    lore: 'In May 2001, roughly twenty military, intelligence and aviation witnesses stood up in a packed ' +
+          'room at the National Press Club and testified <b>on the record, under their own names</b> &mdash; ' +
+          'more named witnesses in one afternoon than the previous fifty years had produced combined. ' +
+          'Whatever this board thinks of folding-chair pricing, and it thinks a great deal, <b>that ' +
+          'Wednesday was real and it was brave.</b> Tonight you run that room. Twelve witnesses, eight ' +
+          'podium slots, eighty-four minutes. The comedy is the press corps and the clock. It is never ' +
+          'the people at the microphone.',
+    howto: [
+      'TAP a witness &bull; they take the next open podium slot',
+      '▲ ▼ reorder &bull; ✕ cuts them from the program',
+      '8 SLOTS, 84 MINUTES &mdash; you cannot seat everyone. Cutting is the game.',
+      'THE ROOM HAS RULES. It will not tell you what they are. It will show you.',
+      'EXTRAORDINARY testimony is not weaker. It is heavier. Heavy goes on top.',
+      'LEAVE 12 MINUTES unbooked or there is no time for questions',
+      'CREDIBILITY 85 and the room goes quiet'
+    ],
+    shrine: '../../shrines/index.html#steven-greer',
+    onStart: () => {
+      $('briefing').style.display = 'flex';
+      stage.scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+  });
+})();
+</script>
+</body>
+</html>

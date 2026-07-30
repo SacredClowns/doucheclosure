@@ -166,7 +166,7 @@
 <p class="crumb"><a href="../../index.html">&larr; THE ARCADE</a> &nbsp;/&nbsp; <a href="index.html">CHRIS BLEDSOE</a> &nbsp;/&nbsp; THE SKETCH</p>
 
 <header class="wing">
-  <p class="eyebrow">The Chris Bledsoe Experience &bull; Cabinet No. 2</p>
+  <p class="eyebrow">The Chris Bledsoe Experience &bull; Cabinet No. 5</p>
   <h1 class="display">The Sketch</h1>
   <p class="sub">Long before anybody had a phone in their pocket, the entire evidentiary record of
   this phenomenon was <b>witness drawings</b> — regular people, handed a pencil by a man with a
@@ -299,8 +299,10 @@
 
   const ROUNDS = 5, PREROLL_MS = 1500, FLASH_MS = 2000, RECALL_MS = 30000;
   const NX = 32, NY = 24, CELL = 1 / NX;     /* the occupancy grid, stated openly */
-  const THICK = 0.045;                       /* stamp radius, in u */
-  const IOU_FULL = 0.55;                     /* IoU that earns full shape marks */
+  const THICK = 0.034;                       /* stamp radius in u — the board's tolerance */
+  const IOU_FLOOR = 0.10;                    /* below this, ink in the right neighbourhood earns nothing */
+  const IOU_FULL = 0.52;                     /* overlap that earns full marks for shape */
+  const PLACE_D = 0.26;                      /* centroid miss, in grid widths, that zeroes placement */
 
   const rnd = (a, b) => a + Math.random() * (b - a);
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -440,12 +442,14 @@
     }
     if (!bn || !an) return { score:0, iou:0, place:0, extent:0, inter:0, uni:uni, empty:!bn };
     const iou = uni ? inter / uni : 0;
-    const shape = Math.min(1, iou / IOU_FULL);
+    const shape = clamp((iou - IOU_FLOOR) / (IOU_FULL - IOU_FLOOR), 0, 1);
     const dist = Math.hypot(ax / an - bx / bn, ay / an - by / bn) / NX;
-    const place = clamp(1 - dist / 0.30, 0, 1);
+    const place = clamp(1 - dist / PLACE_D, 0, 1);
     const aw = ai1 - ai0 + 1, ah = aj1 - aj0 + 1, bw = bi1 - bi0 + 1, bh = bj1 - bj0 + 1;
     const extent = (Math.min(aw, bw) / Math.max(aw, bw)) * (Math.min(ah, bh) / Math.max(ah, bh));
-    const score = Math.round(100 * (0.70 * shape + 0.18 * place + 0.12 * extent));
+    /* shape is the gate. Placement and extent modulate a real match; they can
+       never manufacture one out of ink in roughly the right neighbourhood. */
+    const score = Math.round(100 * shape * (0.58 + 0.27 * place + 0.15 * extent));
     return { score: clamp(score, 0, 100), iou: iou, place: place, extent: extent,
              inter: inter, uni: uni, empty: false };
   }
@@ -738,7 +742,6 @@
   function startRound(){
     shape = plan[roundIdx]();
     strokes = []; cur = null; drawing = false;
-    usedLines.__ = true;
     $('grids').style.display = 'none';
     $('legend').style.display = 'none';
     $('padtag').textContent = 'Eyes up';
@@ -1023,16 +1026,17 @@
     const now = performance.now();
     if (now - lastTick > 210){ lastTick = now; Juice.sfx('tick'); }
   });
-  function endStroke(e){
+  function endStroke(){
     if (!drawing) return;
     drawing = false;
     if (cur && cur.length === 1) repaint();  /* a single dot still counts */
     cur = null;
     if (phase === 'recall') setTools(true);
   }
+  /* pointer capture guarantees these land here even if the finger wanders
+     off the sheet — so no pointerleave handler, which would break a live stroke */
   pad.addEventListener('pointerup', endStroke);
   pad.addEventListener('pointercancel', endStroke);
-  pad.addEventListener('pointerleave', endStroke);
 
   /* ---------- tools ---------- */
   $('undoBtn').addEventListener('click', () => {

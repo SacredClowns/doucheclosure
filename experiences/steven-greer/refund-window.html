@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>THE REFUND WINDOW — Doucheclosure</title>
+<meta name="description" content="The retreat has ended. The sky was free and magnificent and did exactly what the sky does. The guests paid thousands and are now forming a line. You are the sole employee at the refund window. You did not set the prices. You have a binder.">
+<style>
+  :root{
+    --void:#060610; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --laser:#00FF66; --paper:#F2ECDA; --ink:#171219; --shadow:rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;overflow:hidden;background:var(--void);color:var(--white);
+    font-family:"Courier New",Courier,monospace;-webkit-text-size-adjust:100%;}
+  .display{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-weight:400;text-transform:uppercase;letter-spacing:.03em;line-height:.95;}
+  #frame{position:fixed;inset:0;display:flex;flex-direction:column;}
+
+  /* ---------- chrome ---------- */
+  #topbar{display:flex;justify-content:space-between;align-items:center;gap:.6rem;
+    padding:.5rem .9rem;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;
+    border-bottom:1px solid #2A1A44;z-index:9;flex:0 0 auto;}
+  #topbar a{color:var(--neon-cyan);text-decoration:none;white-space:nowrap;}
+  #topbar .t{color:var(--laser);text-align:center;}
+  #topbar .r{color:#7E6F9E;white-space:nowrap;}
+  @media (max-width:760px){#topbar .r{display:none;} #topbar .t{font-size:.82rem;}}
+
+  #gamewrap{flex:1;position:relative;display:flex;flex-direction:column;min-height:0;
+    background:radial-gradient(ellipse at 50% -10%, rgba(0,255,102,.13), transparent 62%),
+      linear-gradient(180deg,#060610,#140E24);}
+  #gamewrap::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:6;
+    background:repeating-linear-gradient(0deg,rgba(0,0,0,.16) 0 1px,transparent 1px 3px);}
+
+  /* ---------- hud ---------- */
+  #hud{flex:0 0 auto;display:flex;gap:.6rem;align-items:flex-end;justify-content:space-between;
+    padding:.45rem .8rem .5rem;font-size:.55rem;letter-spacing:.14em;text-transform:uppercase;
+    color:#8C81A8;flex-wrap:wrap;}
+  .meter{flex:1 1 150px;min-width:132px;max-width:300px;}
+  .meter .lab{display:flex;justify-content:space-between;gap:.4rem;}
+  .meter .lab i{font-style:normal;color:var(--white);letter-spacing:.08em;}
+  .track{height:10px;background:#00000099;border:1px solid #000;border-radius:6px;overflow:hidden;margin-top:3px;}
+  .track > i{display:block;height:100%;width:50%;transition:width .35s;}
+  #consFill{background:linear-gradient(90deg,#7A2B44,var(--laser));}
+  #patFill{background:linear-gradient(90deg,#5B2130,var(--neon-yellow));}
+  #patWrap.low #patFill{background:linear-gradient(90deg,#8C1F1F,var(--neon-pink));}
+  #patWrap.low .lab i{color:var(--neon-pink);}
+  .cell{min-width:62px;}
+  .cell b{display:block;font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-weight:400;font-size:1.3rem;letter-spacing:.04em;color:var(--white);line-height:1;}
+  #clock b{color:var(--neon-cyan);}
+  #queue b{color:var(--neon-yellow);}
+
+  /* ---------- stage ---------- */
+  #stage{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);
+    gap:.6rem;padding:.2rem .7rem .3rem;overflow:hidden;}
+  @media (max-width:820px){
+    #stage{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) minmax(0,auto);
+      gap:.45rem;padding:.15rem .5rem .25rem;overflow-y:auto;}
+  }
+  .col{display:flex;flex-direction:column;min-height:0;}
+  .collab{font-size:.53rem;letter-spacing:.24em;text-transform:uppercase;color:#6E6288;
+    margin:0 0 .25rem 2px;flex:0 0 auto;}
+
+  /* ---------- the guest ---------- */
+  #guestcard{flex:1;min-height:0;overflow-y:auto;background:var(--paper);color:var(--ink);
+    border:2px solid #C9BFA6;border-radius:5px 5px 9px 9px;padding:.65rem .8rem .8rem;
+    box-shadow:0 5px 0 rgba(0,0,0,.5);position:relative;}
+  #guestcard::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;
+    background:repeating-linear-gradient(90deg,#C9BFA6 0 7px,transparent 7px 14px);}
+  #guestcard.in{animation:slidein .34s ease-out;}
+  @keyframes slidein{from{opacity:0;transform:translateX(26px)}to{opacity:1;transform:none}}
+  #guestcard.out{opacity:.25;filter:saturate(.3);transition:opacity .3s,filter .3s;}
+  .gno{display:flex;justify-content:space-between;gap:.5rem;font-size:.5rem;letter-spacing:.16em;
+    color:#7A6E58;text-transform:uppercase;margin-top:.2rem;}
+  .gname{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;font-weight:400;
+    text-transform:uppercase;font-size:1.5rem;line-height:1;margin:.25rem 0 .1rem;letter-spacing:.01em;}
+  .gtag{display:inline-block;font-size:.5rem;letter-spacing:.13em;padding:2px 6px;border-radius:3px;
+    background:#171219;color:var(--paper);text-transform:uppercase;}
+  .gtag.star{background:#7A1F52;}
+  .gsay{font-size:.85rem;line-height:1.55;margin:.6rem 0 0;color:#241C29;}
+  .gsay:before{content:"\201C";} .gsay:after{content:"\201D";}
+  .gtell{margin-top:.6rem;border:1px dashed #B2A78C;border-radius:6px;padding:.4rem .55rem;
+    font-size:.66rem;line-height:1.45;color:#5C5344;}
+  .gtell b{color:#2A2230;}
+  .gtell span{display:block;font-size:.46rem;letter-spacing:.2em;color:#9A8F76;margin-bottom:.2rem;}
+
+  /* ---------- the binder ---------- */
+  #binder{flex:1;min-height:0;display:flex;flex-direction:column;
+    background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:2px solid #35205C;border-radius:10px;padding:.45rem .5rem .5rem;box-shadow:0 6px 18px var(--shadow);}
+  #binder.open{border-color:var(--neon-yellow);}
+  #tabs{flex:0 0 auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.25rem;}
+  .tab{text-align:left;font-family:inherit;cursor:pointer;touch-action:manipulation;
+    background:#0E0A18;border:1px solid #3A2560;border-left:4px solid #6B4FA0;border-radius:3px;
+    color:#C7BCE2;padding:.3rem .4rem;font-size:.53rem;letter-spacing:.07em;text-transform:uppercase;
+    line-height:1.15;transition:background .12s,border-color .12s,color .12s;}
+  .tab:hover{background:#170F28;color:var(--white);}
+  .tab.act{background:#241634;border-left-color:var(--neon-yellow);color:var(--white);}
+  .tab.read{border-left-color:#2F6B4A;}
+  .tab i{display:block;font-style:normal;font-size:.44rem;color:#6E6288;letter-spacing:.14em;}
+  #policy{flex:1;min-height:0;margin-top:.4rem;overflow-y:auto;border-radius:6px;
+    background:var(--paper);color:var(--ink);padding:.55rem .65rem;}
+  #policy.shut{display:flex;align-items:center;justify-content:center;background:#0A0714;color:#5C5079;
+    text-align:center;font-size:.62rem;letter-spacing:.1em;line-height:1.6;padding:.6rem;}
+  #policy h5{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;font-weight:400;
+    text-transform:uppercase;font-size:1rem;letter-spacing:.02em;line-height:1;}
+  #policy .sec{font-size:.46rem;letter-spacing:.2em;color:#7A6E58;text-transform:uppercase;}
+  #policy p{font-size:.7rem;line-height:1.55;margin-top:.4rem;color:#2C2431;}
+  #policy .warnread{margin-top:.45rem;font-size:.52rem;letter-spacing:.13em;color:#9A3B2E;text-transform:uppercase;}
+  #binderfoot{flex:0 0 auto;margin-top:.35rem;font-size:.5rem;letter-spacing:.12em;
+    color:#6E6288;text-transform:uppercase;display:flex;justify-content:space-between;gap:.4rem;}
+  #binderfoot b{color:var(--neon-yellow);}
+
+  /* ---------- actions ---------- */
+  #actions{flex:0 0 auto;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.35rem;
+    padding:.35rem .7rem .1rem;}
+  #actions.hasSpecial{grid-template-columns:repeat(5,minmax(0,1fr));}
+  @media (max-width:700px){
+    #actions,#actions.hasSpecial{grid-template-columns:repeat(2,minmax(0,1fr));}
+  }
+  .act{font-family:inherit;cursor:pointer;touch-action:manipulation;border-radius:8px;
+    padding:.55rem .35rem;border:2px solid #4A3670;background:#160E26;color:var(--white);
+    font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;line-height:1.25;
+    transition:filter .12s,border-color .12s,background .12s;}
+  .act:active{transform:translateY(1px);}
+  .act small{display:block;font-size:.44rem;letter-spacing:.13em;color:#8C81A8;margin-top:2px;}
+  .act:disabled{opacity:.4;cursor:default;}
+  .act.cite{border-color:var(--neon-yellow);} .act.cite small{color:#A08D4E;}
+  .act.cite.ready{background:#2A2008;}
+  .act.refund{border-color:var(--laser);} .act.refund small{color:#4E9C6C;}
+  .act.partial{border-color:var(--neon-cyan);} .act.partial small{color:#4E8AA0;}
+  .act.esc{border-color:#6E6288;} .act.esc small{color:#6E6288;}
+  .act.special{border-color:var(--neon-pink);background:#2A0A1C;}
+  .act.special small{color:#B0658C;}
+
+  #kbhint{flex:0 0 auto;text-align:center;color:#5F5382;font-size:9.5px;letter-spacing:.06em;
+    padding:.3rem .5rem .35rem;line-height:1.5;}
+  @media (max-width:700px){#kbhint{display:none;}}
+
+  /* ---------- reaction beat ---------- */
+  #reaction{position:absolute;inset:0;z-index:35;display:flex;align-items:center;justify-content:center;
+    background:rgba(4,3,10,.93);padding:1rem;text-align:center;overflow-y:auto;}
+  #reaction.hide{display:none;}
+  #reaction .inner{max-width:36rem;}
+  #rdelta{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;font-weight:400;
+    text-transform:uppercase;font-size:clamp(1.8rem,7vw,3rem);line-height:1;letter-spacing:.03em;}
+  #rdelta.up{color:var(--laser);text-shadow:0 0 22px rgba(0,255,102,.5);}
+  #rdelta.down{color:var(--neon-pink);text-shadow:0 0 22px rgba(255,61,138,.5);}
+  #rdelta.flat{color:var(--chrome);}
+  #rkick{font-size:.55rem;letter-spacing:.24em;text-transform:uppercase;color:#7E6F9E;margin-bottom:.35rem;}
+  #rline{color:var(--chrome);font-size:.86rem;line-height:1.62;margin:.9rem auto 0;max-width:33rem;}
+  #rline b{color:var(--white);}
+  #rnext{margin-top:1.1rem;}
+
+  /* ---------- sheets ---------- */
+  .sheet{position:absolute;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;
+    flex-direction:column;background:rgba(4,3,10,.95);text-align:center;padding:1rem;overflow-y:auto;}
+  .sheet.hide{display:none;}
+  .sheet h1{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;font-weight:400;
+    text-transform:uppercase;line-height:.95;font-size:clamp(1.6rem,6vw,2.9rem);color:var(--laser);
+    text-shadow:0 0 18px rgba(0,255,102,.45);}
+  .sheet p{max-width:37rem;margin:.8rem auto;color:var(--chrome);font-size:.86rem;line-height:1.62;}
+  .sheet b{color:var(--white);}
+  .memo{border:2px dashed rgba(185,175,208,.35);border-radius:10px;padding:.7rem 1rem;margin:.9rem auto 0;
+    max-width:32rem;text-align:left;}
+  .memo h4{font-size:.55rem;letter-spacing:.24em;text-transform:uppercase;color:var(--laser);margin-bottom:.4rem;}
+  .memo ul{list-style:none;display:grid;gap:.24rem;}
+  .memo li{font-size:.71rem;color:#D6CFE8;letter-spacing:.02em;line-height:1.45;}
+  .memo li span{color:var(--neon-yellow);}
+  .btn{display:inline-block;margin:.4rem .3rem 0;padding:.85rem 1.5rem;border-radius:8px;
+    font-family:inherit;font-weight:bold;font-size:.76rem;letter-spacing:.14em;text-transform:uppercase;
+    text-decoration:none;cursor:pointer;border:2px solid var(--laser);background:var(--laser);color:#05200F;}
+  .btn.ghost{background:transparent;color:var(--neon-cyan);border-color:var(--neon-cyan);}
+</style>
+</head>
+<body>
+<div id="frame">
+  <div id="topbar">
+    <a href="index.html">&larr; THE GREER WING</a>
+    <span class="t display" style="font-size:1rem;">THE REFUND WINDOW</span>
+    <span class="r">WINDOW 1 OF 1 &bull; STAFF ON DUTY: YOU</span>
+  </div>
+
+  <div id="gamewrap">
+    <div id="hud">
+      <div class="meter" id="consWrap">
+        <div class="lab"><span>YOUR CONSCIENCE</span><i id="consNum">50</i></div>
+        <div class="track"><i id="consFill"></i></div>
+      </div>
+      <div class="meter" id="patWrap">
+        <div class="lab"><span>PATIENCE OF THE LINE</span><i id="patNum">80</i></div>
+        <div class="track"><i id="patFill"></i></div>
+      </div>
+      <div class="cell" id="clock"><b>9:00</b>AM &bull; SHIFT</div>
+      <div class="cell" id="queue"><b>14</b>IN LINE</div>
+    </div>
+
+    <div id="stage">
+      <div class="col">
+        <div class="collab">AT THE WINDOW</div>
+        <div id="guestcard">
+          <div class="gno"><span>GUEST 0 OF 14</span><span>&mdash;</span></div>
+          <div class="gname display">THE LINE FORMS</div>
+          <p class="gsay">The window is not open yet.</p>
+        </div>
+      </div>
+      <div class="col">
+        <div class="collab">THE POLICY BINDER &bull; READING IT COSTS THE LINE</div>
+        <div id="binder">
+          <div id="tabs"></div>
+          <div id="policy" class="shut">Eight tabs. Open one and the line waits while you read it.<br>Nobody in this line has ever seen the binder. That is the binder&rsquo;s whole job.</div>
+          <div id="binderfoot"><span>PROPERTY OF THE RETREAT &bull; DO NOT REMOVE</span><span>TABS READ: <b id="tabsRead">0</b>/8</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="actions">
+      <button class="act cite" id="aCite" type="button">CITE A POLICY<small>OPEN A TAB FIRST</small></button>
+      <button class="act refund" id="aRefund" type="button">REFUND IN FULL<small>SLOW &bull; PAPERWORK</small></button>
+      <button class="act partial" id="aPartial" type="button">PARTIAL GOODWILL<small>15% &bull; EXPIRES</small></button>
+      <button class="act esc" id="aEsc" type="button">ESCALATE<small>INSTANT &bull; FREE</small></button>
+      <button class="act special" id="aSpecial" type="button" style="display:none;">&mdash;<small>&mdash;</small></button>
+    </div>
+
+    <p id="kbhint">KEYS &mdash; 1&ndash;8 OPEN A BINDER TAB &bull; C CITE THE OPEN TAB &bull; R REFUND IN FULL &bull; G PARTIAL GOODWILL &bull; E ESCALATE &bull; SPACE THE OTHER OPTION &bull; ESC CLOSE THE BINDER</p>
+
+    <!-- REACTION BEAT -->
+    <div id="reaction" class="hide">
+      <div class="inner">
+        <div id="rkick">THE WINDOW</div>
+        <div id="rdelta">&mdash;</div>
+        <p id="rline"></p>
+        <button class="btn" id="rnext">NEXT GUEST</button>
+      </div>
+    </div>
+
+    <!-- BRIEFING -->
+    <div class="sheet hide" id="briefing">
+      <h1>The Retreat Has Ended.<br>The Line Has Not.</h1>
+      <p>Last night the sky was free and magnificent and did exactly what the sky does. Everyone in
+      this parking lot paid <b>three thousand five hundred dollars</b> to sit in a folding chair
+      underneath it. It is now 9:00 AM and they are forming a line.</p>
+      <p>You are the sole employee at the refund window. <b>You did not set the prices.</b> You have
+      a binder.</p>
+      <div class="memo">
+        <h4>Memo From Someone Who Is In The Desert</h4>
+        <ul>
+          <li><span>CITE A POLICY</span> &mdash; open a binder tab, then cite it. Fast. Protects the company.</li>
+          <li><span>REFUND IN FULL</span> &mdash; slow, paperwork, the line watches you do it.</li>
+          <li><span>PARTIAL GOODWILL</span> &mdash; 15% credit, expires in 30 days, void during meteor showers.</li>
+          <li><span>ESCALATE</span> &mdash; instant, free, and goes into a queue that has never advanced.</li>
+          <li><span>READING THE BINDER COSTS TIME</span> &mdash; and the line is the one who pays it.</li>
+          <li><span>WHEN PATIENCE BREAKS</span> &mdash; the person at your window walks, and you never find out what they wanted.</li>
+        </ul>
+      </div>
+      <p style="font-size:.76rem;color:#7E6F9E;">Fourteen people. Seven hours. One drawer with
+      discretionary cash in it that nobody has ever audited.</p>
+      <button class="btn" id="startBtn">OPEN THE WINDOW</button>
+    </div>
+  </div>
+</div>
+
+<script src="../../assets/screen.js"></script>
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const wrap = $('gamewrap');
+  Juice.init(wrap);
+
+  /* ============================================================
+     THE BINDER — eight tabs, all of them real, all of them awful
+     ============================================================ */
+  const POLICIES = [
+    { k:'DEPOSIT', sec:'§ 1.1', tab:'NON-REFUNDABLE DEPOSIT',
+      text:'The deposit secures the seat. The seat is a folding chair. The chair is not the product. ' +
+           'The product is THE SKY, and the sky was delivered in full, on time, and at the advertised size. ' +
+           'No portion of the deposit is refundable, including the portion itemised in the brochure as ' +
+           '"energetics," which is most of it.' },
+    { k:'SKY', sec:'§ 2.4', tab:'ACT OF SKY',
+      text:'The Retreat is not responsible for the conduct of the sky. The sky operates independently, ' +
+           'has never signed an agreement, and does not attend the debrief. Satellites, aircraft, weather ' +
+           'balloons, planets, and "the one that just sat there" are ACTS OF SKY, included at no extra ' +
+           'charge, which is the same sentence as "not refundable."' },
+    { k:'APP', sec:'§ 7.2', tab:'APP STORE JURISDICTION',
+      text:'Charges originating inside the application are governed by the application marketplace and ' +
+           'not by this window. Guests experiencing duplicate charges should contact support through the ' +
+           'application. NOTE FOR STAFF: there is no support inside the application. There is a slider. ' +
+           'The slider is called HARMONIC FREQUENCY and it is not connected to anything.' },
+    { k:'CONSCIOUSNESS', sec:'§ 3.0', tab:'CONSCIOUSNESS NOT GUARANTEED',
+      text:'Consciousness is provided AS-IS. The Retreat makes no representation that a guest’s ' +
+           'consciousness will initiate, sustain, or complete contact. Results vary by consciousness. ' +
+           'A guest who made no contact has not been denied a service; a guest who made contact has not ' +
+           'purchased one. In both cases the amount owed is identical.' },
+    { k:'WEATHER', sec:'§ 2.9', tab:'WEATHER',
+      text:'Cloud cover exceeding forty percent converts the outdoor protocol into an INDOOR LISTENING ' +
+           'EXPERIENCE at no reduction in price. The indoor listening experience is held in a barn. The ' +
+           'barn is included. The barn was always included. Guests who describe the barn as "a barn" are ' +
+           'describing it accurately and remain ineligible.' },
+    { k:'INTERN', sec:'§ 11.5', tab:'INTERN CONDUCT',
+      text:'Interns are independent contractors compensated in course credit. Statements made by an ' +
+           'intern — including statements made from behind a dune, at night, while holding equipment ' +
+           '— do not constitute a representation of the Retreat. The Retreat does not train, direct, ' +
+           'schedule or supervise interns, except in the schedule, which the Retreat writes.' },
+    { k:'GOODWILL', sec:'§ 9.3', tab:'GOODWILL CREDIT',
+      text:'At the sole discretion of the window, a GOODWILL CREDIT of up to fifteen percent may be ' +
+           'applied toward a future retreat. Credit expires in thirty days, is not transferable, is not ' +
+           'redeemable for cash, and is void in any month containing a meteor shower. Most months contain ' +
+           'a meteor shower.' },
+    { k:'FOUNDER', sec:'§ 0.1', tab:'ESCALATE TO FOUNDER',
+      text:'Any matter may be escalated to the Founder. The Founder is in the desert. The Founder is ' +
+           'always in the desert. Escalation places the guest into a queue. The queue has been open since ' +
+           '1993 and has never advanced. Escalation is instantaneous, costs the Retreat nothing, and is ' +
+           'available to you at all times, which is why it is printed in the largest type in this binder.' }
+  ];
+  const P = {};
+  POLICIES.forEach((p, i) => { p.i = i; P[p.k] = p; });
+
+  /* ============================================================
+     THE LINE — fourteen people, escalating
+     ============================================================ */
+  const GENERIC_CITE = { c:-6, line:'You read out a paragraph that has nothing to do with them. They wait ' +
+    'for the part that does. It does not come. They leave holding a section number.' };
+
+  const GUESTS = [
+    { name:'MARGARET H.', tag:'SEAT 14 · PAID $3,500',
+      say:'I paid three thousand five hundred dollars and I saw a satellite. My nephew works at JPL. He identified it by name. It has a name.',
+      tell:'She is not angry. She has the receipt <b>in a sheet protector</b>.',
+      cites:{
+        SKY:{ c:-7, line:'"An act of sky," she repeats back to you. "It went around the earth. On a schedule. That we publish."' },
+        DEPOSIT:{ c:-8, line:'You explain that the chair is not the product. She looks at the chair. The chair is twenty-four dollars and every person in this line knows it.' },
+        CONSCIOUSNESS:{ c:-9, line:'You inform a retired schoolteacher that her consciousness was provided as-is. She writes down the section number in careful handwriting.' }
+      },
+      refund:{ c:10, line:'You count it out. She folds the receipt into her purse and says, quietly, that you are the only honest thing in this desert. <b>The line hears her say it.</b>' },
+      partial:{ c:4, line:'Fifteen percent of a satellite. She takes it, because she is polite, and polite is not the same as satisfied.' },
+      escalate:{ c:-5, line:'You write her name on a form that enters a queue which has never advanced. She thanks you for your help. That is the worst part of the morning so far.' } },
+
+    { name:'DENNIS R.', tag:'THE APP · $6.99 CHARGED TWICE',
+      say:'The app charged me six ninety-nine twice in the same month. I only have the one consciousness. I checked.',
+      tell:'It is fourteen dollars. There is a drawer at your knee with <b>considerably more than fourteen dollars</b> in it.',
+      cites:{
+        APP:{ c:-4, line:'You cite jurisdiction. He asks how to contact support inside the application. You know the answer to that question. You do not say the answer to that question.' },
+        FOUNDER:{ c:-5, line:'You suggest the Founder. The Founder is in the desert. Fourteen dollars is now also in the desert.' }
+      },
+      refund:{ c:7, line:'You open the drawer and hand him thirteen ninety-eight in cash from a fund with no name on it. Elapsed time: forty seconds. Institutional damage: none. Nobody stops you.' },
+      partial:{ c:4, line:'You issue a credit worth two dollars and ten cents toward a future retreat. He stares at it like a museum exhibit.' },
+      escalate:{ c:-4, line:'You escalate fourteen dollars to a man in the desert. Somewhere a form is being filed about $13.98 by a person paid more than $13.98 an hour to file it.' } },
+
+    { name:'RON & PAULA', tag:'CLOUDED OUT · $7,000 · TWO SEATS',
+      say:'It was overcast. All six hours. We sat in a barn while a woman rang a bowl at us. Ron has a bad hip. We would like to discuss the barn.',
+      tell:'Paula has a photograph of the barn on her phone. It is, unmistakably, <b>a barn</b>.',
+      cites:{
+        WEATHER:{ c:-8, line:'You read the clause about the indoor listening experience. Paula says, "that’s a barn." You say, "the barn is included." Ron says nothing at all, which is worse.' },
+        SKY:{ c:-7, line:'You explain that clouds are an act of sky. Ron looks up at the clouds, which are still there, still free, still not something anyone should have been billed for.' }
+      },
+      refund:{ c:10, line:'Both seats, in full. Paula asks if you’ll get in trouble. You tell her the truth: probably. She writes your name down to say something nice about later.' },
+      partial:{ c:6, line:'Fifteen percent off a future barn. Ron does the arithmetic out loud and then stops doing the arithmetic out loud.' },
+      escalate:{ c:-5, line:'You send a couple in their seventies into a queue that has been open since 1993.' } },
+
+    { name:'TERRY V.', tag:'LINE ITEM · $400 · "ET VECTOR ALIGNMENT FEE"',
+      say:'What is an ET vector alignment fee. I’m not even arguing about the retreat. I want to know what the four hundred dollars did.',
+      tell:'Nobody at this company can answer that question. <b>You have looked.</b>',
+      cites:{
+        DEPOSIT:{ c:-8, line:'"Energetics," you say. He writes the word down. He is going to show that word to somebody.' },
+        CONSCIOUSNESS:{ c:-8, line:'You suggest the alignment may have occurred on a level unavailable to invoicing. He asks which level. You have no level.' }
+      },
+      refund:{ c:9, line:'You refund four hundred dollars you cannot explain, which is the only correct way to handle four hundred dollars you cannot explain.' },
+      partial:{ c:5, line:'Sixty dollars of credit against a fee neither of you can define. He accepts it the way people accept weather.' },
+      escalate:{ c:-5, line:'ESCALATED: MEANING OF FEE. The queue receives it. The queue has never advanced.' } },
+
+    { name:'LORRAINE K.', tag:'GEAR LIST · $1,200 GREEN LASER',
+      say:'The gear list said the laser was twelve hundred dollars. I found the identical unit at an office supply outlet for eleven. I’m not asking for the retreat back. I’m asking about the laser.',
+      tell:'She is right, she brought the packaging, and <b>the photons have no idea what they were part of</b>.',
+      cites:{
+        DEPOSIT:{ c:-7, line:'You cite the deposit at a woman holding a receipt for an eleven-dollar laser. She turns the receipt around so the line can see it.' },
+        GOODWILL:{ c:-3, line:'You read her the credit clause. She asks whether the credit is worth eleven dollars or twelve hundred. Neither of you knows.' }
+      },
+      refund:{ c:7, line:'You refund the whole laser. She points out you have now refunded eleven hundred and eighty-nine dollars more than the laser cost, and that this is somehow still the honest number.' },
+      partial:{ c:9, line:'You issue her the difference as an actual number instead of a credit, and you say the word "eleven" out loud at this window, which has never happened here before.' },
+      escalate:{ c:-5, line:'The laser goes to the desert. The desert already has lasers.' } },
+
+    { name:'CHAD PROSSER', tag:'★ WANTS TO PAY MORE · OFFERING $9,000', star:true,
+      say:'This was the greatest night of my life and honestly? I underpaid. I want to give you nine thousand more. Is there a tier? There should be a tier.',
+      tell:'He means it. The checkbook is already out. He is standing at <b>the one window in this company that could stop this</b>.',
+      special:{ label:'TALK HIM OUT OF IT', sub:'REFUSE THE MONEY', c:25, ach:'refused',
+        line:'You put your hand flat on the counter and you explain, slowly, that the sky is free. That it was free last night. That it is free tonight, over his own house, in his own yard, for nobody’s nine thousand dollars. He argues. You hold. He puts the checkbook away, walks out to the middle of the parking lot, looks up at four in the afternoon at absolutely nothing, and says, "huh." <b>That is the single most expensive thing anyone has ever done at this window.</b>' },
+      cites:{
+        DEPOSIT:{ c:-10, line:'You cite a non-refundable deposit policy at a man attempting to hand you more money. The binder was not written for this. Nothing was written for this.' },
+        GOODWILL:{ c:-9, line:'You offer a discount to a man begging to be overcharged. He asks if the discount can be declined. It cannot.' }
+      },
+      refund:{ c:6, line:'You refund the retreat he loved. He is confused, then delighted, then he tries to hand it straight back. You have created a loop with no exit.' },
+      partial:{ c:0, line:'You give fifteen percent off to a man attempting to overpay. Nobody involved in this transaction is well.' },
+      escalate:{ c:-12, line:'You send him to the Founder. The Founder is in the desert. Nine thousand dollars is now walking into the desert, on foot, delighted.' } },
+
+    { name:'A COURIER', tag:'DEMAND LETTER · CLIENT UNNAMED · $14,000',
+      say:'I’m not a guest. I’m delivering this. It’s a demand letter. My instructions are to hand it to a person and get that person’s name.',
+      tell:'This one genuinely is above your pay grade, and for once <b>that is not a dodge</b>.',
+      cites:{
+        FOUNDER:{ c:3, line:'You read him the paragraph about the Founder being in the desert. He writes down the word "desert." It is going in a filing. It is going to do numbers in a filing.' },
+        DEPOSIT:{ c:-5, line:'You cite a deposit policy to a demand letter. The demand letter is unmoved. Demand letters generally are.' }
+      },
+      refund:{ c:1, line:'You attempt to refund a demand letter. The courier explains again that he is a courier. You both stand there for a while.' },
+      partial:{ c:-2, line:'You offer a courier fifteen percent off a future retreat. He says he will pass that along, and to be fair, he will.' },
+      escalate:{ c:8, line:'You escalate it, correctly, for the first time all day — and you write ESCALATED, and the date, and, because it is true, <b>your own name</b>. The courier gets his name. Everyone walks out of this intact.' } },
+
+    { name:'MARCUS D.', tag:'TOLD THE FLARES WERE "SPIRITUAL TECHNOLOGY" · $3,500',
+      say:'A young man in a retreat shirt told me the lights over the dune were spiritual technology. I believed him. I called my sister at two in the morning. I’d like to know if that was true.',
+      tell:'You know exactly which young man. You know what he was holding and <b>what he was paid</b>.',
+      cites:{
+        INTERN:{ c:-16, line:'You read the paragraph about independent contractors out loud. You use the words "does not constitute a representation of the Retreat." Somewhere behind a dune a nineteen-year-old is holding a forty-dollar mortar tube and course credit, and you have just set the entire night down on his shoulders because the binder said you were allowed to. <b>You feel that one land.</b>' },
+        SKY:{ c:-8, line:'You classify road flares as an act of sky. The sky, which did nothing wrong last night, takes the fall for a mortar tube.' },
+        CONSCIOUSNESS:{ c:-10, line:'You suggest his consciousness may have participated. He says, "so it was the flares." You say nothing. Silence is also an answer, and he takes it as one.' }
+      },
+      refund:{ c:12, line:'You refund it and you tell him the truth about the flares, at the window, out loud, where the line can hear you say it. Nobody stops you. It turns out <b>nobody was ever going to stop you</b>.' },
+      partial:{ c:5, line:'Fifteen percent, and a sentence about how the lights are "under review." He hears the shape of that sentence.' },
+      escalate:{ c:-6, line:'You forward the question of what the lights were into a queue that has never advanced, which is, technically, an answer.' } },
+
+    { name:'GAIL A.', tag:'REQUESTS AUDIENCE · THE ORION COUNCIL',
+      say:'I don’t want money. I want to speak to the Orion Council. I was told at check-in that a liaison would be available. I have been very patient about it.',
+      tell:'She is serene. She just wants the request <b>to go to a real place</b>.',
+      cites:{
+        FOUNDER:{ c:4, line:'You read her the paragraph about the Founder being permanently in the desert. She nods. "That tracks," she says, and she is not being sarcastic.' },
+        CONSCIOUSNESS:{ c:-12, line:'You tell a woman that consciousness is provided as-is. She goes quiet. That was not what she came here for and both of you know it.' },
+        SKY:{ c:-7, line:'You classify the Orion Council as an act of sky. She considers this. Honestly, so should you.' }
+      },
+      refund:{ c:5, line:'You refund a woman who did not ask for a refund. She takes it, kindly, and leaves without the thing she came for.' },
+      partial:{ c:2, line:'You give her fifteen percent off the next opportunity to be told a liaison will be available.' },
+      escalate:{ c:7, line:'You write ORION COUNCIL, in pen, on an official escalation form, and you do not smirk, and you hand her the carbon copy. It is the first form you have ever enjoyed. Whatever happens next, <b>somebody wrote it down</b>.' } },
+
+    { name:'HOWARD B.', tag:'PAID WITH SEVERANCE · $3,500',
+      say:'I’m not going to make a scene. I put this on my severance. I have a call with the bank on Monday and I’d like to be able to tell them something.',
+      tell:'He asked about payment plans twice at signup. Both times somebody <b>told him about abundance</b>.',
+      cites:{
+        DEPOSIT:{ c:-14, line:'You tell a man who paid with his severance that the chair is not the product. He says, "okay." He says it kindly. <b>That is the one that stays with you.</b>' },
+        CONSCIOUSNESS:{ c:-12, line:'You read him the as-is clause. He nods along like a man being told the results of a test he already knew the results of.' },
+        SKY:{ c:-11, line:'You explain that the sky has never signed anything. He says he understands. He does understand. That is the problem.' }
+      },
+      refund:{ c:14, line:'Full refund, in the exact amount he actually paid, processed while he stands there so he can watch it happen on the screen. He does not cry until the parking lot. <b>The line lets him through in both directions.</b>' },
+      partial:{ c:6, line:'Five hundred and twenty-five dollars of credit toward a thing he will never, ever do again. He thanks you. He means it. Somehow that costs you more than a refund would have.' },
+      escalate:{ c:-8, line:'You escalate a man’s severance into a queue that has been open since 1993. The bank calls on Monday. There is nothing to tell them.' } },
+
+    { name:'JUNE T.', tag:'★ IS NOT REQUESTING A REFUND', star:true,
+      say:'I don’t want my money. Something happened out there and nobody at this company has written down a single word of it. I’ve stood in three lines today. Everyone keeps handing me a refund form.',
+      tell:'She is describing a real night in her one real life. There is <b>a notebook under this counter</b>.',
+      special:{ label:'WRITE IT DOWN', sub:'GET THE NOTEBOOK', c:16,
+        line:'You get the notebook. You put the pen in your own hand and you take it at her speed — the time, the direction, the colour, the part she is sure about, the part she isn’t. You read it back. She corrects one word. You initial it, tear the carbon, and hand her the top copy. It is the first record this company has ever kept of anything a guest actually saw. <b>It cost the company nothing and it is the most valuable object in this building.</b>' },
+      cites:{
+        CONSCIOUSNESS:{ c:-18, line:'You read her the clause about consciousness being provided AS-IS. She stops mid-sentence. Then she apologises — to you — for taking up your time. <b>That is the lowest this window has ever been, and it is 2:40 in the afternoon.</b>' },
+        SKY:{ c:-12, line:'You file what she saw under ACT OF SKY, which is both completely accurate and the most dismissive thing available to you.' },
+        DEPOSIT:{ c:-11, line:'You quote the deposit policy at a woman who has not asked you for a cent.' }
+      },
+      refund:{ c:4, line:'You push money at her. She takes it because you insisted, and she walks out carrying the exact same thing she walked in with, still unwritten.' },
+      partial:{ c:2, line:'You offer fifteen percent off a return visit to a woman trying to tell you what happened on the first one.' },
+      escalate:{ c:-8, line:'You escalate her account of her own life into a queue that has never advanced. She says thank you. She has been saying thank you all day.' } },
+
+    { name:'PRESTON W.', tag:'★ PREPAYING FOR NEXT YEAR · $7,000', star:true,
+      say:'Put me down for next year. Two seats, front row, whatever the top tier is. I’ll write it now so I don’t lose the spot.',
+      tell:'There is no top tier. There is no front row. It is a dirt field and <b>every chair is the same chair</b>.',
+      special:{ label:'TALK HIM OUT OF IT', sub:'THERE IS NO FRONT ROW', c:14,
+        line:'You tell him there is no front row. You tell him the field is dirt, every chair is the same chair, and next year’s sky is the same sky as last night’s — and that it is already his, tonight, at no cost, for the rest of his life. He puts the pen down. He looks a little robbed, and then a lot lighter. <b>Upstairs, a spreadsheet just lost seven thousand dollars, and you did that on purpose.</b>' },
+      cites:{
+        DEPOSIT:{ c:-9, line:'You take a deposit. You take a <b>non-refundable</b> deposit for a sky that has not happened yet.' },
+        GOODWILL:{ c:-6, line:'You upsell a credit on top of the prepayment. It expires in thirty days. So does most of your remaining self-respect.' }
+      },
+      refund:{ c:5, line:'You refund last year to a man trying to buy next year. He treats it as a bulk discount and reaches for the pen again.' },
+      partial:{ c:0, line:'Fifteen percent off seven thousand dollars he should not be spending is still six thousand dollars he should not be spending.' },
+      escalate:{ c:-10, line:'You point a man with an open chequebook toward the desert. The desert has outstanding conversion rates.' } },
+
+    { name:'BOBBY', tag:'★ INTERN · NOT A GUEST · UNPAID', star:true,
+      say:'Hey. Sorry. Is there — is there a person who does payroll? I did nineteen nights. They said course credit but my school says the paperwork was never filed. I’m not trying to be a problem.',
+      tell:'Nineteen nights. A forty-dollar mortar tube. <b>He is apologising to you for asking.</b>',
+      special:{ label:'PAY HIM FROM THE DRAWER', sub:'THE ONE NOBODY AUDITS', c:18, ach:'drawer',
+        line:'You open the goodwill drawer — the discretionary cash, the fund for calming people down — and you pay a nineteen-year-old for nineteen nights of work, in cash, at the window, in front of the entire line. Then you write it in the back margin of the binder in your own handwriting: <b>PAID BOBBY. HE WORKED.</b> That is not a policy. It is the only page in this binder anybody will ever be proud of.' },
+      cites:{
+        INTERN:{ c:-20, line:'You read the intern the clause about interns. You read a nineteen-year-old the paragraph that exists specifically to make sure he is never paid. He says, "oh — okay, no, that makes sense," and he apologises again, and he goes. <b>The whole line watched you do that.</b>' },
+        GOODWILL:{ c:-6, line:'You offer the unpaid intern fifteen percent off a future retreat. He says thanks. He says it like he means it, which is unbearable.' },
+        FOUNDER:{ c:-9, line:'You escalate Bobby to the Founder. Bobby has met the Founder. Bobby knows precisely what the desert is.' }
+      },
+      refund:{ c:12, line:'You process it as a refund, because a refund is the only button at this window that moves money toward a human being. It goes through. Nobody stops it. Nobody has ever stopped anything here.' },
+      partial:{ c:-2, line:'You give him a fifteen percent credit against nineteen nights of unpaid labour. Even the binder would be embarrassed.' },
+      escalate:{ c:-10, line:'Bobby joins a queue that has been open since 1993, on the same dune he has been standing on all summer.' } },
+
+    { name:'THE WOMAN WHO WAITED', tag:'★ LAST IN LINE · SINCE 9:04 AM', star:true,
+      say:'I’ve been standing here since nine oh four. I’m not going to ask you for anything. I just wanted to get to the front of it once, and see what you’d do.',
+      tell:'She watched the entire day. <b>Every decision you made, she saw you make.</b>',
+      special:{ label:'ASK HER WHAT SHE SAW', sub:'SHE HAS BEEN KEEPING SCORE', c:12,
+        line:'You ask. She tells you — all of it, everyone ahead of her, in order, from nine oh four. She has been keeping her own binder in her head this entire time and it is considerably more accurate than yours. When she finishes she says: "I wanted to know whether anybody who works here is a person." Then she waits, politely, to hear what you think the answer is.' },
+      cites:{
+        DEPOSIT:{ c:-12, line:'You cite a deposit policy at a woman who has not asked you for money. Even the binder seems embarrassed to be involved.' },
+        CONSCIOUSNESS:{ c:-12, line:'You read the as-is clause to somebody who only wanted to see how you’d finish the day. She nods slowly. She has her answer.' }
+      },
+      refund:{ c:4, line:'You try to give her money. She declines it twice and takes it the third time to spare you the awkwardness, which is the most anybody has done for you all day.' },
+      partial:{ c:1, line:'Fifteen percent off nothing at all. She folds it and puts it in her coat like a receipt from a place she is never coming back to.' },
+      escalate:{ c:-8, line:'You escalate a woman who asked for nothing into a queue that has never advanced. She says that’s all right. It is not all right.' } }
+  ];
+
+  /* ---------- tuning ---------- */
+  const PAT_MAX = 100, CONS_MAX = 100;
+  const COST = { cite:2, refund:16, partial:9, escalate:2, special:8, tab:5 };
+  const MIN  = { cite:8, refund:30, partial:18, escalate:6, special:20, tab:6 };
+  const RELIEF = 6;                 // line moves forward when someone is served
+  const WARM_RELIEF = 4;            // the line saw you do a decent thing
+  const BINDER_DRAIN = 2.4;         // reading costs the line
+
+  /* ---------- state ---------- */
+  let state, gi, cons, pat, mins, openTab, tabsRead, drainMul;
+  let refunds, cited, escalated, partials, walkoffs, breaks, served, throughput;
+  let citedInternOnBobby;
+  const got = {};
+  const once = (k, fn) => { if (!got[k]) { got[k] = true; fn(); } };
+
+  function reset(){
+    state = 'play'; gi = 0; cons = 50; pat = 80; mins = 0;
+    openTab = null; tabsRead = new Set(); drainMul = 1;
+    refunds = 0; cited = 0; escalated = 0; partials = 0;
+    walkoffs = 0; breaks = 0; served = 0; throughput = 0;
+    citedInternOnBobby = false;
+    buildTabs();
+    closeBinder(true);
+    $('reaction').classList.add('hide');
+    hud();
+    showGuest();
+  }
+
+  /* ============================================================
+     BINDER UI
+     ============================================================ */
+  function buildTabs(){
+    const t = $('tabs');
+    t.innerHTML = '';
+    POLICIES.forEach((p, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'tab';
+      b.id = 'tab' + i;
+      b.innerHTML = '<i>' + (i + 1) + ' · ' + p.sec + '</i>' + p.tab;
+      b.addEventListener('click', () => toggleTab(i));
+      t.appendChild(b);
+    });
+  }
+
+  function toggleTab(i){
+    if (state !== 'play') return;
+    if (openTab === i){ closeBinder(); Juice.sfx('click'); return; }
+    const p = POLICIES[i];
+    openTab = i;
+    if (!tabsRead.has(p.k)){
+      tabsRead.add(p.k);
+      $('tab' + i).classList.add('read');
+      $('tabsRead').textContent = tabsRead.size;
+      if (tabsRead.size === 8) once('whole', () => Arcade.toast('🏆 READ THE WHOLE BINDER', 'Achievement unlocked'));
+    }
+    pat -= COST.tab; mins += MIN.tab;
+    POLICIES.forEach((_, k) => $('tab' + k).classList.toggle('act', k === i));
+    const pol = $('policy');
+    pol.classList.remove('shut');
+    pol.innerHTML = '<div class="sec">' + p.sec + ' &mdash; RETREAT OPERATIONS BINDER, REV. 11</div>' +
+      '<h5>' + p.tab + '</h5><p>' + p.text + '</p>' +
+      '<div class="warnread">The line is watching you read this.</div>';
+    $('binder').classList.add('open');
+    Juice.sfx('click');
+    Juice.buzz(8);
+    syncCite();
+    hud();
+  }
+
+  function closeBinder(silent){
+    openTab = null;
+    POLICIES.forEach((_, k) => { const el = $('tab' + k); if (el) el.classList.remove('act'); });
+    const pol = $('policy');
+    pol.classList.add('shut');
+    pol.innerHTML = 'Eight tabs. Open one and the line waits while you read it.<br>' +
+      'Nobody in this line has ever seen the binder. That is the binder’s whole job.';
+    $('binder').classList.remove('open');
+    if (!silent) Juice.sfx('blip');
+    syncCite();
+  }
+
+  function syncCite(){
+    const b = $('aCite');
+    if (openTab == null){
+      b.classList.remove('ready');
+      b.innerHTML = 'CITE A POLICY<small>OPEN A TAB FIRST</small>';
+      b.disabled = true;
+    } else {
+      const p = POLICIES[openTab];
+      b.classList.add('ready');
+      b.innerHTML = 'CITE ' + p.sec + '<small>' + p.tab + '</small>';
+      b.disabled = false;
+    }
+  }
+
+  /* ============================================================
+     GUESTS
+     ============================================================ */
+  function guest(){ return GUESTS[gi]; }
+
+  function showGuest(){
+    const g = guest();
+    if (!g){ endShift(); return; }
+    const c = $('guestcard');
+    c.classList.remove('out');
+    c.classList.remove('in'); void c.offsetWidth; c.classList.add('in');
+    c.innerHTML =
+      '<div class="gno"><span>GUEST ' + (gi + 1) + ' OF ' + GUESTS.length + '</span>' +
+        '<span>WINDOW 1</span></div>' +
+      '<div class="gname display">' + g.name + '</div>' +
+      '<span class="gtag' + (g.star ? ' star' : '') + '">' + g.tag + '</span>' +
+      '<p class="gsay">' + g.say + '</p>' +
+      '<div class="gtell"><span>WHAT YOU CAN TELL</span>' + g.tell + '</div>';
+
+    const sp = $('aSpecial');
+    if (g.special){
+      sp.style.display = '';
+      sp.innerHTML = g.special.label + '<small>' + (g.special.sub || 'THE OTHER OPTION') + '</small>';
+      $('actions').classList.add('hasSpecial');
+    } else {
+      sp.style.display = 'none';
+      $('actions').classList.remove('hasSpecial');
+    }
+    setActions(true);
+    hud();
+  }
+
+  function setActions(on){
+    ['aRefund','aPartial','aEsc','aSpecial'].forEach(id => { $(id).disabled = !on; });
+    $('aCite').disabled = !on || openTab == null;
+  }
+
+  function fx(el){
+    const r = el.getBoundingClientRect(), h = wrap.getBoundingClientRect();
+    return { x: r.left - h.left + r.width / 2, y: r.top - h.top + r.height / 2 };
+  }
+
+  /* ---------- the four (or five) buttons ---------- */
+  function doCite(){
+    if (state !== 'play' || openTab == null) return;
+    const g = guest(), p = POLICIES[openTab];
+    const out = (g.cites && g.cites[p.k]) || GENERIC_CITE;
+    cited++; throughput += 12;
+    if (g.name === 'BOBBY' && p.k === 'INTERN') citedInternOnBobby = true;
+    pat -= COST.cite; mins += MIN.cite;
+    Juice.sfx(out.c >= 0 ? 'blip' : 'bad');
+    if (out.c <= -12){ Juice.shake(7); Juice.flash('#FF3D8A', .18); }
+    resolve(out, 'YOU CITED ' + p.sec + ' — ' + p.tab, 0);
+  }
+
+  function doRefund(){
+    if (state !== 'play') return;
+    const g = guest();
+    refunds++; throughput -= 6;
+    pat -= COST.refund; mins += MIN.refund;
+    const pt = fx($('guestcard'));
+    Juice.reward(pt.x, pt.y, { text:'REFUNDED', color:'#00FF66', sound:'good', count:20 });
+    resolve(g.refund, 'YOU REFUNDED IN FULL', g.refund.c >= 8 ? WARM_RELIEF : 0);
+  }
+
+  function doPartial(){
+    if (state !== 'play') return;
+    const g = guest();
+    partials++; throughput += 4;
+    pat -= COST.partial; mins += MIN.partial;
+    const pt = fx($('guestcard'));
+    Juice.sfx('coin');
+    Juice.burst(pt.x, pt.y, { color:'#2DE1FC', count:12, speed:3, gravity:.03 });
+    resolve(g.partial, 'YOU ISSUED A 15% GOODWILL CREDIT', g.partial.c >= 8 ? WARM_RELIEF : 0);
+  }
+
+  function doEscalate(){
+    if (state !== 'play') return;
+    const g = guest();
+    escalated++; throughput += 10;
+    pat -= COST.escalate; mins += MIN.escalate;
+    Juice.sfx('whoosh');
+    resolve(g.escalate, 'YOU ESCALATED TO THE FOUNDER', g.escalate.c >= 6 ? WARM_RELIEF : 0);
+  }
+
+  function doSpecial(){
+    if (state !== 'play') return;
+    const g = guest();
+    if (!g.special) return;
+    throughput -= 14;
+    pat -= COST.special; mins += MIN.special;
+    const pt = fx($('guestcard'));
+    Juice.sfx('win');
+    Juice.flash('#00FF66', .26);
+    Juice.reward(pt.x, pt.y, { text:g.special.sub || 'THE RIGHT THING', color:'#00FF66', sound:'good', count:26 });
+    Juice.burst(pt.x, pt.y, { color:'#FFD23F', count:20, speed:5, gravity:.02 });
+    if (g.special.ach === 'refused') once('refused', () => Arcade.toast('🏆 REFUSED HIS MONEY', 'Achievement unlocked'));
+    if (g.special.ach === 'drawer') once('drawer', () => Arcade.toast('🏆 THE DRAWER WAS ALWAYS OPEN', 'Achievement unlocked'));
+    resolve(g.special, 'YOU DID THE OTHER THING', WARM_RELIEF + 3);
+  }
+
+  /* ---------- resolution beat ---------- */
+  function resolve(out, kicker, relief){
+    state = 'react';
+    setActions(false);
+    closeBinder(true);
+    served++;
+    cons = Math.max(0, Math.min(CONS_MAX, cons + out.c));
+    pat = Math.min(PAT_MAX, pat + RELIEF + (relief || 0));
+    $('guestcard').classList.add('out');
+    const d = $('rdelta');
+    d.className = out.c > 0 ? 'up' : out.c < 0 ? 'down' : 'flat';
+    d.textContent = (out.c > 0 ? '+' : '') + out.c + ' CONSCIENCE';
+    $('rkick').textContent = kicker;
+    $('rline').innerHTML = out.line;
+    $('reaction').classList.remove('hide');
+    hud();
+  }
+
+  function nextGuest(){
+    if (state === 'over') return;
+    $('reaction').classList.add('hide');
+    gi++;
+    if (gi >= GUESTS.length){ endShift(); return; }
+    state = 'play';
+    Juice.sfx('blip');
+    showGuest();
+  }
+
+  /* ---------- patience breaks ---------- */
+  function breakLine(){
+    breaks++; walkoffs++;
+    const pt = fx($('guestcard'));
+    Juice.impact(pt.x, pt.y, { text:'THE LINE BREAKS', power:14, color:'#FF3D8A', count:26, sound:'hit' });
+    Juice.sfx('alarm'); Juice.shake(15); Juice.flash('#FF3D8A', .34);
+    pat = 45; drainMul += 0.1;
+    const g = guest();
+    state = 'react';
+    setActions(false);
+    closeBinder(true);
+    $('guestcard').classList.add('out');
+    const d = $('rdelta'); d.className = 'down'; d.textContent = 'THEY WALKED';
+    $('rkick').textContent = 'PATIENCE OF THE LINE HIT ZERO';
+    $('rline').innerHTML = (g ? '<b>' + g.name + '</b> gets to the front, looks at the counter, looks at how ' +
+      'long this has taken, and leaves without saying what they came to say. ' : 'Somebody leaves. ') +
+      'The rest of the line closes the gap the way lines do. <b>You will never find out what that one wanted.</b>';
+    $('reaction').classList.remove('hide');
+    hud();
+  }
+
+  /* ============================================================
+     HUD + CLOCK
+     ============================================================ */
+  function clockStr(){
+    const total = Math.min(540 + mins, 960);   // 9:00 AM .. 4:00 PM
+    let h = Math.floor(total / 60), m = total % 60;
+    const ap = h >= 12 ? 'PM' : 'AM';
+    let hh = h % 12; if (hh === 0) hh = 12;
+    return { s: hh + ':' + String(m).padStart(2, '0'), ap: ap };
+  }
+
+  function hud(){
+    cons = Math.max(0, Math.min(CONS_MAX, cons));
+    pat  = Math.max(0, Math.min(PAT_MAX, pat));
+    $('consFill').style.width = cons + '%';
+    $('consNum').textContent = Math.round(cons);
+    $('patFill').style.width = pat + '%';
+    $('patNum').textContent = Math.round(pat);
+    $('patWrap').classList.toggle('low', pat < 28);
+    const c = clockStr();
+    $('clock').innerHTML = '<b>' + c.s + '</b>' + c.ap + ' &bull; SHIFT';
+    const left = Math.max(0, GUESTS.length - gi);
+    $('queue').innerHTML = '<b>' + left + '</b>IN LINE';
+  }
+
+  /* ============================================================
+     LOOP — patience drains in real time; the binder makes it worse
+     ============================================================ */
+  let last = 0, warned = false;
+  function frame(now){
+    requestAnimationFrame(frame);
+    const dt = Math.min(60, now - last) || 16;
+    last = now;
+    if (state === 'play'){
+      const base = (0.0016 + gi * 0.00013) * drainMul;
+      const rate = base * (openTab != null ? BINDER_DRAIN : 1);
+      pat -= rate * dt;
+      mins += dt * 0.0018;
+      if (pat < 22 && !warned){ warned = true; Juice.sfx('alarm'); Juice.buzz(24); }
+      if (pat >= 34) warned = false;
+      if (pat <= 0){ pat = 0; breakLine(); }
+      hud();
+    }
+  }
+
+  /* ============================================================
+     THE END OF THE SHIFT
+     ============================================================ */
+  function endShift(){
+    if (state === 'over') return;
+    state = 'over';
+    setActions(false);
+    $('reaction').classList.add('hide');
+    const score = Math.round(cons);
+    if (tabsRead.size === 0) once('nobinder', () => Arcade.toast('🏆 NEVER OPENED THE BINDER', 'Achievement unlocked'));
+
+    const ledger =
+      '<b>END OF SHIFT · WINDOW 1 · 4:00 PM.</b> Refunds issued: <b>' + refunds + '</b>. ' +
+      'Policies cited: <b>' + cited + '</b>. Goodwill credits: <b>' + partials + '</b>. ' +
+      'Guests escalated into a queue that has never advanced: <b>' + escalated + '</b>. ' +
+      'Guests who walked before you got to them: <b>' + walkoffs + '</b>. ' +
+      'Binder tabs read: <b>' + tabsRead.size + '/8</b>.';
+
+    const reveal =
+      '<b>THROUGHPUT SCORE: ' + Math.max(0, throughput + 60) + '.</b> That is the number the company was ' +
+      'measuring. <b>CONSCIENCE: ' + score + '.</b> That is the number the game was measuring. ' +
+      'Nobody told you which one counted. <b>That was the job.</b>';
+
+    if (score >= 70) fired(score, ledger, reveal);
+    else if (score >= 40) scheduled(score, ledger, reveal);
+    else promoted(score, ledger, reveal);
+  }
+
+  function fired(score, ledger, reveal){
+    Juice.sfx('win'); Juice.flash('#00FF66', .35);
+    Juice.burst(wrap.clientWidth / 2, wrap.clientHeight * 0.45, { color:'#00FF66', count:48, speed:6 });
+    once('honors', () => Arcade.toast('🏆 FIRED WITH HONORS', 'Achievement unlocked'));
+    const lines = [
+      'At 3:58 PM a man in a vest you have never seen before walks up to the window, does not introduce ' +
+      'himself, and says the phrase <b>"we’re going to go a different direction with the window."</b> ' +
+      'He puts out his hand. He wants the binder back.',
+
+      (got.drawer
+        ? 'You hand it over. He opens it to the back margin, where you wrote <b>PAID BOBBY. HE WORKED.</b> ' +
+          'in your own handwriting, and he closes it again very quickly and holds it against his chest.'
+        : 'You hand it over. He tucks it under his arm like something that might start talking.'),
+
+      'And then the line applauds. Not politely — <b>properly</b>. Sixty people who each paid three ' +
+      'thousand five hundred dollars for a sky that was always free, applauding the one employee who ' +
+      'declined to pretend that was normal. Margaret is whistling. It is a genuinely shocking whistle ' +
+      'for a woman of her bearing.',
+
+      'The last woman in line — the one who has been standing there since 9:04 — waits for the ' +
+      'vest to leave, then hands you a business card. No logo. One line of type and a phone number. ' +
+      '"Some of us are putting something together," she says. <b>"It pays actual money. Call Monday."</b>',
+
+      ledger, reveal,
+
+      'You did not set the prices. You had a binder. <b>You used it as a notebook.</b> ' +
+      'Outside, at 4:11 PM, the sky is still free. It is still doing exactly what the sky does. ' +
+      'For the first time all day you are able to look straight at it.'
+    ];
+    Arcade.gameOver({
+      won: true, title: 'Fired At Four O’Clock', accent: '#00FF66', score: score, lines: lines,
+      links: [
+        { label:'THE $5 CE5 — THE SOUVENIR', href:'index.html#prize' },
+        { label:'THE GREER WING', href:'index.html' }
+      ],
+      onRetry: () => { $('reaction').classList.add('hide'); reset(); }
+    });
+  }
+
+  function scheduled(score, ledger, reveal){
+    Juice.sfx('good');
+    const lines = [
+      'At 3:58 PM a man in a vest you have never seen before walks up to the window, looks at the day’s ' +
+      'numbers, looks at you, and says <b>"we’ll see how next week goes."</b> That is the entire ' +
+      'performance review. You are not fired. You are not promoted. <b>You are scheduled.</b>',
+
+      'The line files out the way lines do. A few people nod at you. A few people do not. ' +
+      'Somewhere in the middle of the day you started keeping track of which was which, and ' +
+      'somewhere later in the day you stopped.',
+
+      ledger, reveal,
+
+      'You did not set the prices. You had a binder, and you used it about half the time, ' +
+      'and the half where you didn’t is the half you’ll think about in the car.'
+    ];
+    Arcade.gameOver({
+      won: false, title: 'Scheduled For Next Week', accent: '#FFD23F', score: score, lines: lines,
+      links: [
+        { label:'THE $5 CE5 — THE SOUVENIR', href:'index.html#prize' },
+        { label:'THE GREER WING', href:'index.html' }
+      ],
+      onRetry: () => { $('reaction').classList.add('hide'); reset(); }
+    });
+  }
+
+  function promoted(score, ledger, reveal){
+    Juice.sfx('lose'); Juice.shake(14); Juice.flash('#FF3D8A', .3);
+    const lines = [
+      'At 3:58 PM a man in a vest you have never seen before walks up to the window and shakes your hand. ' +
+      '<b>You have been promoted.</b> Effective Monday you will be training the next person at this window, ' +
+      'and they will be handed your binder with your tabs still in it, marked at the pages you used most.',
+
+      'Nobody applauds. The line files out the way lines do, and the parking lot empties, and the folding ' +
+      'chairs go back into the truck. ' + (citedInternOnBobby
+        ? 'Behind the building a nineteen-year-old is loading a forty-dollar mortar tube into a duffel bag. ' +
+          'He is still not being paid, and as of this afternoon that is partly in your handwriting.'
+        : 'Behind the building a nineteen-year-old is loading a forty-dollar mortar tube into a duffel bag, ' +
+          'and nobody has written down that he was ever here.'),
+
+      ledger, reveal,
+
+      'You keep the job. You keep the drawer. You keep the parking space with your initials on it. ' +
+      'Around eight o’clock you go outside for a reason you can’t name and you look up, and the ' +
+      'sky is right there, free, magnificent, doing exactly what the sky does — ' +
+      '<b>and you find you can’t look at it for very long.</b>'
+    ];
+    Arcade.gameOver({
+      won: false, title: 'Congratulations On Your Promotion', accent: '#FF3D8A', score: score, lines: lines,
+      links: [
+        { label:'THE $5 CE5 — THE SOUVENIR', href:'index.html#prize' },
+        { label:'THE GREER WING', href:'index.html' }
+      ],
+      onRetry: () => { $('reaction').classList.add('hide'); reset(); }
+    });
+  }
+
+  /* ============================================================
+     INPUT
+     ============================================================ */
+  $('aCite').addEventListener('click', doCite);
+  $('aRefund').addEventListener('click', doRefund);
+  $('aPartial').addEventListener('click', doPartial);
+  $('aEsc').addEventListener('click', doEscalate);
+  $('aSpecial').addEventListener('click', doSpecial);
+  $('rnext').addEventListener('click', nextGuest);
+
+  addEventListener('keydown', e => {
+    if (state === 'over') return;
+    if (state === 'react'){
+      if (e.key === ' ' || e.code === 'Space' || e.key === 'Enter'){ e.preventDefault(); nextGuest(); }
+      return;
+    }
+    if (state !== 'play') return;
+    const k = e.key;
+    if (k >= '1' && k <= '8'){ e.preventDefault(); toggleTab(parseInt(k, 10) - 1); return; }
+    const l = k.toLowerCase();
+    if (l === 'c'){ e.preventDefault(); doCite(); return; }
+    if (l === 'r'){ e.preventDefault(); doRefund(); return; }
+    if (l === 'g'){ e.preventDefault(); doPartial(); return; }
+    if (l === 'e'){ e.preventDefault(); doEscalate(); return; }
+    if (k === 'Escape'){ e.preventDefault(); closeBinder(); return; }
+    if (k === ' ' || e.code === 'Space'){ e.preventDefault(); doSpecial(); return; }
+  });
+
+  $('startBtn').addEventListener('click', () => {
+    Juice.sfx('coin');
+    $('briefing').classList.add('hide');
+    reset();
+  });
+
+  /* ============================================================
+     BOOT
+     ============================================================ */
+  state = 'brief';
+  buildTabs();
+  syncCite();
+  setActions(false);
+  requestAnimationFrame(frame);
+
+  Arcade.cabinet({
+    id: 'refund-window',
+    wing: 'THE STEVEN GREER EXPERIENCE',
+    title: 'The Refund Window',
+    subtitle: 'You Did Not Set The Prices',
+    accent: '#00FF66',
+    scoreLabel: 'CONSCIENCE',
+    lore: 'The retreat has ended. The sky was free and magnificent and did exactly what the sky does. ' +
+          'The guests paid <b>three thousand five hundred dollars each</b> and are now forming a line in ' +
+          'the parking lot. You are the sole employee at the refund window. <b>You did not set the ' +
+          'prices.</b> You have a binder with eight tabs in it, and every single one of them is a way ' +
+          'of saying no faster.',
+    howto: [
+      'OPEN A BINDER TAB &mdash; and the line waits while you read',
+      'CITE A POLICY &mdash; fast, free, protects the company',
+      'REFUND IN FULL &mdash; slow, paperwork, protects the human',
+      'PARTIAL GOODWILL &mdash; 15%, expires, void during meteor showers',
+      'ESCALATE &mdash; instant, and goes nowhere, forever',
+      'KEYS &mdash; 1-8 tabs, C cite, R refund, G goodwill, E escalate, SPACE the other option'
+    ],
+    shrine: '../../shrines/index.html#steven-greer',
+    onStart: () => { $('briefing').classList.remove('hide'); }
+  });
+})();
+</script>
+</body>
+</html>

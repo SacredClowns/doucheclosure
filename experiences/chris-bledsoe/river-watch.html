@@ -748,7 +748,8 @@
 
   function drawBracket(L, lost){
     const s = 30;
-    const x = L.x, y = L.y;
+    const x = Math.max(s + 6, Math.min(W - s - 6, L.x));
+    const y = Math.max(s + 20, Math.min(WATER - s - 6, L.y));
     cx.save();
     cx.strokeStyle = lost ? 'rgba(150,140,175,.55)' : 'rgba(74,158,232,.9)';
     cx.lineWidth = 1.6;

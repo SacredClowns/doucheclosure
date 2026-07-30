@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DARK SKY RUN — Doucheclosure</title>
+<meta name="description" content="The retreat costs thousands and drives you into the desert. The review board has one question: could you have done this yourself, for free, tonight? A car, a tank of gas, a map, and until moonrise.">
+<style>
+  :root{
+    --void:#0B0614; --panel:#150C22; --panel-2:#1D1130;
+    --neon-pink:#FF3D8A; --neon-cyan:#2DE1FC; --neon-yellow:#FFD23F;
+    --neon-green:#3DFC8A; --chrome:#B9AFD0; --white:#F4F0FF;
+    --accent:#2DE1FC; --shadow:rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box;}
+  html{background:var(--void);}
+  body{margin:0; background:var(--void); color:var(--white);
+    font-family:"Courier New", Courier, monospace; line-height:1.65; overflow-x:hidden;}
+  body::after{content:""; position:fixed; inset:0;
+    background:repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 1px, transparent 1px 3px);
+    pointer-events:none; z-index:100;}
+  a{color:var(--neon-cyan);}
+  .wrap{max-width:1040px; margin:0 auto; padding:0 1.25rem;}
+  .display{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif;
+    font-weight:400; text-transform:uppercase; letter-spacing:.03em; line-height:.95;}
+  .crumb{padding:1rem 1.25rem; font-size:.72rem; letter-spacing:.15em; text-transform:uppercase;}
+  .crumb a{text-decoration:none;}
+
+  header.wing{
+    text-align:center; padding:2.4rem 1rem 2.2rem;
+    background:radial-gradient(ellipse at 50% -20%, rgba(45,225,252,.22), transparent 60%),
+      radial-gradient(ellipse at 14% 120%, rgba(0,255,102,.07), transparent 55%);
+    border-bottom:3px solid var(--accent);
+  }
+  .wing .eyebrow{color:var(--neon-green); letter-spacing:.28em; text-transform:uppercase; font-size:.72rem;}
+  .wing h1{margin:.5rem 0 0; font-size:clamp(2.5rem,10vw,5rem); color:var(--accent);
+    text-shadow:0 0 18px rgba(45,225,252,.5), 4px 4px 0 #06303A;}
+  .wing .sub{color:var(--chrome); max-width:38rem; margin:1.1rem auto 0; font-size:.9rem;}
+  .wing .sub b{color:var(--white);}
+  .file-tab{display:inline-block; margin-top:1.2rem; border:2px solid var(--neon-yellow);
+    color:var(--neon-yellow); padding:.4rem 1.1rem; font-size:.72rem; letter-spacing:.2em;
+    text-transform:uppercase; transform:rotate(-2deg);}
+
+  section{padding:2rem 0 2.6rem;}
+
+  /* ---------- stage ---------- */
+  #stage{position:relative; background:linear-gradient(180deg,var(--panel-2),var(--panel));
+    border:2px solid #16505E; border-radius:12px;
+    box-shadow:0 0 26px rgba(45,225,252,.12),0 12px 34px var(--shadow);
+    padding:1.1rem; overflow:hidden;}
+  #stage::before{content:""; position:absolute; inset:0; pointer-events:none;
+    background:radial-gradient(ellipse at 74% 12%, rgba(45,225,252,.09), transparent 58%);}
+
+  /* ---------- night bar ---------- */
+  #nightbar{position:relative; z-index:2; display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(132px,1fr)); gap:.5rem;}
+  .nb{border:2px solid #23404E; border-radius:9px; background:#080B14; padding:.4rem .6rem .5rem;}
+  .nb .l{font-size:.52rem; letter-spacing:.2em; text-transform:uppercase; color:#5F7C8A;}
+  .nb .v{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; font-weight:400;
+    font-size:1.5rem; line-height:1.1; color:var(--accent); letter-spacing:.03em;}
+  .nb .s{font-size:.55rem; letter-spacing:.1em; color:#7E8FA8; text-transform:uppercase;}
+  .nb.warn .v{color:var(--neon-yellow);}
+  .nb.moon .v{color:#E8DCC0;}
+
+  /* ---------- map ---------- */
+  #mapwrap{position:relative; z-index:2; margin-top:.8rem; background:#05070E;
+    border:2px solid #23404E; border-radius:10px; padding:.4rem; overflow:hidden;}
+  #map{display:block; width:100%; height:auto; touch-action:manipulation; cursor:pointer;}
+  #maphint{font-size:.56rem; letter-spacing:.14em; text-transform:uppercase; color:#5F7C8A;
+    text-align:center; margin:.35rem 0 .1rem;}
+
+  /* ---------- route ---------- */
+  #routebox{position:relative; z-index:2; margin-top:.8rem; border:2px dashed #23404E;
+    border-radius:10px; padding:.7rem .85rem; background:#0A0D17;}
+  #routehead{font-size:.56rem; letter-spacing:.24em; text-transform:uppercase; color:var(--accent);
+    display:flex; justify-content:space-between; gap:.6rem; flex-wrap:wrap; align-items:center;}
+  #chips{display:flex; flex-wrap:wrap; gap:.35rem; margin-top:.5rem; min-height:2rem; align-items:center;}
+  .chip{font-family:inherit; cursor:pointer; border:1.5px solid var(--accent); background:#08222A;
+    color:#B6EEFA; border-radius:6px; padding:.3rem .5rem; font-size:.62rem; letter-spacing:.06em;
+    text-transform:uppercase; line-height:1.2;}
+  .chip .x{color:var(--neon-pink); margin-left:.35rem;}
+  .chip.svc{border-color:var(--neon-yellow); color:#FFE9A8; background:#231C05;}
+  .chip.dead{border-color:#5B2436; color:#C88; background:#1E0B12;}
+  .arrow{color:#4E6472; font-size:.7rem;}
+  #chips .empty{color:#5F7C8A; font-size:.64rem; letter-spacing:.1em; text-transform:uppercase;}
+  #legs{margin-top:.5rem; font-size:.6rem; color:#7E8FA8; letter-spacing:.04em; line-height:1.7;}
+  #legs b{color:var(--white); font-weight:normal;}
+  #legs .bad{color:var(--neon-pink);}
+  #legs .good{color:var(--neon-green);}
+
+  /* ---------- live readout ---------- */
+  #live{position:relative; z-index:2; margin-top:.8rem; display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(148px,1fr)); gap:.5rem;}
+  .lv{border:2px solid #2A2145; border-radius:9px; background:#0E0B18; padding:.4rem .6rem .5rem;}
+  .lv .l{font-size:.52rem; letter-spacing:.2em; text-transform:uppercase; color:#6E6288;}
+  .lv .v{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; font-weight:400;
+    font-size:1.65rem; line-height:1.1; color:var(--white); letter-spacing:.03em;}
+  .lv .s{font-size:.55rem; letter-spacing:.1em; color:#7E6F9E; text-transform:uppercase;}
+  .lv.hero{border-color:var(--accent); background:#07202A;}
+  .lv.hero .v{color:var(--accent);}
+  .lv.bust{border-color:var(--neon-pink); background:#20090F;}
+  .lv.bust .v{color:var(--neon-pink);}
+  .track{height:9px; background:#00000099; border:1px solid #000; border-radius:5px; overflow:hidden; margin-top:5px;}
+  .track i{display:block; height:100%; width:0%;}
+
+  /* ---------- site cards ---------- */
+  #sites{position:relative; z-index:2; margin-top:.9rem;
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(252px,1fr)); gap:.6rem;}
+  .site{background:linear-gradient(180deg,#141826,#0E1119); border:2px solid #2A3550;
+    border-radius:9px; padding:.55rem .6rem .6rem; display:flex; flex-direction:column;}
+  .site.on{border-color:var(--accent); box-shadow:0 0 14px rgba(45,225,252,.2);}
+  .site.locked{opacity:.72;}
+  .site .sh{display:flex; align-items:center; gap:.45rem;}
+  .bswatch{width:22px; height:22px; border-radius:4px; border:1.5px solid #000; flex:0 0 auto;
+    font-size:.6rem; line-height:19px; text-align:center; font-weight:bold; color:#000;}
+  .site .sn{font-family:Haettenschweiler,"Arial Narrow",Impact,sans-serif; font-weight:400;
+    text-transform:uppercase; letter-spacing:.04em; font-size:1rem; color:var(--white); line-height:1.05;}
+  .site .attrs{margin:.4rem 0 .3rem; display:grid; gap:1px;}
+  .site .attr{display:flex; justify-content:space-between; gap:.5rem; font-size:.58rem;
+    letter-spacing:.06em; text-transform:uppercase; color:#6E7C95;}
+  .site .attr b{color:#D6CFE8; font-weight:normal; text-align:right;}
+  .site .attr b.warn{color:var(--neon-yellow);}
+  .site .attr b.bad{color:var(--neon-pink);}
+  .site .attr b.good{color:var(--neon-green);}
+  .site .note{font-size:.58rem; color:#6E6288; line-height:1.45; margin:.2rem 0 .45rem; flex:1 1 auto;}
+  .site .add{font-family:inherit; cursor:pointer; width:100%; border-radius:6px; padding:.4rem;
+    font-size:.6rem; letter-spacing:.14em; text-transform:uppercase;
+    border:1.5px solid var(--accent); background:transparent; color:var(--accent);}
+  .site .add:hover{background:var(--accent); color:#05171C;}
+  .site.on .add{background:var(--accent); color:#05171C;}
+  .site .add:disabled{opacity:.4; cursor:not-allowed;}
+
+  /* ---------- field notes ---------- */
+  #notesbtn{margin-top:.85rem; position:relative; z-index:2; display:inline-block; cursor:pointer;
+    font-family:inherit; font-size:.64rem; letter-spacing:.18em; text-transform:uppercase;
+    background:transparent; color:var(--neon-green); border:1.5px dashed var(--neon-green);
+    border-radius:7px; padding:.45rem .8rem;}
+  #notes{position:relative; z-index:2; display:none; margin-top:.6rem; border-left:4px solid var(--neon-green);
+    background:#08130E; padding:.85rem 1rem; font-size:.76rem; color:var(--chrome); line-height:1.6;}
+  #notes h4{margin:.9rem 0 .25rem; font-size:.62rem; letter-spacing:.2em; text-transform:uppercase; color:var(--neon-green);}
+  #notes h4:first-child{margin-top:0;}
+  #notes b{color:var(--white);}
+  #notes table{width:100%; border-collapse:collapse; font-size:.68rem; margin:.4rem 0 .2rem;}
+  #notes td{padding:.16rem .4rem; border-bottom:1px dashed #1E3A2B; color:#9FB6A8;}
+  #notes td:first-child{color:var(--white); white-space:nowrap;}
+  #notes .sw{display:inline-block; width:11px; height:11px; border:1px solid #000; margin-right:.35rem; vertical-align:-1px;}
+
+  /* ---------- commit ---------- */
+  #commitrow{position:relative; z-index:2; margin-top:1rem; text-align:center;}
+  .btn{display:inline-block; margin:.35rem; padding:.85rem 1.6rem; border-radius:8px; cursor:pointer;
+    font-family:inherit; font-weight:bold; font-size:.8rem; letter-spacing:.14em; text-transform:uppercase;
+    text-decoration:none; border:2px solid var(--accent); background:var(--accent); color:#05171C;}
+  .btn.ghost{background:transparent; color:var(--chrome); border-color:#3A4E5E;}
+  .btn:disabled{opacity:.4; cursor:default;}
+  #reason{font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; color:var(--neon-pink);
+    min-height:1.3rem; margin:.35rem 0 0;}
+  #reason.ok{color:var(--neon-green);}
+
+  /* ---------- results ---------- */
+  #result{position:relative; z-index:2; display:none; margin-top:1rem;}
+  #ledger{width:100%; border-collapse:collapse; font-size:.72rem; background:#0A0D17; border:2px solid #23404E;}
+  #ledger th{background:var(--accent); color:#05171C; text-align:left; padding:.4rem .6rem;
+    font-size:.56rem; letter-spacing:.16em; text-transform:uppercase;}
+  #ledger td{padding:.42rem .6rem; border-bottom:1px dashed #1E3242; color:var(--chrome); vertical-align:top;}
+  #ledger td:first-child{color:var(--white);}
+  #ledger tr:last-child td{border-bottom:none;}
+  #ledger td.n{text-align:right; white-space:nowrap;}
+  #ledger .zero td{color:#8B5A6E;}
+  #tally{margin-top:.8rem; display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:.6rem;}
+  #boardbox{margin-top:.9rem; border:2px solid var(--neon-green); border-radius:10px;
+    background:#08130E; padding:.85rem 1rem;}
+  #boardbox h4{margin:0 0 .4rem; font-size:.58rem; letter-spacing:.22em; text-transform:uppercase; color:var(--neon-green);}
+  #boardbox p{margin:.35rem 0; font-size:.78rem; color:var(--chrome);}
+  #boardbox b{color:var(--white);}
+
+  /* ---------- briefing / skip ---------- */
+  #briefing{position:absolute; inset:0; z-index:40; display:none; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center; padding:1.4rem;
+    background:rgba(5,7,14,.965); overflow-y:auto;}
+  #briefing h2{font-size:clamp(1.5rem,5vw,2.4rem); color:var(--accent); text-shadow:0 0 18px rgba(45,225,252,.45);}
+  #briefing p{max-width:35rem; margin:.7rem auto; color:var(--chrome); font-size:.86rem;}
+  #briefing b{color:var(--white);}
+  #skip{position:absolute; right:1rem; bottom:1rem; z-index:45; display:none;}
+
+  .dossier{border-left:4px solid var(--neon-yellow); background:var(--panel);
+    padding:1.05rem 1.25rem; color:var(--chrome); font-size:.86rem; margin-top:1.6rem;}
+  .dossier b{color:var(--white);}
+  footer{padding:2rem 1rem 3rem; text-align:center; color:#7E6F9E; font-size:.72rem;}
+
+  @media (max-width:760px){
+    #stage{padding:.75rem;}
+    header.wing{padding:1.8rem 1rem 1.6rem;}
+    #sites{grid-template-columns:1fr;}
+    .nb .v{font-size:1.25rem;}
+    .lv .v{font-size:1.4rem;}
+  }
+</style>
+</head>
+<body>
+
+<p class="crumb"><a href="../../index.html">&larr; THE ARCADE</a> &nbsp;/&nbsp; <a href="index.html">STEVEN GREER</a> &nbsp;/&nbsp; DARK SKY RUN</p>
+
+<header class="wing">
+  <p class="eyebrow">The Steven Greer Experience &bull; Cabinet No. 2</p>
+  <h1 class="display">Dark Sky Run</h1>
+  <p class="sub">The retreat costs thousands of dollars and it drives you into the desert.
+  <b>We are not disputing the desert.</b> The review board has exactly one question, and it is a
+  logistics question: <b>could you have done this yourself, for free, tonight?</b> You have a car,
+  most of a tank, a map of your own county, and until moonrise.</p>
+  <span class="file-tab">DEPART 19:42 &bull; DUSK 21:12 &bull; MOON UP 01:31</span>
+</header>
+
+<section>
+  <div class="wrap">
+    <div id="stage">
+
+      <div id="nightbar">
+        <div class="nb"><div class="l">Keys in hand</div><div class="v" id="nbDepart">19:42</div><div class="s">You leave now</div></div>
+        <div class="nb"><div class="l">Astronomical dusk</div><div class="v" id="nbDusk">21:12</div><div class="s">Window opens</div></div>
+        <div class="nb moon"><div class="l">Moonrise</div><div class="v" id="nbMoon">01:31</div><div class="s" id="nbIllum">63% lit</div></div>
+        <div class="nb"><div class="l">Usable dark</div><div class="v" id="nbWindow">259</div><div class="s">Minutes, total</div></div>
+        <div class="nb warn"><div class="l">In the tank</div><div class="v" id="nbFuel">6.6</div><div class="s" id="nbRange">gal &middot; 172 mi range</div></div>
+        <div class="nb warn"><div class="l">In the console</div><div class="v" id="nbCash">$46</div><div class="s">Cash on hand</div></div>
+      </div>
+
+      <div id="mapwrap">
+        <canvas id="map" width="900" height="620" aria-label="A county map of candidate observing sites, roads, and the light dome over town."></canvas>
+        <p id="maphint">Tap a site to add it to tonight&rsquo;s route &middot; tap it again to drop it &middot; the cards below have the numbers</p>
+      </div>
+
+      <div id="routebox">
+        <div id="routehead">
+          <span>Tonight&rsquo;s route &mdash; you observe at every site you stop at</span>
+          <button class="chip" id="clearBtn" type="button" style="border-color:#5B2436;color:#E9A;background:#1E0B12;">Clear route</button>
+        </div>
+        <div id="chips"><span class="empty">Empty. The car is in the driveway with the engine running.</span></div>
+        <div id="legs">&nbsp;</div>
+      </div>
+
+      <div id="live">
+        <div class="lv"><div class="l">Arrive on site</div><div class="v" id="lvArrive">&mdash;</div><div class="s" id="lvArriveS">No route</div></div>
+        <div class="lv"><div class="l">Dark minutes</div><div class="v" id="lvDark">0</div><div class="s" id="lvDarkS">of 0 available</div>
+          <div class="track"><i id="lvDarkBar" style="background:linear-gradient(90deg,#0A3E4C,var(--accent))"></i></div></div>
+        <div class="lv"><div class="l">Sky quality</div><div class="v" id="lvQ">&mdash;</div><div class="s" id="lvQS">Bortle &middot; horizon &middot; air</div>
+          <div class="track"><i id="lvQBar" style="background:linear-gradient(90deg,#123E1E,var(--neon-green))"></i></div></div>
+        <div class="lv hero"><div class="l">Effective dark minutes</div><div class="v" id="lvEff">0</div><div class="s">Dark minutes &times; sky quality</div></div>
+        <div class="lv"><div class="l">Driving</div><div class="v" id="lvDrive">0</div><div class="s" id="lvDriveS">min &middot; 0 mi round trip</div></div>
+        <div class="lv" id="lvFuelBox"><div class="l">Fuel &amp; cash</div><div class="v" id="lvFuel">6.6</div><div class="s" id="lvFuelS">gal left &middot; $0.00 spent</div></div>
+      </div>
+
+      <div id="sites"></div>
+
+      <button id="notesbtn" type="button">&#9656; Open the field notes &mdash; the real astronomy, free, as always</button>
+      <div id="notes">
+        <h4>1 &bull; The Bortle scale is the whole vocabulary</h4>
+        <p>It is a nine-step description of how much artificial light is in your sky, and it maps
+        onto what you can actually see. The numbers below are the naked-eye limiting magnitude
+        &mdash; the faintest star visible &mdash; which is the honest way to compare two sites.</p>
+        <table>
+          <tr><td><span class="sw" style="background:#0A0A0A"></span>1 &mdash; Excellent dark sky</td><td>mag 7.8. Zodiacal light, airglow, your own hand invisible against the sky.</td></tr>
+          <tr><td><span class="sw" style="background:#3B3B3B"></span>2 &mdash; Truly dark</td><td>mag 7.4. Milky Way casts a shadow. Rare, and usually far.</td></tr>
+          <tr><td><span class="sw" style="background:#2B4CFF"></span>3 &mdash; Rural</td><td>mag 7.0. Light domes on the horizon only.</td></tr>
+          <tr><td><span class="sw" style="background:#2FBF4F"></span>4 &mdash; Rural / suburban transition</td><td>mag 6.5. <b>Milky Way still obvious overhead.</b> This is the class most people can reach in under half an hour.</td></tr>
+          <tr><td><span class="sw" style="background:#FFE23F"></span>5 &mdash; Suburban</td><td>mag 6.0. Milky Way weak or gone near the horizon.</td></tr>
+          <tr><td><span class="sw" style="background:#FF9A2E"></span>6 &mdash; Bright suburban</td><td>mag 5.5. No Milky Way. Clouds glow.</td></tr>
+          <tr><td><span class="sw" style="background:#FF3D3D"></span>7 &mdash; Suburban / urban</td><td>mag 5.0. The sky is grey-white to the horizon.</td></tr>
+          <tr><td><span class="sw" style="background:#FFFFFF"></span>8&ndash;9 &mdash; City</td><td>mag 4.5 and worse. You can read a newspaper by it.</td></tr>
+        </table>
+        <p>The step that buys you the most per mile driven is <b>5 to 4</b>. That is where the Milky
+        Way comes back. Going 4 to 2 is a real improvement and it usually costs you three hours of
+        your life in each direction.</p>
+
+        <h4>2 &bull; The drive is not free &mdash; it is paid for in darkness</h4>
+        <p>Your usable window runs from <b>astronomical dusk</b> (sun 18&deg; below the horizon, the sky
+        as dark as it will get) to <b>moonrise</b>. Every minute you spend driving after dusk is a
+        minute subtracted from the only resource in this game. A Bortle 2 site three hours out can
+        hand you <b>less total darkness</b> than a Bortle 4 site twenty-five minutes away, and the
+        Bortle 4 site lets you leave after dinner instead of after a nap.</p>
+
+        <h4>3 &bull; Moonlight is worse than people expect</h4>
+        <p>Not for the Moon, the planets, or double stars &mdash; those are fine in moonlight. For
+        <b>deep sky</b> &mdash; galaxies, nebulae, the Milky Way itself &mdash; the moon is a catastrophe.
+        A half-lit moon can brighten the whole sky by more than a magnitude, which is roughly the
+        difference between a Bortle 4 site and a Bortle 6 site. It effectively drives you two
+        classes back into town without your consent. Real observers plan deep-sky work around the
+        new moon, or into the gap before moonrise, or after moonset. <b>The board scores dark
+        minutes because dark minutes are the scarce thing.</b></p>
+
+        <h4>4 &bull; Horizon obstruction beats altitude, most nights</h4>
+        <p>Altitude buys you transparency &mdash; less air, less haze &mdash; and it is a real but modest
+        effect: a couple of thousand feet is worth a few percent, not a Bortle class. <b>Horizon
+        obstruction is worth much more.</b> Most of what you want to look at spends most of its time
+        below 40&deg; of altitude, and the galactic centre sits low in the south. A ridge, a treeline,
+        or a canyon wall on your southern horizon deletes more sky than the elevation gains back. A
+        flat, open, mediocre field routinely outperforms a spectacular blocked overlook.</p>
+
+        <h4>5 &bull; Dark adaptation takes twenty minutes and one car takes it away</h4>
+        <p>Your eyes need roughly 20&ndash;30 minutes in the dark before you are seeing anything like
+        your best, and a single set of headlights, a phone screen, or a white flashlight resets a
+        good part of it. <b>Red light only</b>, and site-hopping costs you the adaptation as well as
+        the drive. Pick one place and stay in it.</p>
+
+        <h4>6 &bull; Check access before you burn the gas</h4>
+        <p>Gates lock. Permits are sold from an office that shut at dinnertime. &ldquo;Members only&rdquo;
+        means members only, at 11pm, to you, in the cold. A five-minute check of a park&rsquo;s hours is
+        worth more than any piece of equipment you own.</p>
+
+        <h4>7 &bull; What this actually costs</h4>
+        <p>The sky is free. The parking is usually free. The dark is free. What you are actually
+        buying, if you buy anything, is <b>somebody telling you when to go</b> &mdash; and that is a
+        calculation, not a retreat.</p>
+      </div>
+
+      <div id="commitrow">
+        <button class="btn" id="commitBtn" type="button">Commit the route &mdash; drive it</button>
+        <p id="reason">Pick at least one site. Your own driveway counts as a plan.</p>
+      </div>
+
+      <div id="result">
+        <table id="ledger"></table>
+        <div id="tally"></div>
+        <div id="boardbox">
+          <h4>The review board&rsquo;s finding</h4>
+          <div id="boardbody"></div>
+        </div>
+      </div>
+
+      <button class="btn ghost" id="skip" type="button">Skip &rarr;</button>
+
+      <div id="briefing">
+        <h2 class="display">One Tank. Until Moonrise.</h2>
+        <p>The doctrine says the sky belongs to everybody and costs nothing. <b>We accept the
+        doctrine entirely.</b> The board&rsquo;s file concerns the four-figure invoice that has been
+        stapled to it, and the specific claim that the dark you need is somewhere far away and
+        expensive.</p>
+        <p>So: here is your county. Ten places you could stand tonight. Real light-pollution
+        classes, real drive times, real horizons, real gates. You have <b>most of a tank</b>,
+        <b>the cash in your console</b>, and the hours between astronomical dusk and moonrise.</p>
+        <p>Plot a route. Watch what the driving does to your window. Commit when you are ready,
+        and the night will play itself out. <b>Then the board will tell you what the best available
+        answer was.</b></p>
+        <button class="btn" id="startBtn" type="button">Take the keys</button>
+      </div>
+
+    </div>
+
+    <div class="dossier">
+      <b>WING DOCTRINE:</b> We do not dispute that consciousness is free, that the desert is free,
+      or that the sky is free. Those are, in fact, this cabinet&rsquo;s entire thesis. The board&rsquo;s
+      grievance is with the shipping and handling &mdash; the notion that the dark has to be
+      <em>reached</em>, at altitude, at expense, in a group, by appointment. Everything this game
+      teaches about light pollution, moonlight, horizons and dark adaptation is real and will work
+      in your county tonight, at a cost of zero dollars.
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>DOUCHECLOSURE&trade; EXPERIENCES &bull; A work of parody commenting on public statements of public figures.<br>
+  <a href="index.html">Back to the Greer wing</a> &bull; <a href="../../shrines/index.html#steven-greer">The shrine</a> &bull;
+  <a href="../../index.html">The arcade</a></p>
+</footer>
+
+<script src="../../assets/screen.js"></script>
+<script src="../../assets/arcade.js"></script>
+<script src="../../assets/juice.js"></script>
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const cv = $('map'), cx = cv.getContext('2d');
+  const CW = 900, CH = 620;
+  const clamp = (v,a,b) => v < a ? a : (v > b ? b : v);
+  Juice.init(cv);
+
+  /* ============================================================
+     THE COUNTY — nodes, roads, and a light dome over town
+     ============================================================ */
+  const N = {
+    HOME:{x:618,y:486,t:'site',lx:0,ly:34,al:'center'},
+    JT:  {x:540,y:452,t:'j'},
+    GAS: {x:466,y:516,t:'svc',lx:0,ly:34,al:'center'},
+    RNG: {x:572,y:388,t:'svc',lx:26,ly:5,al:'left'},
+    PUL: {x:712,y:402,t:'site',lx:0,ly:-26,al:'center'},
+    MIL: {x:452,y:392,t:'site',lx:-26,ly:4,al:'right'},
+    FRM: {x:520,y:292,t:'site',lx:26,ly:4,al:'left'},
+    RES: {x:660,y:250,t:'site',lx:0,ly:-26,al:'center'},
+    JN:  {x:470,y:222,t:'j'},
+    HWK: {x:352,y:180,t:'site',lx:0,ly:-26,al:'center'},
+    JW:  {x:352,y:436,t:'j'},
+    CED: {x:258,y:498,t:'site',lx:0,ly:34,al:'center'},
+    OBS: {x:236,y:100,t:'site',lx:0,ly:-24,al:'center'},
+    JD:  {x:186,y:302,t:'j'},
+    DEV: {x:74,y:258,t:'site',lx:0,ly:-24,al:'center'}
+  };
+
+  /* [a, b, miles, mph, unpaved?] */
+  const E = [
+    ['HOME','JT',3,30,0], ['HOME','PUL',7,35,0], ['JT','GAS',4,35,0], ['JT','RNG',3,30,0],
+    ['JT','MIL',11,38,0], ['RNG','FRM',14,38,0], ['MIL','FRM',5,32,0], ['MIL','JW',6,35,0],
+    ['GAS','JW',9,45,0], ['JW','CED',12,40,0], ['FRM','JN',7,40,0], ['JN','HWK',13,38,0],
+    ['JN','RES',14,42,0], ['RES','PUL',18,50,0], ['HWK','OBS',9,30,0], ['JW','HWK',20,40,0],
+    ['JW','JD',62,55,0], ['JD','DEV',26,22,1]
+  ];
+
+  const ADJ = {};
+  E.forEach(e => {
+    const min = e[2] / e[3] * 60;
+    (ADJ[e[0]] = ADJ[e[0]] || []).push({ to:e[1], min:min, mi:e[2] });
+    (ADJ[e[1]] = ADJ[e[1]] || []).push({ to:e[0], min:min, mi:e[2] });
+  });
+
+  /* ---------- all-pairs shortest path, by minutes ---------- */
+  const PATHS = {};
+  (function buildPaths(){
+    const keys = Object.keys(N);
+    keys.forEach(src => {
+      const dist = {}, mi = {}, prev = {}, seen = {};
+      keys.forEach(k => { dist[k] = Infinity; mi[k] = 0; prev[k] = null; });
+      dist[src] = 0;
+      for (;;){
+        let u = null, best = Infinity;
+        keys.forEach(k => { if (!seen[k] && dist[k] < best){ best = dist[k]; u = k; } });
+        if (u === null) break;
+        seen[u] = true;
+        (ADJ[u] || []).forEach(e => {
+          const nd = dist[u] + e.min;
+          if (nd < dist[e.to] - 1e-9){ dist[e.to] = nd; mi[e.to] = mi[u] + e.mi; prev[e.to] = u; }
+        });
+      }
+      PATHS[src] = {};
+      keys.forEach(dst => {
+        const nodes = [];
+        let c = dst;
+        while (c){ nodes.unshift(c); c = prev[c]; }
+        PATHS[src][dst] = { min: dist[dst], mi: mi[dst], nodes: nodes };
+      });
+    });
+  })();
+
+  /* ============================================================
+     THE SITES — every attribute here is the kind a real observer checks
+     ============================================================ */
+  const NELM  = [0, 7.8, 7.4, 7.0, 6.5, 6.0, 5.5, 5.0, 4.5, 4.0];
+  const BCOL  = ['#000', '#0A0A0A', '#3B3B3B', '#2B4CFF', '#2FBF4F', '#FFE23F', '#FF9A2E', '#FF3D3D', '#FFFFFF', '#FFFFFF'];
+  const BTXT  = ['#000', '#FFF', '#FFF', '#FFF', '#000', '#000', '#000', '#000', '#000', '#000'];
+
+  const SITE = {
+    HOME:{ name:'YOUR OWN DRIVEWAY', bortle:7, obs:0.35, elev:310, fee:0,
+      access:'PUBLIC — IT IS YOURS',
+      amen:'Bathroom, chair, coffee, and your bed nine steps away.',
+      note:'Streetlight two houses down. Neighbour’s floodlight on a motion sensor that has opinions about cats. It is still a sky, and it is still free.' },
+    PUL:{ name:'HIGHWAY 6 PULLOUT', bortle:5, obs:0.25, elev:260, fee:0, traffic:true,
+      access:'PUBLIC — GRAVEL SHOULDER',
+      amen:'A guardrail and a trash barrel.',
+      note:'A car every four minutes and every one of them re-lights your retinas. You will never get past twenty minutes of dark adaptation here.' },
+    MIL:{ name:'MILLPOND BOAT RAMP', bortle:4, obs:0.12, elev:240, fee:0,
+      access:'PUBLIC — OPEN ALL NIGHT',
+      amen:'Pit toilet, gravel lot, one picnic table.',
+      note:'Open water to the south. Nothing between you and the horizon but flat black water and a dead cottonwood. Nobody has ever charged anybody a dollar to stand here.' },
+    FRM:{ name:'KETTLEMAN’S BACK FIELD', bortle:4, obs:0.18, elev:400, fee:0,
+      access:'PERMISSION — CALL AHEAD, FREE',
+      amen:'A gate you close behind you and a dog named Rudy.',
+      note:'Forty flat acres and a farmer who is delighted somebody asked. The eastern treeline takes a little of the sky and Rudy takes a little of your attention.' },
+    RES:{ name:'RESERVOIR CAMPGROUND', bortle:4, obs:0.30, elev:700, fee:10,
+      access:'DAY-USE FEE — $10 AT THE IRON RANGER',
+      amen:'Flush toilets, running water, picnic tables, a bear box.',
+      note:'Genuinely pleasant. You are paying ten dollars for plumbing and a ring of pines that takes a third of your horizon.' },
+    HWK:{ name:'HAWKRIDGE OVERLOOK', bortle:3, obs:0.55, elev:2100, fee:0,
+      access:'PUBLIC — PAVED LOT',
+      amen:'Interpretive sign. No water. Excellent view of a ridge.',
+      note:'Two thousand feet up and the ridge at your back takes the entire southern sky, which is where everything worth looking at happens to live.' },
+    CED:{ name:'CEDAR FLATS STATE PARK', bortle:3, obs:0.45, elev:900, fee:0, permit:true, gateCap:175,
+      access:'PERMIT REQUIRED — RANGER STATION, IN TOWN',
+      amen:'Restrooms, water, a vending machine that takes bills on alternate Tuesdays.',
+      note:'A beautiful campground. A beautiful campground at the bottom of a hole, with a gate that locks and a ranger who means it.' },
+    OBS:{ name:'MT. PERREN OBSERVATORY GATE', bortle:3, obs:0.15, elev:5600, fee:0, gated:true,
+      access:'GATED — MEMBERS ONLY',
+      amen:'A chain, a sign, and a very good sky on the far side of both.',
+      note:'The finest accessible summit in the county, and it is not accessible. The board notes that this is what a paywall on the sky actually looks like when it is honest about it.' },
+    DEV:{ name:'DEVIL’S CHIMNEY WILDERNESS', bortle:2, obs:0.08, elev:4300, fee:0,
+      access:'PUBLIC — LAST 26 MILES UNPAVED',
+      amen:'None. There is nothing out there. That is the amenity.',
+      note:'Truly dark, genuinely spectacular, and two and a half hours each way on a tank you do not currently have. This is the sky the brochure is selling. Check what it costs you in window.' }
+  };
+  const SITE_ORDER = ['HOME','PUL','MIL','FRM','RES','HWK','CED','DEV','OBS'];
+
+  const SVC = {
+    GAS:{ name:'TRUCK STOP — FUEL', note:'Fills the tank in ten minutes. Coffee is included in the sense that it exists.' },
+    RNG:{ name:'RANGER STATION — PERMITS', note:'Sells the Cedar Flats night-use permit for $12. Closes twenty minutes before astronomical dusk, which is the joke the state is telling.' }
+  };
+
+  /* ============================================================
+     BUDGETS
+     ============================================================ */
+  const MPG = 26, TANK = 13.2, PRICE = 3.79;
+  const START_GAL = 6.6, START_CASH = 46;
+  const GAS_MIN = 10, RNG_MIN = 15, PERMIT_FEE = 12;
+  const LOOK_MIN = 45, TURNAWAY_MIN = 10, DEPART_LEAD = 90;
+
+  /* ---------- sky quality: Bortle, horizon, air ---------- */
+  function quality(s){
+    const qb = clamp((NELM[s.bortle] - 3.8) / 4, 0, 1);
+    const qh = 1 - 0.55 * s.obs;
+    const qe = 1 + Math.min(0.10, s.elev / 60000);
+    return clamp(qb * qh * qe, 0, 1);
+  }
+  /* effective minutes: dark minutes weighted by dark adaptation, integrated per minute */
+  function effective(q, mins, traffic){
+    let sum = 0;
+    for (let t = 0; t < mins; t++){
+      const tt = traffic ? (t % 26) : t;
+      const a = Math.min(traffic ? 0.86 : 1, 0.55 + 0.45 * tt / 22);
+      sum += a;
+    }
+    return sum * q;
+  }
+
+  /* ============================================================
+     THE NIGHT
+     ============================================================ */
+  let night, route, awarded, played;
+
+  function rollNight(){
+    const dusk   = 1255 + Math.floor(Math.random() * 36);      // 20:55 – 21:31
+    const window = 165 + Math.floor(Math.random() * 91);       // 165 – 255 minutes of dark
+    const illum  = 0.34 + Math.random() * 0.52;
+    return {
+      departT: dusk - DEPART_LEAD,
+      duskT: dusk,
+      moonT: dusk + window,
+      window: window,
+      illum: illum,
+      rngClose: dusk - 20
+    };
+  }
+  function fmtT(m){
+    m = ((Math.round(m) % 1440) + 1440) % 1440;
+    const h = Math.floor(m / 60), r = m % 60;
+    return (h < 10 ? '0' : '') + h + ':' + (r < 10 ? '0' : '') + r;
+  }
+
+  /* ============================================================
+     ROUTE EVALUATION — the whole puzzle lives in this function
+     ============================================================ */
+  function evalRoute(rt){
+    const r = { legs:[], stops:[], events:[], miles:0, driveMin:0, spent:0,
+                dark:0, eff:0, ok:true, block:'', permit:false,
+                galEnd:START_GAL, cashEnd:START_CASH, arrive:null, firstSite:null, mainSite:null };
+    let t = night.departT, gal = START_GAL, cash = START_CASH, cur = 'HOME';
+
+    let lastObs = -1;
+    for (let i = 0; i < rt.length; i++) if (SITE[rt[i]]) lastObs = i;
+
+    for (let i = 0; i < rt.length; i++){
+      const id = rt[i], P = PATHS[cur][id];
+      t += P.min; gal -= P.mi / MPG; r.miles += P.mi; r.driveMin += P.min;
+      r.legs.push({ from:cur, to:id, min:P.min, mi:P.mi });
+      if (gal < -1e-9 && r.ok){ r.ok = false; r.block = 'YOU RUN DRY BEFORE YOU GET THERE — ' + P.mi.toFixed(0) + ' MI LEG, NO FUEL FOR IT'; }
+      cur = id;
+
+      if (id === 'GAS'){
+        t += GAS_MIN;
+        const need = TANK - gal, cost = need * PRICE;
+        cash -= cost; r.spent += cost; gal = TANK;
+        r.events.push({ t:t, txt:'TRUCK STOP · ' + need.toFixed(1) + ' gal · $' + cost.toFixed(2) + ' · 10 min' });
+      } else if (id === 'RNG'){
+        t += RNG_MIN;
+        if (t <= night.rngClose){
+          cash -= PERMIT_FEE; r.spent += PERMIT_FEE; r.permit = true;
+          r.events.push({ t:t, txt:'RANGER STATION · CEDAR FLATS PERMIT · $12 · 15 min' });
+        } else {
+          r.events.push({ t:t, txt:'RANGER STATION DARK · CLOSED AT ' + fmtT(night.rngClose) + ' · NO PERMIT', bad:true });
+        }
+      } else {
+        const S = SITE[id];
+        if (S.gated){
+          t += TURNAWAY_MIN;
+          r.stops.push({ id:id, arrive:t, dark:0, q:quality(S), eff:0, why:'TURNED AROUND AT THE GATE' });
+          r.events.push({ t:t, txt:S.name + ' · CHAIN ACROSS THE ROAD · TURNED AROUND', bad:true });
+        } else if (S.permit && !r.permit){
+          t += TURNAWAY_MIN;
+          r.stops.push({ id:id, arrive:t, dark:0, q:quality(S), eff:0, why:'NO PERMIT — TURNED AROUND' });
+          r.events.push({ t:t, txt:S.name + ' · NO PERMIT ON THE DASH · TURNED AROUND', bad:true });
+        } else {
+          if (S.fee){ cash -= S.fee; r.spent += S.fee; }
+          const start = Math.max(t, night.duskT);
+          let end;
+          if (start >= night.moonT){ end = start; }
+          else {
+            end = (i === lastObs) ? night.moonT : (start + LOOK_MIN);
+            if (S.gateCap) end = Math.min(end, night.duskT + S.gateCap);
+            end = Math.min(end, night.moonT);
+          }
+          const dark = Math.max(0, end - start);
+          const q = quality(S);
+          const eff = effective(q, Math.round(dark), !!S.traffic);
+          r.stops.push({ id:id, arrive:t, start:start, end:end, dark:dark, q:q, eff:eff,
+                         why: dark <= 0 ? 'ARRIVED AFTER MOONRISE — NO DARK LEFT' : '' });
+          r.dark += dark; r.eff += eff;
+          if (r.firstSite === null) r.firstSite = id;
+          if (!r.mainSite || dark > r.mainSite.dark) r.mainSite = r.stops[r.stops.length - 1];
+          if (r.arrive === null) r.arrive = t;
+          t = Math.max(t, end);
+        }
+      }
+      if (cash < -1e-9 && r.ok){ r.ok = false; r.block = 'NOT ENOUGH CASH IN THE CONSOLE — SHORT BY $' + Math.abs(cash).toFixed(2); }
+    }
+
+    /* the drive home is not optional and it is not free */
+    const back = PATHS[cur]['HOME'];
+    r.homeMi = back.mi; r.homeMin = back.min;
+    r.miles += back.mi; gal -= back.mi / MPG;
+    if (gal < -1e-9 && r.ok){
+      r.ok = false;
+      r.block = 'YOU DO NOT GET HOME — ROUTE NEEDS ' + (r.miles).toFixed(0) + ' MI, YOU HAVE ' + (START_GAL * MPG).toFixed(0) + ' MI OF RANGE';
+    }
+    r.galEnd = gal; r.cashEnd = cash;
+    r.lastObs = lastObs;
+    if (rt.length === 0){ r.ok = false; r.block = 'PICK AT LEAST ONE SITE. YOUR OWN DRIVEWAY COUNTS AS A PLAN.'; }
+    return r;
+  }
+
+  /* ---------- the board's own solution: brute force over minimal plans ---------- */
+  function boardBest(){
+    let best = null;
+    SITE_ORDER.forEach(id => {
+      const S = SITE[id];
+      if (S.gated) return;
+      const plans = [];
+      const base = S.permit ? ['RNG', id] : [id];
+      plans.push(base);
+      plans.push(['GAS'].concat(base));
+      if (S.permit) plans.push(['RNG','GAS',id], ['GAS','RNG',id]);
+      plans.forEach(p => {
+        const r = evalRoute(p);
+        if (!r.ok) return;
+        if (!best || r.eff > best.r.eff) best = { plan:p, r:r, id:id };
+      });
+    });
+    return best;
+  }
+
+  /* ============================================================
+     MAP RENDERING
+     ============================================================ */
+  let mode = 'map', hover = null, anim = null, sky = null;
+
+  function lightDome(){
+    /* the visible reason the east half of this county is useless */
+    const domes = [
+      { x:600, y:500, r:290, a:0.34, c:'255,170,70' },   // town
+      { x:700, y:400, r:150, a:0.16, c:'255,180,90' },   // the highway
+      { x:660, y:250, r:110, a:0.09, c:'255,190,110' },  // reservoir village
+      { x:300, y:470, r:120, a:0.07, c:'255,200,120' }   // cedar flats gateway town
+    ];
+    domes.forEach(d => {
+      const g = cx.createRadialGradient(d.x, d.y, 0, d.x, d.y, d.r);
+      g.addColorStop(0, 'rgba(' + d.c + ',' + d.a + ')');
+      g.addColorStop(0.5, 'rgba(' + d.c + ',' + (d.a * 0.32) + ')');
+      g.addColorStop(1, 'rgba(' + d.c + ',0)');
+      cx.fillStyle = g;
+      cx.beginPath(); cx.arc(d.x, d.y, d.r, 0, 6.2832); cx.fill();
+    });
+  }
+
+  function drawMap(){
+    cx.setTransform(1,0,0,1,0,0);
+    cx.clearRect(0,0,CW,CH);
+    const bg = cx.createLinearGradient(0,0,CW,CH);
+    bg.addColorStop(0,'#05070E'); bg.addColorStop(1,'#0A0810');
+    cx.fillStyle = bg; cx.fillRect(0,0,CW,CH);
+
+    /* faint contour texture so it reads as terrain, not a diagram */
+    cx.strokeStyle = 'rgba(60,90,110,.10)'; cx.lineWidth = 1;
+    for (let i = 0; i < 9; i++){
+      cx.beginPath();
+      for (let x = 0; x <= CW; x += 24){
+        const y = 120 + i * 52 + Math.sin(x / 130 + i * 1.7) * 26 + Math.cos(x / 61 + i) * 9;
+        if (x === 0) cx.moveTo(x,y); else cx.lineTo(x,y);
+      }
+      cx.stroke();
+    }
+    cx.globalCompositeOperation = 'lighter';
+    lightDome();
+    cx.globalCompositeOperation = 'source-over';
+
+    /* roads */
+    E.forEach(e => {
+      const a = N[e[0]], b = N[e[1]];
+      cx.strokeStyle = e[4] ? 'rgba(150,116,72,.55)' : 'rgba(96,124,150,.55)';
+      cx.lineWidth = e[4] ? 2 : clamp(e[3] / 16, 1.6, 3.6);
+      cx.setLineDash(e[4] ? [7,6] : []);
+      cx.beginPath(); cx.moveTo(a.x,a.y); cx.lineTo(b.x,b.y); cx.stroke();
+      cx.setLineDash([]);
+      if (e[2] >= 9){
+        cx.font = '10px "Courier New", monospace';
+        cx.fillStyle = 'rgba(126,150,175,.7)';
+        cx.textAlign = 'center';
+        const mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2;
+        cx.fillText(e[2] + ' MI', mx, my - 5);
+      }
+    });
+
+    /* the committed route, drawn over the roads */
+    if (route.length){
+      const seq = ['HOME'].concat(route);
+      cx.lineWidth = 5; cx.lineJoin = 'round';
+      cx.strokeStyle = 'rgba(45,225,252,.55)';
+      cx.beginPath();
+      for (let i = 1; i < seq.length; i++){
+        const p = PATHS[seq[i-1]][seq[i]].nodes;
+        for (let k = 0; k < p.length; k++){
+          const nd = N[p[k]];
+          if (i === 1 && k === 0) cx.moveTo(nd.x, nd.y); else cx.lineTo(nd.x, nd.y);
+        }
+      }
+      cx.stroke();
+    }
+
+    /* nodes */
+    Object.keys(N).forEach(id => {
+      const n = N[id];
+      if (n.t === 'j'){
+        cx.fillStyle = 'rgba(120,150,175,.45)';
+        cx.beginPath(); cx.arc(n.x, n.y, 3.5, 0, 6.2832); cx.fill();
+        return;
+      }
+      const inRoute = route.indexOf(id);
+      const S = SITE[id];
+      const r = 15;
+
+      if (inRoute >= 0 || hover === id){
+        cx.strokeStyle = 'rgba(45,225,252,.85)'; cx.lineWidth = 2.5;
+        cx.beginPath(); cx.arc(n.x, n.y, r + 8, 0, 6.2832); cx.stroke();
+      }
+      if (n.t === 'svc'){
+        cx.fillStyle = '#FFD23F'; cx.strokeStyle = '#000'; cx.lineWidth = 2;
+        cx.beginPath();
+        cx.moveTo(n.x, n.y - r); cx.lineTo(n.x + r, n.y); cx.lineTo(n.x, n.y + r); cx.lineTo(n.x - r, n.y);
+        cx.closePath(); cx.fill(); cx.stroke();
+        cx.fillStyle = '#231602'; cx.font = 'bold 13px "Courier New", monospace'; cx.textAlign = 'center';
+        cx.fillText(id === 'GAS' ? 'F' : 'P', n.x, n.y + 5);
+      } else {
+        cx.fillStyle = BCOL[S.bortle]; cx.strokeStyle = S.gated ? '#FF3D8A' : '#000'; cx.lineWidth = 2.5;
+        cx.beginPath(); cx.arc(n.x, n.y, r, 0, 6.2832); cx.fill(); cx.stroke();
+        cx.fillStyle = BTXT[S.bortle]; cx.font = 'bold 13px "Courier New", monospace'; cx.textAlign = 'center';
+        cx.fillText(String(S.bortle), n.x, n.y + 5);
+        if (S.gated){
+          cx.strokeStyle = '#FF3D8A'; cx.lineWidth = 2.5;
+          cx.beginPath(); cx.moveTo(n.x - 11, n.y - 11); cx.lineTo(n.x + 11, n.y + 11); cx.stroke();
+        }
+      }
+      if (inRoute >= 0){
+        cx.fillStyle = '#2DE1FC'; cx.beginPath(); cx.arc(n.x + 15, n.y - 15, 10, 0, 6.2832); cx.fill();
+        cx.fillStyle = '#05171C'; cx.font = 'bold 12px "Courier New", monospace';
+        cx.fillText(String(inRoute + 1), n.x + 15, n.y - 11);
+      }
+
+      const label = (S ? S.name : SVC[id].name).split(' — ')[0];
+      cx.font = '11px "Courier New", monospace';
+      cx.textAlign = n.al || 'center';
+      cx.fillStyle = inRoute >= 0 ? '#2DE1FC' : '#B9AFD0';
+      cx.fillText(label, n.x + (n.lx || 0), n.y + (n.ly || 0));
+      if (S){
+        const P = PATHS['HOME'][id];
+        cx.fillStyle = '#6E7C95'; cx.font = '10px "Courier New", monospace';
+        cx.fillText(id === 'HOME' ? 'HOME · 0 MIN' : Math.round(P.min) + ' MIN · ' + Math.round(P.mi) + ' MI',
+          n.x + (n.lx || 0), n.y + (n.ly || 0) + 12);
+      }
+    });
+
+    /* legend */
+    cx.fillStyle = 'rgba(5,7,14,.82)';
+    cx.fillRect(10, CH - 74, 258, 64);
+    cx.strokeStyle = 'rgba(45,225,252,.4)'; cx.lineWidth = 1.5;
+    cx.strokeRect(10.5, CH - 73.5, 257, 63);
+    cx.fillStyle = '#2DE1FC'; cx.font = '10px "Courier New", monospace'; cx.textAlign = 'left';
+    cx.fillText('BORTLE CLASS — LIGHT POLLUTION', 20, CH - 58);
+    for (let b = 1; b <= 9; b++){
+      const x = 20 + (b - 1) * 27;
+      cx.fillStyle = BCOL[b]; cx.fillRect(x, CH - 50, 22, 16);
+      cx.strokeStyle = '#000'; cx.lineWidth = 1; cx.strokeRect(x + .5, CH - 49.5, 21, 15);
+      cx.fillStyle = BTXT[b]; cx.font = 'bold 10px "Courier New", monospace'; cx.textAlign = 'center';
+      cx.fillText(String(b), x + 11, CH - 39);
+    }
+    cx.fillStyle = '#6E7C95'; cx.font = '9px "Courier New", monospace'; cx.textAlign = 'left';
+    cx.fillText('1 = PRISTINE     ORANGE HAZE = LIGHT DOME     9 = INNER CITY', 20, CH - 20);
+  }
+
+  /* ============================================================
+     THE SKY — star density is Bortle, silhouette is horizon obstruction
+     ============================================================ */
+  let seed = 1;
+  function srand(){ seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; }
+
+  function drawSky(S, adapt, moonUp, clockTxt, darkTxt){
+    const nelm = NELM[S.bortle];
+    const horizon = 470;
+    cx.setTransform(1,0,0,1,0,0);
+    cx.clearRect(0,0,CW,CH);
+
+    const glowBase = clamp((7 - S.bortle) / 6, 0, 1);
+    const g = cx.createLinearGradient(0,0,0,horizon);
+    const topL = Math.round(2 + (9 - S.bortle) * 0.4 + (1 - glowBase) * 16);
+    g.addColorStop(0, 'rgb(' + Math.round(topL * 0.7) + ',' + Math.round(topL * 0.85) + ',' + Math.round(topL * 1.7 + 4) + ')');
+    g.addColorStop(1, 'rgb(' + Math.round(topL * 1.9 + 12) + ',' + Math.round(topL * 1.9 + 10) + ',' + Math.round(topL * 2.1 + 16) + ')');
+    cx.fillStyle = g; cx.fillRect(0,0,CW,horizon);
+
+    /* the light dome you did or did not drive away from */
+    const domeA = clamp((S.bortle - 2) / 7, 0, 1) * 0.5;
+    if (domeA > 0.01){
+      const d = cx.createRadialGradient(CW * 0.62, horizon + 40, 0, CW * 0.62, horizon + 40, 470);
+      d.addColorStop(0, 'rgba(255,168,88,' + domeA + ')');
+      d.addColorStop(0.55, 'rgba(255,150,80,' + (domeA * 0.28) + ')');
+      d.addColorStop(1, 'rgba(255,150,80,0)');
+      cx.globalCompositeOperation = 'lighter';
+      cx.fillStyle = d; cx.fillRect(0,0,CW,horizon);
+      cx.globalCompositeOperation = 'source-over';
+    }
+
+    /* Milky Way — visible from Bortle 4 and better, which is the whole point */
+    const mw = clamp((nelm - 5.6) / 1.6, 0, 1) * adapt * (1 - moonUp * 0.85);
+    if (mw > 0.02){
+      cx.save();
+      cx.globalCompositeOperation = 'lighter';
+      cx.translate(CW * 0.55, horizon * 0.55);
+      cx.rotate(-0.62);
+      const mg = cx.createLinearGradient(0, -130, 0, 130);
+      mg.addColorStop(0, 'rgba(150,160,210,0)');
+      mg.addColorStop(0.42, 'rgba(178,182,225,' + (0.13 * mw) + ')');
+      mg.addColorStop(0.52, 'rgba(206,200,235,' + (0.19 * mw) + ')');
+      mg.addColorStop(0.62, 'rgba(178,182,225,' + (0.11 * mw) + ')');
+      mg.addColorStop(1, 'rgba(150,160,210,0)');
+      cx.fillStyle = mg; cx.fillRect(-760, -130, 1520, 260);
+      seed = 5150;
+      for (let i = 0; i < 700; i++){
+        const x = (srand() - 0.5) * 1400;
+        const y = (srand() - 0.5) * 190 * (0.4 + srand());
+        cx.fillStyle = 'rgba(224,228,255,' + (mw * (0.06 + srand() * 0.28)) + ')';
+        cx.fillRect(x, y, 1, 1);
+      }
+      /* the great rift */
+      cx.fillStyle = 'rgba(6,6,14,' + (0.30 * mw) + ')';
+      for (let i = 0; i < 34; i++){
+        const x = -700 + i * 42;
+        cx.fillRect(x, -12 + Math.sin(i * 0.7) * 16, 44, 20 + Math.cos(i) * 8);
+      }
+      cx.restore();
+    }
+
+    /* stars — count driven by naked-eye limiting magnitude */
+    const nStars = Math.round(clamp(40 * Math.pow(2.4, nelm - 4), 24, 1500));
+    seed = 90210;
+    cx.globalCompositeOperation = 'lighter';
+    for (let i = 0; i < nStars; i++){
+      const x = srand() * CW;
+      const y = srand() * horizon * 0.99;
+      const b = srand();
+      /* extinction: everything dims as it approaches the horizon */
+      const ext = 0.35 + 0.65 * (1 - y / horizon);
+      let a = adapt * ext * (0.14 + b * 0.86);
+      a *= (1 - moonUp * (0.55 + 0.4 * (1 - b)));
+      if (a <= 0.02) continue;
+      const sz = b > 0.985 ? 2.6 : (b > 0.93 ? 1.8 : 1);
+      cx.fillStyle = 'rgba(' + Math.round(214 + b * 41) + ',' + Math.round(224 + b * 31) + ',255,' + clamp(a,0,1) + ')';
+      cx.fillRect(x, y, sz, sz);
+      if (b > 0.985){
+        const gg = cx.createRadialGradient(x, y, 0, x, y, 9);
+        gg.addColorStop(0, 'rgba(210,226,255,' + clamp(a * 0.5,0,1) + ')');
+        gg.addColorStop(1, 'rgba(210,226,255,0)');
+        cx.fillStyle = gg; cx.beginPath(); cx.arc(x, y, 9, 0, 6.2832); cx.fill();
+      }
+    }
+    cx.globalCompositeOperation = 'source-over';
+
+    /* the moon, arriving to end the evening */
+    if (moonUp > 0.01){
+      const my = horizon - moonUp * 190;
+      const mr = 26;
+      cx.globalCompositeOperation = 'lighter';
+      const mg2 = cx.createRadialGradient(CW * 0.2, my, 0, CW * 0.2, my, 210 * moonUp);
+      mg2.addColorStop(0, 'rgba(226,232,255,' + (0.30 * moonUp * night.illum) + ')');
+      mg2.addColorStop(1, 'rgba(226,232,255,0)');
+      cx.fillStyle = mg2; cx.beginPath(); cx.arc(CW * 0.2, my, 210 * moonUp, 0, 6.2832); cx.fill();
+      cx.globalCompositeOperation = 'source-over';
+      cx.fillStyle = 'rgba(20,22,34,1)';
+      cx.beginPath(); cx.arc(CW * 0.2, my, mr, 0, 6.2832); cx.fill();
+      cx.save();
+      cx.beginPath(); cx.arc(CW * 0.2, my, mr, 0, 6.2832); cx.clip();
+      cx.fillStyle = '#F2E9D8';
+      cx.beginPath();
+      cx.ellipse(CW * 0.2 + mr * (1 - night.illum) * 1.2, my, mr, mr, 0, 0, 6.2832);
+      cx.fill();
+      cx.restore();
+      /* moonlight raises the floor of the entire sky */
+      cx.fillStyle = 'rgba(120,138,190,' + (0.20 * moonUp * night.illum) + ')';
+      cx.fillRect(0, 0, CW, horizon);
+    }
+
+    /* horizon silhouette — obstruction is a fraction of the usable sky */
+    const peak = S.obs * 330;
+    seed = 31337;
+    cx.fillStyle = '#020306';
+    cx.beginPath();
+    cx.moveTo(0, CH); cx.lineTo(0, horizon);
+    let x = 0;
+    while (x < CW){
+      const w = 22 + srand() * 46;
+      const h = peak * (0.45 + srand() * 0.85);
+      cx.lineTo(x + w * 0.5, horizon - h);
+      cx.lineTo(x + w, horizon - peak * 0.12 * srand());
+      x += w;
+    }
+    cx.lineTo(CW, CH); cx.closePath(); cx.fill();
+    cx.fillStyle = '#04060C';
+    cx.fillRect(0, horizon, CW, CH - horizon);
+
+    /* readout */
+    cx.fillStyle = 'rgba(5,7,14,.8)'; cx.fillRect(0, CH - 92, CW, 92);
+    cx.strokeStyle = 'rgba(45,225,252,.35)'; cx.lineWidth = 1.5;
+    cx.beginPath(); cx.moveTo(0, CH - 91.5); cx.lineTo(CW, CH - 91.5); cx.stroke();
+    cx.textAlign = 'left';
+    cx.fillStyle = '#2DE1FC'; cx.font = '22px Haettenschweiler, "Arial Narrow", Impact, sans-serif';
+    cx.fillText(S.name, 20, CH - 60);
+    cx.fillStyle = '#B9AFD0'; cx.font = '13px "Courier New", monospace';
+    cx.fillText('BORTLE ' + S.bortle + '  ·  NELM ' + NELM[S.bortle].toFixed(1) +
+      '  ·  HORIZON ' + Math.round(S.obs * 100) + '% BLOCKED  ·  ' + S.elev + ' FT', 20, CH - 38);
+    cx.fillStyle = '#6E7C95';
+    cx.fillText(moonUp > 0.02 ? 'THE MOON IS UP. THE FAINT WORK IS OVER.'
+      : (adapt < 0.85 ? 'DARK ADAPTING — GIVE IT TWENTY MINUTES' : 'FULLY DARK ADAPTED'), 20, CH - 18);
+    cx.textAlign = 'right';
+    cx.fillStyle = '#FFD23F'; cx.font = '30px Haettenschweiler, "Arial Narrow", Impact, sans-serif';
+    cx.fillText(clockTxt, CW - 20, CH - 52);
+    cx.fillStyle = '#3DFC8A'; cx.font = '15px "Courier New", monospace';
+    cx.fillText(darkTxt, CW - 20, CH - 24);
+  }
+
+  /* ============================================================
+     UI
+     ============================================================ */
+  function renderNight(){
+    $('nbDepart').textContent = fmtT(night.departT);
+    $('nbDusk').textContent = fmtT(night.duskT);
+    $('nbMoon').textContent = fmtT(night.moonT);
+    $('nbIllum').textContent = Math.round(night.illum * 100) + '% lit';
+    $('nbWindow').textContent = night.window;
+    $('nbFuel').textContent = START_GAL.toFixed(1);
+    $('nbRange').innerHTML = 'gal &middot; ' + Math.round(START_GAL * MPG) + ' mi range';
+    $('nbCash').textContent = '$' + START_CASH;
+  }
+
+  function horizonWord(o){
+    if (o < 0.15) return 'OPEN';
+    if (o < 0.25) return 'MOSTLY OPEN';
+    if (o < 0.35) return 'PARTLY BLOCKED';
+    if (o < 0.50) return 'HEAVILY TREED';
+    return 'WALLED IN';
+  }
+
+  function renderSites(){
+    const box = $('sites');
+    box.innerHTML = '';
+    SITE_ORDER.forEach(id => {
+      const S = SITE[id], P = PATHS['HOME'][id], inR = route.indexOf(id) >= 0;
+      const d = document.createElement('div');
+      d.className = 'site' + (inR ? ' on' : '') + (S.gated ? ' locked' : '');
+      const q = Math.round(quality(S) * 100);
+      const accCls = S.gated ? 'bad' : (S.permit || S.fee ? 'warn' : 'good');
+      d.innerHTML =
+        '<div class="sh"><span class="bswatch" style="background:' + BCOL[S.bortle] + ';color:' + BTXT[S.bortle] + '">' + S.bortle + '</span>' +
+        '<span class="sn">' + S.name + '</span></div>' +
+        '<div class="attrs">' +
+          '<div class="attr"><span>Bortle class</span><b>' + S.bortle + ' &middot; NELM ' + NELM[S.bortle].toFixed(1) + '</b></div>' +
+          '<div class="attr"><span>Drive from home</span><b>' + (id === 'HOME' ? '0 min' : Math.round(P.min) + ' min &middot; ' + Math.round(P.mi) + ' mi') + '</b></div>' +
+          '<div class="attr"><span>Elevation</span><b>' + S.elev.toLocaleString() + ' ft</b></div>' +
+          '<div class="attr"><span>Horizon</span><b class="' + (S.obs >= 0.35 ? 'bad' : (S.obs >= 0.22 ? 'warn' : 'good')) + '">' + Math.round(S.obs * 100) + '% &middot; ' + horizonWord(S.obs) + '</b></div>' +
+          '<div class="attr"><span>Access</span><b class="' + accCls + '">' + S.access + '</b></div>' +
+          '<div class="attr"><span>Sky quality</span><b>' + q + '%</b></div>' +
+        '</div>' +
+        '<p class="note"><b style="color:#8FA6C0">' + S.amen + '</b> ' + S.note + '</p>' +
+        '<button class="add" type="button">' + (inR ? '&#10003; In the route — tap to drop' : 'Add to route') + '</button>';
+      d.querySelector('.add').addEventListener('click', () => toggle(id));
+      box.appendChild(d);
+    });
+
+    /* the two service stops, rendered as a compact pair */
+    ['GAS','RNG'].forEach(id => {
+      const V = SVC[id], P = PATHS['HOME'][id], inR = route.indexOf(id) >= 0;
+      const d = document.createElement('div');
+      d.className = 'site' + (inR ? ' on' : '');
+      d.style.borderColor = inR ? '#2DE1FC' : '#4A3A18';
+      d.innerHTML =
+        '<div class="sh"><span class="bswatch" style="background:#FFD23F;color:#231602">' + (id === 'GAS' ? 'F' : 'P') + '</span>' +
+        '<span class="sn">' + V.name + '</span></div>' +
+        '<div class="attrs">' +
+          '<div class="attr"><span>Drive from home</span><b>' + Math.round(P.min) + ' min &middot; ' + Math.round(P.mi) + ' mi</b></div>' +
+          '<div class="attr"><span>Stop costs</span><b class="warn">' + (id === 'GAS' ? '10 min &middot; $' + PRICE.toFixed(2) + '/gal' : '15 min &middot; $12') + '</b></div>' +
+          (id === 'RNG' ? '<div class="attr"><span>Closes</span><b class="bad">' + fmtT(night.rngClose) + '</b></div>' : '<div class="attr"><span>Fills to</span><b>' + TANK.toFixed(1) + ' gal &middot; ' + Math.round(TANK * MPG) + ' mi</b></div>') +
+        '</div>' +
+        '<p class="note">' + V.note + '</p>' +
+        '<button class="add" type="button">' + (inR ? '&#10003; In the route — tap to drop' : 'Add to route') + '</button>';
+      d.querySelector('.add').addEventListener('click', () => toggle(id));
+      box.appendChild(d);
+    });
+  }
+
+  function renderRoute(){
+    const chips = $('chips');
+    chips.innerHTML = '';
+    if (!route.length){
+      chips.innerHTML = '<span class="empty">Empty. The car is in the driveway with the engine running.</span>';
+    } else {
+      const home = document.createElement('span');
+      home.className = 'chip'; home.style.borderColor = '#4E6472'; home.style.color = '#9FB0C0';
+      home.style.background = '#0D1119'; home.textContent = 'HOME';
+      chips.appendChild(home);
+      route.forEach((id, i) => {
+        const ar = document.createElement('span'); ar.className = 'arrow'; ar.textContent = '→';
+        chips.appendChild(ar);
+        const c = document.createElement('button');
+        c.type = 'button';
+        c.className = 'chip' + (SVC[id] ? ' svc' : '');
+        c.innerHTML = (i + 1) + '. ' + (SITE[id] ? SITE[id].name : SVC[id].name).split(' — ')[0] + '<span class="x">&times;</span>';
+        c.addEventListener('click', () => toggle(id));
+        chips.appendChild(c);
+      });
+      const ar2 = document.createElement('span'); ar2.className = 'arrow'; ar2.textContent = '→';
+      chips.appendChild(ar2);
+      const back = document.createElement('span');
+      back.className = 'chip'; back.style.borderColor = '#4E6472'; back.style.color = '#9FB0C0';
+      back.style.background = '#0D1119'; back.textContent = 'HOME';
+      chips.appendChild(back);
+    }
+  }
+
+  function renderLive(){
+    const r = evalRoute(route);
+    const L = [];
+    let t = night.departT;
+    r.legs.forEach(lg => {
+      t += lg.min;
+      L.push('<b>' + (SITE[lg.to] ? SITE[lg.to].name : SVC[lg.to].name).split(' — ')[0] + '</b> &mdash; ' +
+        Math.round(lg.min) + ' min, ' + Math.round(lg.mi) + ' mi, arrive ' + fmtT(t));
+    });
+    if (route.length) L.push('<span style="color:#5F7C8A">Return leg &mdash; ' + Math.round(r.homeMin) + ' min, ' + Math.round(r.homeMi) + ' mi home. You have to get home.</span>');
+    r.stops.forEach(s => {
+      if (s.why) L.push('<span class="bad">' + (SITE[s.id].name).split(' — ')[0] + ' &mdash; ' + s.why + '</span>');
+      else L.push('<span class="good">' + (SITE[s.id].name).split(' — ')[0] + ' &mdash; dark ' + fmtT(s.start) + ' to ' + fmtT(s.end) +
+        ' = ' + Math.round(s.dark) + ' min at ' + Math.round(s.q * 100) + '% = ' + Math.round(s.eff) + ' effective</span>');
+    });
+    r.events.forEach(e => L.push('<span style="color:' + (e.bad ? '#FF3D8A' : '#FFD23F') + '">' + e.txt + '</span>'));
+    $('legs').innerHTML = L.length ? L.join('<br>') : '&nbsp;';
+
+    $('lvArrive').textContent = r.arrive === null ? '—' : fmtT(r.arrive);
+    $('lvArriveS').textContent = r.arrive === null ? 'No observing stop yet'
+      : (r.arrive <= night.duskT ? 'Set up before dusk' : 'That is ' + Math.round(r.arrive - night.duskT) + ' min after dusk');
+    $('lvDark').textContent = Math.round(r.dark);
+    $('lvDarkS').textContent = 'of ' + night.window + ' available';
+    $('lvDarkBar').style.width = clamp(r.dark / night.window * 100, 0, 100) + '%';
+    const avgQ = r.dark > 0 ? (r.stops.reduce((a,s) => a + s.q * s.dark, 0) / r.dark) : 0;
+    $('lvQ').textContent = r.dark > 0 ? Math.round(avgQ * 100) + '%' : '—';
+    $('lvQS').textContent = r.dark > 0 && r.mainSite
+      ? 'Bortle ' + SITE[r.mainSite.id].bortle + ' · ' + Math.round(SITE[r.mainSite.id].obs * 100) + '% blocked'
+      : 'Bortle · horizon · air';
+    $('lvQBar').style.width = clamp(avgQ * 100, 0, 100) + '%';
+    $('lvEff').textContent = Math.round(r.eff);
+    $('lvDrive').textContent = Math.round(r.driveMin + r.homeMin || 0);
+    $('lvDriveS').innerHTML = 'min &middot; ' + Math.round(r.miles) + ' mi round trip';
+    $('lvFuel').textContent = r.galEnd < 0 ? 'DRY' : r.galEnd.toFixed(1);
+    $('lvFuelS').textContent = 'gal left · $' + r.spent.toFixed(2) + ' spent';
+    $('lvFuelBox').className = 'lv' + (r.galEnd < 0 || r.cashEnd < 0 ? ' bust' : '');
+
+    const btn = $('commitBtn'), rs = $('reason');
+    btn.disabled = !r.ok;
+    if (!r.ok){ rs.className = ''; rs.textContent = r.block; }
+    else {
+      rs.className = 'ok';
+      rs.textContent = 'Route is legal, fuelled and paid for. ' + Math.round(r.eff) + ' effective dark minutes projected.';
+    }
+    drawMap();
+    return r;
+  }
+
+  function toggle(id){
+    if (mode !== 'map') return;
+    const i = route.indexOf(id);
+    if (i >= 0){ route.splice(i, 1); Juice.sfx('blip'); }
+    else {
+      if (route.length >= 6){ Juice.sfx('bad'); return; }
+      route.push(id); Juice.sfx('click');
+      const n = N[id];
+      const rect = cv.getBoundingClientRect();
+      Juice.burst(n.x, n.y, { color:'#2DE1FC', count:10, speed:2.8, gravity:.02 });
+    }
+    Juice.buzz(8);
+    renderRoute(); renderSites(); renderLive();
+  }
+
+  /* ---------- map hit testing, generous on small screens ---------- */
+  function pick(ev){
+    const rect = cv.getBoundingClientRect();
+    const sx = CW / rect.width, sy = CH / rect.height;
+    const px = (ev.clientX - rect.left) * sx, py = (ev.clientY - rect.top) * sy;
+    const hitR = Math.max(26, 24 * sx);
+    let best = null, bd = Infinity;
+    Object.keys(N).forEach(id => {
+      if (N[id].t === 'j') return;
+      const dx = N[id].x - px, dy = N[id].y - py;
+      const d = Math.sqrt(dx*dx + dy*dy);
+      if (d < hitR && d < bd){ bd = d; best = id; }
+    });
+    return best;
+  }
+  cv.addEventListener('click', ev => {
+    if (mode !== 'map') return;
+    const id = pick(ev);
+    if (id) toggle(id);
+  });
+  cv.addEventListener('mousemove', ev => {
+    if (mode !== 'map') return;
+    const id = pick(ev);
+    if (id !== hover){ hover = id; drawMap(); }
+  });
+  cv.addEventListener('mouseleave', () => { if (hover){ hover = null; if (mode === 'map') drawMap(); } });
+
+  /* ============================================================
+     PLAYBACK — the night, briefly
+     ============================================================ */
+  function playNight(r, then){
+    mode = 'play';
+    $('skip').style.display = 'inline-block';
+    const seq = ['HOME'].concat(route);
+    const pts = [];
+    for (let i = 1; i < seq.length; i++){
+      const p = PATHS[seq[i-1]][seq[i]].nodes;
+      for (let k = (i === 1 ? 0 : 1); k < p.length; k++) pts.push(N[p[k]]);
+    }
+    if (pts.length < 2) pts.push(N[seq[0]], N[seq[0]]);
+    const segLen = [];
+    let total = 0;
+    for (let i = 1; i < pts.length; i++){
+      const d = Math.hypot(pts[i].x - pts[i-1].x, pts[i].y - pts[i-1].y);
+      segLen.push(d); total += d;
+    }
+    const DRIVE_MS = 5200, SKY_MS = 9600;
+    const t0 = performance.now();
+    let arrivedFired = false, skipped = false;
+    const S = r.mainSite ? SITE[r.mainSite.id] : SITE[r.stops.length ? r.stops[0].id : 'HOME'];
+    const darkTotal = Math.round(r.dark);
+
+    $('skip').onclick = () => { skipped = true; };
+
+    (function frame(now){
+      if (skipped){ finish(); return; }
+      const el = now - t0;
+      if (el < DRIVE_MS){
+        drawMap();
+        const p = el / DRIVE_MS;
+        const want = p * total;
+        let acc = 0, x = pts[0].x, y = pts[0].y;
+        for (let i = 0; i < segLen.length; i++){
+          if (acc + segLen[i] >= want){
+            const f = segLen[i] ? (want - acc) / segLen[i] : 0;
+            x = pts[i].x + (pts[i+1].x - pts[i].x) * f;
+            y = pts[i].y + (pts[i+1].y - pts[i].y) * f;
+            break;
+          }
+          acc += segLen[i];
+          x = pts[i+1].x; y = pts[i+1].y;
+        }
+        cx.globalCompositeOperation = 'lighter';
+        const gg = cx.createRadialGradient(x, y, 0, x, y, 26);
+        gg.addColorStop(0, 'rgba(255,235,180,.85)');
+        gg.addColorStop(1, 'rgba(255,235,180,0)');
+        cx.fillStyle = gg; cx.beginPath(); cx.arc(x, y, 26, 0, 6.2832); cx.fill();
+        cx.globalCompositeOperation = 'source-over';
+        cx.fillStyle = '#FFF3D0'; cx.beginPath(); cx.arc(x, y, 5, 0, 6.2832); cx.fill();
+
+        cx.fillStyle = 'rgba(5,7,14,.85)'; cx.fillRect(CW - 260, 12, 248, 52);
+        cx.strokeStyle = 'rgba(45,225,252,.4)'; cx.lineWidth = 1.5; cx.strokeRect(CW - 259.5, 12.5, 247, 51);
+        cx.textAlign = 'right';
+        cx.fillStyle = '#FFD23F'; cx.font = '26px Haettenschweiler, "Arial Narrow", Impact, sans-serif';
+        cx.fillText(fmtT(night.departT + p * (r.driveMin + r.stops.length * 4)), CW - 22, 42);
+        cx.fillStyle = '#6E7C95'; cx.font = '11px "Courier New", monospace';
+        cx.fillText('DRIVING · ' + Math.round(p * r.miles) + ' MI', CW - 22, 58);
+        requestAnimationFrame(frame);
+        return;
+      }
+      if (!arrivedFired){
+        arrivedFired = true;
+        if (darkTotal <= 0){
+          Juice.impact(CW/2, CH/2, { text:'NO DARK LEFT', color:'#FF3D8A', power:12, sound:'lose' });
+          Juice.flash('#FF3D8A', 0.3);
+        } else {
+          Juice.reward(CW/2, CH/2, { text:'ENGINE OFF', color:'#2DE1FC', count:22 });
+          Juice.sfx('good');
+          if (window.Optics) Optics.apply(cv, { bloom:1.35, curve:0.05, scanline:0.4, grain:0.03, flicker:0.25 });
+        }
+      }
+      const sp = (el - DRIVE_MS) / SKY_MS;
+      if (sp < 1){
+        const adapt = clamp(0.18 + sp / 0.62, 0, 1);
+        const moonUp = clamp((sp - 0.78) / 0.22, 0, 1);
+        const clockT = night.duskT + sp * (night.moonT - night.duskT);
+        const shown = Math.round(darkTotal * clamp(sp / 0.94, 0, 1));
+        drawSky(S, adapt, moonUp, fmtT(clockT), shown + ' DARK MINUTES');
+        requestAnimationFrame(frame);
+        return;
+      }
+      finish();
+    })(t0);
+
+    function finish(){
+      if (window.Optics) Optics.off();
+      drawSky(S, 1, 1, fmtT(night.moonT), darkTotal + ' DARK MINUTES');
+      $('skip').style.display = 'none';
+      mode = 'done';
+      then();
+    }
+  }
+
+  /* ============================================================
+     RESULTS
+     ============================================================ */
+  function award(key, label){
+    if (awarded[key]) return;
+    awarded[key] = true;
+    Arcade.toast(label);
+  }
+
+  function tallyCard(label, value, sub, color){
+    const d = document.createElement('div');
+    d.className = 'lv';
+    d.style.borderColor = color;
+    d.innerHTML = '<div class="l">' + label + '</div><div class="v" style="color:' + color + '">' + value + '</div>' +
+      '<div class="s">' + sub + '</div>';
+    return d;
+  }
+
+  function showResults(r){
+    const best = boardBest();
+    const led = $('ledger');
+    let rows = '<tr><th>Stop</th><th>Arrive</th><th>Dark min</th><th>Sky</th><th>Effective</th></tr>';
+    r.stops.forEach(s => {
+      const S = SITE[s.id];
+      rows += '<tr' + (s.dark <= 0 ? ' class="zero"' : '') + '>' +
+        '<td>' + S.name + '<br><span style="color:#6E7C95;font-size:.62rem">B' + S.bortle + ' &middot; ' +
+        Math.round(S.obs*100) + '% blocked' + (s.why ? ' &middot; ' + s.why : '') + '</span></td>' +
+        '<td class="n">' + fmtT(s.arrive) + '</td>' +
+        '<td class="n">' + Math.round(s.dark) + '</td>' +
+        '<td class="n">' + Math.round(s.q * 100) + '%</td>' +
+        '<td class="n">' + Math.round(s.eff) + '</td></tr>';
+    });
+    if (!r.stops.length) rows += '<tr><td colspan="5">No observing stops. The board finds this bold.</td></tr>';
+    led.innerHTML = rows;
+
+    const tally = $('tally');
+    tally.innerHTML = '';
+    tally.appendChild(tallyCard('Dark minutes', Math.round(r.dark), 'of ' + night.window + ' available tonight', '#2DE1FC'));
+    tally.appendChild(tallyCard('Effective dark minutes', Math.round(r.eff), 'Your score', '#3DFC8A'));
+    tally.appendChild(tallyCard('Driving', Math.round(r.driveMin + r.homeMin), Math.round(r.miles) + ' mi round trip', '#FFD23F'));
+    tally.appendChild(tallyCard('Money spent', '$' + r.spent.toFixed(2), 'Fuel, permits, day-use fees', r.spent > 0 ? '#FF9A2E' : '#3DFC8A'));
+    const perMin = r.eff > 0 ? (r.driveMin + r.homeMin) / r.eff : 0;
+    tally.appendChild(tallyCard('Driving per dark minute', r.eff > 0 ? perMin.toFixed(2) : '—',
+      'Minutes in the car per effective minute of sky', '#B9AFD0'));
+    tally.appendChild(tallyCard('Cost per dark minute', r.eff > 0 ? '$' + (r.spent / r.eff).toFixed(3) : '—',
+      'What tonight actually cost you', '#B9AFD0'));
+
+    const bs = SITE[best.id], bp = best.r;
+    const ratio = bp.eff > 0 ? r.eff / bp.eff : 0;
+    $('boardbody').innerHTML =
+      '<p><b>The best available plan tonight was ' + bs.name + '</b> &mdash; ' +
+      Math.round(PATHS['HOME'][best.id].min) + ' minutes from your driveway, Bortle ' + bs.bortle +
+      ', ' + Math.round(bs.obs * 100) + '% horizon obstruction, ' +
+      (bp.spent > 0 ? '$' + bp.spent.toFixed(2) : '<b>no money at all</b>') + '. ' +
+      'It returns <b>' + Math.round(bp.eff) + ' effective dark minutes</b> from ' + Math.round(bp.dark) + ' minutes of true dark.</p>' +
+      '<p>You returned ' + Math.round(r.eff) + ' &mdash; <b>' + Math.round(ratio * 100) + '%</b> of the best available answer, ' +
+      'for ' + Math.round(r.driveMin + r.homeMin) + ' minutes of driving and $' + r.spent.toFixed(2) + '.</p>' +
+      '<p>Note the shape of it. The winner was not the highest, was not the darkest on paper, and was not the one that ' +
+      'cost anything. It was <b>close, flat, open to the south, and unlocked</b>. That is the finding, and it is the ' +
+      'same finding in almost every county in the country.</p>';
+    $('result').style.display = 'block';
+    $('result').scrollIntoView({ behavior:'smooth', block:'nearest' });
+
+    /* achievements */
+    if (r.dark >= night.window * 0.92) award('moon', '🏆 BEAT THE MOON');
+    if (r.spent === 0 && r.eff > 0) award('free', '🏆 SPENT NOTHING');
+    const lastId = r.mainSite ? r.mainSite.id : null;
+    if (lastId && PATHS['HOME'][lastId].min <= 30 && ratio >= 0.95) award('local', '🏆 FOUND THE LOCAL SPOT');
+    if (r.stops.length === 1 && r.dark >= night.window * 0.92) award('one', '🏆 ONE SITE, ALL NIGHT');
+
+    const mid = { x: CW / 2, y: CH * 0.45 };
+    if (ratio >= 0.95){
+      Juice.sfx('win'); Juice.reward(mid.x, mid.y, { text:Math.round(r.eff) + ' MIN', color:'#3DFC8A', count:34 });
+      Juice.burst(mid.x, mid.y, { color:'#2DE1FC', count:40, speed:6, gravity:.02 });
+      Juice.flash('#2DE1FC', 0.28);
+    } else if (ratio >= 0.7){
+      Juice.sfx('good'); Juice.reward(mid.x, mid.y, { text:Math.round(r.eff) + ' MIN', color:'#FFD23F', count:18 });
+    } else {
+      Juice.impact(mid.x, mid.y, { text:Math.round(r.eff) + ' MIN', color:'#FF3D8A', power:10, count:20, sound:'lose' });
+      Juice.flash('#FF3D8A', 0.24);
+    }
+
+    setTimeout(() => endCard(r, best, ratio), 2100);
+  }
+
+  function endCard(r, best, ratio){
+    const bs = SITE[best.id], bp = best.r;
+    const L = [];
+    const drove = Math.round(r.driveMin + r.homeMin);
+
+    if (r.eff <= 0){
+      L.push('You drove. The clock ran. The moon came up over a place you had not reached yet, and the ' +
+        'window closed on an empty road. <b>Nothing about tonight was the sky’s fault.</b>');
+    } else if (ratio >= 0.98){
+      L.push('That is the answer. Not close to the answer &mdash; <b>the answer</b>. You read the horizon numbers, ' +
+        'you noticed what the drive was doing to your window, and you parked in the dark before the dark started.');
+    } else if (ratio >= 0.85){
+      L.push('A real night under a real sky, within a few percent of the best move on the board. Whatever you ' +
+        'gave up, you gave up knowingly, which is the entire skill.');
+    } else if (ratio >= 0.6){
+      L.push('You got outside and you saw stars, which beats every alternative use of the evening. ' +
+        'But the county had a better answer sitting on it, and the better answer was closer than the one you took.');
+    } else {
+      L.push('The sky was working all night. The county was full of dark. You spent the evening in the car, ' +
+        'or behind a gate, or under a ridge, and none of those are the sky’s doing.');
+    }
+
+    if (r.spent > 0){
+      L.push('Tonight cost you <b>$' + r.spent.toFixed(2) + '</b> and <b>' + drove + ' minutes of driving</b>. ' +
+        'The board notes that ' + bs.name + ' was available for ' +
+        (bp.spent > 0 ? '$' + bp.spent.toFixed(2) : '<b>nothing at all</b>') + '.');
+    } else {
+      L.push('Tonight cost you <b>zero dollars</b> and ' + drove + ' minutes of driving. The board would like ' +
+        'that entered into the record in bold, because it is the entire case.');
+    }
+
+    L.push('<b>The optimum, computed:</b> ' + bs.name + ' &mdash; Bortle ' + bs.bortle + ', ' +
+      Math.round(PATHS['HOME'][best.id].min) + ' minutes from the driveway, ' + Math.round(bs.obs * 100) +
+      '% of the horizon blocked, ' + bs.elev.toLocaleString() + ' feet, gate never locked, admission never charged. ' +
+      Math.round(bp.eff) + ' effective dark minutes.');
+
+    L.push('It was not the darkest site on the map. Devil’s Chimney is darker, by a full two Bortle classes, ' +
+      'and it takes back everything it gives you in drive time before you have unfolded a chair. ' +
+      'It was not the highest, either. Mt. Perren is a mile up and chained shut, and Hawkridge is two thousand ' +
+      'feet up with a ridge sitting on the only part of the sky anybody wants. <b>Altitude is worth a few percent. ' +
+      'A clear southern horizon is worth a Bortle class.</b>');
+
+    L.push('REVIEW BOARD FINDING: <b>the best available sky for most people, on most nights, is free, close, ' +
+      'and about twenty-five minutes from the house.</b> It is not in the desert. It is not at altitude. ' +
+      'It is not behind a registration fee, a folding chair, or a group rate. It requires exactly one thing ' +
+      'that people do genuinely lack, and that thing is not equipment, location, consciousness, or a guide.');
+
+    L.push('<b>It is somebody telling you when to go.</b> Astronomical dusk, moonrise, and the gap between ' +
+      'them &mdash; three numbers, computable for any coordinates on Earth, in advance, for free, forever. ' +
+      'That is the whole product. That is what the thousands of dollars is actually purchasing, ' +
+      'and it can be printed on an index card.');
+
+    L.push('<span style="color:#2DE1FC">TONIGHT: DUSK ' + fmtT(night.duskT) + ' · MOONRISE ' + fmtT(night.moonT) +
+      ' · ' + Math.round(night.illum * 100) + '% LIT · ' + night.window + ' MINUTES OF DARK, ISSUED FREE OF CHARGE</span>');
+
+    Arcade.gameOver({
+      won: ratio >= 0.85,
+      title: r.eff <= 0 ? 'The Window Closed Without You'
+           : (ratio >= 0.98 ? 'You Found It.' : (ratio >= 0.85 ? 'A Good Night' : 'The Sky Was Free Either Way')),
+      score: Math.round(r.eff),
+      accent: ratio >= 0.85 ? '#3DFC8A' : (ratio >= 0.6 ? '#FFD23F' : '#FF3D8A'),
+      lines: L,
+      onRetry: () => newNight(true),
+      links: [
+        { label:'The Orb Scheduler — it tells you when to go', href:'../chris-bledsoe/index.html#prize' },
+        { label:'The Greer wing', href:'index.html' },
+        { label:'Visit the shrine', href:'../../shrines/index.html#steven-greer' }
+      ]
+    });
+    const ovs = document.querySelectorAll('.dcab-overlay');
+    const ov = ovs[ovs.length - 1];
+    if (ov){
+      ov.scrollTop = 0;
+      const ps = ov.querySelectorAll('.dcab-lore');
+      [].forEach.call(ps, (p, i) => {
+        p.style.opacity = '0';
+        p.style.transition = 'opacity .8s';
+        setTimeout(() => { p.style.opacity = '1'; }, 200 + i * 700);
+      });
+    }
+  }
+
+  /* ============================================================
+     WIRING
+     ============================================================ */
+  function commit(){
+    if (mode !== 'map') return;
+    const r = evalRoute(route);
+    if (!r.ok){ Juice.sfx('bad'); Juice.shake(5); return; }
+    played = r;
+    $('commitBtn').disabled = true;
+    $('clearBtn').disabled = true;
+    Juice.sfx('coin');
+    Juice.reward(CW / 2, CH * 0.5, { text:'KEYS TURNED', color:'#2DE1FC', count:20 });
+    $('mapwrap').scrollIntoView({ behavior:'smooth', block:'center' });
+    playNight(r, () => showResults(r));
+  }
+
+  function newNight(fresh){
+    if (window.Optics) Optics.off();
+    night = rollNight();
+    route = [];
+    awarded = {};
+    played = null;
+    mode = 'map';
+    $('result').style.display = 'none';
+    $('skip').style.display = 'none';
+    $('commitBtn').disabled = false;
+    $('clearBtn').disabled = false;
+    $('notes').style.display = 'none';
+    $('notesbtn').innerHTML = '▸ Open the field notes — the real astronomy, free, as always';
+    renderNight(); renderRoute(); renderSites(); renderLive();
+    if (fresh){
+      $('briefing').style.display = 'flex';
+      $('stage').scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+  }
+
+  $('clearBtn').addEventListener('click', () => {
+    if (mode !== 'map') return;
+    route = []; Juice.sfx('blip');
+    renderRoute(); renderSites(); renderLive();
+  });
+  $('commitBtn').addEventListener('click', commit);
+  $('notesbtn').addEventListener('click', () => {
+    const g = $('notes');
+    const open = g.style.display === 'block';
+    g.style.display = open ? 'none' : 'block';
+    $('notesbtn').innerHTML = open
+      ? '▸ Open the field notes — the real astronomy, free, as always'
+      : '▾ Close the field notes — nothing in them was invented';
+    Juice.sfx('click');
+  });
+  $('startBtn').addEventListener('click', () => {
+    Juice.sfx('coin');
+    $('briefing').style.display = 'none';
+  });
+
+  newNight(false);
+
+  Arcade.cabinet({
+    id: 'dark-sky-run',
+    wing: 'THE STEVEN GREER EXPERIENCE',
+    title: 'Dark Sky Run',
+    subtitle: 'One Tank. Until Moonrise.',
+    accent: '#2DE1FC',
+    scoreLabel: 'DARK MINUTES',
+    lore: 'The retreat costs thousands of dollars and it drives you into the desert. ' +
+          '<b>The board does not dispute the desert.</b> It disputes the shipping and handling &mdash; ' +
+          'the claim that the dark you need is far away, at altitude, and for sale. Tonight you have a ' +
+          'car, most of a tank, the cash in your console, a map of your own county, and the hours between ' +
+          'astronomical dusk and moonrise. <b>Plot the route. Watch what the driving costs you.</b> ' +
+          'A Bortle 2 site three hours out can hand you less darkness than a Bortle 4 boat ramp twenty-five ' +
+          'minutes from your house. That trade is the whole puzzle, and it is real astronomy.',
+    howto: [
+      'TAP a site on the map — or its card — to add it to the route',
+      'TAP it again to drop it &bull; the route is free to revise until you commit',
+      'DRIVE TIME EATS YOUR DARK WINDOW — that is the entire trade',
+      'BORTLE = light pollution, 1 pristine to 9 inner city',
+      'HORIZON OBSTRUCTION costs you more than altitude buys you',
+      'CHECK ACCESS — gates lock, permits are sold in town, and the office closes',
+      'YOU MUST GET HOME — the return leg comes out of the same tank',
+      'COMMIT, and the night plays out. Score = dark minutes × sky quality.'
+    ],
+    shrine: '../../shrines/index.html#steven-greer',
+    onStart: () => {
+      $('briefing').style.display = 'flex';
+      $('stage').scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+  });
+})();
+</script>
+</body>
+</html>
