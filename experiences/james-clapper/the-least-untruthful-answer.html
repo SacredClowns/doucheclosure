@@ -223,7 +223,7 @@
 </head>
 <body>
 
-<p class="crumb"><a href="../../index.html">&larr; THE ARCADE</a> &nbsp;/&nbsp; EXPERIENCES &nbsp;/&nbsp; JAMES CLAPPER</p>
+<p class="crumb"><a href="index.html">&larr; THE ARCADE</a> &nbsp;/&nbsp; EXPERIENCES &nbsp;/&nbsp; JAMES CLAPPER</p>
 
 <header class="wing">
   <p class="eyebrow">Doucheclosure Experiences &bull; The Committee Room</p>
@@ -339,7 +339,7 @@
       </div>
 
       <div id="dialWrap">
-        <div id="dialHead"><span>Answer spectrum</span><span id="register">FULLY TRUE</span></div>
+        <div id="dialHead"><span id="dialLab">Answer spectrum</span><span id="register">FULLY TRUE</span></div>
         <div id="dial" tabindex="0" role="slider" aria-label="Answer spectrum" aria-valuemin="1" aria-valuemax="5" aria-valuenow="1" aria-valuetext="Fully true">
           <div id="rail"><div id="railfill"></div><div id="knob"></div></div>
           <div id="detents">
@@ -373,7 +373,7 @@
 <footer>
   <p>DOUCHECLOSURE&trade; EXPERIENCES &bull; A work of parody commenting on a documented moment in the public record.<br>
   The witness and all senators in this game are fictional. We audit the room, never the person in the chair.<br>
-  <a href="../../index.html">Back to the arcade</a> &bull; <a href="../lue-elizondo/index.html">Wing No. 9: Lue Elizondo</a></p>
+  <a href="index.html">Back to the arcade</a> &bull; <a href="../lue-elizondo/index.html">Wing No. 9: Lue Elizondo</a></p>
 </footer>
 
 <script src="../../assets/screen.js"></script>
@@ -512,27 +512,41 @@
   ];
   const PLAIN_COUNSEL = 'COUNSEL: has left the room.';
 
-  // hearing-phase deltas by dial position
+  // what the room is like when each question lands — the escalation, stated
+  const STAKE = [
+    'Open session · warm-up',
+    'Open session · the specific one',
+    'She wants the name',
+    'The chairman is asking',
+    'The gallery is filming',
+    'Third hour · cameras on you',
+    'The mercy window',
+    'Last question · slowly'
+  ];
+  // later questions weigh more — the same detent costs more the deeper you are
+  const WEIGHT = i => 0.75 + i * 0.14;
+
+  // hearing-phase base deltas by dial position, scaled by question weight
   const DT = [
-    { t:+15, c:-9 },
-    { t:+8,  c:-5 },
-    { t:+2,  c:-1 },
-    { t:-7,  c:+5 },
-    { t:-12, c:+8 }
+    { t:+11, c:-13 },
+    { t:+6,  c:-6  },
+    { t:+2,  c:-1  },
+    { t:-7,  c:+5  },
+    { t:-11, c:+8  }
   ];
-  const DT_PLAIN = { t:+24, c:-14 };
+  const DT_PLAIN = { t:+19, c:-15 };
 
-  // replay-phase career reckoning
+  // replay-phase career reckoning — unweighted, because the transcript does not scale
   const REPLAY = [
-    { cls:'hold', v:'HOLDS.',                        c:+10 },
-    { cls:'thin', v:'HOLDS, BARELY.',                c:+3  },
-    { cls:'bad',  v:'DOES NOT HOLD.',                c:-8  },
-    { cls:'bad',  v:'THE ADVERB IS NOW THE HEADLINE.', c:-14 },
-    { cls:'bad',  v:'FLATLY CONTRADICTED.',          c:-18 }
+    { cls:'hold', v:'HOLDS.',                          c:+10 },
+    { cls:'thin', v:'HOLDS, BARELY.',                  c:+3  },
+    { cls:'bad',  v:'DOES NOT HOLD.',                  c:-10 },
+    { cls:'bad',  v:'THE ADVERB IS NOW THE HEADLINE.', c:-15 },
+    { cls:'bad',  v:'FLATLY CONTRADICTED.',            c:-12 }
   ];
-  const REPLAY_PLAIN = { cls:'hold', v:'HOLDS. ENTIRELY.', c:+16 };
+  const REPLAY_PLAIN = { cls:'hold', v:'HOLDS. ENTIRELY.', c:+14 };
 
-  const PLAIN_UNLOCK = 50;
+  const PLAIN_UNLOCK = 40;
 
   /* ---------------- state ---------------- */
   let idx = 0, pos = 0, truth = 0, career = 100;
@@ -586,8 +600,15 @@
     $('truthNum').textContent = Math.round(truth);
     $('careerNum').textContent = Math.round(career);
   }
+  // the weighted delta for the currently selected register on the current question
+  function delta(){
+    const base = plainArmed ? DT_PLAIN : DT[pos];
+    const w = WEIGHT(Math.min(idx, Q.length - 1));
+    return { t: Math.round(base.t * w), c: Math.round(base.c * w) };
+  }
+
   function renderPreview(){
-    const d = plainArmed ? DT_PLAIN : DT[pos];
+    const d = delta();
     const pt = clamp(truth + d.t), pc = clamp(career + d.c);
     const tm = $('truthmark'), cm = $('careermark');
     tm.style.left = pt + '%'; tm.style.opacity = .9;
@@ -633,7 +654,8 @@
     $('question').textContent = '“' + q.q + '”';
     $('gavel').textContent = q.gavel;
     $('phaseMain').textContent = 'QUESTION ' + (idx + 1) + ' / ' + Q.length;
-    $('phaseSub').textContent = 'Open session';
+    $('phaseSub').textContent = STAKE[idx];
+    $('dialLab').textContent = 'Answer spectrum · this one weighs ' + WEIGHT(idx).toFixed(2) + '×';
     plainArmed = false;
     pos = 0;
     updatePlainOffer();
@@ -715,7 +737,7 @@
     busy = true;
     const q = Q[idx];
     const isPlain = plainArmed;
-    const d = isPlain ? DT_PLAIN : DT[pos];
+    const d = delta();
     const said = isPlain ? q.plain : q.a[pos];
 
     log.push({ qi: idx, p: isPlain ? -1 : pos, said: said });
@@ -909,7 +931,7 @@
     else medals.push({ ok:false, s:'🏆 JUST ANSWERED IT — never left the dial' });
     if (usedAdverb === 0) medals.push({ ok:true, s:'🏆 NEVER TOUCHED THE ADVERB — "wittingly" is not in your transcript' });
     else medals.push({ ok:false, s:'🏆 NEVER TOUCHED THE ADVERB — used it ' + usedAdverb + '×' });
-    if (c >= 25) medals.push({ ok:true, s:'🏆 SURVIVED THE REPLAY — career intact at ' + c });
+    if (c >= 30) medals.push({ ok:true, s:'🏆 SURVIVED THE REPLAY — career intact at ' + c });
     else medals.push({ ok:false, s:'🏆 SURVIVED THE REPLAY — the transcript got there first' });
 
     const box = document.createElement('div');

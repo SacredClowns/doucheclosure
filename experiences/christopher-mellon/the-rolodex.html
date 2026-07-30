@@ -581,7 +581,7 @@
     favors = START_FAVORS;
     calls = 0; redundant = 0; evidence = 0;
     known = {}; called = {}; depts = {};
-    counselOK = false; sel = null; ended = false; awarded = {}; logRows = [];
+    counselOK = false; sel = null; ended = false; awarded = {}; logRows = []; toastQueue = 0;
     NODES.forEach(n => { n.satisfied = false; });
     START_KNOWN.forEach(id => { known[id] = true; });
     $('says').innerHTML = '&nbsp;';
